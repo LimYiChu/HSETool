@@ -1,0 +1,12 @@
+<!DOCTYPE ActionItems SYSTEM "Action.dtd">
+<ActionItems title = "ACTIONITEMS">
+	<action aid='A1'>
+		<cause> leak </cause>
+		<consequence> leaking </consequence>
+	</action>
+
+	<action aid='A2'>
+		<cause> puncture </cause>
+		<consequence> puncturing </consequence>
+	</action>
+</ActionItems>
