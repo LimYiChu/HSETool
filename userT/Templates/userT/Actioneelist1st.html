@@ -1,0 +1,50 @@
+{% extends "userT\base3.html"%}
+{% block Actioneelist%}
+<!doctype html>
+<html lang="en">
+  
+
+<body>
+      <div class="row" >
+        <table class="table table-striped table-hover"> <!--set to maximum 20 rows per page-->
+          <thead class="thead-dark">
+            <tr>
+              <th>
+                StudyActionNo
+              </th>
+              <th>
+                StudyName
+              </th>
+              <th>
+                Cause
+              </th>
+              <th>
+                Consequence
+              </th>
+              <th>
+                Recomendations
+              </th>
+              <th>
+                InitialRisk
+              </th>
+              <th>
+                Response
+              </th>
+              
+             </tr>
+          </thead>
+          <tbody>
+            {% for Items  in object_list %}
+            <tr>
+              <td>{{ Items.StudyActionNo }}</td>
+              <td>{{ Items.StudyName }}<</td>
+              <td>{{ Items.Cause }}<</td>
+              <td>{{ Items.Consequence }}<</td>
+              <td>{{ Items.Recomendations }}<</td>
+              <td>{{ Items.InitialRisk }}<</td>
+              <td>{{ Items.Response }}<</td>
+              
+            {%endfor%}
+            
+          
+{%endblock%}

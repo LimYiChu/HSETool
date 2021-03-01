@@ -1,0 +1,25 @@
+<h1>Action Items</h1>
+<h1>
+    <br>
+    <br>
+    
+{{Actionee_routes.count}}
+</h1>
+<ul>
+    {% for Items  in Actionee_routes %}
+    
+   <li>--  {{ Items.Actionee }}--{{ Items.Approver1 }}--{{ Items.Approver2 }}--</li>
+   <br>
+   <br>
+   {%endfor%}
+   {% for appItems  in Approver1_routes %}
+    
+   <li>--  {{ appItems.Actionee }}--{{ appItems.Approver1 }}--{{ appItems.Approver2 }}--</li>
+   <br>
+   <br>
+{% empty %}
+    <li>No articles yet.</li>
+{% endfor %}
+
+</ul>
+

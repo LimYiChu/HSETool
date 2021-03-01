@@ -1,0 +1,59 @@
+{% extends "userT\base3.html"%}
+{%load crispy_forms_tags %}
+
+{% block Actioneelist%}
+<h1>Action Items</h1>
+
+<canvas id="myChart"></canvas>
+<script>
+
+    var myChart = document.getElementById('myChart').getContext('2d');
+    
+    var charts = new Chart(myChart, {
+        type: 'polarArea',
+        data : {
+
+            labels : ['ActioneeCount1', 'ActioneeCount2','ActioneeCount3'],
+
+            datasets : [{
+                label : 'Actionee',
+                
+                data : [{% for Items in Actionee_Count %}{{Items}},{% endfor %}],
+
+                borderWidth: 3,
+                borderColor: '#777',
+            }]
+            
+        },
+        
+        options: {}
+    });
+  
+    
+</script>
+
+<h1>
+    <br>
+    <br>
+    
+
+</h1>
+<ul>
+    {% for Items  in Actionee_Count %}
+    
+</h1> {{Items}} <h1>
+   <!--<li>--  {{ Items.Actionee }}--{{ Items.Approver1 }}--{{ Items.Approver2 }}--</li>-->
+   <br>
+   <br>
+   {%endfor%}
+   {% for appItems  in Approver1_routes %}
+    
+   <li>--  {{ appItems.Actionee }}--{{ appItems.Approver1 }}--{{ appItems.Approver2 }}--</li>
+   <br>
+   <br>
+{% empty %}
+    <li>No articles yet.</li>
+{% endfor %}
+{%endblock%}
+</ul>
+

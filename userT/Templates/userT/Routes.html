@@ -1,0 +1,20 @@
+<h1>Action Items</h1>
+<h1>
+    {{object_list.count}}<br>
+    {{user.email}}<br>
+    <br>
+    
+
+</h1>
+<ul>
+    {% for Items  in object_list %}
+    <a href=''>{{ Items.  }}</a>
+   <li>--  {{ Items.Organisation }}--{{ Items.Disipline }}--{{ Items.Subdisipline }}--</li>
+   <br>
+   <br>
+   {%ActionItems.objects.filter(organisation__icontains='Hess') %}
+{% empty %}
+    <li>No articles yet.</li>
+{% endfor %}
+
+</ul>
