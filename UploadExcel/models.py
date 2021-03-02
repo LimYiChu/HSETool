@@ -18,6 +18,7 @@ class ActionItems(models.Model):
     ProjectPhase           =   models.CharField(max_length=255,null=True)
     Cause           =   models.TextField(null=True)
     Consequence     =   models.TextField(null=True)
+    Safeguard     =   models.TextField(null=True)
     Recomendations  =   models.TextField(null=True)
     InitialRisk     =   models.CharField(max_length=10,null=True)
     ResidualRisk    =   models.CharField(max_length=10,null=True)
