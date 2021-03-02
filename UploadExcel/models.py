@@ -17,6 +17,7 @@ class ActionItems(models.Model):
     Facility        =   models.CharField(max_length=255,null=True)
     ProjectPhase           =   models.CharField(max_length=255,null=True)
     Cause           =   models.TextField(null=True)
+    Cause2           =   models.TextField(null=True)
     Consequence     =   models.TextField(null=True)
     Recomendations  =   models.TextField(null=True)
     InitialRisk     =   models.CharField(max_length=10,null=True)
