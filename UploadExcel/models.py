@@ -17,7 +17,7 @@ class ActionItems(models.Model):
     Facility        =   models.CharField(max_length=255,null=True)
     ProjectPhase           =   models.CharField(max_length=255,null=True)
     Cause           =   models.TextField(null=True)
-    SafeG           = models.TextField(null=True)
+    SafeGuard           = models.TextField(null=True)
     Consequence     =   models.TextField(null=True)
     Recomendations  =   models.TextField(null=True)
     InitialRisk     =   models.CharField(max_length=10,null=True)
@@ -30,7 +30,7 @@ class ActionItems(models.Model):
     FutureAction    =   models.TextField(null=True)
     DueDate         =   models.DateField(auto_now_add=True, null=True)
     QueSeries       =   models.IntegerField(null=True)
-    
+    objects = models.Manager()
     myActionItems = myActionItemManager()
     myActionItemsCount = myActionCount()
     #Approver1RoItems = Approver1ItemManager()
