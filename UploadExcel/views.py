@@ -20,7 +20,7 @@ def Load (request):
         
     if request.method == 'POST':
         UploadExl.objects.all().delete()
-        ActionItems.objects.all().delete()
+       # ActionItems.objects.all().delete()
         form = UploadExlForm(request.POST ,request.FILES)
         if form.is_valid():
             form.save()
