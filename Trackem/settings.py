@@ -26,9 +26,12 @@ SECRET_KEY = '%r2#pc!hl*ih2l^(+ulh6c3ja!-+pbhdm%+yi4efwxwp$#4oc5'
 DEBUG = True
 
 if DEBUG:
-    EMAIL_BACKEND = '   django.core.mail.backends.console.EmailBackend'
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  #development only
     
 ALLOWED_HOSTS = []
+
+
+
 
 
 # Application definition
@@ -141,3 +144,5 @@ STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = 'main'
 #LOGIN_REDIRECT_URL = 'Login'
+
+
