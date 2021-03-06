@@ -28,13 +28,24 @@
                                     <form method="post" action="{% url 'login' %}" >
                                     {% csrf_token %}
                                     
-                                        {{ form|crispy  }}
+                                      <!--  {{ form|crispy  }}-->
                                     <br>
 
-                                  
+                                    <input name="email" class="form-control" placeholder="Email" type="email" id="email" required="true"><br>
+                                    <input name="password" class="form-control" placeholder="Password" type="password" id="password" required="true"><br>
+
+                                    HOLD!
+                                    {% if form.errors %}
+                                    <p>Something went wrong, please check</p>
+                                    {% endif %}
                                     
-
-
+                                    {% if next %}
+                                        {% if user.is_authenticated %}
+                                        <p>You are still logged in. Go Check</p>
+                                        {% else %}
+                                        <p>You are successfully logged out.</p>
+                                        {% endif %}
+                                    {% endif %}
 
                                     
                                     <input class="btn btn-lg btn-primary btn-block" type="submit" value="Login">
