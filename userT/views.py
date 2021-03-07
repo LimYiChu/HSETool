@@ -15,8 +15,6 @@ from django.views.generic import ListView, DetailView, UpdateView,TemplateView
 # Create your views here.
 @csrf_exempt
 
-
-
 def register (request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
@@ -31,51 +29,42 @@ def register (request):
        #form = UserCreationForm()
         return render(request, 'userT/register.html', {'form': form})
 
-def home (request):
-    return render(request, 'userT/home.html' )
-
-def UserActions(request):
-    #user = get_user_model(email)
-    return HttpResponse(request.user.organisation)
-
-def mainDashboardOLD (request):
-    
-    context_allRou = userRoutes(request)
-    #print(context_allRou)
-    #XX = context_allRou.get('Actionee_routes')
-    #for items in XX:
-     #   y= (items.Organisation)
-      #  ActioneeItemsX  =   ActionItems.ActioneeItems.get_myItems(y)
-    Actionee_R =    context_allRou.get('Actionee_routes')
-    Approver_R =    context_allRou.get('Approver1_routes')
-    firstStreamActionee,secondStreamActionee,thirdStreamActionee = blfuncActioneeComDisSub(Actionee_R)
-    firstStreamApp1st,secondStreamApp1st,thirdStreamApp1st = blfuncActioneeComDisSub(Approver_R)
-    #firstStreamApprover,secondStreamApprover, thirdStreamApprover = blfuncActioneeComDisSubApprover(context_allRou)
-    newContext = {
-        'obj_Actionee1st' : firstStreamActionee,
-        'obj_Actionee2nd' : secondStreamActionee,
-        'obj_Actionee3rd' : thirdStreamActionee,
-        'obj_Approver11' : firstStreamApp1st,
-        'obj_Approver12' : secondStreamApp1st,
-        'obj_Approver13' : thirdStreamApp1st,
-    }
-    #return render(request, 'userT/RouteList.html',context_allRou)
-    return render(request, 'userT/Actionlist.html',newContext)
-    
 def mainDashboard (request):
     #get user routes from workflow for everything , actionee and approver1
     #userRoutes simply tied into model manager
-    context_allRou = userRoutes(request)
-    Actionee_R =    context_allRou.get('Actionee_routes')
-    Approver_R =    context_allRou.get('Approver1_routes')
-
-    #logic stored in businesslogic.py
-    ActioneeCountList = blfuncActioneeCount(Actionee_R)
+    Approver = []
+    context_allRou = getuserRoutes(request)
+    Actionee_R =    context_allRou.get('Actionee_Routes')
+    
+    Approver_R =    context_allRou.get('Approver_Routes')
+    
+    for key, value in Approver_R.items():
+         Approver.insert(key,blfuncActionCount(value,key))
+    
+    Approver1_R =    context_allRou.get('Approver1_routes')
+    # Approver2_R =    context_allRou.get('Approver2_routes')
+    # Approver3_R =    context_allRou.get('Approver3_routes')
+    # Approver4_R =    context_allRou.get('Approver4_routes')
+    # Approver5_R =    context_allRou.get('Approver4_routes')
+    #logic stored in businesslogic.py, actionee queue = 0 approver1=1, approver2=2 etc
+    ActioneeCountList = blfuncActionCount(Actionee_R,0)
+    
+    
+    # Approver [i] = blfuncActionCount(Approver_R[i],i)
+    print (Approver)
+    Approver1CountList = blfuncActionCount(Approver1_R,1)
+    # Approver2CountList = blfuncActionCount(Approver2_R,2)
+    # Approver3CountList = blfuncActionCount(Approver3_R,3)
+    # Approver4CountList = blfuncActionCount(Approver4_R,4)
+    # Approver5CountList = blfuncActionCount(Approver5_R,5)
    # ApproverCountList = 
+    print (Approver1CountList)
+    print (ActioneeCountList)
     Context = {
         'Actionee_Count' : ActioneeCountList,
-            
-        }
+        'Approver_Count'       : Approver
+      
+            }
     return render(request, 'userT/ActioneeItems.html',Context)
 
 class yourActions (ListView):
@@ -97,19 +86,26 @@ def getActionDetails(request, id=None):
 
     }
     return render(request, "userT/detailactions.html", context)
-def userItems():
-    pass
-    #userOrganisation = 
-def userRoutes(request):
+
+def getuserRoutes(request):
+    ApproverLevel = 5
     userZemail = request.user.email
-    Actionee_routes   =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
-    Approver1_routes    =  ActionRoutes.Approver1Ro.get_myroutes(userZemail)
-    Approver2_routes    =  ActionRoutes.Approver2Ro.get_myroutes(userZemail)
-    Approver3_routes    =  ActionRoutes.Approver3Ro.get_myroutes(userZemail)
-    Approver4_routes    =  ActionRoutes.Approver4Ro.get_myroutes(userZemail)
-    Approver5_routes    =  ActionRoutes.Approver5Ro.get_myroutes(userZemail)
+    Approver_Routes = {}
+    Actionee_Routes   =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
+    
+    
+    for ApproverLevel in range(1 , ApproverLevel+1):
+       Approver_Routes [ApproverLevel]  =  ActionRoutes.ApproverRo.get_myroutes(userZemail,ApproverLevel)
+      
+    
+    Approver1_routes    =  ActionRoutes.ApproverRo.get_myroutes(userZemail,1)
+    Approver2_routes    =  ActionRoutes.ApproverRo.get_myroutes(userZemail,2)
+    Approver3_routes    =  ActionRoutes.ApproverRo.get_myroutes(userZemail,3)
+    Approver4_routes    =  ActionRoutes.ApproverRo.get_myroutes(userZemail,4)
+    Approver5_routes    =  ActionRoutes.ApproverRo.get_myroutes(userZemail,5)
     contextRoutes = {
-       'Actionee_routes' : Actionee_routes,
+       'Actionee_Routes' : Actionee_Routes,
+       'Approver_Routes': Approver_Routes,
        'Approver1_routes' : Approver1_routes,
        'Approver2_routes' : Approver2_routes,
        'Approver3_routes' : Approver3_routes,

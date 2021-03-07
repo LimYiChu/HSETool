@@ -85,12 +85,9 @@ class ActionRoutes(models.Model):
     Approver5       =   models.CharField(max_length=100, null=True)
 
     ActioneeRo = ActioneeManager()
-    Approver1Ro = Approver1Manager()
-    Approver2Ro = Approver2Manager()
-    Approver3Ro = Approver3Manager()
-    Approver4Ro = Approver4Manager()
-    Approver5Ro = Approver5Manager()
-    #Approver1Routes = Approver1Manager()
+    ApproverRo = ApproverManager()
+    # Approver2Ro = Approver2Manager()
+    
    # Actionee        = models.ForeignKey(CustomUser,null=True, on_delete=models.SET_NULL, related_name='Actionee')
     #Approver1       = models.ForeignKey(CustomUser,null=True, on_delete=models.SET_NULL, related_name='Approver1')
     #Approver2       = models.ForeignKey(CustomUser,null=True, on_delete=models.SET_NULL, related_name='Approver2')

@@ -27,7 +27,7 @@ def blfuncActioneeComDisSub(contextRoutes):
     #return ActionItems.ActioneeItems.get_myItemsbyCompDisSub(blvarorganisation,blvardisipline,blvarSUbdisipline)
     return firststream, secondstream, thirdstream
     #(Organisation__icontains=blvarorganisation).filter(Disipline__icontains=blvardisipline).filter(Subdisipline__icontains=blvarSUbdisipline)
-def blfuncActioneeCount(contextRoutes):
+def blfuncActionCount(contextRoutes,que):
    #This functionality already works
    #Initilises count in case 
     firststream = 0
@@ -38,19 +38,19 @@ def blfuncActioneeCount(contextRoutes):
         blvarorganisation   = item.Organisation
         blvardisipline  = item.Disipline
         blvarSUbdisipline  = item.Subdisipline
-                
+        blque               =   que
         if x==0:
             firststream = ActionItems.myActionItemsCount.get_myItemsCount(blvarorganisation,
                                                                 blvardisipline,
-                                                                blvarSUbdisipline)
+                                                                blvarSUbdisipline,blque)
         if x==1:
             secondstream = ActionItems.myActionItemsCount.get_myItemsCount(blvarorganisation,
                                                                 blvardisipline,
-                                                                blvarSUbdisipline)
+                                                                blvarSUbdisipline,blque)
         if x==2:
             thirdstream =  ActionItems.myActionItemsCount.get_myItemsCount(blvarorganisation,
                                                                 blvardisipline,
-                                                                blvarSUbdisipline)
+                                                                blvarSUbdisipline,blque)
     #return ActionItems.ActioneeItems.get_myItemsbyCompDisSub(blvarorganisation,blvardisipline,blvarSUbdisipline)
     return [ firststream,  secondstream,  thirdstream]
 

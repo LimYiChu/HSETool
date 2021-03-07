@@ -18,7 +18,7 @@
             datasets : [{
                 label : 'Actionee',
                 
-                data : [{% for Items in Actionee_Count %}{{Items}},{% endfor %}],
+                data : [{% for Items in Actionee_Count  %}{{Items}},{% endfor %},{% for Items in Approver_Count  %}{{Items}},{% endfor %}],
 
                 borderWidth: 3,
                 borderColor: '#777',
