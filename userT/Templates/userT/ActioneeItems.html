@@ -3,52 +3,67 @@
 
 {% block Actioneelist%}
 <h1>Action Items</h1>
-<div>
-<canvas id="myChart"></canvas>
-<script>
+<div class="container-fluid">
+    <div style="width:50% ; float:left"> 
+        <canvas id="Actionee"></canvas>
+            <script>
 
-    var myChart = document.getElementById('myChart').getContext('2d');
-    
-    var charts = new Chart(myChart, {
-        type: 'polarArea',
-        data : {
-
-            labels : {{labels|safe}},
-
-            datasets : [{
+                var myChart = document.getElementById('Actionee').getContext('2d');
                 
-                
-                data : {{data|safe}},
+                var charts = new Chart(myChart, {
+                    type: 'polarArea',
+                    data : {
 
-                borderWidth: 3,
-                borderColor: '#777',
-            }]
+                        labels : {{labelsActionee|safe}},
+
+                        datasets : [{
+                            
+                            
+                            data : {{dataActionee|safe}},
+
+                            borderWidth: 3,
+                            borderColor: '#777',
+                        }]
+                        
+                    },
+                    
+                    options: {}
+                });
             
-        },
-        
-        options: {}
-    });
-  
-    
-</script>
+                
+            </script>
+    </div>
+    <div style="width:50% ; float:left"> 
+        <canvas id="Approver"></canvas>
+            <script>
+
+                var myChart = document.getElementById('Approver').getContext('2d');
+                
+                var charts = new Chart(myChart, {
+                    type: 'polarArea',
+                    data : {
+
+                        labels : {{labelsApprover|safe}},
+
+                        datasets : [{
+                            
+                            
+                            data : {{dataApprover|safe}},
+
+                            borderWidth: 3,
+                            borderColor: '#777',
+                        }]
+                        
+                    },
+                    
+                    options: {}
+                });
+            
+                
+            </script>
+    </div>
 </div>
 
-<ul>
-    {% for Items  in Actionee_Count %}
-    
-</h1> {{Items}} <h1>
-   <!--<li>--  {{ Items.Actionee }}--{{ Items.Approver1 }}--{{ Items.Approver2 }}--</li>-->
-   <br>
-   <br>
-   {%endfor%}
-   {% for appItems  in Approver1_routes %}
-    
-   <li>--  {{ appItems.Actionee }}--{{ appItems.Approver1 }}--{{ appItems.Approver2 }}--</li>
-   <br>
-   <br>
-{% empty %}
-    <li>No articles yet.</li>
-{% endfor %}
 {%endblock%}
-</ul>
+
 

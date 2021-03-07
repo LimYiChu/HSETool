@@ -28,45 +28,48 @@ def register (request):
         return render(request, 'userT/register.html', {'form': form})
 
 def mainDashboard (request):
-    #get user routes from workflow for everything , actionee and approver1
-    #userRoutes simply tied into model manager
-    labels = []
-    data = []
+    
+    
+    #for chart.js Html only
+    labelsActionee = []
+    dataActionee = []
+
+    labelsApprover = []
+    dataApprover = []
+    #This contain the entire Approver list for all levels
     Approver = []
+    #get all routes first
     context_allRou = getuserRoutes(request)
+
+    #Just get Actionee and Approver Routes, tied into model managers
     Actionee_R =    context_allRou.get('Actionee_Routes')
     Approver_R =    context_allRou.get('Approver_Routes')
     
+    #This function just does a count using model managers , calling from businesslogic.py
     ActioneeCount = blfuncActionCount(Actionee_R,0)
+    #Actionee is a different from approver wherein the pie/polar chart actually show the streams
     for i,val in enumerate (range(len(ActioneeCount)),1):
-        labels.append('Actionee'+str(i))
-        data.append(val)
+        labelsActionee.append('Stream'+str(i))
+        dataActionee.append(val)
         #print (i , "--" , val)
         #data.append (items)
 
-    print (data)
-    print (labels)
+    
     #get count for all approver levels
-    # for key, value in Approver_R.items():
-    #      Approver.insert(key,blfuncActionCount(value,key))
-    #      labels.append('Approver'+str(key))
+    #Not very accurate but im summing approver level actions together
+    for key, value in Approver_R.items():
+        x= blfuncActionCount(value,key)
+        Approver.insert(key,x)
+        labelsApprover.append('ApproverLevel'+str(key))
+        dataApprover.append(sum(x))
     
-    #print (Approver)
-    #print (ActioneeCount)
-    #Get count for actionee only
-    
-    
-    #Approver1_R =    context_allRou.get('Approver1_routes')
-    # Approver2_R =    context_allRou.get('Approver2_routes')
-   
-    #Approver1CountList = blfuncActionCount(Approver1_R,1)
-    # Approver2CountList = blfuncActionCount(Approver2_R,2)
-   
     Context = {
         'Actionee_Count' : ActioneeCount,
         'Approver_Count'       : Approver,
-        'labels' : labels,
-        'data' : data,
+        'labelsActionee' : labelsActionee,
+        'dataActionee' : dataActionee,
+        'labelsApprover' : labelsApprover,
+        'dataApprover' : dataApprover,
             }
     return render(request, 'userT/ActioneeItems.html',Context)
 
@@ -100,7 +103,7 @@ def getuserRoutes(request):
     for ApproverLevel in range(1 , ApproverLevel+1):
        Approver_Routes [ApproverLevel]  =  ActionRoutes.ApproverRo.get_myroutes(userZemail,ApproverLevel)
       
-    
+      #delete below in green once done
     #Approver1_routes    =  ActionRoutes.ApproverRo.get_myroutes(userZemail,1)
    # Approver2_routes    =  ActionRoutes.ApproverRo.get_myroutes(userZemail,2)
     
