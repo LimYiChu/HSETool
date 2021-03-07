@@ -22,30 +22,31 @@
     
 <!--Top Nav Bar-->
 <div>
-  <nav class="navbar navbar-expand-lg" style="background-color: rgb(248,248,248); border-bottom:darkgrey solid 1px">
-  <div class="container-fluid">
-  <div class = "row">
-  <ul class="navbar-nav md-3">      
-    <li class="nav-item">
-      <a class="nav-link active" aria-current="page" href="#" style="color:blue">CLIENT COMPANY NAME OR LOGO HERE</a> <!--clicking on this link will bring the user to the main page-->
-    </li>
-  </div>
+<nav class="navbar navbar-expand-lg ">
+<!--style="background-image: linear-gradient(to bottom, #0966b0, #0a74bf, #0b82ce, #0e91dc, #12a0eb)-->
+<div class="container-fluid">
+<div class = "row">
+<ul class="navbar-nav md-3">      
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="#" style="color:white">CLIENT COMPANY NAME OR LOGO HERE</a> <!--clicking on this link will bring the user to the main page-->
+  </li>
+</div>
 
  
 <!--Top Nav Bar Middle Part (Modules Available)-->
       <div class="navbar-nav md-auto">
         
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#" style="font-size:xx-large; color:blue">Actions Tracker</a>
+          <a class="nav-link active" aria-current="page" href="#" style="font-size:xx-large; color:white">Actions Tracker</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#" style="font-size:xx-large; color:blue">MOC</a>
+          <a class="nav-link active" aria-current="page" href="#" style="font-size:xx-large; color:white">MOC</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#" style="font-size:xx-large; color:blue">MoM</a>
+          <a class="nav-link active" aria-current="page" href="#" style="font-size:xx-large; color:white">MoM</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#" style="font-size:xx-large; color:blue ">Hazards Observations </a>
+          <a class="nav-link active" aria-current="page" href="#" style="font-size:xx-large; color:white ">Hazards Observations </a>
         </li>       
       </div>
       
@@ -53,7 +54,7 @@
 <!--right hand side of Top Nav Bar-->
 
       <div class="nav navbar-nav md-3">
-        <li><a class="nav-link active" aria-current="page" href="#"  style=" color:blue">Our Product NAME or LOGO here </a></li> <!--clicking here will imeediately bring the user to the user's setting such as the name, discipline etc... for him to quickly update-->
+        <li><a class="nav-link active" aria-current="page" href="#"  style=" color:white">Our Product NAME or LOGO here </a></li> <!--clicking here will imeediately bring the user to the user's setting such as the name, discipline etc... for him to quickly update-->
       </div>
 
     
@@ -100,7 +101,9 @@
                  <div class="card-body"><a href="#">
                   Advanced
                 </a> </div>
-                 
+                 <div class="card-body"><a href="#">
+                  Advanced
+                </a> </div>
               </div>
             </div>
            
@@ -133,33 +136,15 @@
               </div>
               <div id="card-element-4" class="collapse">
                 <div class="card-body"><a href="#">
-                 Contact Us
+                 Contct Us
                 </a>  </div>
                
               </div>
             </div>
-            <div class="card">
-              <div class="card-header">
-                 <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-5">Logout</a>
-              </div>
-              <div id="card-element-5" class="collapse">
-                <div class="card-body"><a href="/logout">
-                 Logout
-                </a>  </div>
-                <div class="card-body"><a href="{% url 'password_reset' %}">
-                  Reset Password
-                 </a>  </div> <div class="card-body"><a href="{% url 'password_change' %}">
-                  Change Password
-                 </a>  </div>
 
-
-                
-               
-              </div>
-            </div>
           </div>
          
-         
+          <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
     </nav>
     
 
@@ -169,7 +154,7 @@
         <h1 class="h1">Dashboard  </h1> <p>
       
               <h1 class="h2"> <i class="bi bi-person-bounding-box"></i></i>{{user.email}}</h1> <!--Username to be generated-->
-              <a href="http://127.0.0.1:8000/logout"> Logout</a> 
+              
      
         
       </div>

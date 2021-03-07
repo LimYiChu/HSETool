@@ -1,6 +1,6 @@
 {% extends "userT/base1.html" %}
 {%load crispy_forms_tags %}
-{%block title%}Login {%endblock%}
+{%block title%}Reset{%endblock%}
 {% block content %}
 
 {% if form.errors %}
@@ -19,8 +19,8 @@
     <div id="loginbox" style="margin-top:100px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2;">            <!--change to central of screen       -->
         <div class="panel panel-info" >
             <div class="panel-heading" >
-                <div class="panel-title" >Login</div>
-                <div style="float:right; font-size: 80%; position: relative; top:-10px"><a href="#">Forgot password?</a></div>
+                <div class="panel-title" >Password Reset</div>
+                <div style="float:right; font-size: 80%; position: relative; top:-10px"><a href="#">Login</a></div>
             </div>     
 
             <div style="padding-top:30px" class="panel-body" >
@@ -39,7 +39,7 @@
                                        
                                         {{ form|crispy }}
                                     <br>
-                                    <input class="btn btn-success" type="submit" value="Login">
+                                    <input class="btn btn-success" type="submit" value="Password reset">
                                     <input type="hidden" name="next" value="{{ next }}">
                                 </form>
                     </div>                     
