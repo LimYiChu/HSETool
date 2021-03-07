@@ -32,10 +32,17 @@ urlpatterns = [
         path('ActioneeList/', UserView.ActioneeList.as_view(), name='UserActionList' ),
         #path('UA/', UserView.yourActions.as_view(), name='UserActions' ),
         re_path(r'^(?P<id>\d+)/$', userView.getActionDetails,name='getActionsDetails'),
-        path('password_reset/', auth_views.PasswordResetView.as_view(template_name='userT/reset.html') ,name='password_reset'),
+       # path('password_reset/', auth_views.PasswordResetView.as_view(template_name='userT/reset.html') ,name='password_reset'),
         path('routesX/', userView.userRoutes, name='routesX' ),
         #path('ActioneeList/<int:pk>/', userView.ActionDetails(),name='ActionsDetails'),
         path('ActionDetails/', UserView.ActionDetailsForm.as_view(), name='DetailsForm' ),
         #path('count/', userView.mainDashCount, name='count' ),
         #path('UA/', UserView.UserActions, name='UserActions' ),
+        #testing for reset and change password
+        path('password_change/done/',auth_views.PasswordChangeDoneView.as_view(template_name='userT/password_change_done.html'),name='password_change_done'),
+        path('password_change/',auth_views.PasswordChangeView.as_view(template_name='userT/password_change.html'),name='password_change'),
+        path('password_reset/done/',auth_views.PasswordResetCompleteView.as_view(template_name='userT/password_reset_done.html'),name='password_reset_done'),
+        path('reset/<uidb64>/<token>',auth_views.PasswordResetConfirmView.as_view(),name='password_reset_confirm'),
+        path('password_reset/',auth_views.PasswordResetView.as_view(template_name='userT/password_reset_form.html'),name='password_reset'),
+        path('reset/done/',auth_views.PasswordResetCompleteView.as_view(template_name='userT/password_reset_complete.html'),name='password_reset_complete'),
       ]

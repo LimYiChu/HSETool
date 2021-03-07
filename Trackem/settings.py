@@ -26,9 +26,12 @@ SECRET_KEY = '%r2#pc!hl*ih2l^(+ulh6c3ja!-+pbhdm%+yi4efwxwp$#4oc5'
 DEBUG = True
 
 if DEBUG:
-    EMAIL_BACKEND = '   django.core.mail.backends.console.EmailBackend'
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  #development only
     
 ALLOWED_HOSTS = []
+
+
+
 
 
 # Application definition
@@ -45,7 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
-    'django_seed',
+    #'django_seed',
 
 ]
 AUTH_USER_MODEL =   'userT.CustomUser'#
@@ -141,3 +144,15 @@ STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = 'main'
 #LOGIN_REDIRECT_URL = 'Login'
+
+#fetch static image test
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+
+
+#CrispyForms Template --> this is to enable the form fields to stretch across the whole div
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+ 
