@@ -11,8 +11,6 @@ from .models import *
 from UploadExcel.models import ActionItems
 from django.views.generic import ListView, DetailView, UpdateView,TemplateView
 
-#from .forms import UserRegisterForm
-# Create your views here.
 @csrf_exempt
 
 def register (request):
@@ -32,38 +30,43 @@ def register (request):
 def mainDashboard (request):
     #get user routes from workflow for everything , actionee and approver1
     #userRoutes simply tied into model manager
+    labels = []
+    data = []
     Approver = []
     context_allRou = getuserRoutes(request)
     Actionee_R =    context_allRou.get('Actionee_Routes')
-    
     Approver_R =    context_allRou.get('Approver_Routes')
     
-    for key, value in Approver_R.items():
-         Approver.insert(key,blfuncActionCount(value,key))
+    ActioneeCount = blfuncActionCount(Actionee_R,0)
+    for i,val in enumerate (range(len(ActioneeCount)),1):
+        labels.append('Actionee'+str(i))
+        data.append(val)
+        #print (i , "--" , val)
+        #data.append (items)
+
+    print (data)
+    print (labels)
+    #get count for all approver levels
+    # for key, value in Approver_R.items():
+    #      Approver.insert(key,blfuncActionCount(value,key))
+    #      labels.append('Approver'+str(key))
     
-    Approver1_R =    context_allRou.get('Approver1_routes')
+    #print (Approver)
+    #print (ActioneeCount)
+    #Get count for actionee only
+    
+    
+    #Approver1_R =    context_allRou.get('Approver1_routes')
     # Approver2_R =    context_allRou.get('Approver2_routes')
-    # Approver3_R =    context_allRou.get('Approver3_routes')
-    # Approver4_R =    context_allRou.get('Approver4_routes')
-    # Approver5_R =    context_allRou.get('Approver4_routes')
-    #logic stored in businesslogic.py, actionee queue = 0 approver1=1, approver2=2 etc
-    ActioneeCountList = blfuncActionCount(Actionee_R,0)
-    
-    
-    # Approver [i] = blfuncActionCount(Approver_R[i],i)
-    print (Approver)
-    Approver1CountList = blfuncActionCount(Approver1_R,1)
+   
+    #Approver1CountList = blfuncActionCount(Approver1_R,1)
     # Approver2CountList = blfuncActionCount(Approver2_R,2)
-    # Approver3CountList = blfuncActionCount(Approver3_R,3)
-    # Approver4CountList = blfuncActionCount(Approver4_R,4)
-    # Approver5CountList = blfuncActionCount(Approver5_R,5)
-   # ApproverCountList = 
-    print (Approver1CountList)
-    print (ActioneeCountList)
+   
     Context = {
-        'Actionee_Count' : ActioneeCountList,
-        'Approver_Count'       : Approver
-      
+        'Actionee_Count' : ActioneeCount,
+        'Approver_Count'       : Approver,
+        'labels' : labels,
+        'data' : data,
             }
     return render(request, 'userT/ActioneeItems.html',Context)
 
@@ -93,24 +96,18 @@ def getuserRoutes(request):
     Approver_Routes = {}
     Actionee_Routes   =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
     
-    
+    #Optimised to get all approver levels
     for ApproverLevel in range(1 , ApproverLevel+1):
        Approver_Routes [ApproverLevel]  =  ActionRoutes.ApproverRo.get_myroutes(userZemail,ApproverLevel)
       
     
-    Approver1_routes    =  ActionRoutes.ApproverRo.get_myroutes(userZemail,1)
-    Approver2_routes    =  ActionRoutes.ApproverRo.get_myroutes(userZemail,2)
-    Approver3_routes    =  ActionRoutes.ApproverRo.get_myroutes(userZemail,3)
-    Approver4_routes    =  ActionRoutes.ApproverRo.get_myroutes(userZemail,4)
-    Approver5_routes    =  ActionRoutes.ApproverRo.get_myroutes(userZemail,5)
+    #Approver1_routes    =  ActionRoutes.ApproverRo.get_myroutes(userZemail,1)
+   # Approver2_routes    =  ActionRoutes.ApproverRo.get_myroutes(userZemail,2)
+    
     contextRoutes = {
        'Actionee_Routes' : Actionee_Routes,
        'Approver_Routes': Approver_Routes,
-       'Approver1_routes' : Approver1_routes,
-       'Approver2_routes' : Approver2_routes,
-       'Approver3_routes' : Approver3_routes,
-       'Approver4_routes' : Approver4_routes,
-       'Approver5_routes' : Approver5_routes,
+       
     }
     
     #return render(request, 'userT/RouteList.html',contextRoutes)

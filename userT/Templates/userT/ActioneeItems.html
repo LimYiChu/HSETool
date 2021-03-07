@@ -3,7 +3,7 @@
 
 {% block Actioneelist%}
 <h1>Action Items</h1>
-
+<div>
 <canvas id="myChart"></canvas>
 <script>
 
@@ -13,12 +13,12 @@
         type: 'polarArea',
         data : {
 
-            labels : ['ActioneeCount1', 'ActioneeCount2','ActioneeCount3'],
+            labels : {{labels|safe}},
 
             datasets : [{
-                label : 'Actionee',
                 
-                data : [{% for Items in Actionee_Count  %}{{Items}},{% endfor %},{% for Items in Approver_Count  %}{{Items}},{% endfor %}],
+                
+                data : {{data|safe}},
 
                 borderWidth: 3,
                 borderColor: '#777',
@@ -31,11 +31,8 @@
   
     
 </script>
+</div>
 
-<h1>
-    
-
-</h1>
 <ul>
     {% for Items  in Actionee_Count %}
     
