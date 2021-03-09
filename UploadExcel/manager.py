@@ -20,8 +20,8 @@ class QuerySet(models.QuerySet):
 class myActionItemManager(models.Manager):
     def get_queryset (self):
         return QuerySet(self.model, using=self._db)
-    def get_myItemsbyCompDisSub(self,userorganisation,userdisipline,usersubdisipline):
-        return self.get_queryset().get_myActions(userorganisation,userdisipline,usersubdisipline)
+    def get_myItemsbyCompDisSub(self,userorganisation,userdisipline,usersubdisipline,que):
+        return self.get_queryset().get_myActions(userorganisation,userdisipline,usersubdisipline,que)
 
 class myActionCount(models.Manager):
     def get_queryset (self):

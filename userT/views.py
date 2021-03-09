@@ -44,25 +44,25 @@ def mainDashboard (request):
     #Just get Actionee and Approver Routes, tied into model managers
     Actionee_R =    context_allRou.get('Actionee_Routes')
     Approver_R =    context_allRou.get('Approver_Routes')
+
     
     #This function just does a count using model managers , calling from businesslogic.py
     ActioneeCount = blfuncActionCount(Actionee_R,0)
-    #Actionee is a different from approver wherein the pie/polar chart actually show the streams
-    for i,val in enumerate (range(len(ActioneeCount)),1):
-        labelsActionee.append('Stream'+str(i))
-        dataActionee.append(val)
-        #print (i , "--" , val)
-        #data.append (items)
-
     
-    #get count for all approver levels
+    #Actionee is a different from approver wherein the pie/polar chart actually show the streams. Each stream is just a route
+    # a route example is in Action routes table Say EHS: Technical Safety - then there is emails defined for Actionee and Approvers
+    for i in range(len(ActioneeCount)):
+        labelsActionee.append('Stream'+str(i+1))
+        dataActionee.append(ActioneeCount[i])
+       
+    #get count for all approver levels just by looping through the key
     #Not very accurate but im summing approver level actions together
     for key, value in Approver_R.items():
         x= blfuncActionCount(value,key)
         Approver.insert(key,x)
         labelsApprover.append('ApproverLevel'+str(key))
         dataApprover.append(sum(x))
-    
+    #Context just returns to HTML so that we can use it in the HTML page
     Context = {
         'Actionee_Count' : ActioneeCount,
         'Approver_Count'       : Approver,
@@ -71,7 +71,7 @@ def mainDashboard (request):
         'labelsApprover' : labelsApprover,
         'dataApprover' : dataApprover,
             }
-    return render(request, 'userT/ActioneeItems.html',Context)
+    return render(request, 'userT/mainDashboard.html',Context)
 
 class yourActions (ListView):
     template_name   =   'userT/Actionlist.html'
@@ -138,8 +138,9 @@ class ActioneeList (ListView):
     def get_queryset(self):
         userZemail = self.request.user.email
         ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
-        return getActioneeItemsbyStream(ActioneeRoutes,0)
-
+        actioneeItems = blfuncActioneeComDisSub(ActioneeRoutes,0)
+        #print (actioneeItems)
+        return actioneeItems
 class ActionDetailsForm (DetailView):
     model = ActionItems
 
