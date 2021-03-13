@@ -19,6 +19,11 @@ from userT import views as userView
 from UploadExcel import views as UploadV
 from userT import views as UserView
 from django.contrib.auth import views as auth_views
+#testing for redirect url when not logged in
+from django.contrib.auth.decorators import login_required
+
+
+
 urlpatterns = [
       # Load excel actions, routes ,
         path('upload/', UploadV.Load, name='Load' ),
@@ -45,4 +50,6 @@ urlpatterns = [
         path('reset/<uidb64>/<token>',auth_views.PasswordResetConfirmView.as_view(),name='password_reset_confirm'),
         path('password_reset/',auth_views.PasswordResetView.as_view(template_name='userT/password_reset_form.html'),name='password_reset'),
         path('reset/done/',auth_views.PasswordResetCompleteView.as_view(template_name='userT/password_reset_complete.html'),name='password_reset_complete'),
+        #testing for redirect url when not logged in
+        path('accounts/login/', auth_views.LoginView.as_view(template_name='userT/Not logged in.html'),name='Not logged in'),    
       ]
