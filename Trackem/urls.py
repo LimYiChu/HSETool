@@ -35,6 +35,8 @@ urlpatterns = [
        # path('routes/', UserView.yourRoutes.as_view(), name='yourRoutes' ),
         path('main/', UserView.mainDashboard, name='main' ),
         path('ActioneeList/', UserView.ActioneeList.as_view(), name='UserActionList' ),
+        #testing for redirect url when not logged in
+        path('accounts/login/', auth_views.LoginView.as_view(template_name='userT/Not logged in.html'),name='Not logged in'),
         #path('UA/', UserView.yourActions.as_view(), name='UserActions' ),
         re_path(r'^(?P<id>\d+)/$', userView.getActionDetails,name='getActionsDetails'),
        # path('password_reset/', auth_views.PasswordResetView.as_view(template_name='userT/reset.html') ,name='password_reset'),
@@ -50,6 +52,5 @@ urlpatterns = [
         path('reset/<uidb64>/<token>',auth_views.PasswordResetConfirmView.as_view(),name='password_reset_confirm'),
         path('password_reset/',auth_views.PasswordResetView.as_view(template_name='userT/password_reset_form.html'),name='password_reset'),
         path('reset/done/',auth_views.PasswordResetCompleteView.as_view(template_name='userT/password_reset_complete.html'),name='password_reset_complete'),
-        #testing for redirect url when not logged in
-        path('accounts/login/', auth_views.LoginView.as_view(template_name='userT/Not logged in.html'),name='Not logged in'),    
+            
       ]
