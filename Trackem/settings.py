@@ -31,9 +31,6 @@ if DEBUG:
 ALLOWED_HOSTS = []
 
 
-
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -143,7 +140,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = 'main'
-#LOGIN_REDIRECT_URL = 'Login'
+#LOGIN_REDIRECT_URL = 'login'
+
 
 #fetch static image test
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')

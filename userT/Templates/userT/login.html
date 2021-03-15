@@ -34,20 +34,20 @@
                                     <input name="email" class="form-control" placeholder="Email" type="email" id="email" required="true"><br>
                                     <input name="password" class="form-control" placeholder="Password" type="password" id="password" required="true"><br>
 -->
-                                    HOLD!
+                                   <!--
                                     {% if form.errors %}
-                                    <p>Something went wrong, please check</p>
+                                    <p style="color:red">Something went wrong, please check</p>
                                     {% endif %}
-                                    
+                                    -->
                                     {% if next %}
                                         {% if user.is_authenticated %}
-                                        <p>You are still logged in. Go Check</p>
+                                        <p style="color:red">You are still logged in. Go Check</p>
                                         {% else %}
-                                        <p>You are successfully logged out.</p>
+                                        <p style="color:red">You are not logged in. Please login to view the content.</p>
                                         {% endif %}
                                     {% endif %}
 
-                                    
+                                    <br>
                                     <input class="btn btn-lg btn-primary btn-block" type="submit" value="Login">
                                     <input type="hidden" name="next" value="{{ next }}">
                                 </form>
@@ -55,9 +55,9 @@
                                 
                                           
                 
-                    
+                    <!--
                     <div><a href="{% url 'password_reset' %}">Reset Password HOLD</a></div>
-                    <div><a href="{% url 'password_change' %}">Change Password HOLD</a></div>
+                    <div><a href="{% url 'password_change' %}">Change Password HOLD</a></div>-->
                 </div>  
                 </div>
             </div>
