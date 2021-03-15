@@ -16,6 +16,8 @@ Including another URLconf
 
 from django.urls import path
 from . import views
+#test for login required
+from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
     path('register/', views.register, name='userT-Register'),

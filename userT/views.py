@@ -10,11 +10,12 @@ from .businesslogic import *
 from .models import *
 from UploadExcel.models import ActionItems
 from django.views.generic import ListView, DetailView, UpdateView,TemplateView
+#test for login required
+from django.contrib.auth.decorators import login_required
 
 #from .forms import UserRegisterForm
 # Create your views here.
 @csrf_exempt
-
 
 
 def register (request):
