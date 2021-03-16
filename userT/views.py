@@ -10,7 +10,7 @@ from .businesslogic import *
 from .models import *
 from UploadExcel.models import ActionItems
 from django.views.generic import ListView, DetailView, UpdateView,TemplateView
-
+from UploadExcel.forms import *
 @csrf_exempt
 
 def register (request):
@@ -131,18 +131,30 @@ def getuserRoutes(request):
 #             #ActionItems.objects.filter(organisation__icontains=userZOrg).filter(Disipline__icontains=userZDis).filter(Subdisipline__icontains=userZSubD)
 #             #return ActionItems.objects.filter(organisation__icontains=userZOrg).filter(Disipline__icontains=userZDis).filter(Subdisipline__icontains=userZSubD)
 #             return Routes.objects.filter(Actionee__icontains=userZemail)
+
+#below view is for list of actions under actionee banner , it returns a list of actions under object_list
 class ActioneeList (ListView):
-    template_name   =   'userT/ActioneeList1st.html'
-    
+    template_name   =   'userT/actionListActionee.html'
     
     def get_queryset(self):
         userZemail = self.request.user.email
         ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
         actioneeItems = blfuncActioneeComDisSub(ActioneeRoutes,0)
-        #print (actioneeItems)
         return actioneeItems
-class ActionDetailsForm (DetailView):
-    model = ActionItems
 
-    def get_object(self, **kwargs):
-        pass
+class DetailActioneeItems (DetailView):
+    template_name   =   'userT/actionDetailActionee.html'
+    queryset = ActionItems.objects.all()
+
+    def get_object(self):
+        id1 = self.kwargs.get("id")
+        return get_object_or_404(ActionItems, id=id1)
+
+class UpdateActioneeItems (UpdateView):
+    template_name   =   'userT/actionUpdateActionee.html'
+    queryset = ActionItems.objects.all()
+    form_class = UpdateActioneeForm
+
+    def get_object(self):
+        id1 = self.kwargs.get("id")
+        return get_object_or_404(ActionItems, id=id1)

@@ -36,7 +36,8 @@ urlpatterns = [
         path('password_reset/', auth_views.PasswordResetView.as_view(template_name='userT/reset.html') ,name='password_reset'),
         path('routesX/', userView.getuserRoutes, name='routesX' ),
         #path('ActioneeList/<int:pk>/', userView.ActionDetails(),name='ActionsDetails'),
-        path('ActionDetails/', UserView.ActionDetailsForm.as_view(), name='DetailsForm' ),
+        path('ActioneeList/<int:id>/', UserView.DetailActioneeItems.as_view(), name='DetailsForm' ),
+        path('ActioneeList/<int:id>/update', UserView.UpdateActioneeItems.as_view(), name='UpdateForm' ),
         #path('count/', userView.mainDashCount, name='count' ),
         #path('UA/', UserView.UserActions, name='UserActions' ),
       ]

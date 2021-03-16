@@ -1,4 +1,4 @@
-{% extends "userT\base3.html"%}
+--*-+**/{% extends "userT\base3.html"%}
 {% block Actioneelist%}
 <!doctype html>
 <html lang="en">
@@ -43,7 +43,7 @@
             {% for routes  in object_list %}
               {% for x  in routes %}
             <tr>
-              <td>{{ x.StudyActionNo }}</td>
+              <td><a class="article-title" href="{% url  'UpdateForm' x.id %}">{{ x.StudyActionNo }}</a></td>
               <td>{{ x.StudyName }}<</td>
               <td>{{ x.Disipline }}<</td>
               <td>{{ x.Subdisipline }}<</td>
@@ -57,3 +57,4 @@
             
           
 {%endblock%}
+++
