@@ -41,8 +41,16 @@ urlpatterns = [
         re_path(r'^(?P<id>\d+)/$', userView.getActionDetails,name='getActionsDetails'),
        # path('password_reset/', auth_views.PasswordResetView.as_view(template_name='userT/reset.html') ,name='password_reset'),
         path('routesX/', userView.userRoutes, name='routesX' ),
+        path('main/', UserView.mainDashboard, name='main' ),
+       
+        path('ActioneeList/', UserView.ActioneeList.as_view(), name='UserActionList' ),
+        #path('UA/', UserView.yourActions.as_view(), name='UserActions' ),
+        re_path(r'^(?P<id>\d+)/$', userView.getActionDetails,name='getActionsDetails'),
+        path('password_reset/', auth_views.PasswordResetView.as_view(template_name='userT/reset.html') ,name='password_reset'),
+        path('routesX/', userView.getuserRoutes, name='routesX' ),
         #path('ActioneeList/<int:pk>/', userView.ActionDetails(),name='ActionsDetails'),
-        path('ActionDetails/', UserView.ActionDetailsForm.as_view(), name='DetailsForm' ),
+        path('ActioneeList/<int:id>/', UserView.DetailActioneeItems.as_view(), name='DetailsForm' ),
+        path('ActioneeList/<int:id>/update', UserView.UpdateActioneeItems.as_view(), name='UpdateForm' ),
         #path('count/', userView.mainDashCount, name='count' ),
         #path('UA/', UserView.UserActions, name='UserActions' ),
         #Following URLs are for reseting and changing password. Note that the reset password via email is yet to be set up. Right now please obtain the link in the terminal upon requesting password reset.

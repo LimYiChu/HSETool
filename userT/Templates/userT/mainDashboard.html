@@ -1,0 +1,106 @@
+{% extends "userT\base3.html"%}
+{%load crispy_forms_tags %}
+
+{% block Actioneelist%}
+<h1>Your Actions</h1>
+<div class="container-fluid">
+    <div style="width:50% ; float:left"> 
+        <canvas id="ActioneeChart"></canvas>
+            <script>
+                Chart.defaults.global.defaultFontColor = 'blue'
+                
+                var myChart = document.getElementById('ActioneeChart').getContext('2d');
+                
+                var charts = new Chart(myChart, {
+                    type: 'polarArea',
+                    
+                    data : {
+
+                        labels : {{labelsActionee|safe}},
+
+                        datasets : [{
+                            
+                            
+                            data : {{dataActionee|safe}},
+
+                            borderWidth: 3,
+                            borderColor: '#777',
+                        }]
+                        
+                    },
+                    
+                    options: {
+                        title:{
+                            fontSize : 20,
+                            display : true,
+                            text: "Actionee Actions",
+                        },
+                       
+                            yAxes: [{
+                                ticks: {
+                                    display:false,
+                                    beginAtZero: true
+                                }
+                            }], 
+                            xAxes: [{
+                                ticks: {
+                                    display:false,
+                                    beginAtZero: true
+                                }
+                            }],              
+                        onClick:function(e){
+                            alert("this is a test");
+                            var activePoints = ActioneeChart.getElementsAtEvent(e);
+                            var selectedIndex = activePoints[0]._index;
+                            document.location = this.data.datasets[0].data[selectedIndex];
+                            //document.location = '/home';
+                            
+                        }
+
+                    }
+                });
+            
+                
+            </script>
+    </div>
+    <div style="width:50% ; float:left"> 
+        <canvas id="Approver"></canvas>
+            <script>
+
+                var myChart = document.getElementById('Approver').getContext('2d');
+                
+                var charts = new Chart(myChart, {
+                    type: 'polarArea',
+                    data : {
+
+                        labels : {{labelsApprover|safe}},
+
+                        datasets : [{
+                            
+                            
+                            data : {{dataApprover|safe}},
+
+                            borderWidth: 3,
+                            borderColor: '#777',
+                        }]
+                        
+                    },
+                    
+                    options: {
+
+                        title:{
+                            display : true,
+                            text: "Approver Actions",
+                            fontSize : 20,
+                        },
+                    }
+                });
+            
+                
+            </script>
+    </div>
+</div>
+
+{%endblock%}
+
+

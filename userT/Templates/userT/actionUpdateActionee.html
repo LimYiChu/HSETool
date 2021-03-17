@@ -1,0 +1,13 @@
+{% extends "userT\base3.html"%}
+{%load crispy_forms_tags %}
+{% crispy form form.helper%}
+{% block ActioneeDetails%}
+<fieldset class="form-group">
+    <form method="post">  
+        {% csrf_token %}  
+        {%crispy form%}
+     
+        <input type="submit" value="Submit for Approval">  
+    </form> 
+</fieldset>
+{%endblock%}

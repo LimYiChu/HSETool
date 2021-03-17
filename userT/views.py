@@ -15,8 +15,11 @@ from django.contrib.auth.decorators import login_required
 
 #from .forms import UserRegisterForm
 # Create your views here.
-@csrf_exempt
 
+
+
+from UploadExcel.forms import *
+@csrf_exempt
 
 def register (request):
     if request.method == 'POST':
@@ -32,52 +35,51 @@ def register (request):
        #form = UserCreationForm()
         return render(request, 'userT/register.html', {'form': form})
 
-def home (request):
-    return render(request, 'userT/home.html' )
-
-def UserActions(request):
-    #user = get_user_model(email)
-    return HttpResponse(request.user.organisation)
-
-def mainDashboardOLD (request):
-    
-    context_allRou = userRoutes(request)
-    #print(context_allRou)
-    #XX = context_allRou.get('Actionee_routes')
-    #for items in XX:
-     #   y= (items.Organisation)
-      #  ActioneeItemsX  =   ActionItems.ActioneeItems.get_myItems(y)
-    Actionee_R =    context_allRou.get('Actionee_routes')
-    Approver_R =    context_allRou.get('Approver1_routes')
-    firstStreamActionee,secondStreamActionee,thirdStreamActionee = blfuncActioneeComDisSub(Actionee_R)
-    firstStreamApp1st,secondStreamApp1st,thirdStreamApp1st = blfuncActioneeComDisSub(Approver_R)
-    #firstStreamApprover,secondStreamApprover, thirdStreamApprover = blfuncActioneeComDisSubApprover(context_allRou)
-    newContext = {
-        'obj_Actionee1st' : firstStreamActionee,
-        'obj_Actionee2nd' : secondStreamActionee,
-        'obj_Actionee3rd' : thirdStreamActionee,
-        'obj_Approver11' : firstStreamApp1st,
-        'obj_Approver12' : secondStreamApp1st,
-        'obj_Approver13' : thirdStreamApp1st,
-    }
-    #return render(request, 'userT/RouteList.html',context_allRou)
-    return render(request, 'userT/Actionlist.html',newContext)
-    
 def mainDashboard (request):
-    #get user routes from workflow for everything , actionee and approver1
-    #userRoutes simply tied into model manager
-    context_allRou = userRoutes(request)
-    Actionee_R =    context_allRou.get('Actionee_routes')
-    Approver_R =    context_allRou.get('Approver1_routes')
+    
+    
+    #for chart.js Html only
+    labelsActionee = []
+    dataActionee = []
 
-    #logic stored in businesslogic.py
-    ActioneeCountList = blfuncActioneeCount(Actionee_R)
-   # ApproverCountList = 
+    labelsApprover = []
+    dataApprover = []
+    #This contain the entire Approver list for all levels
+    Approver = []
+    #get all routes first
+    context_allRou = getuserRoutes(request)
+
+    #Just get Actionee and Approver Routes, tied into model managers
+    Actionee_R =    context_allRou.get('Actionee_Routes')
+    Approver_R =    context_allRou.get('Approver_Routes')
+
+    
+    #This function just does a count using model managers , calling from businesslogic.py
+    ActioneeCount = blfuncActionCount(Actionee_R,0)
+    
+    #Actionee is a different from approver wherein the pie/polar chart actually show the streams. Each stream is just a route
+    # a route example is in Action routes table Say EHS: Technical Safety - then there is emails defined for Actionee and Approvers
+    for i in range(len(ActioneeCount)):
+        labelsActionee.append('Stream'+str(i+1))
+        dataActionee.append(ActioneeCount[i])
+       
+    #get count for all approver levels just by looping through the key
+    #Not very accurate but im summing approver level actions together
+    for key, value in Approver_R.items():
+        x= blfuncActionCount(value,key)
+        Approver.insert(key,x)
+        labelsApprover.append('ApproverLevel'+str(key))
+        dataApprover.append(sum(x))
+    #Context just returns to HTML so that we can use it in the HTML page
     Context = {
-        'Actionee_Count' : ActioneeCountList,
-            
-        }
-    return render(request, 'userT/ActioneeItems.html',Context)
+        'Actionee_Count' : ActioneeCount,
+        'Approver_Count'       : Approver,
+        'labelsActionee' : labelsActionee,
+        'dataActionee' : dataActionee,
+        'labelsApprover' : labelsApprover,
+        'dataApprover' : dataApprover,
+            }
+    return render(request, 'userT/mainDashboard.html',Context)
 
 class yourActions (ListView):
     template_name   =   'userT/Actionlist.html'
@@ -98,24 +100,25 @@ def getActionDetails(request, id=None):
 
     }
     return render(request, "userT/detailactions.html", context)
-def userItems():
-    pass
-    #userOrganisation = 
-def userRoutes(request):
+
+def getuserRoutes(request):
+    ApproverLevel = 5
     userZemail = request.user.email
-    Actionee_routes   =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
-    Approver1_routes    =  ActionRoutes.Approver1Ro.get_myroutes(userZemail)
-    Approver2_routes    =  ActionRoutes.Approver2Ro.get_myroutes(userZemail)
-    Approver3_routes    =  ActionRoutes.Approver3Ro.get_myroutes(userZemail)
-    Approver4_routes    =  ActionRoutes.Approver4Ro.get_myroutes(userZemail)
-    Approver5_routes    =  ActionRoutes.Approver5Ro.get_myroutes(userZemail)
+    Approver_Routes = {}
+    Actionee_Routes   =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
+    
+    #Optimised to get all approver levels
+    for ApproverLevel in range(1 , ApproverLevel+1):
+       Approver_Routes [ApproverLevel]  =  ActionRoutes.ApproverRo.get_myroutes(userZemail,ApproverLevel)
+      
+      #delete below in green once done
+    #Approver1_routes    =  ActionRoutes.ApproverRo.get_myroutes(userZemail,1)
+   # Approver2_routes    =  ActionRoutes.ApproverRo.get_myroutes(userZemail,2)
+    
     contextRoutes = {
-       'Actionee_routes' : Actionee_routes,
-       'Approver1_routes' : Approver1_routes,
-       'Approver2_routes' : Approver2_routes,
-       'Approver3_routes' : Approver3_routes,
-       'Approver4_routes' : Approver4_routes,
-       'Approver5_routes' : Approver5_routes,
+       'Actionee_Routes' : Actionee_Routes,
+       'Approver_Routes': Approver_Routes,
+       
     }
     
     #return render(request, 'userT/RouteList.html',contextRoutes)
@@ -136,17 +139,30 @@ def userRoutes(request):
 #             #ActionItems.objects.filter(organisation__icontains=userZOrg).filter(Disipline__icontains=userZDis).filter(Subdisipline__icontains=userZSubD)
 #             #return ActionItems.objects.filter(organisation__icontains=userZOrg).filter(Disipline__icontains=userZDis).filter(Subdisipline__icontains=userZSubD)
 #             return Routes.objects.filter(Actionee__icontains=userZemail)
+
+#below view is for list of actions under actionee banner , it returns a list of actions under object_list
 class ActioneeList (ListView):
-    template_name   =   'userT/ActioneeList1st.html'
-    
+    template_name   =   'userT/actionListActionee.html'
     
     def get_queryset(self):
         userZemail = self.request.user.email
         ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
-        return getActioneeItemsbyStream(ActioneeRoutes,0)
+        actioneeItems = blfuncActioneeComDisSub(ActioneeRoutes,0)
+        return actioneeItems
 
-class ActionDetailsForm (DetailView):
-    model = ActionItems
+class DetailActioneeItems (DetailView):
+    template_name   =   'userT/actionDetailActionee.html'
+    queryset = ActionItems.objects.all()
 
-    def get_object(self, **kwargs):
-        pass
+    def get_object(self):
+        id1 = self.kwargs.get("id")
+        return get_object_or_404(ActionItems, id=id1)
+
+class UpdateActioneeItems (UpdateView):
+    template_name   =   'userT/actionUpdateActionee.html'
+    queryset = ActionItems.objects.all()
+    form_class = UpdateActioneeForm
+
+    def get_object(self):
+        id1 = self.kwargs.get("id")
+        return get_object_or_404(ActionItems, id=id1)
