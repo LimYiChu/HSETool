@@ -36,7 +36,7 @@ urlpatterns = [
         #to prevent authorised view, add login_required() in front of the views, for example--> login_required(userView.mainDashboard)
         path('main/', login_required(UserView.mainDashboard), name='main' ),
         path('accounts/login/', auth_views.LoginView.as_view(template_name='userT/login.html'),name='login'),
-        path('ActioneeList/', login_required(UserView.ActioneeList.as_view), name='UserActionList' ),
+        path('ActioneeList/', login_required(UserView.ActioneeList.as_view()), name='UserActionList' ),
                 #path('UA/', UserView.yourActions.as_view(), name='UserActions' ),
         re_path(r'^(?P<id>\d+)/$', userView.getActionDetails,name='getActionsDetails'),
        # path('password_reset/', auth_views.PasswordResetView.as_view(template_name='userT/reset.html') ,name='password_reset'),
