@@ -40,7 +40,7 @@ urlpatterns = [
                 #path('UA/', UserView.yourActions.as_view(), name='UserActions' ),
         re_path(r'^(?P<id>\d+)/$', userView.getActionDetails,name='getActionsDetails'),
        # path('password_reset/', auth_views.PasswordResetView.as_view(template_name='userT/reset.html') ,name='password_reset'),
-        path('routesX/', userView.userRoutes, name='routesX' ),
+        path('routesX/', userView.getuserRoutes, name='routesX' ),
         path('main/', UserView.mainDashboard, name='main' ),
        
         path('ActioneeList/', UserView.ActioneeList.as_view(), name='UserActionList' ),
