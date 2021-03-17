@@ -2,10 +2,10 @@ from django.db.models import Q
 from django.db import models
 from django.contrib.auth.models import User
 class QuerySet(models.QuerySet):
-    def get_myActions(self,userorganisation,userdisipline,usersubdisipline):
-        return self.filter(Organisation__icontains=userorganisation).filter(Disipline__icontains=userdisipline).filter(Subdisipline__icontains=usersubdisipline)
-    def get_myActionsCount(self,userorganisation,userdisipline,usersubdisipline):
-        return self.filter(Organisation__icontains=userorganisation).filter(Disipline__icontains=userdisipline).filter(Subdisipline__icontains=usersubdisipline).count ()
+    def get_myActions(self,userorganisation,userdisipline,usersubdisipline,que):
+        return self.filter(Organisation__icontains=userorganisation).filter(Disipline__icontains=userdisipline).filter(Subdisipline__icontains=usersubdisipline).filter(QueSeries__iexact=que)
+    def get_myActionsCount(self,userorganisation,userdisipline,usersubdisipline,que):
+        return self.filter(Organisation__icontains=userorganisation).filter(Disipline__icontains=userdisipline).filter(Subdisipline__icontains=usersubdisipline).filter(QueSeries__iexact=que).count ()
     # def get_Approver1(self,userorganisation,userdisipline,usersubdisipline):
     #     return self.filter(Organisation__icontains=userorganisation).filter(Disipline__icontains=userdisipline).filter(Subdisipline__icontains=usersubdisipline)
     # def get_Approver2(self,useremail):
@@ -20,14 +20,14 @@ class QuerySet(models.QuerySet):
 class myActionItemManager(models.Manager):
     def get_queryset (self):
         return QuerySet(self.model, using=self._db)
-    def get_myItemsbyCompDisSub(self,userorganisation,userdisipline,usersubdisipline):
-        return self.get_queryset().get_myActions(userorganisation,userdisipline,usersubdisipline)
+    def get_myItemsbyCompDisSub(self,userorganisation,userdisipline,usersubdisipline,que):
+        return self.get_queryset().get_myActions(userorganisation,userdisipline,usersubdisipline,que)
 
 class myActionCount(models.Manager):
     def get_queryset (self):
         return QuerySet(self.model, using=self._db)
-    def get_myItemsCount(self,userorganisation,userdisipline,usersubdisipline):
-        return self.get_queryset().get_myActionsCount(userorganisation,userdisipline,usersubdisipline)
+    def get_myItemsCount(self,userorganisation,userdisipline,usersubdisipline,que):
+        return self.get_queryset().get_myActionsCount(userorganisation,userdisipline,usersubdisipline,que)
 
 
 class Approver1Manager(models.Manager):

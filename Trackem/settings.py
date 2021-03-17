@@ -154,3 +154,5 @@ STATICFILES_DIRS = [
 #CrispyForms Template --> this is to enable the form fields to stretch across the whole div
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
  
+#LOGIN_REDIRECT_URL = 'Login'
+#CRISPY_TEMPLATE_PACK = 'bootstrap4'
