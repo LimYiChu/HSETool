@@ -8,6 +8,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous"><!--Bootstrap 5 base-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"> <!--bootstrap icon pack-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"> <!--styling for the side bar button spacing-->
+    <link rel="preconnect" href="https://fonts.gstatic.com"> <!--google font-->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet"><!--google font-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
     <!--Chartjs link and not sure of version-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
 
@@ -27,13 +31,16 @@
   <div class = "row">
   <ul class="navbar-nav md-3">      
     <li class="nav-item">
-      <a class="nav-link active" aria-current="page" href="#" style="color:blue">CLIENT COMPANY NAME OR LOGO HERE</a> <!--clicking on this link will bring the user to the main page-->
+      <a class="nav-link active" aria-current="page" href="#" style="color:black">CLIENT COMPANY NAME OR LOGO HERE</a> <!--clicking on this link will bring the user to the main page-->
+      <a class="nav-link active" aria-current="page" href="#" style="color:black; font-family: 'Roboto', sans-serif;">CLIENT COMPANY NAME OR LOGO HERE</a> <!--clicking on this link will bring the user to the main page-->
     </li>
   </div>
 
  
 <!--Top Nav Bar Middle Part (Modules Available)-->
-      <div class="navbar-nav md-auto">
+<!--this function to be deactivated until further modules are available-->
+     
+<!--<div class="navbar-nav md-auto">
         
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="#" style="font-size:xx-large; color:blue">Actions Tracker</a>
@@ -48,12 +55,12 @@
           <a class="nav-link active" aria-current="page" href="#" style="font-size:xx-large; color:blue ">Hazards Observations </a>
         </li>       
       </div>
-      
+-->  
 
 <!--right hand side of Top Nav Bar-->
 
       <div class="nav navbar-nav md-3">
-        <li><a class="nav-link active" aria-current="page" href="#"  style=" color:blue">Our Product NAME or LOGO here </a></li> <!--clicking here will imeediately bring the user to the user's setting such as the name, discipline etc... for him to quickly update-->
+        <li><a class="nav-link active" aria-current="page" href="#"  style=" color:black">Our Product NAME or LOGO here </a></li> <!--clicking here will imeediately bring the user to the user's setting such as the name, discipline etc... for him to quickly update-->
       </div>
 
     
@@ -63,12 +70,12 @@
 
 
 <!--sidebar left-->
-<div class="container-fluid">
+<div class="sidebar" height="100%" >
   
-  <div class="row">
-    <nav class="col-md-2 bg-light" ;>
-      <div class="sidebar-sticky">
-        <ul class="nav flex-column">
+  <div class="row" height="100%">
+    <nav class="col-md-2 bg-light" height="100%">
+      <div class="sidebar-sticky"height="100%">
+        <ul class="nav flex-column"height="100%">
        
 
     <br>
@@ -103,7 +110,35 @@
                  
               </div>
             </div>
-           
+            <div class="card">
+              <div class="card-header">
+                 <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-1 " style="color:black; font-family: 'Roboto', sans-serif;">Actions Management</a>
+              </div>
+              <div id="card-element-1" class="collapse">
+                <div class="card-body" style="color:black; font-family: 'Roboto', sans-serif;"><a href="#">
+                 Dashboard
+                </a></div>
+                <div class="card-body" style="color:black; font-family: 'Roboto', sans-serif;"><a href="#">
+                  Actionee
+                 </div>
+                 <div class="card-body" style="color:black; font-family: 'Roboto', sans-serif;"><a href="#">
+                  Approver
+                 </a></div>
+                 <div class="card-body"style="color:black; font-family: 'Roboto', sans-serif;"><a href="#">
+                  Manage Actions
+                </a></div>
+                 <div class="card-body"style="color:black; font-family: 'Roboto', sans-serif;"><a href="#">
+                  Workflow
+                </a></div>
+                 <div class="card-body" style="color:black; font-family: 'Roboto', sans-serif;"><a href="#">
+                  Trending and Reporting
+                </a></div>
+                 <div class="card-body" style="color:black; font-family: 'Roboto', sans-serif;"><a href="#">
+                  Advanced
+                </a> </div>
+                 
+              </div>
+            </div>
             <div class="card">
               <div class="card-header">
                  <a class="collapsed card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-2">Admin</a>
@@ -158,7 +193,7 @@
               </div>
             </div>
           </div>
-         
+         <br>
          
     </nav>
     
@@ -166,13 +201,24 @@
     <main role="main" class="col-lg-10 pt-3 px-4" ;>
 
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <div>
         <h1 class="h1">Dashboard  </h1> <p>
-      
-              <h1 class="h2"> <i class="bi bi-person-bounding-box"></i></i>{{user.email}}</h1> <!--Username to be generated-->
-              <a href="http://127.0.0.1:8000/logout"> Logout</a> 
+        </div>
+      <div> 
+        <h1 class="h5"> <i class="bi bi-person-bounding-box"></i>{{user.email}}</h1> <!--Username to be generated-->
+             
+        
+        <button type="button" class="btn btn-light btn-sm" style="font-size:small;">
+        <span class="material-icons">logout</span> Log out
+       
+      </button> 
+      </div>    
      
         
       </div>
+
+     
+
 
 
               {%block Actionee%}
