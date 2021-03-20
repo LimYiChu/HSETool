@@ -3,11 +3,10 @@
 {% crispy form form.helper%}
 {% block ActioneeDetails%}
 <fieldset class="form-group">
-    <form method="post">  
+    <form method="POST">  
         {% csrf_token %}  
         {%crispy form%}
      
-        <input type="submit" value="Submit for Approval">  
     </form> 
 </fieldset>
 {%endblock%}

@@ -23,7 +23,7 @@ class ActionItems(models.Model):
     InitialRisk     =   models.CharField(max_length=10,null=True,blank=True)
     ResidualRisk    =   models.CharField(max_length=10,null=True,blank=True)
     Response        =   models.TextField(null=True,blank=True)
-    Attachment      =   models.TextField(null=True,blank=True)
+    Attachment      =   models.FileField(upload_to='excelUpload',null=True,blank=True)
     Organisation    =   models.CharField(max_length=100,null=True,blank=True)
     Disipline       = models.CharField(max_length=100,null=True,blank=True)
     Subdisipline    = models.CharField(max_length=100,null=True,blank=True)
@@ -38,7 +38,7 @@ class ActionItems(models.Model):
  
 
     def get_absolute_url(self):
-        return reverse("getActionsDetails", kwargs={"id": self.id})
-
+        return reverse("DetailsForm", kwargs={"id": self.id})
+        
     def __str__(self): 
         return self.StudyActionNo   

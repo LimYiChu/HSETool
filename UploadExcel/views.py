@@ -11,7 +11,7 @@ from .forms import *
 import matplotlib as plt
 from .models import *
 import csv
-from .filter import ActionItemsFilter
+#from .filter import ActionItemsFilter - not sure might need this for later for upload excel. had to remove stuff in filter.py
 #from .forms import UserRegisterForm
 # Create your views here.
 @csrf_exempt

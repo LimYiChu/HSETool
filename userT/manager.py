@@ -6,14 +6,7 @@ class RoutesQuerySet(models.QuerySet):
         return self.filter(Actionee__icontains=useremail)
     def get_Approver(self,useremail,lookup):
         return self.filter(**{lookup: useremail})
-    def get_Approver2(self,useremail):
-        return self.filter(Approver2__icontains=useremail)
-    def get_Approver3(self,useremail):
-        return self.filter(Approver3__icontains=useremail)
-    def get_Approver4(self,useremail):
-        return self.filter(Approver4__icontains=useremail)
-    def get_Approver5(self,useremail):
-        return self.filter(Approver5__icontains=useremail)
+    
 class ActioneeManager(models.Manager):
     def get_queryset (self):
         return RoutesQuerySet(self.model, using=self._db)
