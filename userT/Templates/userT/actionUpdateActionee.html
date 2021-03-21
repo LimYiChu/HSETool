@@ -3,6 +3,7 @@
 {% crispy form form.helper%}
 {% block ActioneeDetails%}
 
+
 <!--breadcrumbs-->
 <div>
     <nav>
@@ -14,7 +15,7 @@
             <a href="/ActioneeList">Actionee List</a>
         </li>
         <li class="breadcrumb-item active">
-            <a aria-current="page">{{ActionItems.StudyActionNo}}</a> HOLD need Help
+            <a aria-current="page">{{ StudyActionNo.id }}</a> HOLD need Help
         </li>
       </ol>
     </nav>
