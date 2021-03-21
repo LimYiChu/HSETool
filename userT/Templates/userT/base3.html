@@ -70,55 +70,56 @@
 
 
 <!--sidebar left-->
-<div class="sidebar" height="100%" >
+<div class="sidebar" height="100%"  >
   
   <div class="row" height="100%">
-    <nav class="col-md-2 bg-light" height="100%"> <!--hold not yet able to solve the side bar 100% height need to set in css-->
-      <div class="sidebar-sticky"height="100%">
-        <ul class="nav flex-column"height="100%">
+    <nav class="col-md-2" style="background-image: linear-gradient(to right, #f8f8f8, #fafafa, #fbfcfb, #fdfdfd, #ffffff); border-right:darkgrey solid 1px"> <!--hold not yet able to solve the side bar 100% height need to set in css-->
+      <div class="sidebar-sticky">
+        <ul class="nav flex-column">
        
 
   <br>
-  <div id="card-738960" style="margin-left:10px">
+  <div id="card-738960" style="margin-left:10px" >
 
-            <div class="card">
-              <div class="card-header">
-                 <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-1" style="color:black">Your Action</a>
+    <div class="card text-white bg-secondary" >
+              <div class="card-header" >
+                 <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-1" style="color:white">Your Action</a>
               </div>
               <div id="card-element-1" class="collapse" >
                   <div class="card-body" style="text-indent: 10px " >
-                    <a href="/main" style ="color: grey;">
+                    <a href="/main" style ="color: White;">
                      Dashboard                
                     </a>
                   </div>
-              <div class="card-body" style="text-indent: 10px " ><a href="/ActioneeList" style ="color: grey;">
+              <div class="card-body" style="text-indent: 10px " ><a href="/ActioneeList" style ="color: White;">
                   Actionee Actions
                  </div>
-                 <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: grey;">
+                 <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: white;">
                   Approver Actions
                  </a></div>
-               
-                 
+               </div>
               </div>
-            </div>
+                 
+              
+           
           
             
             
             <div class="card">
               <div class="card-header">
-                 <a class="collapsed card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-2">Trending and Reporting</a>
+                 <a class="collapsed card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-2" style="color:black">Trending and Reporting</a>
               </div>
               <div id="card-element-2" class="collapse">
-                <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: black;">
+                <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: grey;">
                  Closed
                 </a>  </div>
-              <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: black;">
+              <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: grey;">
                  Open
                 </a>  </div>
-                <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: black;">
+                <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: grey;">
                   By Discipline
                 </a>  </div>
-                <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: black;">
+                <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: grey;">
                 Your Actions
                 </a> </div>
                 
@@ -162,7 +163,7 @@
 
             <div class="card">
               <div class="card-header">
-                 <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-5">Profile Management</a>
+                 <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-5">Profile Management - hold can be deleted if put on top right of the page</a>
               </div>
               <div id="card-element-5" class="collapse">
                 <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: black;">
@@ -183,7 +184,68 @@
             </div>
   </div>
   <br>
-         
+  
+  
+<!--demo section-->
+
+  <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+    <div class="card-header">Header</div>
+    <div class="card-body">
+      <h5 class="card-title">Primary card title</h5>
+      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    </div>
+  </div>
+  <div class="card text-white bg-secondary mb-3" style="max-width: 18rem;">
+    <div class="card-header">Header</div>
+    <div class="card-body">
+      <h5 class="card-title">Secondary card title</h5>
+      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    </div>
+  </div>
+  <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
+    <div class="card-header">Header</div>
+    <div class="card-body">
+      <h5 class="card-title">Success card title</h5>
+      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    </div>
+  </div>
+  <div class="card text-white bg-danger mb-3" style="max-width: 18rem;">
+    <div class="card-header">Header</div>
+    <div class="card-body">
+      <h5 class="card-title">Danger card title</h5>
+      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    </div>
+  </div>
+  <div class="card text-white bg-warning mb-3" style="max-width: 18rem;">
+    <div class="card-header">Header</div>
+    <div class="card-body">
+      <h5 class="card-title">Warning card title</h5>
+      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    </div>
+  </div>
+  <div class="card text-white bg-info mb-3" style="max-width: 18rem;">
+    <div class="card-header">Header</div>
+    <div class="card-body">
+      <h5 class="card-title">Info card title</h5>
+      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    </div>
+  </div>
+  <div class="card bg-light mb-3" style="max-width: 18rem;">
+    <div class="card-header">Header</div>
+    <div class="card-body">
+      <h5 class="card-title">Light card title</h5>
+      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    </div>
+  </div>
+  <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+    <div class="card-header">Header</div>
+    <div class="card-body">
+      <h5 class="card-title">Dark card title</h5>
+      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    </div>
+  </div>
+
+
     </nav>
     
 
@@ -201,15 +263,16 @@
 
         <div class="card">
           <div class="card-header">
-             <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-8"> <i class="bi bi-person-bounding-box"></i>{{user.email}} </a>
+             <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-8" style="color:black"> <i class="bi bi-person-bounding-box"></i>{{user.email}} </a>
           </div>
           <div id="card-element-8" class="collapse">
-            <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: black;">
+            <div class="card-body"  ><a href="#" style ="color: black; font-size: small">
              Profile
             </a>  </div>
-            <a href="/logout">
-              <button type="button" class="btn btn-light btn-sm" style="font-size:small" >
-              <span class="material-icons" href="/logout">logout</span> Log out
+            <div class="card-body" ><a href="/logout" style ="color: black; font-size: small" >
+              Logout
+             </a>  </div>
+            
              
             </button> </a>
             
