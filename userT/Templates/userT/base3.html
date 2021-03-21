@@ -10,20 +10,21 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"> <!--styling for the side bar button spacing-->
     <link rel="preconnect" href="https://fonts.gstatic.com"> <!--google font-->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet"><!--google font-->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> <!--icon pack-->
 
     <!--Chartjs link and not sure of version-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
     <title>Dashboard</title>
+   
   </head>
   
   
-  <!--Generally pending some icons. Need to design some. -->
 
 <body>
     
+
 <!--Top Nav Bar-->
 <div>
   <nav class="navbar navbar-expand-lg" style="background-color: rgb(248,248,248); border-bottom:darkgrey solid 1px">
@@ -32,7 +33,6 @@
   <ul class="navbar-nav md-3">      
     <li class="nav-item">
       <a class="nav-link active" aria-current="page" href="#" style="color:black">CLIENT COMPANY NAME OR LOGO HERE</a> <!--clicking on this link will bring the user to the main page-->
-      <a class="nav-link active" aria-current="page" href="#" style="color:black; font-family: 'Roboto', sans-serif;">CLIENT COMPANY NAME OR LOGO HERE</a> <!--clicking on this link will bring the user to the main page-->
     </li>
   </div>
 
@@ -73,92 +73,75 @@
 <div class="sidebar" height="100%" >
   
   <div class="row" height="100%">
-    <nav class="col-md-2 bg-light" height="100%">
+    <nav class="col-md-2 bg-light" height="100%"> <!--hold not yet able to solve the side bar 100% height need to set in css-->
       <div class="sidebar-sticky"height="100%">
         <ul class="nav flex-column"height="100%">
        
 
-    <br>
-          <div id="card-738960">
+  <br>
+  <div id="card-738960" style="margin-left:10px">
 
             <div class="card">
               <div class="card-header">
-                 <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-1">Actions Management</a>
+                 <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-1" style="color:black">Your Action</a>
               </div>
-              <div id="card-element-1" class="collapse">
-                <div class="card-body"><a href="#">
-                 Dashboard
-                </a></div>
-                <div class="card-body"><a href="#">
-                  Actionee
+              <div id="card-element-1" class="collapse" >
+                  <div class="card-body" style="text-indent: 10px " >
+                    <a href="/main" style ="color: grey;">
+                     Dashboard                
+                    </a>
+                  </div>
+              <div class="card-body" style="text-indent: 10px " ><a href="/ActioneeList" style ="color: grey;">
+                  Actionee Actions
                  </div>
-                 <div class="card-body"><a href="#">
-                  Approver
+                 <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: grey;">
+                  Approver Actions
                  </a></div>
-                 <div class="card-body"><a href="#">
-                  Manage Actions
-                </a></div>
-                 <div class="card-body"><a href="#">
-                  Workflow
-                </a></div>
-                 <div class="card-body"><a href="#">
-                  Trending and Reporting
-                </a></div>
-                 <div class="card-body"><a href="#">
-                  Advanced
-                </a> </div>
+               
                  
               </div>
             </div>
+          
+            
+            
             <div class="card">
               <div class="card-header">
-                 <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-1 " style="color:black; font-family: 'Roboto', sans-serif;">Actions Management</a>
-              </div>
-              <div id="card-element-1" class="collapse">
-                <div class="card-body" style="color:black; font-family: 'Roboto', sans-serif;"><a href="#">
-                 Dashboard
-                </a></div>
-                <div class="card-body" style="color:black; font-family: 'Roboto', sans-serif;"><a href="#">
-                  Actionee
-                 </div>
-                 <div class="card-body" style="color:black; font-family: 'Roboto', sans-serif;"><a href="#">
-                  Approver
-                 </a></div>
-                 <div class="card-body"style="color:black; font-family: 'Roboto', sans-serif;"><a href="#">
-                  Manage Actions
-                </a></div>
-                 <div class="card-body"style="color:black; font-family: 'Roboto', sans-serif;"><a href="#">
-                  Workflow
-                </a></div>
-                 <div class="card-body" style="color:black; font-family: 'Roboto', sans-serif;"><a href="#">
-                  Trending and Reporting
-                </a></div>
-                 <div class="card-body" style="color:black; font-family: 'Roboto', sans-serif;"><a href="#">
-                  Advanced
-                </a> </div>
-                 
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-header">
-                 <a class="collapsed card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-2">Admin</a>
+                 <a class="collapsed card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-2">Trending and Reporting</a>
               </div>
               <div id="card-element-2" class="collapse">
-                <div class="card-body"><a href="#">
-                 User Management
+                <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: black;">
+                 Closed
                 </a>  </div>
-                <div class="card-body"><a href="#">
-                  Create Project
+              <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: black;">
+                 Open
                 </a>  </div>
-                <div class="card-body"><a href="#">
-                  Workflow Management
+                <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: black;">
+                  By Discipline
+                </a>  </div>
+                <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: black;">
+                Your Actions
                 </a> </div>
-                <div class="card-body"><a href="#">
-                  Risk Matrix Management
-                </a>  </div>
+                
               </div>
             </div>
-
+<!--HOLD this need to be set to visible only to certain users-->
+            <div class="card">
+              <div class="card-header">
+                 <a class="collapsed card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-3">Admin- hidden to normal user</a>
+              </div>
+              <div id="card-element-3" class="collapse">
+                <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: black;">
+                 UploadExcel
+                </a>  </div>
+                <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: black;">
+                  UserManagement
+                </a>  </div>
+                <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: black;">
+                Your Actions
+                </a> </div>
+                
+              </div>
+            </div>
             
 
 
@@ -167,33 +150,39 @@
                  <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-4">Contact</a>
               </div>
               <div id="card-element-4" class="collapse">
-                <div class="card-body"><a href="#">
+                <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: black;">
                  Contact Us
                 </a>  </div>
                
               </div>
             </div>
+
+
+
+
             <div class="card">
               <div class="card-header">
-                 <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-5">Logout</a>
+                 <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-5">Profile Management</a>
               </div>
               <div id="card-element-5" class="collapse">
-                <div class="card-body"><a href="/logout">
-                 Logout
+                <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: black;">
+                 Profile
                 </a>  </div>
-                <div class="card-body"><a href="{% url 'password_reset' %}">
-                  Reset Password
-                 </a>  </div> <div class="card-body"><a href="{% url 'password_change' %}">
+                
+                 
+                <div class="card-body" style="text-indent: 10px " ><a href="{% url 'password_change' %}" style ="color: black;">
                   Change Password
                  </a>  </div>
 
-
+                 <div class="card-body" style="text-indent: 10px " ><a href="{% url 'password_reset' %}" style ="color: black;">
+                  Reset Password
+                 </a>  </div> 
                 
                
               </div>
             </div>
-          </div>
-         <br>
+  </div>
+  <br>
          
     </nav>
     
@@ -202,22 +191,60 @@
 
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
         <div>
-        <h1 class="h1">Dashboard  </h1> <p>
+        <h1 class="h1">Dashboard  demo</h1> <p>
+       
         </div>
+
+
+
+
+
+        <div class="card">
+          <div class="card-header">
+             <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-8"> <i class="bi bi-person-bounding-box"></i>{{user.email}} </a>
+          </div>
+          <div id="card-element-8" class="collapse">
+            <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: black;">
+             Profile
+            </a>  </div>
+            <a href="/logout">
+              <button type="button" class="btn btn-light btn-sm" style="font-size:small" >
+              <span class="material-icons" href="/logout">logout</span> Log out
+             
+            </button> </a>
+            
+            
+           
+          </div>
+        </div>
+        
+        
+        
+        
+        
+      </div>
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <div>
+        <h1 class="h1">Dashboard  original</h1> <p>
+       
+        </div>
+
+
+
+
+
       <div> 
         <h1 class="h5"> <i class="bi bi-person-bounding-box"></i>{{user.email}}</h1> <!--Username to be generated-->
              
-        
-        <button type="button" class="btn btn-light btn-sm" style="font-size:small;">
-        <span class="material-icons">logout</span> Log out
+        <a href="/logout">
+        <button type="button" class="btn btn-light btn-sm" style="font-size:small" >
+        <span class="material-icons" href="/logout">logout</span> Log out
        
-      </button> 
+      </button> </a>
       </div>    
      
         
       </div>
-
-     
 
 
 

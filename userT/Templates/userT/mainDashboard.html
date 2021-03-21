@@ -2,7 +2,160 @@
 {%load crispy_forms_tags %}
 
 {% block Actioneelist%}
+<!--hidden for styling-->
+<!--
 <h1>Your Actions</h1>
+-->
+      
+<div class="row">
+<!--breadcrumbs - needs to be automated.-->
+<div class="row" >
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item-active">
+          <a aria-current="page">Dashboard</a>
+        </li>
+       
+      </ol>
+    </nav>
+    <div class="col-md-12">
+  <div class="card">
+    <div class="card-header" style="font-size: xx-large;">
+     Your Actions
+    </div>
+    <div class="card-body">
+    <div class="row">
+    <div class="col-md-6">
+      
+<!--first chart changed colour to test-->
+                        <div class="card">
+                            <div class="card-header" style="font-size: large;">
+                              Actionee Actions
+                            </div>
+                            <div class="card-body">
+                                <canvas id="ActioneeChart"></canvas>
+                                <script>
+                                    Chart.defaults.global.defaultFontColor = 'black'
+                                    
+                                    var myChart = document.getElementById('ActioneeChart').getContext('2d');
+                                    
+                                    var charts = new Chart(myChart, {
+                                        type: 'polarArea',
+                                        
+                                        data : {
+                    
+                                            labels : {{labelsActionee|safe}},
+                    
+                                            datasets : [{
+                                                
+                                                
+                                                data : {{dataActionee|safe}},
+                    
+                                                borderWidth: 1,
+                                                borderColor: '#a5cce2',
+                                            }]
+                                            
+                                        },
+                                        
+                                        options: {
+                                            title:{
+                                                fontSize : 20,
+                                                display : true,
+                                                text: "Actionee Actions",
+                                            },
+                                           
+                                                yAxes: [{
+                                                    ticks: {
+                                                        display:false,
+                                                        beginAtZero: true
+                                                    }
+                                                }], 
+                                                xAxes: [{
+                                                    ticks: {
+                                                        display:false,
+                                                        beginAtZero: true
+                                                    }
+                                                }],              
+                                            onClick:function(e){
+                                                alert("this is a test");
+                                                var activePoints = ActioneeChart.getElementsAtEvent(e);
+                                                var selectedIndex = activePoints[0]._index;
+                                                document.location = this.data.datasets[0].data[selectedIndex];
+                                                //document.location = '/home';
+                                                
+                                            }
+                    
+                                        }
+                                    });
+                                
+                                    
+                                </script>
+                             
+                            </div>
+                          </div>                      
+                    </div>
+
+                
+            <div class="col-md-6">
+              
+                
+                    
+
+                        <div class="card">
+                            <div class="card-header" style="font-size: large;">
+                              Approver Actions
+                            </div>
+                            <div class="card-body">
+                                <canvas id="Approver"></canvas>
+                                <script>
+                    
+                                    var myChart = document.getElementById('Approver').getContext('2d');
+                                    
+                                    var charts = new Chart(myChart, {
+                                        type: 'polarArea',
+                                        data : {
+                    
+                                            labels : {{labelsApprover|safe}},
+                    
+                                            datasets : [{
+                                                
+                                                
+                                                data : {{dataApprover|safe}},
+                    
+                                                borderWidth: 3,
+                                                borderColor: '#777',
+                                            }]
+                                            
+                                        },
+                                        
+                                        options: {
+                    
+                                            title:{
+                                                display : true,
+                                                text: "Approver Actions",
+                                                fontSize : 20,
+                                            },
+                                        }
+                                    });
+                                
+                                    
+                                </script>
+                            </div>
+                             
+                            </div>
+                          </div>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<!--original-->
+<!--
 <div class="container-fluid">
     <div style="width:50% ; float:left"> 
         <canvas id="ActioneeChart"></canvas>
@@ -100,7 +253,7 @@
             </script>
     </div>
 </div>
-
+-->
 {%endblock%}
 
 
