@@ -175,7 +175,7 @@ class UpdateActioneeItems (UpdateView):
     def form_valid(self,form):
         if (super().form_valid(form)):
             #if form is valid just increment q series by 1 so it goes to Approver que so it goes to next queSeries
-            form.instance.QueSeries += 1
+            #form.instance.QueSeries += 1
             return super().form_valid(form)
 
 class ApproveItems (DetailView):
