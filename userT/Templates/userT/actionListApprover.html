@@ -1,24 +1,8 @@
-{% extends "userT\base3.html"%}
+--*-+**/{% extends "userT\base3.html"%}
 {% block Actioneelist%}
 <!doctype html>
 <html lang="en">
-
-<!--breadcrumbs-->
-  <div class="row" >
-    <nav>
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item normal">
-          <a href="/main">Dashboard</a>
-        </li>
-        <li class="breadcrumb-item active">
-            <a aria-current="page">Actionee List</a>
-        </li>
-      </ol>
-    </nav>
-
-<!--breadcrumbs - needs to be automated.-->
-
-
+  
 
 <body>
       <div class="row" >
@@ -56,10 +40,11 @@
              </tr>
           </thead>
           <tbody>
-            {% for routes  in object_list %}
+            {%for approverL in object_list%}
+            {% for routes  in approverL %}
               {% for x  in routes %}
             <tr>
-              <td><a class="article-title" href="{% url  'UpdateForm' x.id %}">{{ x.StudyActionNo }}</a></td>
+              <td><a class="article-title" href="{% url  'ApproveForm' x.id %}"">{{ x.StudyActionNo }}</a></td>
               <td>{{ x.StudyName }}<</td>
               <td>{{ x.Disipline }}<</td>
               <td>{{ x.Subdisipline }}<</td>
@@ -69,7 +54,9 @@
               <td>{{ x.InitialRisk }}<</td>
               <td>{{ x.Response }}<</td>
               {%endfor%}
+              {%endfor%}
             {%endfor%}
             
           
 {%endblock%}
+++

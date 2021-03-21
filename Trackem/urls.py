@@ -43,16 +43,25 @@ urlpatterns = [
         path('routesX/', userView.getuserRoutes, name='routesX' ),
         path('main/', UserView.mainDashboard, name='main' ),
        
+       #List path using class listview to get actionee and approver
         path('ActioneeList/', UserView.ActioneeList.as_view(), name='UserActionList' ),
-        #path('UA/', UserView.yourActions.as_view(), name='UserActions' ),
+        path('ApproverList/', UserView.ApproverList.as_view(), name='UserApproverList' ),
+
+       
         re_path(r'^(?P<id>\d+)/$', userView.getActionDetails,name='getActionsDetails'),
         path('password_reset/', auth_views.PasswordResetView.as_view(template_name='userT/reset.html') ,name='password_reset'),
         path('routesX/', userView.getuserRoutes, name='routesX' ),
         #path('ActioneeList/<int:pk>/', userView.ActionDetails(),name='ActionsDetails'),
-        path('ActioneeList/<int:id>/', UserView.DetailActioneeItems.as_view(), name='DetailsForm' ),
-        path('ActioneeList/<int:id>/update', UserView.UpdateActioneeItems.as_view(), name='UpdateForm' ),
+       
+        
         #path('count/', userView.mainDashCount, name='count' ),
         #path('UA/', UserView.UserActions, name='UserActions' ),
+
+        #Following urls are for actionee approvers updates and approvals
+        path('ActioneeList/<int:id>/update', UserView.UpdateActioneeItems.as_view(), name='UpdateForm' ),
+        path('ActioneeList/<int:id>/', UserView.DetailActioneeItems.as_view(), name='DetailsForm' ),
+        path('ApproverList/<int:id>/approve', UserView.ApproveItems.as_view(), name='ApproveForm' ),
+
         #Following URLs are for reseting and changing password. Note that the reset password via email is yet to be set up. Right now please obtain the link in the terminal upon requesting password reset.
         path('password_change/done/',auth_views.PasswordChangeDoneView.as_view(template_name='userT/password_change_done.html'),name='password_change_done'),
         path('password_change/',auth_views.PasswordChangeView.as_view(template_name='userT/password_change.html'),name='password_change'),
