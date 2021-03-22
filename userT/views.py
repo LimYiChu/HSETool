@@ -175,23 +175,17 @@ class UpdateActioneeItems (UpdateView):
     def form_valid(self,form):
         if (super().form_valid(form)):
             #if form is valid just increment q series by 1 so it goes to Approver que so it goes to next queSeries
-            #form.instance.QueSeries += 1
+            form.instance.QueSeries += 1
             return super().form_valid(form)
 
-class ApproveItems (DetailView):
+class ApproveItems (UpdateView):
     template_name   =   'userT/actionUpdateApproveAction.html'
+    form_class = ApproverForm
+    success_url = '/ActioneeList/'
     
-    success_url = '/ApproverList/'
-    
-    def get_context_data(self,**kwargs):
-        context = super(ApproveItems,self).get_context_data(**kwargs)
-        context ['form'] = ApproverForm
-        return context
-
     def get_object(self):
-         id1 = self.kwargs.get("id")
-         print(id1)
-         return get_object_or_404(ActionItems, id=id1)
+        id1 = self.kwargs.get("id")
+        return get_object_or_404(ActionItems, id=id1)
 
     def form_valid(self,form):
         if (super().form_valid(form)):

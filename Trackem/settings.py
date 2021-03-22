@@ -88,7 +88,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'trackem',
         'USER': 'root',
-        'PASSWORD': 'Helloworld2021',
+        'PASSWORD': 'Nice10day',
         'HOST': 'localhost',
         'PORT': '3306',
     }
