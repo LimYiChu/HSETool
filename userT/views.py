@@ -198,3 +198,8 @@ class ApproveItems (DetailView):
             #if form is valid just increment q series by 1 so it goes to Approver que so it goes to next queSeries
             form.instance.QueSeries += 1
             return super().form_valid(form)
+
+#yhs testing for adding urls views
+def ContactUs (request):
+   return render(request, 'userT/ContactUs.html')
+
