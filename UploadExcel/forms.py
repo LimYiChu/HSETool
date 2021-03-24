@@ -14,21 +14,21 @@ class CommonLayout (Layout):
             Div(
             Div(Field('StudyActionNo',readonly=True),   css_class='col-md-3'), 
             Div (Field('StudyName',readonly=True),  css_class='col-md-3'),
-            Div (Field('ProjectPhase', readonly=True), css_class='col-md-3'),
-            Div (Field('QueSeries', readonly=True), css_class='col-md-3'),
+            Div (Field('ProjectPhase', readonly=True), css_class='col-md-6'),
+            #Div (Field('QueSeries', readonly=True), css_class='col-md-3'),
            #-somehow not working Div (Field('DueDate', readonly=True), css_class='col-md-2'),
             css_class='row',
                       
            ),
             Div (
-            Div (Field('Cause', readonly=True), css_class='col-md-9'),
-            Div (Field('Safeguard', readonly=True), css_class='col-md-9'),
-            Div (Field('Consequence', readonly=True), css_class='col-md-9'),
-            Div (Field('Recomendations', readonly=True), css_class='col-md-9'),
+            Div (Field('Cause', readonly=True), css_class='col-md-12'),
+            Div (Field('Safeguard', readonly=True), css_class='col-md-12'),
+            Div (Field('Consequence', readonly=True), css_class='col-md-12'),
+            Div (Field('Recomendations', readonly=True), css_class='col-md-12'),
             css_class='row',#-dont know why i have to put this in so it aligns to left
             
             ),
-
+#needs these hidden fields otherwise it passes blank values into the model- need to see if can do some other way
             Div (
                 
             Div (Field('Facility', type="hidden")),
@@ -47,16 +47,16 @@ class UpdateActioneeForm(forms.ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_show_labels = True
         self.helper.form_method = 'POST'
-        self.helper.add_input(Submit('submit', 'Submit Now', css_class='btn-primary '))
+        self.helper.add_input(Submit('submit', 'Submit for Approval', css_class='btn-primary float-right'))
 
         self.helper.layout = Layout(
         CommonLayout(),
         
         Div (
                 
-            Div ('Response', css_class='col-md-9'),
-            Div ('Attachment', css_class='col-md-9'),
-            Div ('FutureAction', css_class='col-md-9'),
+            Div ('Response', css_class='col-md-12'),
+            Div ('Attachment', css_class='col-md-12'),
+            Div ('FutureAction', css_class='col-md-12'),
             css_class='row',
             ),
       
@@ -70,16 +70,16 @@ class ApproverForm(forms.ModelForm):
         super(ApproverForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_show_labels = True
-        
+        self.helper.form_enctype = 'multipart/form-data'
         self.helper.form_method = 'POST'
-        self.helper.add_input(Submit('submit', 'Approve', css_class='btn-primary '))
+        self.helper.add_input(Submit('submit', 'Approve for Next Level', css_class='btn-primary float-right'))
 
         self.helper.layout = Layout(
         CommonLayout(),
         Div(
-            Div (Field('Response',readonly=True) ,css_class='col-md-9'), 
-            Div (Field('Attachment',disable=True),  css_class='col-md-9'),
-            Div (Field('FutureAction', readonly=True), css_class='col-md-9'),
+            Div (Field('Response',readonly=True) ,css_class='col-md-12'), 
+            Div (Field('Attachment',disable=True),  css_class='col-md-12'),
+            Div (Field('FutureAction', readonly=True), css_class='col-md-12'),
             #Div (Field('QueSeries', readonly=True), css_class='col-md-3'),
            #-somehow not working Div (Field('DueDate', readonly=True), css_class='col-md-2'),
             css_class='row',

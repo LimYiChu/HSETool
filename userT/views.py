@@ -12,6 +12,7 @@ from UploadExcel.models import ActionItems
 from django.views.generic import ListView, DetailView, UpdateView,TemplateView
 #test for login required
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 
 #from .forms import UserRegisterForm
 # Create your views here.
@@ -146,12 +147,13 @@ class ApproverList (ListView):
         for key, value in Approver_R.items():
             x = blfuncActioneeComDisSub(value,key)
             ApproverActions.insert(key,x)
-            
+            print(key)
+            print(value)
         ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
         actioneeItems = blfuncActioneeComDisSub(ActioneeRoutes,0)
         #print(actioneeItems)
-        for X in (ApproverActions):
-            print(X)
+        #for X in (ApproverActions):
+         #   print(X)
         #print (ApproverActions)
         return ApproverActions
 
@@ -165,7 +167,7 @@ class DetailActioneeItems (DetailView):
 
 class UpdateActioneeItems (UpdateView):
     template_name   =   'userT/actionUpdateApproveAction.html'
-    #queryset = ActionItems.objects.all()
+   
     form_class = UpdateActioneeForm
     success_url = '/ActioneeList/'
     def get_object(self):
@@ -177,11 +179,12 @@ class UpdateActioneeItems (UpdateView):
             #if form is valid just increment q series by 1 so it goes to Approver que so it goes to next queSeries
             form.instance.QueSeries += 1
             return super().form_valid(form)
-
+    
 class ApproveItems (UpdateView):
     template_name   =   'userT/actionUpdateApproveAction.html'
     form_class = ApproverForm
-    success_url = '/ActioneeList/'
+    second_form_class = ApproverForm #-to be changed to multiple files
+    success_url = '/ApproverList/'
     
     def get_object(self):
         id1 = self.kwargs.get("id")
