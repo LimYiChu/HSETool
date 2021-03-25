@@ -88,7 +88,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'trackem',
         'USER': 'root',
-        'PASSWORD': 'Helloworld2021',
+        'PASSWORD': 'Nice10day',
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -154,5 +154,6 @@ STATICFILES_DIRS = [
 #CrispyForms Template --> this is to enable the form fields to stretch across the whole div
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
  
+MEDIA_ROOT=BASE_DIR
 #LOGIN_REDIRECT_URL = 'Login'
 #CRISPY_TEMPLATE_PACK = 'bootstrap4'

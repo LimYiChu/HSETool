@@ -65,7 +65,7 @@
               <td>{{ x.Subdisipline }}<</td>
               <td>{{ x.Cause }}<</td>
               <td>{{ x.Consequence }}<</td>
-              <td>{{ x.Recomendations }}<</td>
+              <td><a class="article-title" href="{% url  'UpdateForm' x.id %}">{{ x.Recomendations }}</a></td>
               <td>{{ x.InitialRisk }}<</td>
               <td>{{ x.Response }}<</td>
               {%endfor%}

@@ -28,6 +28,7 @@ class ActionItems(models.Model):
     Disipline       = models.CharField(max_length=100,null=True,blank=True)
     Subdisipline    = models.CharField(max_length=100,null=True,blank=True)
     FutureAction    =   models.TextField(null=True,blank=True)
+    Comments        =   models.TextField(null=True,blank=True)
     DueDate         =   models.DateField(auto_now_add=True, null=True,blank=True)
     QueSeries       =   models.IntegerField(null=True,blank=True)
     objects = models.Manager()

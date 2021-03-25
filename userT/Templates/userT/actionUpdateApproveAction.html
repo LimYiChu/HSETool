@@ -1,11 +1,12 @@
 {% extends "userT\base3.html"%}
+
 {%load crispy_forms_tags %}
 {% crispy form form.helper%}
-{% block ActioneeDetails%}
+{% block ApproverDetails%}
 
 
 <!--breadcrumbs-->
-<div>
+<div class=''>
     <nav>
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
@@ -15,7 +16,7 @@
             <a href="/ActioneeList">Actionee List</a>
         </li>
         <li class="breadcrumb-item active">
-            <a aria-current="page">{{UpdateActioneeItems.StudyActionNo}}</a> HOLD need Help
+            <a aria-current="page">{{object.StudyActionNo}}</a>
         </li>
       </ol>
     </nav>
@@ -23,7 +24,7 @@
 <!--breadcrumbs - needs to be automated.-->
 
 <fieldset class="form-group" >
-    <form method="post">  
+    <form method="POST" enctype = 'multipart/form-data' class="dropzone">  
         {% csrf_token %}  
         {%crispy form%}
      

@@ -12,6 +12,7 @@ from UploadExcel.models import ActionItems
 from django.views.generic import ListView, DetailView, UpdateView,TemplateView
 #test for login required
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 
 #from .forms import UserRegisterForm
 # Create your views here.
@@ -131,7 +132,7 @@ class ActioneeList (ListView):
         userZemail = self.request.user.email
         ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
         actioneeItems = blfuncActioneeComDisSub(ActioneeRoutes,0)
-        
+        print
         return actioneeItems
 
 class ApproverList (ListView):
@@ -147,12 +148,7 @@ class ApproverList (ListView):
             x = blfuncActioneeComDisSub(value,key)
             ApproverActions.insert(key,x)
             
-        ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
-        actioneeItems = blfuncActioneeComDisSub(ActioneeRoutes,0)
-        #print(actioneeItems)
-        for X in (ApproverActions):
-            print(X)
-        #print (ApproverActions)
+        
         return ApproverActions
 
 class DetailActioneeItems (DetailView):
@@ -165,7 +161,7 @@ class DetailActioneeItems (DetailView):
 
 class UpdateActioneeItems (UpdateView):
     template_name   =   'userT/actionUpdateApproveAction.html'
-    #queryset = ActionItems.objects.all()
+   
     form_class = UpdateActioneeForm
     success_url = '/ActioneeList/'
     def get_object(self):
@@ -175,31 +171,30 @@ class UpdateActioneeItems (UpdateView):
     def form_valid(self,form):
         if (super().form_valid(form)):
             #if form is valid just increment q series by 1 so it goes to Approver que so it goes to next queSeries
-            #form.instance.QueSeries += 1
+            
+            form.instance.QueSeries += 1
             return super().form_valid(form)
-
-class ApproveItems (DetailView):
-    template_name   =   'userT/actionUpdateApproveAction.html'
     
+class ApproveItems (UpdateView):
+    template_name   =   'userT/actionUpdateApproveAction.html'
+    form_class = ApproverForm
+    second_form_class = ApproverForm #-to be changed to multiple files
     success_url = '/ApproverList/'
     
-    def get_context_data(self,**kwargs):
-        context = super(ApproveItems,self).get_context_data(**kwargs)
-        context ['form'] = ApproverForm
-        return context
-
     def get_object(self):
-         id1 = self.kwargs.get("id")
-         print(id1)
-         return get_object_or_404(ActionItems, id=id1)
+        id1 = self.kwargs.get("id")
+        return get_object_or_404(ActionItems, id=id1)
 
     def form_valid(self,form):
         if (super().form_valid(form)):
             #if form is valid just increment q series by 1 so it goes to Approver que so it goes to next queSeries
-            form.instance.QueSeries += 1
+            if (self.request.POST.get('Reject')):
+                #If reject que series should be 0, but need another intermediate screen for comments
+                form.instance.QueSeries = 0
+            if (self.request.POST.get('Approve')): 
+                #  need another intermediate screen for approval no comments
+                form.instance.QueSeries += 1
             return super().form_valid(form)
 
-#yhs testing for adding urls views
-def ContactUs (request):
-   return render(request, 'userT/ContactUs.html')
-
+    def ContactUs (request):
+        return render(request, 'userT/ContactUs.html')
