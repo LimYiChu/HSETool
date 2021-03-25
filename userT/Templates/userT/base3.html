@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
   <head>
@@ -10,6 +11,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"> <!--styling for the side bar button spacing-->
     <link rel="preconnect" href="https://fonts.gstatic.com"> <!--google font-->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet"><!--google font-->
+    <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet'> <!--google font-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> <!--icon pack-->
 
     <!--Chartjs link and not sure of version-->
@@ -32,7 +34,7 @@
   <div class = "row">
   <ul class="navbar-nav md-3">      
     <li class="nav-item">
-      <a class="nav-link active" aria-current="page" href="#" style="color:black">CLIENT COMPANY NAME OR LOGO HERE</a> <!--clicking on this link will bring the user to the main page-->
+     <a class="nav-link active" aria-current="page" href="https://sapuraenergy.com/" style="color:black"> <img src="{% static 'sapura.png' %}" alt="client" width="5%" height="30%"> Sapura Energy</a> <!--clicking on this link will bring the user to the main page-->
     </li>
   </div>
 
@@ -60,8 +62,8 @@
 <!--right hand side of Top Nav Bar-->
 
       <div class="nav navbar-nav md-3">
-        <li><a class="nav-link active" aria-current="page" href="#"  style=" color:black">Our Product NAME or LOGO here </a></li> <!--clicking here will imeediately bring the user to the user's setting such as the name, discipline etc... for him to quickly update-->
-      </div>
+        <li><a class="nav-link active" aria-current="page" href="https://www.prism-ta.com/"  style=" color:black; font-family:pacifico">eHS Tools </a></li> <!--clicking here will imeediately bring the user to the user's setting such as the name, discipline etc... for him to quickly update-->
+      </div><!--consider to have linkedin or facebook link-->
 
     
 </nav>
@@ -81,20 +83,20 @@
   <br>
   <div id="card-738960" style="margin-left:10px" >
 
-    <div class="card text-white bg-secondary" >
+    <div class="card" style="background-color: rgb(52,58,64);">
               <div class="card-header" >
                  <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-1" style="color:white">Your Action</a>
               </div>
               <div id="card-element-1" class="collapse" >
-                  <div class="card-body" style="text-indent: 10px " >
-                    <a href="/main" style ="color: White;">
+                <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" >
+                    <a href="/main" style ="color: black;">
                      Dashboard                
                     </a>
                   </div>
-              <div class="card-body" style="text-indent: 10px " ><a href="/ActioneeList" style ="color: White;">
+                  <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/ActioneeList" style ="color: Black;">
                   Actionee Actions
                  </div>
-                 <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: white;">
+                 <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
                   Approver Actions
                  </a></div>
                </div>
@@ -105,53 +107,37 @@
           
             
             
-            <div class="card">
+              <div class="card" style="background-color: rgb(52,58,64);">
               <div class="card-header">
-                 <a class="collapsed card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-2" style="color:black">Trending and Reporting</a>
+                 <a class="collapsed card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-2" style="color:white">Reporting</a>
               </div>
               <div id="card-element-2" class="collapse">
-                <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: grey;">
+                <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
                  Closed
                 </a>  </div>
-              <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: grey;">
+              <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
                  Open
                 </a>  </div>
-                <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: grey;">
+                <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
                   By Discipline
                 </a>  </div>
-                <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: grey;">
+                <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
                 Your Actions
                 </a> </div>
                 
               </div>
             </div>
 <!--HOLD this need to be set to visible only to certain users-->
-            <div class="card">
-              <div class="card-header">
-                 <a class="collapsed card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-3">Admin- hidden to normal user</a>
-              </div>
-              <div id="card-element-3" class="collapse">
-                <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: black;">
-                 UploadExcel
-                </a>  </div>
-                <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: black;">
-                  UserManagement
-                </a>  </div>
-                <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: black;">
-                Your Actions
-                </a> </div>
-                
-              </div>
-            </div>
+
             
 
 
-            <div class="card">
+            <div class="card" style="background-color: rgb(52,58,64);">
               <div class="card-header">
-                 <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-4">Contact</a>
+                 <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-4" style="color:white">Contact</a>
               </div>
               <div id="card-element-4" class="collapse">
-                <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: black;">
+                <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/ContactUs" style ="color: black;">
                  Contact Us
                 </a>  </div>
                
@@ -161,153 +147,77 @@
 
 
 
-            <div class="card">
+            <div class="card" style="background-color: rgb(52,58,64);">
               <div class="card-header">
-                 <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-5">Profile Management - hold can be deleted if put on top right of the page</a>
+                 <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-5" style="color:white">Profile Management</a>
               </div>
               <div id="card-element-5" class="collapse">
-                <div class="card-body" style="text-indent: 10px " ><a href="#" style ="color: black;">
+                 <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
                  Profile
                 </a>  </div>
                 
                  
-                <div class="card-body" style="text-indent: 10px " ><a href="{% url 'password_change' %}" style ="color: black;">
+                <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="{% url 'password_change' %}" style ="color: black;">
                   Change Password
                  </a>  </div>
 
-                 <div class="card-body" style="text-indent: 10px " ><a href="{% url 'password_reset' %}" style ="color: black;">
+                 <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="{% url 'password_reset' %}" style ="color: black;">
                   Reset Password
                  </a>  </div> 
                 
                
               </div>
             </div>
-  </div>
-  <br>
-  
-  
-<!--demo section-->
 
-  <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
-    <div class="card-header">Header</div>
-    <div class="card-body">
-      <h5 class="card-title">Primary card title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+
+
+
+<!--If user is admin, then he can have extra buttons to manage the users etc.-->            
+  {% if request.user.is_admin %}
+  <div class="card" style="background-color: rgb(52,58,64)">
+  <div class="card-header">
+     <a class="collapsed card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-3" style="color:white"> Admin</a>
+  </div>
+  <div id="card-element-3" class="collapse">
+    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
+     UploadExcel
+    </a>  </div>
+    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
+      UserManagement
+    </a>  </div>
+ 
     </div>
   </div>
-  <div class="card text-white bg-secondary mb-3" style="max-width: 18rem;">
-    <div class="card-header">Header</div>
-    <div class="card-body">
-      <h5 class="card-title">Secondary card title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    </div>
-  </div>
-  <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
-    <div class="card-header">Header</div>
-    <div class="card-body">
-      <h5 class="card-title">Success card title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    </div>
-  </div>
-  <div class="card text-white bg-danger mb-3" style="max-width: 18rem;">
-    <div class="card-header">Header</div>
-    <div class="card-body">
-      <h5 class="card-title">Danger card title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    </div>
-  </div>
-  <div class="card text-white bg-warning mb-3" style="max-width: 18rem;">
-    <div class="card-header">Header</div>
-    <div class="card-body">
-      <h5 class="card-title">Warning card title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    </div>
-  </div>
-  <div class="card text-white bg-info mb-3" style="max-width: 18rem;">
-    <div class="card-header">Header</div>
-    <div class="card-body">
-      <h5 class="card-title">Info card title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    </div>
-  </div>
-  <div class="card bg-light mb-3" style="max-width: 18rem;">
-    <div class="card-header">Header</div>
-    <div class="card-body">
-      <h5 class="card-title">Light card title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    </div>
-  </div>
-  <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
-    <div class="card-header">Header</div>
-    <div class="card-body">
-      <h5 class="card-title">Dark card title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    </div>
-  </div>
+
+{% else %}
+<!--if not admin then not going to show anything-->
+
+{% endif %}
+
+  
+
+</div>
+<br>
+  
+  
 
 
     </nav>
     
 
-    <main role="main" class="col-lg-10 pt-3 px-4" ;>
+    <main role="main" class="col-lg-10 pt-3 px-4" >
 
-      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-        <div>
-        <h1 class="h1">Dashboard  demo</h1> <p>
-       
-        </div>
-
-
-
-
-
-        <div class="card">
-          <div class="card-header">
-             <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-8" style="color:black"> <i class="bi bi-person-bounding-box"></i>{{user.email}} </a>
-          </div>
-          <div id="card-element-8" class="collapse">
-            <div class="card-body"  ><a href="#" style ="color: black; font-size: small">
-             Profile
-            </a>  </div>
-            <div class="card-body" ><a href="/logout" style ="color: black; font-size: small" >
-              Logout
-             </a>  </div>
-            
-             
-            </button> </a>
-            
-            
-           
-          </div>
-        </div>
+      <!--Username and Logout button including bottom border-->
+      <div  class="pb-2 mb-3 border-bottom text-right" >
+        <div style="font-size:large"> 
+          <i class="bi bi-person-bounding-box"></i>{{user.email}} <!--hold, make this clickable and link to user profile.-->
+           <a href="/logout">
+          <button type="button" class="btn btn-light btn-sm;"><i class="material-icons">logout</i>Logout</button> 
+        </a>
+         </div>    
+     </div>
         
-        
-        
-        
-        
-      </div>
-      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-        <div>
-        <h1 class="h1">Dashboard  original</h1> <p>
-       
-        </div>
-
-
-
-
-
-      <div> 
-        <h1 class="h5"> <i class="bi bi-person-bounding-box"></i>{{user.email}}</h1> <!--Username to be generated-->
-             
-        <a href="/logout">
-        <button type="button" class="btn btn-light btn-sm" style="font-size:small" >
-        <span class="material-icons" href="/logout">logout</span> Log out
-       
-      </button> </a>
-      </div>    
-     
-        
-      </div>
+    
 
 
 

@@ -40,7 +40,9 @@ class UpdateActioneeForm(forms.ModelForm):
             Div ('Response', css_class='col-md-9'),
             Div ('Attachment', css_class='col-md-9'),
             Div ('FutureAction', css_class='col-md-9'),
+            # testing using cryspy formDiv ('email', css_class='col-md-9'),
             css_class='row',
+
             ),
 
         Div (
