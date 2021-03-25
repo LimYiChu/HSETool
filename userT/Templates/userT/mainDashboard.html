@@ -40,7 +40,7 @@
                                     var myChart = document.getElementById('ActioneeChart').getContext('2d');
                                     
                                     var charts = new Chart(myChart, {
-                                        type: 'polarArea',
+                                        type: 'pie',
                                         
                                         data : {
                     
@@ -53,6 +53,7 @@
                     
                                                 borderWidth: 1,
                                                 borderColor: 'black',
+                                                backgroundColor: ["#D3EDEE","#91CACC", "#C0A8A3","#5E6565","#E5C0E2","#E0E1B3" ,"#0074D9", "#FF4136", "#2ECC40", "#FF851B", "#7FDBFF"],
                                             }]
                                             
                                         },
@@ -64,23 +65,15 @@
                                                 text: "Actionee Actions",
                                             },
                                            
-                                                yAxes: [{
-                                                    ticks: {
-                                                        display:false,
-                                                        beginAtZero: true
-                                                    }
-                                                }], 
-                                                xAxes: [{
-                                                    ticks: {
-                                                        display:false,
-                                                        beginAtZero: true
-                                                    }
-                                                }],              
-                                            onClick:function(e){
-                                                alert("this is a test");
-                                                var activePoints = ActioneeChart.getElementsAtEvent(e);
-                                                var selectedIndex = activePoints[0]._index;
-                                                document.location = this.data.datasets[0].data[selectedIndex];
+                                                            
+                                            onClick:function(evt){
+                                                //need to fix this for later
+                                                //alert("this is actionee")
+                                                //var activePoints = charts.getElementsAtEvent(evt);
+                                                
+                                                //var selectedIndex = activePoints[0]._index;
+                                                //alert(selectedIndex)
+                                                //document.location = this.data.datasets[0].data[selectedIndex];
                                                 //document.location = '/home';
                                                 
                                             }
@@ -92,16 +85,13 @@
                                 </script>
                              
                             </div>
+                            <a class="h5" href="/ActioneeList">Go to Your Actions</a>
                           </div>                      
                     </div>
 
                 
             <div class="col-md-6">
-              
-                
-                    
-
-                        <div class="card">
+                    <div class="card">
                             <div class="card-header" style="font-size: large;">
                               Approver Actions
                             </div>
@@ -112,7 +102,7 @@
                                     var myChart = document.getElementById('Approver').getContext('2d');
                                     
                                     var charts = new Chart(myChart, {
-                                        type: 'polarArea',
+                                        type: 'pie',
                                         data : {
                     
                                             labels : {{labelsApprover|safe}},
@@ -122,8 +112,9 @@
                                                 
                                                 data : {{dataApprover|safe}},
                     
-                                                borderWidth: 3,
-                                                borderColor: '#777',
+                                                borderWidth: 1,
+                                                borderColor: 'black',
+                                                backgroundColor: ["#D3EDEE","#91CACC", "#C0A8A3","#5E6565","#E5C0E2","#E0E1B3" ,"#0074D9", "#FF4136", "#2ECC40", "#FF851B", "#7FDBFF"],
                                             }]
                                             
                                         },
@@ -135,13 +126,22 @@
                                                 text: "Approver Actions",
                                                 fontSize : 20,
                                             },
+
+                                            onClick:function(vte){
+                                                //alert("this sss")
+                                                //var activePoints = ActioneeChart.getElementsAtEvent(e);
+                                                //var selectedIndex = activePoints[0]._index;
+                                                //document.location = this.data.datasets[0].data[selectedIndex];
+                                                
+                                                
+                                            }
                                         }
                                     });
                                 
                                     
                                 </script>
                             </div>
-                             
+                            <a class="h5" href="/ApproverList">Go to Your Pending Approvals</a>
                             </div>
                           </div>
 </div>

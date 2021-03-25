@@ -132,7 +132,7 @@ class ActioneeList (ListView):
         userZemail = self.request.user.email
         ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
         actioneeItems = blfuncActioneeComDisSub(ActioneeRoutes,0)
-        
+        print
         return actioneeItems
 
 class ApproverList (ListView):
@@ -147,14 +147,8 @@ class ApproverList (ListView):
         for key, value in Approver_R.items():
             x = blfuncActioneeComDisSub(value,key)
             ApproverActions.insert(key,x)
-            print(key)
-            print(value)
-        ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
-        actioneeItems = blfuncActioneeComDisSub(ActioneeRoutes,0)
-        #print(actioneeItems)
-        #for X in (ApproverActions):
-         #   print(X)
-        #print (ApproverActions)
+            
+        
         return ApproverActions
 
 class DetailActioneeItems (DetailView):
@@ -177,6 +171,7 @@ class UpdateActioneeItems (UpdateView):
     def form_valid(self,form):
         if (super().form_valid(form)):
             #if form is valid just increment q series by 1 so it goes to Approver que so it goes to next queSeries
+            
             form.instance.QueSeries += 1
             return super().form_valid(form)
     
@@ -193,5 +188,10 @@ class ApproveItems (UpdateView):
     def form_valid(self,form):
         if (super().form_valid(form)):
             #if form is valid just increment q series by 1 so it goes to Approver que so it goes to next queSeries
-            form.instance.QueSeries += 1
+            if (self.request.POST.get('Reject')):
+                #If reject que series should be 0, but need another intermediate screen for comments
+                form.instance.QueSeries = 0
+            if (self.request.POST.get('Approve')): 
+                #  need another intermediate screen for approval no comments
+                form.instance.QueSeries += 1
             return super().form_valid(form)

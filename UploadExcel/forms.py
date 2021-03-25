@@ -72,8 +72,8 @@ class ApproverForm(forms.ModelForm):
         self.helper.form_show_labels = True
         self.helper.form_enctype = 'multipart/form-data'
         self.helper.form_method = 'POST'
-        self.helper.add_input(Submit('submit', 'Approve for Next Level', css_class='btn-primary float-right'))
-
+        self.helper.add_input(Submit('Approve', 'Approve for Next Level', css_class='btn-primary float-right'))
+        self.helper.add_input(Submit('Reject', 'Reject', css_class='btn-primary float-right'))
         self.helper.layout = Layout(
         CommonLayout(),
         Div(
