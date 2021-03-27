@@ -198,3 +198,21 @@ class ApproveItems (UpdateView):
 
     def ContactUs (request):
         return render(request, 'userT/ContactUs.html')
+
+
+#Develop PDF
+def testing(self):    
+    x=ActionItems.objects.filter(pk__icontains=20)
+    y= x.values()
+    for item in y :
+        i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file (refer to line 216)
+        del item["id"]      
+        data_dict=item
+        PDF_PATH = 'multiple.pdf' 
+        out_file = i + 'out_file.pdf' 
+        generated_pdf = pypdftk.fill_form(
+            pdf_path = PDF_PATH,
+            datas = data_dict,
+            out_file = out_file,
+        )
+    return HttpResponse("this is a test")
