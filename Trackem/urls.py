@@ -70,4 +70,6 @@ urlpatterns = [
         path('password_reset/',auth_views.PasswordResetView.as_view(template_name='userT/password_reset_form.html'),name='password_reset'),
         path('reset/done/',auth_views.PasswordResetCompleteView.as_view(template_name='userT/password_reset_complete.html'),name='password_reset_complete'),
         path('ContactUs/',UserView.ContactUs,name='ContactUs'),
+        #edward pdf
+        path('testing/', login_required(UserView.testing), name='testingPDF' ),
       ]

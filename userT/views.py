@@ -196,8 +196,8 @@ class ApproveItems (UpdateView):
                 form.instance.QueSeries += 1
             return super().form_valid(form)
 
-    def ContactUs (request):
-        return render(request, 'userT/ContactUs.html')
+def ContactUs (request):
+    return render(request, 'userT/ContactUs.html')
 
 
 #Develop PDF
