@@ -13,6 +13,7 @@ from django.views.generic import ListView, DetailView, UpdateView,TemplateView
 #test for login required
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.core.mail import send_mail
 
 #from .forms import UserRegisterForm
 # Create your views here.
@@ -198,3 +199,4 @@ class ApproveItems (UpdateView):
 
 def ContactUs (request):
     return render(request, 'userT/ContactUs.html')
+

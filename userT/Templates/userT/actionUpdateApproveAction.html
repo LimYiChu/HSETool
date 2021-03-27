@@ -8,9 +8,9 @@
 <!--breadcrumbs-->
 <div class=''>
     <nav>
-      <ol class="breadcrumb">
+      <ol class="breadcrumb" style="background-image: linear-gradient(to right, #7b818b, #89919b, #96a0ac, #a4b1bc, #b2c1cd)">
         <li class="breadcrumb-item">
-          <a href="/main">Dashboard</a>
+          <a style="color:black" href="/main">Dashboard</a>
         </li>
         <li class="breadcrumb-item">
             <a href="/ActioneeList">Actionee List</a>
@@ -23,13 +23,31 @@
 
 <!--breadcrumbs - needs to be automated.-->
 
-<fieldset class="form-group" >
-    <form method="POST" enctype = 'multipart/form-data' class="dropzone">  
-        {% csrf_token %}  
-        {%crispy form%}
-     
-    </form> 
-</fieldset>
+<div class="card" style="background-image: linear-gradient(to right, #7b818b, #89919b, #96a0ac, #a4b1bc, #b2c1cd);;" >
+  <div class="card-header" >
+     <a style="color:black; font-size:large">Details</a>
+  </div>
+  <div id="card-element-10" >
+    <div class="card-body" style="text-indent: 10px; background-image: linear-gradient(to bottom, #959fae, #98a6b7, #9badbf, #9eb4c8, #a0bbd0);" >
+        <a style ="color: black;">
+         
+         
+          <fieldset class="form-group" >
+            <form method="POST" enctype = 'multipart/form-data' class="dropzone">  
+                {% csrf_token %}  
+                {%crispy form%}
+             
+            </form> 
+        </fieldset>
 
+        </a>
+      </div>
+
+
+
+
+
+
+</div>
 </div>
 {%endblock%}
