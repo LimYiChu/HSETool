@@ -1,15 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
+from django.urls import reverse, reverse_lazy
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from .forms import *
+from UploadExcel.forms import *
 from django.contrib.auth import get_user_model
 import matplotlib as plt
 from .businesslogic import *
 from .models import *
 from UploadExcel.models import ActionItems
-from django.views.generic import ListView, DetailView, UpdateView,TemplateView
+from django.views.generic import ListView, DetailView, UpdateView,TemplateView, CreateView
 #test for login required
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
@@ -84,17 +86,6 @@ def mainDashboard (request):
             }
     return render(request, 'userT/mainDashboard.html',Context)
 
-class yourActions (ListView):
-    template_name   =   'userT/Actionlist.html'
-    #queryset = ActionItems.objects.all()
-    model = ActionItems
-    #userOrganisation = user.organisation
-    def get_queryset(self):
-        userZOrg = self.request.user.organisation
-        userZDis =  self.request.user.disipline
-        userZSubD =  self.request.user.subdisipline
-        #return ActionItems.objects.filter(Organisation__icontains='Hess')
-        return ActionItems.objects.filter(Organisation__icontains=userZOrg).filter(Disipline__icontains=userZDis).filter(Subdisipline__icontains=userZSubD)
 
 def getActionDetails(request, id=None):
     Items = get_object_or_404(ActionItems,id=id)
@@ -186,15 +177,49 @@ class ApproveItems (UpdateView):
         return get_object_or_404(ActionItems, id=id1)
 
     def form_valid(self,form):
-        if (super().form_valid(form)):
+        
             #if form is valid just increment q series by 1 so it goes to Approver que so it goes to next queSeries
             if (self.request.POST.get('Reject')):
                 #If reject que series should be 0, but need another intermediate screen for comments
-                form.instance.QueSeries = 0
+                #form.instance.QueSeries = 0
+                
+                #Need to do below with HTTPResponseredirect because normal reverse seems to give an str error
+                #reverse simply redirects to url path so can call class RejectReason below since cant really call it from fucntion call directly
+                #makes sense since really django wants to work with views coming from URL paths- simply a strutured way of doing stuff
+                return HttpResponseRedirect(reverse ('RejectComments', kwargs={'forkeyid': form.instance.id}))
+                
             if (self.request.POST.get('Approve')): 
                 #  need another intermediate screen for approval no comments
                 form.instance.QueSeries += 1
-            return super().form_valid(form)
+                return super().form_valid(form)
+    
+    
 
-    def ContactUs (request):
-        return render(request, 'userT/ContactUs.html')
+
+def ContactUs (request):
+    return render(request, 'userT/ContactUs.html')
+
+class RejectReason (CreateView):
+    model = Comments
+    template_name = 'userT/rejectReason.html'
+    form_class = frmAddRejectReason
+    success_url = '/ApproverList/'
+
+    def form_valid (self,form):
+        if (self.request.POST.get('Reject')):
+            ID = self.kwargs['forkeyid']
+            #set using model manager since we want it back to actionee it has to be set at QueSeries=0
+            ActionItems.mdlQueSeries.mgrsetQueSeries(ID,0)
+            form.instance.Action_id = ID
+            form.instance.Username = self.request.user.email
+            return super().form_valid(form)
+        if (self.request.POST.get('Cancel')):
+            #cant use success url, its got assocaition with dict object, so have to use below
+            
+            return HttpResponseRedirect('/ApproverList/')
+    def get_context_data(self, **kwargs):
+
+        fk = self.kwargs['forkeyid']
+        context = super().get_context_data(**kwargs)
+        context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(fk)
+        return context

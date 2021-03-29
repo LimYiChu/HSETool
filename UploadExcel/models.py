@@ -34,6 +34,7 @@ class ActionItems(models.Model):
     objects = models.Manager()
     myActionItems = myActionItemManager()
     myActionItemsCount = myActionCount()
+    mdlQueSeries = mdlSetQueSeries()
     #Approver1RoItems = Approver1ItemManager()
     #Approver2RoItems = Approver2ItemManager()
  
@@ -43,3 +44,19 @@ class ActionItems(models.Model):
         
     def __str__(self): 
         return self.StudyActionNo   
+
+class Comments (models.Model):
+    Action = models.ForeignKey(ActionItems, on_delete=models.SET_NULL,related_name="comments",null=True)
+    Username = models.CharField(max_length=255,null=True,blank=True)
+    Reason = models.TextField(null=True,blank=True)
+    DateAdded = models.DateTimeField(auto_now_add=True)
+    objects = models.Manager()
+    mdlComments = mdlCommentsManager()
+    
+
+    class Meta:
+       verbose_name_plural = "Comments"
+
+    def __str__(self): 
+       return '%s' %(self.Action.StudyActionNo)
+       

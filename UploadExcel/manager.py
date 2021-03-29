@@ -1,11 +1,15 @@
 from django.db.models import Q
 from django.db import models
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 class QuerySet(models.QuerySet):
     def get_myActions(self,userorganisation,userdisipline,usersubdisipline,que):
         return self.filter(Organisation__icontains=userorganisation).filter(Disipline__icontains=userdisipline).filter(Subdisipline__icontains=usersubdisipline).filter(QueSeries__iexact=que)
     def get_myActionsCount(self,userorganisation,userdisipline,usersubdisipline,que):
         return self.filter(Organisation__icontains=userorganisation).filter(Disipline__icontains=userdisipline).filter(Subdisipline__icontains=usersubdisipline).filter(QueSeries__iexact=que).count ()
+    def get_mgrComments(self,fkey):
+        return self.filter(Action__pk=fkey)
+    
     # def get_Approver1(self,userorganisation,userdisipline,usersubdisipline):
     #     return self.filter(Organisation__icontains=userorganisation).filter(Disipline__icontains=userdisipline).filter(Subdisipline__icontains=usersubdisipline)
     # def get_Approver2(self,useremail):
@@ -36,6 +40,20 @@ class Approver1Manager(models.Manager):
     def get_myItemsbyCompDisSub(self,userorganisation,userdisipline,usersubdisipline):
         return self.get_queryset().get_Approver1(userorganisation,userdisipline,usersubdisipline)
 
+
+class mdlCommentsManager(models.Manager):
+    def get_queryset (self):
+        return QuerySet(self.model, using=self._db)
+    def mgrCommentsbyFK(self,Fkey):
+        return self.get_queryset().get_mgrComments(Fkey)
+
+#for setting queseries, really needs improvement because we can set any attibute for it
+class mdlSetQueSeries(models.Manager):
+    
+    def mgrsetQueSeries(self,ID, Que):
+        obj = get_object_or_404(self.model, id=ID)
+        obj.QueSeries = Que
+        obj.save(update_fields=["QueSeries"],using=self.db)
 # class Approver2Manager(models.Manager):
 #     def get_queryset (self):
 #         return RoutesQuerySet(self.model, using=self._db)

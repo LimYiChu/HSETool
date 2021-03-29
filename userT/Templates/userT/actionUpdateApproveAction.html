@@ -21,10 +21,11 @@
       </ol>
     </nav>
 
+   
 <!--breadcrumbs - needs to be automated.-->
 
 <fieldset class="form-group" >
-    <form method="POST" enctype = 'multipart/form-data' class="dropzone">  
+    <form method="POST" enctype = 'multipart/form-data' >  
         {% csrf_token %}  
         {%crispy form%}
      

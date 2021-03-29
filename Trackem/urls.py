@@ -45,7 +45,7 @@ urlpatterns = [
        
        #List path using class listview to get actionee and approver
         path('ActioneeList/', UserView.ActioneeList.as_view(), name='UserActionList' ),
-        path('ApproverList/', UserView.ApproverList.as_view(), name='UserApproverList' ),
+        path('ApproverList/', UserView.ApproverList.as_view(), name='ApproverList' ),
 
        
         re_path(r'^(?P<id>\d+)/$', userView.getActionDetails,name='getActionsDetails'),
@@ -69,5 +69,9 @@ urlpatterns = [
         path('reset/<uidb64>/<token>',auth_views.PasswordResetConfirmView.as_view(),name='password_reset_confirm'),
         path('password_reset/',auth_views.PasswordResetView.as_view(template_name='userT/password_reset_form.html'),name='password_reset'),
         path('reset/done/',auth_views.PasswordResetCompleteView.as_view(template_name='userT/password_reset_complete.html'),name='password_reset_complete'),
-        path('ContactUs/',UserView.ContactUs,name='ContactUs'),
+        #path('ContactUs/',UserView.ContactUs,name='ContactUs'),
+
+        #Following url /s for rejection 
+        re_path(r'Comments/(?P<forkeyid>\d+)$', UserView.RejectReason.as_view(), name='RejectComments' ),
+
       ]
