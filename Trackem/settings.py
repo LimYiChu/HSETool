@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'djcelery',
     #'django_seed',
 
 ]
@@ -165,3 +166,12 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'actionstracker@gmail.com'
 EMAIL_HOST_PASSWORD = 'Helloworld2021'
+
+#Celery Settings
+BROKER_URL = 'django://' #hold what is django broker
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
+djcelery.setup_loader()

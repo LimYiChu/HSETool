@@ -3,21 +3,36 @@
 <!doctype html>
 <html lang="en">
   
+  <body>
+    <!--breadcrumbs-->
+      
+        <nav>
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item normal">
+              <a href="/main">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active">
+                <a aria-current="page">Approver List</a>
+            </li>
+    
+          </ol>
+          
+        </nav>
+    
+    <!--breadcrumbs - needs to be automated.-->
+    
+    <div style="float:right">
+      <form class="form-inline" >
+        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" >
+        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+      </form>
+    </div>
+    
+    <br>
+    <br>
+    <br>
 
-<body>
-
-  <nav>
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item normal">
-        <a href="/main">Dashboard</a>
-      </li>
-      <li class="breadcrumb-item active">
-          <a aria-current="page">Approver List</a>
-      </li>
-    </ol>
-  </nav>
-
-      <div class="row" >
+      <div class="card" style="border-color: black" >
         <table class="table table-striped table-hover"> <!--set to maximum 20 rows per page-->
           <thead class="thead-dark">
             <tr>
@@ -56,19 +71,22 @@
             {% for routes  in approverL %}
               {% for x  in routes %}
             <tr>
-              <td><a class="article-title" href="{% url  'ApproveForm' x.id %}"">{{ x.StudyActionNo }}</a></td>
-              <td>{{ x.StudyName }}<</td>
-              <td>{{ x.Disipline }}<</td>
-              <td>{{ x.Subdisipline }}<</td>
-              <td>{{ x.Cause }}<</td>
-              <td>{{ x.Consequence }}<</td>
-              <td><a class="article-title" href="{% url  'ApproveForm' x.id %}"">{{ x.Recomendations }}</a><</td>
-              <td>{{ x.InitialRisk }}<</td>
-              <td>{{ x.Response }}<</td>
+              <td><a class="article-title" href="{% url  'ApproveForm' x.id %}">{{ x.StudyActionNo }}</a></td>
+              <td>{{ x.StudyName }}</td>
+              <td>{{ x.Disipline }}</td>
+              <td>{{ x.Subdisipline }}</td>
+              <td>{{ x.Cause }}</td>
+              <td>{{ x.Consequence }}</td>
+              <td><a class="article-title" href="{% url  'ApproveForm' x.id %}">{{ x.Recomendations }}</a></td>
+              <td>{{ x.InitialRisk }}</td>
+              <td>{{ x.Response }}</td>
               {%endfor%}
               {%endfor%}
             {%endfor%}
-            
+          </tbody>
+        </table>
+      </div>
+</body>     
+<br>
           
 {%endblock%}
-++

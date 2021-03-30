@@ -12,9 +12,19 @@
         <li class="breadcrumb-item">
           <a style="color:black" href="/main">Dashboard</a>
         </li>
+        {% if block.is_ApproverDetails %}<!--doesnt work...-->
+      
         <li class="breadcrumb-item">
-            <a href="/ActioneeList">Actionee List</a>
+          <a href="/ApproverList">Approver List</a> <!--add if to differentiate actionee and approver-->
+      </li>
+      {% else %}
+<li class="breadcrumb-item">
+            <a href="/ActioneeList">Actionee List</a> <!--add if to differentiate actionee and approver-->
         </li>
+{% endif %}
+
+  
+        
         <li class="breadcrumb-item active">
             <a aria-current="page">{{object.StudyActionNo}}</a>
         </li>
@@ -23,12 +33,12 @@
 
 <!--breadcrumbs - needs to be automated.-->
 
-<div class="card" style="background-image: linear-gradient(to right, #7b818b, #89919b, #96a0ac, #a4b1bc, #b2c1cd);;" >
+<div class="card"  >
   <div class="card-header" >
      <a style="color:black; font-size:large">Details</a>
   </div>
   <div id="card-element-10" >
-    <div class="card-body" style="text-indent: 10px; background-image: linear-gradient(to bottom, #959fae, #98a6b7, #9badbf, #9eb4c8, #a0bbd0);" >
+    <div class="card-body" >
         <a style ="color: black;">
          
          
