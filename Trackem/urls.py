@@ -45,7 +45,7 @@ urlpatterns = [
        
        #List path using class listview to get actionee and approver
         path('ActioneeList/', UserView.ActioneeList.as_view(), name='UserActionList' ),
-        path('ApproverList/', UserView.ApproverList.as_view(), name='UserApproverList' ),
+        path('ApproverList/', UserView.ApproverList.as_view(), name='ApproverList' ),
 
        
         re_path(r'^(?P<id>\d+)/$', userView.getActionDetails,name='getActionsDetails'),
@@ -72,4 +72,9 @@ urlpatterns = [
         path('ContactUs/',UserView.ContactUs,name='ContactUs'),
         #edward pdf
         path('testing/', login_required(UserView.testing), name='testingPDF' ),
+        #path('ContactUs/',UserView.ContactUs,name='ContactUs'),
+
+        #Following url /s for rejection 
+        re_path(r'Comments/(?P<forkeyid>\d+)$', UserView.RejectReason.as_view(), name='RejectComments' ),
+
       ]

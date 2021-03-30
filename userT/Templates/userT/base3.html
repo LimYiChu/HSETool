@@ -79,10 +79,8 @@
     <nav class="col-md-2" style="background-image: linear-gradient(to right, #f8f8f8, #fafafa, #fbfcfb, #fdfdfd, #ffffff); border-right:darkgrey solid 1px"> <!--hold not yet able to solve the side bar 100% height need to set in css-->
       <div class="sidebar-sticky">
         <ul class="nav flex-column">
-       
-
-  <br>
-  <div id="card-738960" style="margin-left:10px" >
+         <br>
+      <div id="card-738960" style="margin-left:10px" >
 
     <div class="card" style="background-color: rgb(52,58,64);">
               <div class="card-header" >
@@ -103,88 +101,73 @@
                </div>
               </div>
                  
-              
-           
-          
-            
-            
               <div class="card" style="background-color: rgb(52,58,64);">
               <div class="card-header">
                  <a class="collapsed card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-2" style="color:white">Reporting</a>
-              </div>
-              <div id="card-element-2" class="collapse">
-                <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
-                 Closed
-                </a>  </div>
-              <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
-                 Open
-                </a>  </div>
-                <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
-                  By Discipline
-                </a>  </div>
-                <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
-                Your Actions
-                </a> </div>
+                  </div>
+                  <div id="card-element-2" class="collapse">
+                    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
+                    Closed
+                    </a>  </div>
+                  <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
+                    Open
+                    </a>  </div>
+                    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
+                      By Discipline
+                    </a>  </div>
+                    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
+                    Your Actions
+                    </a> </div>
                 
               </div>
             </div>
 <!--HOLD this need to be set to visible only to certain users-->
             
-
-
             <div class="card" style="background-color: rgb(52,58,64);">
               <div class="card-header">
                  <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-4" style="color:white">Contact</a>
-              </div>
-              <div id="card-element-4" class="collapse">
-                <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/ContactUs" style ="color: black;">
-                 Contact Us
-                </a>  </div>
-               
-              </div>
+                  </div>
+                  <div id="card-element-4" class="collapse">
+                    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/ContactUs" style ="color: black;">
+                    Contact Us
+                    </a>  </div>
+                  
+                  </div>
             </div>
-
-
-
 
             <div class="card" style="background-color: rgb(52,58,64);">
               <div class="card-header">
                  <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-5" style="color:white">Profile Management</a>
               </div>
-              <div id="card-element-5" class="collapse">
-                 <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
-                 Profile
-                </a>  </div>
-                
-                 
-                <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="{% url 'password_change' %}" style ="color: black;">
-                  Change Password
-                 </a>  </div>
+                  <div id="card-element-5" class="collapse">
+                    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
+                    Profile
+                    </a>  </div>
+                    
+                    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="{% url 'password_change' %}" style ="color: black;">
+                      Change Password
+                    </a>  </div>
 
-                 <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="{% url 'password_reset' %}" style ="color: black;">
-                  Reset Password
-                 </a>  </div> 
+                    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="{% url 'password_reset' %}" style ="color: black;">
+                      Reset Password
+                    </a>  </div> 
                 
-               
               </div>
             </div>
 
-
-
-
 <!--If user is admin, then he can have extra buttons to manage the users etc.-->            
   {% if request.user.is_admin %}
-  <div class="card" style="background-color: rgb(52,58,64)">
-  <div class="card-header">
-     <a class="collapsed card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-3" style="color:white"> Admin</a>
-  </div>
-  <div id="card-element-3" class="collapse">
-    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
-     UploadExcel
-    </a>  </div>
-    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
-      UserManagement
-    </a>  </div>
+        <div class="card" style="background-color: rgb(52,58,64)">
+        <div class="card-header">
+          <a class="collapsed card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-3" style="color:white"> Admin</a>
+        </div>
+        <div id="card-element-3" class="collapse">
+          <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
+          UploadExcel
+          </a>  </div>
+          <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
+            UserManagement
+          </a>  </div>
  
     </div>
   </div>
@@ -194,17 +177,11 @@
 
 {% endif %}
 
-  
-
 </div>
 <br>
   
-  
-
-
     </nav>
     
-
     <main role="main" class="col-lg-10 pt-3 px-4" >
 
       <!--Username and Logout button including bottom border-->
@@ -245,5 +222,9 @@
 
 
               {%endblock%}
+
+              {%block RejectionComments%}
+
+              {% endblock %}
 </div>
 

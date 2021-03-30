@@ -24,7 +24,7 @@ class CommonLayout (Layout):
             Div (Field('Cause', readonly=True), css_class='col-md-12'),
             Div (Field('Safeguard', readonly=True), css_class='col-md-12'),
             Div (Field('Consequence', readonly=True), css_class='col-md-12'),
-            Div (Field('Recomendations', readonly=True), css_class='col-md-12'),
+            Div (Field('Recommendations', readonly=True), css_class='col-md-12'),
             css_class='row',#-dont know why i have to put this in so it aligns to left
             
             ),
@@ -72,8 +72,8 @@ class ApproverForm(forms.ModelForm):
         self.helper.form_show_labels = True
         self.helper.form_enctype = 'multipart/form-data'
         self.helper.form_method = 'POST'
-        self.helper.add_input(Submit('Approve', 'Approve for Next Level', css_class='btn-primary float-right'))
         self.helper.add_input(Submit('Reject', 'Reject', css_class='btn-primary float-right'))
+        self.helper.add_input(Submit('Approve', 'Approve & Sign', css_class='btn-primary float-right'))
         self.helper.layout = Layout(
         CommonLayout(),
         Div(
@@ -90,3 +90,45 @@ class ApproverForm(forms.ModelForm):
         model = ActionItems
         fields = '__all__'
     
+class frmAddRejectReason(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(frmAddRejectReason, self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_method = 'POST'
+        self.helper.add_input(Submit('Cancel', 'Cancel', css_class='btn-primary float-right'))
+        self.helper.add_input(Submit('Reject', 'Reject with Comments', css_class='btn-primary float-right'))
+        
+        self.helper.layout = Layout(
+
+            Div(
+            Div (Field('Reason') ,css_class='col-md-12'), 
+            Div (Field('Username', type="hidden")),
+            
+            ),
+        )
+    
+    class Meta:
+        model = Comments
+        fields = ('Reason','Username')
+
+class frmMultipleFiles(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(frmAddRejectReason, self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_method = 'POST'
+        self.helper.add_input(Submit('Cancel', 'Cancel', css_class='btn-primary float-right'))
+        self.helper.add_input(Submit('Reject', 'Reject with Comments', css_class='btn-primary float-right'))
+        
+        self.helper.layout = Layout(
+
+            Div(
+            Div (Field('Attachment') ,css_class='col-md-12'), 
+            Div (Field('Username', type="hidden")),
+            
+            ),
+        )
+    
+    class Meta:
+        model = Attachments
+        fields = ('Attachment','Username')
+
