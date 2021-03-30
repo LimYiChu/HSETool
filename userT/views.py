@@ -15,8 +15,10 @@ from django.views.generic import ListView, DetailView, UpdateView,TemplateView, 
 #test for login required
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-import pypdftk
+#import pypdftk
 from django.views.generic.base import ContextMixin
+from django.core.mail import send_mail
+
 #from .forms import UserRegisterForm
 # Create your views here.
 

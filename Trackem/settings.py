@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'djcelery',
     #'django_seed',
 
 ]
@@ -88,7 +89,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'trackem',
         'USER': 'root',
-        'PASSWORD': 'Nice10day',
+        'PASSWORD': 'Helloworld2021',
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -157,3 +158,20 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 MEDIA_ROOT=BASE_DIR
 #LOGIN_REDIRECT_URL = 'Login'
 #CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'actionstracker@gmail.com'
+EMAIL_HOST_PASSWORD = 'Helloworld2021'
+
+#Celery Settings
+BROKER_URL = 'django://' #hold what is django broker
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
+djcelery.setup_loader()

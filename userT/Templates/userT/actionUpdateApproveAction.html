@@ -9,13 +9,23 @@
 <!--breadcrumbs-->
 <div class=''>
     <nav>
-      <ol class="breadcrumb">
+      <ol class="breadcrumb" style="background-image: linear-gradient(to right, #7b818b, #89919b, #96a0ac, #a4b1bc, #b2c1cd)">
         <li class="breadcrumb-item">
-          <a href="/main">Dashboard</a>
+          <a style="color:black" href="/main">Dashboard</a>
         </li>
+        {% if block.is_ApproverDetails %}<!--doesnt work...-->
+      
         <li class="breadcrumb-item">
-            <a href="/ActioneeList">Actionee List</a>
+          <a href="/ApproverList">Approver List</a> <!--add if to differentiate actionee and approver-->
+      </li>
+      {% else %}
+<li class="breadcrumb-item">
+            <a href="/ActioneeList">Actionee List</a> <!--add if to differentiate actionee and approver-->
         </li>
+{% endif %}
+
+  
+        
         <li class="breadcrumb-item active">
             <a aria-current="page">{{object.StudyActionNo}}</a>
         </li>
@@ -25,13 +35,27 @@
    
 <!--breadcrumbs - needs to be automated.-->
 
-<fieldset class="form-group" >
-    <form method="POST" enctype = 'multipart/form-data' >  
-        {% csrf_token %}  
-        {%crispy form%}
-       
-    </form> 
-</fieldset>
+<div class="card"  >
+  <div class="card-header" >
+     <a style="color:black; font-size:large">Details</a>
+  </div>
+  <div id="card-element-10" >
+    <div class="card-body" >
+        <a style ="color: black;">
+         
+         
+          <fieldset class="form-group" >
+            <form method="POST" enctype = 'multipart/form-data' class="dropzone">  
+                {% csrf_token %}  
+                {%crispy form%}
+             
+            </form> 
+        </fieldset>
+
+        </a>
+      </div>
+
+
 <div class="row" >
     <table class="table table-striped table-hover"> <!--set to maximum 20 rows per page-->
         <thead class="thead-dark">
@@ -59,5 +83,13 @@
 
         </tbody>
     </div>
+
+
+
+
+
+
+
+</div>
 </div>
 {%endblock%}

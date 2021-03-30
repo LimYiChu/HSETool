@@ -49,7 +49,7 @@ urlpatterns = [
 
        
         re_path(r'^(?P<id>\d+)/$', userView.getActionDetails,name='getActionsDetails'),
-        path('password_reset/', auth_views.PasswordResetView.as_view(template_name='userT/reset.html') ,name='password_reset'),
+       
         path('routesX/', userView.getuserRoutes, name='routesX' ),
         #path('ActioneeList/<int:pk>/', userView.ActionDetails(),name='ActionsDetails'),
        
