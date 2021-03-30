@@ -15,11 +15,9 @@ from django.views.generic import ListView, DetailView, UpdateView,TemplateView, 
 #test for login required
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-
+from django.views.generic.base import ContextMixin
 #from .forms import UserRegisterForm
 # Create your views here.
-
-
 
 from UploadExcel.forms import *
 @csrf_exempt
@@ -39,8 +37,7 @@ def register (request):
         return render(request, 'userT/register.html', {'form': form})
 
 def mainDashboard (request):
-    
-    
+        
     #for chart.js Html only
     labelsActionee = []
     dataActionee = []
@@ -123,9 +120,10 @@ class ActioneeList (ListView):
         userZemail = self.request.user.email
         ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
         actioneeItems = blfuncActioneeComDisSub(ActioneeRoutes,0)
-        print
+     
         return actioneeItems
-
+    
+    
 class ApproverList (ListView):
     template_name   =   'userT/actionListApprover.html'
     
@@ -165,11 +163,17 @@ class UpdateActioneeItems (UpdateView):
             
             form.instance.QueSeries += 1
             return super().form_valid(form)
+
+    def get_context_data(self,**kwargs):
+        fk = self.kwargs.get("id")
+        context = super().get_context_data(**kwargs)
+        context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(fk)
+        return context
     
 class ApproveItems (UpdateView):
     template_name   =   'userT/actionUpdateApproveAction.html'
     form_class = ApproverForm
-    second_form_class = ApproverForm #-to be changed to multiple files
+    second_form_class = frmAddRejectReason #-loading multiple forms
     success_url = '/ApproverList/'
     
     def get_object(self):
@@ -193,9 +197,6 @@ class ApproveItems (UpdateView):
                 form.instance.QueSeries += 1
                 return super().form_valid(form)
     
-    
-
-
 def ContactUs (request):
     return render(request, 'userT/ContactUs.html')
 
