@@ -16,6 +16,22 @@
     <!--Chartjs link and not sure of version-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
+
+    
+    <style>
+      div.sticky {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 50px;
+        padding: 30px;
+        font-size: 20px;
+        width: 100%;
+      }
+      </style>
+
+
+
     <title>Dashboard</title>
    
   </head>
@@ -46,7 +62,7 @@
 
   
   <div class="row">
-    <nav class="sidebar-sticky col-md-2" style="background-image: linear-gradient(to right, #f8f8f8, #fafafa, #fbfcfb, #fdfdfd, #ffffff); border-right:darkgrey solid 1px"> <!--hold not yet able to solve the side bar 100% height need to set in css-->
+    <div class="sidebar-sticky col-md-2" style="background-image: linear-gradient(to right, #f8f8f8, #fafafa, #fbfcfb, #fdfdfd, #ffffff); border-right:darkgrey solid 1px"> <!--hold not yet able to solve the side bar 100% height need to set in css-->
       
         <ul class="nav flex-column">
        
@@ -93,7 +109,7 @@
                 
               </div>
             </div>
-<!--HOLD this need to be set to visible only to certain users-->
+
             
             <div class="card" style="background-color: rgb(52,58,64);">
               <div class="card-header">
@@ -152,11 +168,63 @@
 
 {% endif %}
 
+
+
+
 </div>
+
+
         </ul>
-        
+
+
+       
+          
+          
+          
+          
+          
     <br>
-    </nav>
+
+    <div class="sticky" style="font-size:medium"> 
+          
+   
+
+      <br>
+     
+        <table class="sticky table table-striped table-hover" > <!--set to maximum 20 rows per page-->
+          <thead class="thead-dark ">
+            <tr>
+              <th>
+                StudyActionNo
+              </th>
+              <th>
+                Rejection Reason
+              </th>
+              
+            
+              
+             </tr>
+          </thead>
+          <tbody>
+            <th>
+             1
+            </th>
+            <th>
+             No atachments attached. 
+            </th>
+            
+            </tbody>
+            </table></div>
+       
+
+    
+      </div>
+    
+
+
+
+
+
     
     <main role="main" class="col-lg-10 pt-3 px-4" >
 

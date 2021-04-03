@@ -38,12 +38,13 @@ def Load (request):
                     ProjectPhase=row[4],
                     Cause= row [5],
                     Consequence= row[6],
-                    Recomendations= row[7],
+                    Recommendations= row[7],
                     Organisation=row[8],
                     Disipline=row[9],
                     Subdisipline=row[10],
                     FutureAction=row[11],
                     DueDate=row[12],
+                    
                     )
     else:
         form = UploadExlForm()
@@ -70,7 +71,7 @@ def LoadRoutes (request):
                     ProjectPhase=row[4],
                     Cause= row [5],
                     Consequence= row[6],
-                    Recomendations= row[7],
+                    Recommendations= row[7],
                     Organisation=row[8],
                     Disipline=row[9],
                     Subdisipline=row[10],
