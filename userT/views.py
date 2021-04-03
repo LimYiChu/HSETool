@@ -248,3 +248,26 @@ def testing(self):
         )
     return HttpResponse("this is a test")
         
+class multiplefiles (CreateView):
+    model = Attachments
+    template_name   =   'userT/multiplefiles.html'
+    form_class = frmMultipleFiles
+    #second_form_class = frmAddRejectReason #-loading multiple forms
+    success_url = '/ApproverList/'
+    
+    def get_object(self):
+        #id1 = self.kwargs.get("id")
+        return get_object_or_404(ActionItems, id=45)
+
+    def form_valid (self,form):
+        if (self.request.POST.get('Upload')):
+            ID = self.kwargs['forkeyid']
+            #set using model manager since we want it back to actionee it has to be set at QueSeries=0
+            ActionItems.mdlQueSeries.mgrsetQueSeries(ID,0)
+            form.instance.Action_id = ID
+            form.instance.Username = self.request.user.email
+            return super().form_valid(form)
+        if (self.request.POST.get('Cancel')):
+            #cant use success url, its got associattion with dict object, so have to use below
+
+             return HttpResponseRedirect('/ApproverList/')

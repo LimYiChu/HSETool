@@ -95,9 +95,8 @@ class frmAddRejectReason(forms.ModelForm):
         super(frmAddRejectReason, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_method = 'POST'
-        self.helper.add_input(Submit('Cancel', 'Cancel', css_class='btn-primary float-right'))
         self.helper.add_input(Submit('Reject', 'Reject with Comments', css_class='btn-primary float-right'))
-        
+        self.helper.add_input(Submit('Cancel', 'Cancel', css_class='btn-primary float-right'))
         self.helper.layout = Layout(
 
             Div(
@@ -113,18 +112,19 @@ class frmAddRejectReason(forms.ModelForm):
 
 class frmMultipleFiles(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super(frmAddRejectReason, self).__init__(*args, **kwargs)
+        super(frmMultipleFiles, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_method = 'POST'
+        self.helper.add_input(Submit('Upload', 'Upload Files', css_class='btn-primary float-right'))
         self.helper.add_input(Submit('Cancel', 'Cancel', css_class='btn-primary float-right'))
-        self.helper.add_input(Submit('Reject', 'Reject with Comments', css_class='btn-primary float-right'))
+        
         
         self.helper.layout = Layout(
 
             Div(
-            Div (Field('Attachment') ,css_class='col-md-12'), 
+            Div (Field('Attachment', type="file" ,multiple="true",size="50", id="Attachment", onchange="javascript:updateList()"), css_class='col-md-12'), 
             Div (Field('Username', type="hidden")),
-            
+            Div()
             ),
         )
     

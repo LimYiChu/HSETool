@@ -61,7 +61,7 @@ urlpatterns = [
         path('ActioneeList/<int:id>/update', UserView.UpdateActioneeItems.as_view(), name='UpdateForm' ),
         path('ActioneeList/<int:id>/', UserView.DetailActioneeItems.as_view(), name='DetailsForm' ),
         path('ApproverList/<int:id>/approve', UserView.ApproveItems.as_view(), name='ApproveForm' ),
-
+        path('multiplefiles/', UserView.multiplefiles.as_view(), name='ApproveForm' ),
         #Following URLs are for reseting and changing password. Note that the reset password via email is yet to be set up. Right now please obtain the link in the terminal upon requesting password reset.
         path('password_change/done/',auth_views.PasswordChangeDoneView.as_view(template_name='userT/password_change_done.html'),name='password_change_done'),
         path('password_change/',auth_views.PasswordChangeView.as_view(template_name='userT/password_change.html'),name='password_change'),
