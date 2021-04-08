@@ -146,9 +146,9 @@
 <!--If user is admin, then he can have extra buttons to manage the users etc.-->            
   {% if request.user.is_admin %}
   <div class="card" style="background-color: rgb(52,58,64)">
-  <div class="card-header">
-     <a class="collapsed card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-3" style="color:white"> Admin</a>
-  </div>
+      <div class="card-header">
+        <a class="collapsed card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-3" style="color:white"> Admin</a>
+      </div>
   <div id="card-element-3" class="collapse">
     <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="#" style ="color: black;">
      UploadExcel
@@ -168,63 +168,15 @@
 
 {% endif %}
 
-
-
-
 </div>
 
-
         </ul>
-
-
-       
-          
-          
-          
-          
-          
+ 
     <br>
-
-    <div class="sticky" style="font-size:medium"> 
-          
-   
-
-      <br>
-     
-        <table class="sticky table table-striped table-hover" > <!--set to maximum 20 rows per page-->
-          <thead class="thead-dark ">
-            <tr>
-              <th>
-                StudyActionNo
-              </th>
-              <th>
-                Rejection Reason
-              </th>
-              
-            
-              
-             </tr>
-          </thead>
-          <tbody>
-            <th>
-             1
-            </th>
-            <th>
-             No atachments attached. 
-            </th>
-            
-            </tbody>
-            </table></div>
-       
-
+      {%block RejectReason%}
     
+       {%endblock%}
       </div>
-    
-
-
-
-
-
     
     <main role="main" class="col-lg-10 pt-3 px-4" >
 
@@ -239,9 +191,6 @@
      </div>
         
     
-
-
-
               {%block Actionee%}
 
 

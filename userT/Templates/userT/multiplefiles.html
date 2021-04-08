@@ -1,7 +1,7 @@
 {% extends "userT\base3.html"%}
 
 {%load crispy_forms_tags %}
-{% crispy form form.helper%}
+
 
 {% block ApproverDetails%}
 
@@ -39,37 +39,11 @@
 <fieldset class="form-group" >
     <form method="POST" enctype = 'multipart/form-data' >  
         {% csrf_token %}  
-        {%crispy form%}
+        {%crispy form_multi form_multi.helper%}
        
     </form> 
 </fieldset>
 <div id="fileList"></div>
-<div class="row" >
-    <table class="table table-striped table-hover"> <!--set to maximum 20 rows per page-->
-        <thead class="thead-dark">
-            <tr>
-            <th>
-                DateRejected
-            </th>
-            <th>
-            Previous Rejection Reason
-            </th>
-            <th>
-            Username
-            </th>
-            </tr>
-        </thead>
-        <tbody>
-            {%for items in Rejectcomments %}
 
-            <tr>
-            <td>{{ items.DateAdded }}</td>
-            <td>{{ items.Reason }}<</td>
-            <td>{{ items.Username}}<</td>
-            </tr>
-            {%endfor%}
-
-        </tbody>
-    </div>
 </div>
 {%endblock%}

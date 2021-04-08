@@ -21,8 +21,8 @@ from userT import views as UserView
 from django.contrib.auth import views as auth_views
 #testing for redirect url when not logged in
 from django.contrib.auth.decorators import login_required
-
-
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
       # Load excel actions, routes ,
@@ -58,10 +58,11 @@ urlpatterns = [
         #path('UA/', UserView.UserActions, name='UserActions' ),
 
         #Following urls are for actionee approvers updates and approvals
-        path('ActioneeList/<int:id>/update', UserView.UpdateActioneeItems.as_view(), name='UpdateForm' ),
+        path('ActioneeList/<int:pk>/update', UserView.ActioneeItemsMixin.as_view(), name='ActioneeFormMixin' ),
         path('ActioneeList/<int:id>/', UserView.DetailActioneeItems.as_view(), name='DetailsForm' ),
-        path('ApproverList/<int:id>/approve', UserView.ApproveItems.as_view(), name='ApproveForm' ),
-        path('multiplefiles/', UserView.multiplefiles.as_view(), name='ApproveForm' ),
+        #path('ApproverList/<int:id>/approve', UserView.ApproveItems.as_view(), name='ApproveForm' ),
+        path('ApproverList/<int:pk>/approve', UserView.ApproveItemsMixin.as_view(), name='ApproveFormMixin' ),
+
         #Following URLs are for reseting and changing password. Note that the reset password via email is yet to be set up. Right now please obtain the link in the terminal upon requesting password reset.
         path('password_change/done/',auth_views.PasswordChangeDoneView.as_view(template_name='userT/password_change_done.html'),name='password_change_done'),
         path('password_change/',auth_views.PasswordChangeView.as_view(template_name='userT/password_change.html'),name='password_change'),
@@ -76,5 +77,8 @@ urlpatterns = [
 
         #Following url /s for rejection 
         re_path(r'Comments/(?P<forkeyid>\d+)$', UserView.RejectReason.as_view(), name='RejectComments' ),
-
+        re_path(r'multiplefiles/(?P<forkeyid>\d+)$', UserView.multiplefiles, name='multiplefiles' ),
       ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
