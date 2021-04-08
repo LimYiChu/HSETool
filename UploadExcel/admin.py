@@ -7,3 +7,4 @@ admin.site.register(UploadExl)
 admin.site.register(ActionItems, ActionItemsAdmin)
 admin.site.register(Comments)
 
+admin.site.register(Attachments)

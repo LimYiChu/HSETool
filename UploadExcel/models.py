@@ -60,7 +60,7 @@ class Comments (models.Model):
        return '%s ---%s' %(self.Action.StudyActionNo, self.Username)
 
 class Attachments (models.Model):
-    Action = models.ForeignKey(ActionItems, on_delete=models.SET_NULL,related_name="Attachment",null=True)
+    Action = models.ForeignKey(ActionItems, on_delete=models.SET_NULL,null=True) #cant have related name as it throws a spanner in the works
     Username = models.CharField(max_length=255,null=True,blank=True)
     Attachment      =   models.FileField(upload_to='excelUpload',null=True,blank=True)
     DateAdded = models.DateTimeField(auto_now_add=True)
