@@ -15,7 +15,7 @@ from django.views.generic import ListView, DetailView, UpdateView,TemplateView, 
 #test for login required
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-#import pypdftk
+import pypdftk
 from django.views.generic.base import ContextMixin
 from django.views.generic.edit import FormMixin
 from django.core.mail import send_mail
@@ -342,21 +342,30 @@ def multiplefiles (request, **kwargs):
     return render(request, 'userT/multiplefiles.html',context)
 
 
+def GeneratePDF (request):
+    if (request.POST.get('GeneratePDF')):      
+        x=ActionItems.objects.filter(StudyActionNo__icontains='PSD')#  pk__icontains
+        y= x.values()
+        filename = [] # for appending filename place before for loop
+        for item in y :            
+            i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file  
+            j = (i + '.pdf')  # easier to breakdown j           
+            del item["id"]      
+            data_dict=item       
+            PDF_PATH = 'static/multiple.pdf'             
+            out_file = 'static/media/' + j   # sending file to media folder inside static folder                                                        
+            generated_pdf = pypdftk.fill_form(
+                pdf_path = PDF_PATH,
+                datas = data_dict,
+                out_file = out_file,                             
+            )
+            #filename=[generated_pdf]
+            filename.append(str(generated_pdf)) #can only append str                   
+            context={
+                'filename' : filename,
+                'table': True
+            }
+            print(context)                    
+        return render(request, 'userT/GeneratePDF.html' ,context)                    
+    return render(request, 'userT/GeneratePDF.html')
 
-
-#Develop PDF
-def testing(self):    
-    x=ActionItems.objects.filter(pk__icontains=20)
-    y= x.values()
-    for item in y :
-        i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file (refer to line 216)
-        del item["id"]      
-        data_dict=item
-        PDF_PATH = 'multiple.pdf' 
-        out_file = i + 'out_file.pdf' 
-        generated_pdf = pypdftk.fill_form(
-            pdf_path = PDF_PATH,
-            datas = data_dict,
-            out_file = out_file,
-        )
-    return HttpResponse("this is a test")

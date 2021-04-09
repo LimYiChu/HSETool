@@ -1,0 +1,79 @@
+{% extends "userT\base3.html"%}
+{% load static %}
+{% block Actioneelist%}
+<!doctype html>
+<html lang="en">
+{%load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<body>
+    <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item normal">
+            <a href="/main">Admin</a>
+          </li>
+          <li class="breadcrumb-item active">
+              <a aria-current="page">Generate PDF</a>
+          </li>
+  
+        </ol>
+        
+      </nav>
+      <div style="float:right">
+        <form  action="#" method="POST"> 
+            {%csrf_token%}  
+            <button class="btn btn-secondary my-2 my-sm-0"  name ="GeneratePDF" type="submit" value="Click"   >Cancel(to be linked to main page)</button>
+            <button class="btn btn-secondary my-2 my-sm-0"  name ="GeneratePDF" type="submit" value="Click"   >Generate PDF</button>
+          </form>
+      </div>
+      <br>
+      <br>
+      <br>
+      {% if table %}
+      <div class="card" style="border-color: black;">
+        <table class="table table-striped table-hover" > <!--set to maximum 20 rows per page-->
+          <thead class="thead-dark ">
+            <tr>
+              <th>
+                StudyActionNo
+              </th>
+             </tr>
+          </thead>
+          <tbody>      
+            <tr>
+              <td>
+                  {% for x in filename %}
+                <a href=/{{x}}> {{x}}</a> 
+                <br>                                    
+                {% endfor%}
+            </td>
+            <td>
+                {% for x in filename %}
+              <a href=/{{x}}> {{x}}</a> 
+              <br>                                    
+              {% endfor%}
+          </td>
+
+              </tr>
+              <tr>
+                <td>
+                    {% for x in filename %}
+                  <a href=/{{x}}> {{x}}</a> 
+                  <br>                                    
+                  {% endfor%}
+              </td>
+              <td>
+                  {% for x in filename %}
+                <a href=/{{x}}> {{x}}</a> 
+                <br>                                    
+                {% endfor%}
+            </td>
+  
+                </tr>
+          </tbody>
+              </div>
+              {% endif %}
+            
+        </body>
+{% endblock %}
+{% endblock %}

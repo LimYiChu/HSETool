@@ -23,6 +23,7 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.conf.urls.static import static
 from django.conf import settings
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
       # Load excel actions, routes ,
@@ -71,13 +72,15 @@ urlpatterns = [
         path('password_reset/',auth_views.PasswordResetView.as_view(template_name='userT/password_reset_form.html'),name='password_reset'),
         path('reset/done/',auth_views.PasswordResetCompleteView.as_view(template_name='userT/password_reset_complete.html'),name='password_reset_complete'),
         path('ContactUs/',UserView.ContactUs,name='ContactUs'),
-        #edward pdf
-        path('testing/', login_required(UserView.testing), name='testingPDF' ),
+        
+        
         #path('ContactUs/',UserView.ContactUs,name='ContactUs'),
 
         #Following url /s for rejection 
         re_path(r'Comments/(?P<forkeyid>\d+)$', UserView.RejectReason.as_view(), name='RejectComments' ),
         re_path(r'multiplefiles/(?P<forkeyid>\d+)$', UserView.multiplefiles, name='multiplefiles' ),
+        #pdf path
+        path('GeneratePDF/',UserView.GeneratePDF,name='GeneratePDF'),
       ]
 
 if settings.DEBUG:
