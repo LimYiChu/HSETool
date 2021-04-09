@@ -81,6 +81,8 @@ urlpatterns = [
         re_path(r'multiplefiles/(?P<forkeyid>\d+)$', UserView.multiplefiles, name='multiplefiles' ),
         #pdf path
         path('GeneratePDF/',UserView.GeneratePDF,name='GeneratePDF'),
+        #email path
+        path('ReportingTable/',UserView.ReportingTable,name='ReportingTable'),
       ]
 
 if settings.DEBUG:

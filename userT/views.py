@@ -19,6 +19,7 @@ import pypdftk
 from django.views.generic.base import ContextMixin
 from django.views.generic.edit import FormMixin
 from django.core.mail import send_mail
+from Trackem.settings import EMAIL_HOST_USER
 
 
 #import mixins
@@ -368,4 +369,18 @@ def GeneratePDF (request):
             print(context)                    
         return render(request, 'userT/GeneratePDF.html' ,context)                    
     return render(request, 'userT/GeneratePDF.html')
+
+def ReportingTable(request):
+    sub = Subscribe()
+    if request.method == 'POST':
+        sub = Subscribe(request.POST)
+        subject = 'Test for sending email overview'
+        message = 'A summary table should present here'
+        recepient = str (sub ['Email'].value())
+        #html_content = render_to_string('ReportingTable.html',context)
+        #text_content = strip_tags(html_content)
+        send_mail(subject, message, EMAIL_HOST_USER, [recepient], fail_silently = False)
+        return render(request, 'userT/ReportingTable.html', {'recepient': recepient})
+    return render (request, 'userT/ReportingTable.html', {'form':sub})
+
 

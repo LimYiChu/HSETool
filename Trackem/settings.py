@@ -167,6 +167,7 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'actionstracker@gmail.com'
 EMAIL_HOST_PASSWORD = 'Helloworld2021'
+EMAIL_USE_SSL = False
 
 #Celery Settings
 #BROKER_URL = 'django://' #hold what is django broker
