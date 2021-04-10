@@ -345,10 +345,6 @@ def multiplefiles (request, **kwargs):
 
 def GeneratePDF (request):
     filename = [] # for appending filename place before for loop
-    context={
-                'filename' : filename,
-                'table': True
-            }
     if (request.POST.get('GeneratePDF')):      
         x=ActionItems.objects.filter(StudyActionNo__icontains='PSD')#  pk__icontains
         y= x.values()    
@@ -365,7 +361,12 @@ def GeneratePDF (request):
                 out_file = out_file,                             
             )
             #filename=[generated_pdf]
-            filename.append(str(generated_pdf)) #can only append str                   
+            filename.append(str(generated_pdf)) #can only append str
+            context={
+
+                'filename' : filename,
+                'table': True
+            }                  
             print(context) # context now outside for loop                   
         return render(request, 'userT/GeneratePDF.html' ,context)                    
     return render(request, 'userT/GeneratePDF.html')
