@@ -20,6 +20,8 @@ from django.views.generic.base import ContextMixin
 from django.views.generic.edit import FormMixin
 from django.core.mail import send_mail
 from Trackem.settings import EMAIL_HOST_USER
+from django.template.loader import render_to_string
+from django.template import loader
 
 
 #import mixins
@@ -376,9 +378,10 @@ def ReportingTable(request):
         subject = 'Test for sending email overview'
         message = 'A summary table should present here'
         recepient = str (sub ['Email'].value())
+        html_message = render_to_string('C:\\Users\\E\\Desktop\\HSETool-2\\userT\\Templates\\userT\\ReportingTable.html')
         #html_content = render_to_string('ReportingTable.html',context)
         #text_content = strip_tags(html_content)
-        send_mail(subject, message, EMAIL_HOST_USER, [recepient], fail_silently = False)
+        send_mail(subject, message, EMAIL_HOST_USER, [recepient], fail_silently = False,html_message=html_message)
         return render(request, 'userT/ReportingTable.html', {'recepient': recepient})
     return render (request, 'userT/ReportingTable.html', {'form':sub})
 
