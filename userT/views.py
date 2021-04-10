@@ -346,7 +346,7 @@ def multiplefiles (request, **kwargs):
 def GeneratePDF (request):
     filename = [] # for appending filename place before for loop
     if (request.POST.get('GeneratePDF')):      
-        x=ActionItems.objects.all() #  pk__icontains
+        x=ActionItems.objects.all() #  pk__icontains #the row shall not contain "." (typcially in header)
         y= x.values()          
         for item in y :            
             i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file  

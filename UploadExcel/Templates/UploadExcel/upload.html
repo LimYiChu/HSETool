@@ -21,7 +21,7 @@
       </nav>
       <form action="" method="POST" enctype="multipart/form-data">
         {% csrf_token %}  
-        {%crispy form%}
+        {{form| crispy}}
       
         <button type=submit>Confirm file</button></form>
             
