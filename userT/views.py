@@ -346,10 +346,11 @@ def multiplefiles (request, **kwargs):
 def GeneratePDF (request):
     filename = [] # for appending filename place before for loop
     if (request.POST.get('GeneratePDF')):      
-        x=ActionItems.objects.filter(StudyActionNo__icontains='PSD')#  pk__icontains
-        y= x.values()    
+        x=ActionItems.objects.all() #  pk__icontains
+        y= x.values()          
         for item in y :            
             i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file  
+            print(i)
             j = (i + '.pdf')  # easier to breakdown j           
             del item["id"]      
             data_dict=item       
@@ -360,15 +361,13 @@ def GeneratePDF (request):
                 datas = data_dict,
                 out_file = out_file,                             
             )
-            #filename=[generated_pdf]
-            filename.append(str(generated_pdf)) #can only append str
+            filename.append(str(generated_pdf)) #can only append str   
             context={
-
-                'filename' : filename,
-                'table': True
-            }                  
+                 'filename' : filename,
+                 'table': True
+            }
             print(context) # context now outside for loop                   
-        return render(request, 'userT/GeneratePDF.html' ,context)                    
+        return render(request, 'userT/GeneratePDF.html', context)                    
     return render(request, 'userT/GeneratePDF.html')
 
 def ReportingTable(request):
