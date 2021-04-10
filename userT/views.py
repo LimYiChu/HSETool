@@ -346,11 +346,10 @@ def multiplefiles (request, **kwargs):
 def GeneratePDF (request):
     filename = [] # for appending filename place before for loop
     if (request.POST.get('GeneratePDF')):      
-        x=ActionItems.objects.all() #  pk__icontains #the row shall not contain "." (typcially in header)
+        x=ActionItems.objects.all()  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
         y= x.values()          
         for item in y :            
             i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file  
-            print(i)
             j = (i + '.pdf')  # easier to breakdown j           
             del item["id"]      
             data_dict=item       
