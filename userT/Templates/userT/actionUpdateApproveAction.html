@@ -29,8 +29,8 @@
 
         <tr>
         <td>{{ items.DateAdded }}</td>
-        <td>{{ items.Reason }}<</td>
-        <td>{{ items.Username}}<</td>
+        <td>{{ items.Reason }}</td>
+        <td>{{ items.Username}}</td>
         </tr>
         {%endfor%}
         </tbody>
@@ -45,18 +45,17 @@
 <!--breadcrumbs-->
 <div class=''>
     <nav>
-      <ol class="breadcrumb" style="background-image: linear-gradient(to right, #7b818b, #89919b, #96a0ac, #a4b1bc, #b2c1cd)">
+      <ol class="breadcrumb" >
         <li class="breadcrumb-item">
           <a style="color:black" href="/main">Dashboard</a>
         </li>
-        {% if block.is_ApproverDetails %}<!--doesnt work...-->
-      
+        {% if block.is_ApproverDetails %}<!--doesnt work...-->      
         <li class="breadcrumb-item">
-          <a href="/ApproverList">Approver List</a> <!--add if to differentiate actionee and approver-->
+          <a href="/ApproverList">Actions</a> <!--add if to differentiate actionee and approver-->
       </li>
-      {% else %}
-<li class="breadcrumb-item">
-            <a href="/ActioneeList">Actionee List</a> <!--add if to differentiate actionee and approver-->
+        {% else %}
+        <li class="breadcrumb-item">
+            <a href="/ActioneeList">Actions</a> <!--add if to differentiate actionee and approver-->
         </li>
 {% endif %}
 
