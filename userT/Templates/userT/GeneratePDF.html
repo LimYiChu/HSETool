@@ -10,10 +10,10 @@
     <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item normal">
-            <a href="/main">Admin</a>
+            <a href="/main">Dashboard</a>
           </li>
           <li class="breadcrumb-item active">
-              <a aria-current="page">Generate PDF</a>
+              <a aria-current="page">Generate Close-Out Sheet</a>
           </li>
   
         </ol>
@@ -21,12 +21,11 @@
       </nav>
       <div style="float:right">
         <div style="float:right col-md-12">
-          <input type="submit" value="XXX">
-          <input type="submit" value="YYY">
+        
         </div>
         <form  action="#" method="POST"> 
             {%csrf_token%}  
-            <button class="btn btn-secondary my-2 my-sm-0"  name ="/main" type="submit" value="Click">Cancel(to be linked to main page)</button>
+            <button class="btn btn-secondary my-2 my-sm-0"  name ="/main" type="submit" value="Click">Cancel</button>
             <button class="btn btn-secondary my-2 my-sm-0"  name ="GeneratePDF" type="submit" value="Click"   >Generate PDF</button>
           </form>
       </div>
