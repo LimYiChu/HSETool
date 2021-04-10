@@ -19,6 +19,7 @@ from django.conf import settings
 from django.views.generic.base import ContextMixin
 from django.views.generic.edit import FormMixin
 from django.core.mail import send_mail
+from .reports import *
 
 
 #import mixins
@@ -223,12 +224,11 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
         return super().get(request, *args, **kwargs)
     def get_object(self,queryset=None):
         queryset=ActionItems.objects.all()
-        #print(self.kwargs['pk'])
+       
         #self.object = self.get_object(queryset=ActionItems.objects.all())
         #return super().get(request, *args, **kwargs)
         #X = queryset.get(id=self.kwargs['pk'])
-        #print(X.Consequence)
-       # print(queryset.get(id=self.kwargs['pk']))
+       
         return queryset.get(id=self.kwargs['pk'])
        
     def form_valid(self,form):
@@ -312,7 +312,7 @@ def multiplefiles (request, **kwargs):
     form_multi = frmMultipleFiles()
         
     if (request.POST.get('Upload')):
-        print ("in POST")
+        
         ID = kwargs['forkeyid']
         #set using model manager since we want it back to actionee it has to be set at QueSeries=0
         files = request.FILES.getlist('Attachment')
@@ -341,6 +341,36 @@ def multiplefiles (request, **kwargs):
 
     return render(request, 'userT/multiplefiles.html',context)
 
+
+def closed(request, **kwargs):
+    
+    
+
+    allOpenActions= blfuncgetallAction('Y', [0,1,2,3])
+    allClosedActions = blfuncgetallAction('Y', [4,5,6])
+    
+
+    listofOpenClosed = [allOpenActions,allClosedActions]
+    labelsOpenClosed = ['Open', 'Closed']
+    chart = showPie(listofOpenClosed,labelsOpenClosed,"Overall Open Actions")
+    
+    discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
+    #countDiscSub = ActionItems.mdlDisSub
+    listcountbyDisSub= []
+    listlablebyDisSub =[]
+    for itemPair in discsub:
+        
+        listcountbyDisSub.append(blgetDiscSubActionCount ('Y',itemPair,[0,1,2,3,4,5]))
+        listlablebyDisSub.append(str(itemPair[0])+"/"+str(itemPair[1]))
+    
+    chartDiscSub = showPie(listcountbyDisSub,listlablebyDisSub, "Open Actions by Disc/Sub-Disc")
+    #chartbyDisp = show
+    context = {
+            "chart":chart,
+            "chartDiscSub":chartDiscSub
+
+    }
+    return render (request, 'userT/reports.html',context )
 
 
 

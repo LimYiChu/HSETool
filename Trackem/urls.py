@@ -78,6 +78,9 @@ urlpatterns = [
         #Following url /s for rejection 
         re_path(r'Comments/(?P<forkeyid>\d+)$', UserView.RejectReason.as_view(), name='RejectComments' ),
         re_path(r'multiplefiles/(?P<forkeyid>\d+)$', UserView.multiplefiles, name='multiplefiles' ),
+
+        #following url for reporting
+        path('closed/', UserView.closed, name='reporting' ),
       ]
 
 if settings.DEBUG:
