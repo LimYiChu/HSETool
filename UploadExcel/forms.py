@@ -10,7 +10,7 @@ class UploadExlForm(forms.ModelForm):
 class CommonLayout (Layout):
     def __init__(self, *args, **kwargs):
         super().__init__(
-
+            
             Div(
             Div(Field('StudyActionNo',readonly=True),   css_class='col-md-3'), 
             Div (Field('StudyName',readonly=True),  css_class='col-md-3'),
@@ -21,10 +21,10 @@ class CommonLayout (Layout):
                       
            ),
             Div (
-            Div (Field('Cause', readonly=True), css_class='col-md-12'),
-            Div (Field('Safeguard', readonly=True), css_class='col-md-12'),
-            Div (Field('Consequence', readonly=True), css_class='col-md-12'),
-            Div (Field('Recommendations', readonly=True), css_class='col-md-12'),
+            Div (Field('Cause', rows=8 ,readonly=True), css_class='col-md-12'),
+            Div (Field('Safeguard', rows=8, readonly=True), css_class='col-md-12'),
+            Div (Field('Consequence',rows=8, readonly=True), css_class='col-md-12'),
+            Div (Field('Recommendations',rows=8, readonly=True), css_class='col-md-12'),
             css_class='row',#-dont know why i have to put this in so it aligns to left
             
             ),

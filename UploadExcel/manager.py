@@ -7,6 +7,10 @@ class QuerySet(models.QuerySet):
         return self.filter(Organisation__icontains=userorganisation).filter(Disipline__icontains=userdisipline).filter(Subdisipline__icontains=usersubdisipline).filter(QueSeries__iexact=que)
     def get_myActionsCount(self,userorganisation,userdisipline,usersubdisipline,que):
         return self.filter(Organisation__icontains=userorganisation).filter(Disipline__icontains=userdisipline).filter(Subdisipline__icontains=usersubdisipline).filter(QueSeries__iexact=que).count ()
+    def get_allActionsCount(self,workshop,que):
+        return self.filter (QueSeries__iexact=que).count ()
+    def get_DiscSubActionsCount(self,workshop,DiscSub,que):
+        return self.filter (Disipline__icontains=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1]).filter (QueSeries__iexact=que).count ()
     def get_mgrComments(self,fkey):
         return self.filter(Action__pk=fkey)
     
@@ -33,6 +37,18 @@ class myActionCount(models.Manager):
     def get_myItemsCount(self,userorganisation,userdisipline,usersubdisipline,que):
         return self.get_queryset().get_myActionsCount(userorganisation,userdisipline,usersubdisipline,que)
 
+class mgrallActionCount(models.Manager):
+    def get_queryset (self):
+        return QuerySet(self.model, using=self._db)
+    def mgr_getallItemsCount(self,workshop,que):
+        return self.get_queryset().get_allActionsCount(workshop,que)
+
+class mgrgetActionDiscSubCount(models.Manager):
+    def get_queryset (self):
+        return QuerySet(self.model, using=self._db)
+    def mgr_getDiscSubItemsCount(self,workshop,DiscSub,que):
+        return self.get_queryset().get_DiscSubActionsCount(workshop,DiscSub,que)
+
 
 class Approver1Manager(models.Manager):
     def get_queryset (self):
@@ -54,6 +70,7 @@ class mdlSetQueSeries(models.Manager):
         obj = get_object_or_404(self.model, id=ID)
         obj.QueSeries = Que
         obj.save(update_fields=["QueSeries"],using=self.db)
+
 # class Approver2Manager(models.Manager):
 #     def get_queryset (self):
 #         return RoutesQuerySet(self.model, using=self._db)

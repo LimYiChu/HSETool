@@ -34,7 +34,9 @@ class ActionItems(models.Model):
     objects = models.Manager()
     myActionItems = myActionItemManager()
     myActionItemsCount = myActionCount()
+    mdlallActionItemsCount = mgrallActionCount()
     mdlQueSeries = mdlSetQueSeries()
+    mdlgetActionDiscSubCount = mgrgetActionDiscSubCount()
     #Approver1RoItems = Approver1ItemManager()
     #Approver2RoItems = Approver2ItemManager()
  

@@ -8,36 +8,34 @@
 {% if Rejectcomments %} <!--Just to check if it has been rejected before otherwise print comments at the side nav bar in sticky format-->
 
 
-<div class="sticky , col-md-1" style="font-size:small; font-family:Lato; "> 
-    <div class="col-md-1">
-       <table class="sticky table table-striped table-hover" > <!--set to maximum 20 rows per page-->
-        <thead class="thead-light ">
+  <div class="sticky ; col-md-1  "  style="font-size:small; font-family:Lato; margin-right:5px;margin-left:5px "> 
+      <div class="col-md-1;margin-right:5px;margin-left:5px">
+         <table class="sticky table table-striped table-hover" > <!--set to maximum 20 rows per page-->
+          <thead class="thead-light ">
+            <tr>
+              <th>
+                Date
+              </th>
+              <th>
+                Rejection Reason & User
+              </th>
+              
+            </tr>
+        </thead>
+        <tbody>
+          {%for items in Rejectcomments %}
+  
           <tr>
-            <th>
-              Date
-            </th>
-            <th>
-              Rejection Reason
-            </th>
-            <th>
-              Username
-            </th>
+          <td>{{ items.DateAdded }}</td>
+          <td>{{ items.Reason }}<br>{{ items.Username}}</td>
+          
           </tr>
-      </thead>
-      <tbody>
-        {%for items in Rejectcomments %}
-
-        <tr>
-        <td>{{ items.DateAdded }}</td>
-        <td>{{ items.Reason }}<</td>
-        <td>{{ items.Username}}<</td>
-        </tr>
-        {%endfor%}
-        </tbody>
-    </table>
+          {%endfor%}
+          </tbody>
+      </table>
+    </div>
   </div>
-</div>
-  {%endif%}
+    {%endif%}
   {%endblock%}
 {% block ApproverDetails%}
 

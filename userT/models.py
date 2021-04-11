@@ -86,6 +86,7 @@ class ActionRoutes(models.Model):
 
     ActioneeRo = ActioneeManager()
     ApproverRo = ApproverManager()
+    mdlAllDiscSub  = mgrgetDiscSub()
     # Approver2Ro = Approver2Manager()
     
    # Actionee        = models.ForeignKey(CustomUser,null=True, on_delete=models.SET_NULL, related_name='Actionee')

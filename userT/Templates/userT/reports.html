@@ -1,0 +1,12 @@
+
+{% extends "userT\base3.html"%}
+{% block ClosedOut%}
+<div >
+<div  class="col-md-1" style="float: left;">
+<img src="data:image/png;base64, {{chart|safe}}">
+</div>
+<div style="float: right;">
+<img src="data:image/png;base64, {{chartDiscSub|safe}}">
+</div>
+</div>
+{%endblock%}
