@@ -81,7 +81,9 @@ urlpatterns = [
         re_path(r'multiplefiles/(?P<forkeyid>\d+)$', UserView.multiplefiles, name='multiplefiles' ),
 
         #following url for reporting
-        path('closed/', UserView.closed, name='reporting' ),
+        path('closed/', UserView.rptclosed, name='closed' ),
+        path('discslice/', UserView.rptdiscSlice, name='discslice' ),
+        path('rptbyuser/', UserView.rptbyUser, name='rptbyuser' ),
         #pdf path
         path('GeneratePDF/',UserView.GeneratePDF,name='GeneratePDF'),
         #email path

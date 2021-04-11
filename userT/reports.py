@@ -20,9 +20,8 @@ def showPie(dataAct,labelsAct,Title):
     
     data = dataAct
     labels =labelsAct
-    colors = ["#D3EDEE","#91CACC", "#C0A8A3","#5E6565","#E5C0E2"]
+    colors = ["#D3EDEE","#91CACC", "#C0A8A3","#5E6565","85343F"]
     radius = 0.8
-    
     
     def explode(dataslice):
     
@@ -56,3 +55,21 @@ def showPie(dataAct,labelsAct,Title):
     graph =get_graph()
     return graph
 
+def showbar (listcountbyDisSub,totalcountbyDisSub,listlablebyDisSub, label1,label2,generalxlabel, title):
+
+    plt.switch_backend('AGG') #- must do for django rendering but in the process cant show in python direct
+
+    data_y_axes = listcountbyDisSub
+    labels_x_axes =listlablebyDisSub
+    x_indexes = np.arange(len(labels_x_axes))
+    width=0.25
+    #x_index
+    plt.bar(x_indexes, data_y_axes, label=label1, width=width, color="#91CACC")
+    plt.bar(x_indexes-width, totalcountbyDisSub, label=label2, width=width, color="#5E6565")
+    plt.legend()
+    plt.title (title)
+    plt.xticks (ticks=x_indexes-(width/2) , labels=labels_x_axes)
+    plt.xlabel (generalxlabel)
+    plt.tight_layout()
+    graph =get_graph()
+    return graph

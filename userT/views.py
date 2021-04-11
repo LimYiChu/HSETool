@@ -59,7 +59,7 @@ def mainDashboard (request):
     #This contain the entire Approver list for all levels
     Approver = []
     #get all routes first
-    context_allRou = getuserRoutes(request)
+    context_allRou = getuserRoutes(request,request.user.email)
 
     #Just get Actionee and Approver Routes, tied into model managers
     Actionee_R =    context_allRou.get('Actionee_Routes')
@@ -104,9 +104,9 @@ def getActionDetails(request, id=None):
     }
     return render(request, "userT/detailactions.html", context)
 
-def getuserRoutes(request):
+def getuserRoutes(request,useremail):
     ApproverLevel = 5
-    userZemail = request.user.email
+    userZemail = useremail
     Approver_Routes = {}
 
     #Actionee routes is straight forward
@@ -142,7 +142,7 @@ class ApproverList (ListView):
     def get_queryset(self):
         userZemail = self.request.user.email
         ApproverActions = []
-        context_allRou = getuserRoutes(self.request)
+        context_allRou = getuserRoutes(self.request,userZemail)
         Approver_R =    context_allRou.get('Approver_Routes')
         
         for key, value in Approver_R.items():
@@ -159,59 +159,6 @@ class DetailActioneeItems (DetailView):
     def get_object(self):
         id1 = self.kwargs.get("id")
         return get_object_or_404(ActionItems, id=id1)
-
-#optimised all in one to be deleted at the end of the day
-# class UpdateActioneeItems (UpdateView):
-#     template_name   =   'userT/actionUpdateApproveAction.html'
-   
-#     form_class = frmUpdateActioneeForm
-    
-#     def get_object(self):
-#         id1 = self.kwargs.get("id")
-#         return get_object_or_404(ActionItems, id=id1)
-
-#     def form_valid(self,form):
-#         if (self.request.POST.get('Upload')):
-#             if (super().form_valid(form)):
-#             #if form is valid just increment q series by 1 so it goes to Approver que so it goes to next queSeries
-            
-#                 form.instance.QueSeries += 1
-#                 return super().form_valid(form)
-            
-#     def get_success_url(self):
-#         return reverse ('multiplefiles', kwargs={'forkeyid': self.object.id})
-#     def get_context_data(self,**kwargs):
-#         fk = self.kwargs.get("id")
-#         context = super().get_context_data(**kwargs)
-#         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(fk)
-#         return context
-    
-# class ApproveItems (UpdateView):
-#     template_name   =   'userT/actionUpdateApproveAction.html'
-#     form_class = ApproverForm
-    
-#     success_url = '/ApproverList/'
-    
-#     def get_object(self):
-#         id1 = self.kwargs.get("id")
-#         return get_object_or_404(ActionItems, id=id1)
-
-#     def form_valid(self,form):
-        
-#             #if form is valid just increment q series by 1 so it goes to Approver que so it goes to next queSeries
-#             if (self.request.POST.get('Reject')):
-#                 #If reject que series should be 0, but need another intermediate screen for comments
-#                 #form.instance.QueSeries = 0
-                
-#                 #Need to do below with HTTPResponseredirect because normal reverse seems to give an str error
-#                 #reverse simply redirects to url path so can call class RejectReason below since cant really call it from fucntion call directly
-#                 #makes sense since really django wants to work with views coming from URL paths- simply a strutured way of doing stuff
-#                 return HttpResponseRedirect(reverse ('RejectComments', kwargs={'forkeyid': form.instance.id}))
-                
-#             if (self.request.POST.get('Approve')): 
-#                 #  need another intermediate screen for approval no comments
-#                 form.instance.QueSeries += 1
-#                 return super().form_valid(form)
 
 
 class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
@@ -346,7 +293,7 @@ def multiplefiles (request, **kwargs):
     return render(request, 'userT/multiplefiles.html',context)
 
 
-def closed(request, **kwargs):
+def rptclosed(request, **kwargs):
     
     #Function on businees logic to get data based on Queseries, Actionee and Approver levels
     #most of the data is
@@ -377,6 +324,43 @@ def closed(request, **kwargs):
     }
     return render (request, 'userT/reports.html',context )
 
+def rptdiscSlice(request, **kwargs):
+    
+    #Function on businees logic to get data based on Queseries, Actionee and Approver levels
+    #most of the data is
+    TotalCount = [0,1,2,3,4,5,6]
+    OpenAccount = [0,1,2,3,4,5]
+    discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
+    
+    listcountbyDisSub= []
+    listlablebyDisSub =[]
+    totalcountbyDisSub = []
+    Title = "Open Actions by Discipline"
+    label1 = "Open Actions"
+    label2 = "Total Actions"
+    generalxlabel = "Discipline"
+
+    for itemPair in discsub:
+        
+        listcountbyDisSub.append(blgetDiscSubActionCount ('Y',itemPair,OpenAccount))
+        totalcountbyDisSub.append(blgetDiscSubActionCount ('Y',itemPair,TotalCount))
+        listlablebyDisSub.append(str(itemPair[0])) # to include sub disc later -- +"/"+str(itemPair[1])
+    
+    chart = showbar(listcountbyDisSub,totalcountbyDisSub,listlablebyDisSub, label1,label2,generalxlabel,Title)
+
+    context = {
+            "chart":chart,
+            }
+    return render (request, 'userT/reports.html', context)
+def rptbyUser(request, **kwargs):
+    context_allRou = getuserRoutes(request,request.user.email)
+    Actionee_R =    context_allRou.get('Actionee_Routes')
+    
+
+    
+    #This function just does a count using model managers , calling from businesslogic.py
+    ActioneeCount = blfuncActionCount(Actionee_R,0)
+    return render (request, 'userT/reports.html')
 def GeneratePDF (request):
     filename = [] # for appending filename place before for loop
     if (request.POST.get('GeneratePDF')):      
@@ -446,8 +430,6 @@ def EmailReminder(request):
         }
         return render(request, 'userT/EmailReminder.html', context)
     return render (request, 'userT/EmailReminder.html', {'form':sub})
-
-    
 
 def Profile (request):
     return render(request, 'userT/Profile.html')
