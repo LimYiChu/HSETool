@@ -408,7 +408,6 @@ def ReportingTable(request):
 #def EmailReminder (request):
 #    return render(request, 'userT/EmailReminder.html')
 
-#Some Class here
 def EmailReminder(request):
     sub = Subscribe()
     if request.method == 'POST':
@@ -416,20 +415,46 @@ def EmailReminder(request):
         context_allRou = getuserRoutes(request)
         Actionee_R =    context_allRou.get('Actionee_Routes')  
         ActionCount = blfuncActionCount(Actionee_R,0)
-        print(ActionCount)
-        #ActionCount = 20
-        subject = 'Test for sending email overview'
-        message = 'Your pending responses are ' + str(ActionCount) + ' actions.'
+        #Msg=EmailMessage()
+        sub = Subscribe(request.POST)
+        subject = 'Template for Action Pending Responses'
+        message = 'Clients template. Your pending responses are ' + str(ActionCount) + ' actions.'
         recepient = str (sub ['Email'].value())
-        #html_message = render_to_string('C:\\Users\\yh_si\\Desktop\\HSETool-1\\userT\\Templates\\userT\\ReportingTable.html')
-        #html_content = render_to_string('ReportingTable.html',context)
-        #text_content = strip_tags(html_content)
-        send_mail(subject, message, EMAIL_HOST_USER, [recepient], fail_silently = False)
-        context = {
-            'form':sub,
+        Msg=EmailMessage(subject, message, EMAIL_HOST_USER, [recepient])
+        Msg.content_subtype="html"
+        Msg.send()
+        context ={
+          'form':sub
         }
-        return render(request, 'userT/EmailReminder.html', context)
+        return render(request, 'userT/EmailReminder.html',context)
     return render (request, 'userT/EmailReminder.html', {'form':sub})
+
+def EmailReminderAttachment(request):
+    sub = Subscribe()
+    if request.method == 'POST':
+        #Msg=EmailMessage()
+        sub = Subscribe(request.POST)
+        subject = 'Template for sending out weekly report'
+        message = 'Clients weekly report template & attachment.'
+        recepient = str (sub ['Email'].value())
+        Msg=EmailMessage(subject, message, EMAIL_HOST_USER, [recepient])
+        Msg.content_subtype="html"
+        Msg.attach_file('C:\\Users\yh_si\Desktop\HSETool-1\static\weeklyreporttemplate.pdf')
+        Msg.send()
+        context ={
+          'form':sub
+        }
+        return render(request, 'userT/EmailReminder.html',context)
+    return render (request, 'userT/EmailReminder.html', {'form':sub})
+
+
+    
 
 def Profile (request):
     return render(request, 'userT/Profile.html')
+
+def AllActions (request):
+    return render(request, 'userT/AllActions.html')
+
+def DisciplineBreakdown (request):
+    return render(request, 'userT/DisciplineBreakdown.html')

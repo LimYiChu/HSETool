@@ -1,0 +1,233 @@
+{% extends "userT\base3.html"%}
+{% block Actioneelist%}
+<!doctype html>
+<html lang="en">
+
+
+<body>
+<!--breadcrumbs-->
+  
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item normal">
+          <a href="/main">Dashboard</a>
+        </li>
+        <li class="breadcrumb-item active">
+            <a aria-current="page">All Actions</a>
+        </li>
+
+      </ol>
+      
+    </nav>
+
+<!--Filter-->
+<div class="col-md-12">
+  <div class="card">
+    <h5 class="card-header">
+      Filter
+    </h5>
+    <div class="card-body">
+      <div class="row">
+      <div class="col-md-6">
+      <p class="card-text">
+        
+        <h6>Studies/ Workshops</h6>
+        <input type="radio" id="ReportOutputWorkshop" name="ReportOutputWorkshop" value="Daily" checked>
+        <label for="ReportOutputWorkshopy"> All</label><br>                  
+      </p>
+      </div>
+      <div class="col-md-6">
+        <p class="card-text">
+          <h6>Action Status</h6>
+          <input type="radio" id="ReportOutputStatus" name="ReportOutputStatus" value="Daily" checked>
+          <label for="ReportOutputStatus"> All </label><br>             
+          <h6>Organizations</h6>
+          <input type="radio" id="ReportOutputOrg" name="ReportOutputOrg" value="Daily" checked>
+          <label for="ReportOutputOrg"> All</label><br>
+          <h6>Discipline</h6>
+          <input type="radio" id="ReportOutputDiscipline" name="ReportOutputDiscipline" value="Daily" checked>
+          <label for="ReportOutputDiscipline"> All</label><br>         
+        </p>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <form  action="#" method="POST"> 
+        <div style="float:right">
+        {%csrf_token%}   
+        <button class="btn btn-outline-primary my-2 my-sm-0"  name ="GeneratePDF" type="submit" value="Click">Generate List</button>
+      </div>               
+      </form>
+    </div>
+  </div>
+</div>   
+
+<br>
+<div style="float:right">
+  <form class="form-inline" >
+    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search" title="Search">
+   </form>
+</div>
+
+<br>
+<br>
+<br>
+
+
+<script>
+function myFunction() {
+  var input, filter, table, tr, td, i;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+  for (var i = 0; i < tr.length; i++) {
+    var tds = tr[i].getElementsByTagName("td");
+    var flag = false;
+    for(var j = 0; j < tds.length; j++){
+      var td = tds[j];
+      if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+        flag = true;
+      } 
+    }
+    tr[0].style.display = ""; //added to repeat the header//
+    if(flag){
+        
+        tr[i].style.display = "";
+    }
+    else {
+      
+      tr[i].style.display = "none";
+    }
+  }
+}
+
+</script>
+
+<script>
+  function sortTable(n) {
+    var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+    table = document.getElementById("myTable");
+    switching = true;
+    // Set the sorting direction to ascending:
+    dir = "asc";
+    /* Make a loop that will continue until
+    no switching has been done: */
+    while (switching) {
+      // Start by saying: no switching is done:
+      switching = false;
+      rows = table.rows;
+      /* Loop through all table rows (except the
+      first, which contains table headers): */
+      for (i = 1; i < (rows.length - 1); i++) {
+        // Start by saying there should be no switching:
+        shouldSwitch = false;
+        /* Get the two elements you want to compare,
+        one from current row and one from the next: */
+        x = rows[i].getElementsByTagName("TD")[n];
+        y = rows[i + 1].getElementsByTagName("TD")[n];
+        /* Check if the two rows should switch place,
+        based on the direction, asc or desc: */
+        if (dir == "asc") {
+          if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+            // If so, mark as a switch and break the loop:
+            shouldSwitch = true;
+            break;
+          }
+        } else if (dir == "desc") {
+          if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+            // If so, mark as a switch and break the loop:
+            shouldSwitch = true;
+            break;
+          }
+        }
+      }
+      if (shouldSwitch) {
+        /* If a switch has been marked, make the switch
+        and mark that a switch has been done: */
+        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+        switching = true;
+        // Each time a switch is done, increase this count by 1:
+        switchcount ++;
+      } else {
+        /* If no switching has been done AND the direction is "asc",
+        set the direction to "desc" and run the while loop again. */
+        if (switchcount == 0 && dir == "asc") {
+          dir = "desc";
+          switching = true;
+        }
+      }
+    }
+  }
+</script>
+
+    
+
+<div class="card" style="border-color: black;">
+
+
+
+      <table  class="table table-striped table-hover " id="myTable"> <!--set to maximum 20 rows per page-->
+      
+        <thead class="thead-dark ">
+            <tr class="filters">
+              <th onclick="sortTable(0)">
+                StudyActionNo
+              </th>
+              
+              <th>
+                StudyName
+              </th>
+              <th>
+                Disipline
+              </th>
+              <th>
+                Subdisipline
+              </th>
+              <th>
+                Cause
+              </th>
+              <th>
+                Consequence
+              </th>
+              <th>
+                Recommendations
+              </th>
+              <th>
+                Response
+              </th>
+              <th>
+                Status
+              </th>
+              
+             </tr>
+          </thead>
+          <tbody>
+            {% for routes  in object_list %}
+              {% for x  in routes %}
+            <tr>
+              <td><a class="article-title" href="{% url  'ActioneeFormMixin' x.id %}">{{ x.StudyActionNo }}</a></td>
+              <td>{{ x.StudyName }}</td>
+              <td>{{ x.Disipline }}</td>
+              <td>{{ x.Subdisipline }}</td>
+              <td>{{ x.Cause }}</td>
+              <td>{{ x.Consequence }}</td>
+              <td><a class="article-title" href="{% url  'ActioneeFormMixin' x.id %}">{{ x.Recommendations }}</a></td>
+              <td>{{ x.Response }}</td>
+              <td>{{ x.Response }}</td><!--HOLD change to status-->
+              {%endfor%}
+            {%endfor%}
+            </tbody>
+            </table>
+
+
+          
+           
+          </div>
+</body>     
+<br>
+		
+		
+	
+
+{%endblock%}
