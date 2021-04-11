@@ -24,6 +24,7 @@ from django.contrib.auth.decorators import login_required
 from django.conf.urls.static import static
 from django.conf import settings
 
+
 urlpatterns = [
       # Load excel actions, routes ,
         path('upload/', login_required(UploadV.Load), name='Load' ),
@@ -71,8 +72,8 @@ urlpatterns = [
         path('password_reset/',auth_views.PasswordResetView.as_view(template_name='userT/password_reset_form.html'),name='password_reset'),
         path('reset/done/',auth_views.PasswordResetCompleteView.as_view(template_name='userT/password_reset_complete.html'),name='password_reset_complete'),
         path('ContactUs/',UserView.ContactUs,name='ContactUs'),
-        #edward pdf
-        path('testing/', login_required(UserView.testing), name='testingPDF' ),
+        
+        
         #path('ContactUs/',UserView.ContactUs,name='ContactUs'),
 
         #Following url /s for rejection 
@@ -81,6 +82,12 @@ urlpatterns = [
 
         #following url for reporting
         path('closed/', UserView.closed, name='reporting' ),
+        #pdf path
+        path('GeneratePDF/',UserView.GeneratePDF,name='GeneratePDF'),
+        #email path
+        path('ReportingTable/',UserView.ReportingTable,name='ReportingTable'),
+        path('EmailReminder/',UserView.EmailReminder,name='EmailReminder'),
+        path('Profile/',UserView.Profile,name='Profile'),
       ]
 
 if settings.DEBUG:

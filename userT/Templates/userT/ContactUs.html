@@ -1,22 +1,26 @@
-{% extends "userT/base1.html" %}
-{% block content %}
-
-
-<fieldset class="form-group">
-    <div id="Contact" style="margin-top:100px;" class="mainbox col-md-6 col-md-offset-3 ;">           
-            <div class="panel panel-info" >
-            <div class="panel-heading" >
-                <div class="panel-title" >Contact Us</div>
-            
-            </div>     
-
-            <div style="padding-top:10px" class="panel-body" >
-                                                                    
-                   
-                                                         
-                                  
-                      <div >
-                       <h1>eHSTools</h1> 
+{% extends "userT\base3.html"%}
+{%block Actionee%}
+<nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item normal">
+          <a href="/main">Dashboard</a>
+        </li>
+        <li class="breadcrumb-item active">
+            <a aria-current="page">Contact Us</a>
+        </li>
+      </ol>
+</nav>
+<br>    
+<br>	
+			<div class="row"  style="width:1000px; margin:0 auto;">
+				<div class="col-md-8">
+					<div class="card">
+						<h5 class="card-header">
+							Contact Us
+						</h5>
+						<div class="card-body">
+							<p class="card-text">
+								<h1>eHS Tools</h1> 
                        <h2>elecronic Health and Safety Tools</h2><br>
                        <h3>Kuala Lumpur Office</h3>
                        <i class="bi bi-map"></i> 
@@ -24,12 +28,12 @@
                        <i class="bi bi-telephone"></i>  <p>+603-21661699</p>
                        <i class="bi bi-mailbox"></i> <p>sales@prism-ta.com</p>
                       </div>
+							</p>
+						</div>
+					</div>				
+			</div>				
+						
 
-                </div>  
-                </div>
-            </div>
-</fieldset>
-  
-
-
-{% endblock %}
+<br>
+ 
+{%endblock%}

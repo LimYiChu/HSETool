@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<!-- saved from url=(0027)http://127.0.0.1:8000/main/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="./Dashboard_files/jquery.min.js.download"></script><!--dropdown function of the side bar button-->
+    <script src="./Dashboard_files/bootstrap.min.js.download"></script><!--dropdown function of the side bar button-->
+    <script src="./Dashboard_files/bootstrap.bundle.min.js.download" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script><!--Bootstrap 5 base-->   
+    <link href="./Dashboard_files/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous"><!--Bootstrap 5 base-->
+    <link rel="stylesheet" href="./Dashboard_files/bootstrap-icons.css"> <!--bootstrap icon pack-->
+    <link rel="stylesheet" href="./Dashboard_files/bootstrap.min(1).css"> <!--styling for the side bar button spacing-->
+    <link rel="preconnect" href="https://fonts.gstatic.com/"> <!--google font-->
+    <link href="./Dashboard_files/css2" rel="stylesheet"><!--google font-->
+    <link href="./Dashboard_files/css" rel="stylesheet"> <!--google font-->
+    <link rel="stylesheet" href="./Dashboard_files/icon"> <!--icon pack-->
+    
+    <!--Chartjs link and not sure of version-->
+    <script src="./Dashboard_files/Chart.min.js.download"></script>
+    <script src="./Dashboard_files/Chart.min.js(1).download"></script>
+
+    <script src="./Dashboard_files/jquery.min.js(1).download"></script><!--cdn for jquery-->
+    <script src="./Dashboard_files/Filter.js.download"></script>
+    <link href="./Dashboard_files/Filter.css" rel="stylesheet">
+
+    
+    <style>
+      div.sticky {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 50px;
+        padding: 30px;
+        font-size: 20px;
+        width: 100%;
+      }
+      </style>
+
+
+
+    <title>Dashboard</title>
+   
+  <style type="text/css">/* Chart.js */
+@keyframes chartjs-render-animation{from{opacity:.99}to{opacity:1}}.chartjs-render-monitor{animation:chartjs-render-animation 1ms}.chartjs-size-monitor,.chartjs-size-monitor-expand,.chartjs-size-monitor-shrink{position:absolute;direction:ltr;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1}.chartjs-size-monitor-expand>div{position:absolute;width:1000000px;height:1000000px;left:0;top:0}.chartjs-size-monitor-shrink>div{position:absolute;width:200%;height:200%;left:0;top:0}</style></head>
+  
+  
+
+<body>
+<!--Top Nav Bar-->
+<nav class="navbar navbar-expand-lg" style="background-color: rgb(248,248,248); border-bottom:darkgrey solid 1px">
+<div class="container-fluid">
+  
+  <div class="navbar-nav md-3">      
+    <li class="nav-item">
+     <a class="nav-link active" aria-current="page" href="https://sapuraenergy.com/" style="color:black"> <img src="./Dashboard_files/sapura.png" alt="client" width="5%" height="30%"> Sapura Energy</a> <!--clicking on this link will bring the user to the main page-->
+    </li>
+  </div>
+
+       <div class="nav navbar-nav md-3">
+        <li><a class="nav-link active" aria-current="page" href="https://www.prism-ta.com/" style=" color:black; font-family:pacifico">eHS Tools </a></li> <!--clicking here will imeediately bring the user to the user's setting such as the name, discipline etc... for him to quickly update-->
+      </div><!--consider to have linkedin or facebook link-->
+
+</div>    
+</nav>
+
+
+
+<!--sidebar left-->
+
+  
+  <div class="row">
+    <div class="sidebar-sticky col-md-2" style="background-image: linear-gradient(to right, #f8f8f8, #fafafa, #fbfcfb, #fdfdfd, #ffffff); border-right:darkgrey solid 1px"> <!--hold not yet able to solve the side bar 100% height need to set in css-->
+      
+        <ul class="nav flex-column">
+       
+
+  <br>
+  <div id="card-738960" style="margin-left:15px">
+
+    <div class="card" style="background-color: rgb(52,58,64);">
+              <div class="card-header">
+                 <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="http://127.0.0.1:8000/main/#card-element-1" style="color:white">Your Action</a>
+              </div>
+              <div id="card-element-1" class="collapse">
+                <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)">
+                    <a href="http://127.0.0.1:8000/main" style="color: black;">
+                     Dashboard                
+                    </a>
+                  </div>
+                  <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)"><a href="http://127.0.0.1:8000/ActioneeList" style="color: Black;">
+                  Actionee Actions
+                 </a></div><a href="http://127.0.0.1:8000/ActioneeList" style="color: Black;">
+                 </a><div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)"><a href="http://127.0.0.1:8000/ActioneeList" style="color: Black;"></a><a href="http://127.0.0.1:8000/ApproverList" style="color: black;">
+                  Approver Actions
+                 </a></div>
+               </div>
+              </div>
+                 
+              <div class="card" style="background-color: rgb(52,58,64);">
+              <div class="card-header">
+                 <a class="collapsed card-link" data-toggle="collapse" data-parent="#card-738960" href="http://127.0.0.1:8000/main/#card-element-2" style="color:white">Reporting</a>
+                  </div>
+                  <div id="card-element-2" class="collapse">
+                    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)"><a href="http://127.0.0.1:8000/main/#" style="color: black;">
+                    Closed
+                    </a>  </div>
+                  <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)"><a href="http://127.0.0.1:8000/main/#" style="color: black;">
+                    Open
+                    </a>  </div>
+                    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)"><a href="http://127.0.0.1:8000/main/#" style="color: black;">
+                      By Discipline
+                    </a>  </div>
+                    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)"><a href="http://127.0.0.1:8000/main/#" style="color: black;">
+                    Your Actions
+                    </a> </div><div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)"><a href="http://127.0.0.1:8000/ReportingTable" style="color: black;">
+                      Overview
+                      </a> </div>
+                
+              </div>
+            </div>
+
+            
+            <div class="card" style="background-color: rgb(52,58,64);">
+              <div class="card-header">
+                 <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="http://127.0.0.1:8000/main/#card-element-4" style="color:white">Contact</a>
+                  </div>
+                  <div id="card-element-4" class="collapse">
+                    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)"><a href="http://127.0.0.1:8000/ContactUs" style="color: black;">
+                    Contact Us
+                    </a>  </div>
+                  
+                  </div>
+            </div>
+
+            <div class="card" style="background-color: rgb(52,58,64);">
+              <div class="card-header">
+                 <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="http://127.0.0.1:8000/main/#card-element-5" style="color:white">Profile Management</a>
+              </div>
+                  <div id="card-element-5" class="collapse">
+                    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)"><a href="http://127.0.0.1:8000/main/#" style="color: black;">
+                    Profile
+                    </a>  </div>
+                    
+                    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)"><a href="http://127.0.0.1:8000/password_change/" style="color: black;">
+                      Change Password
+                    </a>  </div>
+
+                    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)"><a href="http://127.0.0.1:8000/password_reset/" style="color: black;">
+                      Reset Password
+                    </a>  </div> 
+                
+              </div>
+            </div>
+
+<!--If user is admin, then he can have extra buttons to manage the users etc.-->            
+  
+  <div class="card" style="background-color: rgb(52,58,64)">
+  <div class="card-header">
+     <a class="collapsed card-link" data-toggle="collapse" data-parent="#card-738960" href="http://127.0.0.1:8000/main/#card-element-3" style="color:white"> Admin</a>
+  </div>
+  <div id="card-element-3" class="collapse">
+    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)"><a href="http://127.0.0.1:8000/main/#" style="color: black;">
+     UploadExcel
+    </a>  </div>
+    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)"><a href="http://127.0.0.1:8000/main/#" style="color: black;">
+      UserManagement
+    </a>  </div>
+    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)"><a href="http://127.0.0.1:8000/main/#" style="color: black;">
+      Set Email Reminder
+    </a>  </div>
+ 
+    </div>
+  </div>
+
+
+
+
+
+
+</div>
+
+
+        </ul>
+
+
+    <br>
+
+    <div class="sticky" style="font-size:medium"> 
+          
+   
+
+      <br>
+     
+        <table class="sticky table table-striped table-hover"> <!--set to maximum 20 rows per page-->
+          <thead class="thead-dark ">
+            <tr>
+              <th>
+                StudyActionNo
+              </th>
+              <th>
+                Rejection Reason
+              </th>
+              
+            
+              
+             </tr>
+          </thead>
+          <tbody>
+            <tr><th>
+             1
+            </th>
+            <th>
+             No atachments attached. 
+            </th>
+            
+            </tr></tbody>
+            </table></div>
+       
+
+    
+      </div>
+    
+
+
+
+
+
+    
+    <main role="main" class="col-lg-10 pt-3 px-4">
+
+      <!--Username and Logout button including bottom border-->
+      <div class="pb-2 mb-3 border-bottom text-right">
+        <div style="font-size:large"> 
+          <i class="bi bi-person-bounding-box"></i>yhsiang@gmail.com <!--hold, make this clickable and link to user profile.-->
+           <a href="http://127.0.0.1:8000/logout">
+          <button type="button" class="btn btn-secondary btn-sm;"><i class="material-icons">logout</i>Logout</button> 
+        </a>
+         </div>    
+     </div>
+        
+    
+
+
+
+              
+
+
+              
+              
+               
+              
+
+
+              
+              
+<!--hidden for styling-->
+<!--
+<h1>Your Actions</h1>
+-->
+      
+<div class="row">
+<!--breadcrumbs - needs to be automated.-->
+<div class="row">
+    <nav>
+      <ol class="breadcrumb" style="bg-light;">
+        <li class="breadcrumb-item-active">
+          <a aria-current="page" style="font-size:x-large">Dashboard</a>
+        </li>
+       
+      </ol>
+    </nav>
+    <div class="col-md-12">
+  <div class="card">
+    <div class="card-header" style="font-size: large;">
+     Your Actions
+    </div>
+    <div class="card-body">
+    <div class="row">
+    <div class="col-md-6">
+      
+<!--first chart changed colour to test-->
+                        <div class="card">
+                            <div class="card-header" style="font-size: large;">
+                              Actionee Actions
+                            </div>
+                            <div class="card-body"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                <canvas id="ActioneeChart" width="1467" height="733" class="chartjs-render-monitor" style="display: block; height: 489px; width: 978px;"></canvas>
+                                <script>
+                                    Chart.defaults.global.defaultFontColor = 'black'
+                                    
+                                    var myChart = document.getElementById('ActioneeChart').getContext('2d');
+                                    
+                                    var charts = new Chart(myChart, {
+                                        type: 'pie',
+                                        
+                                        data : {
+                    
+                                            labels : ['Stream1', 'Stream2', 'Stream3'],
+                    
+                                            datasets : [{
+                                                
+                                                
+                                                data : [163, 18, 12],
+                    
+                                                borderWidth: 1,
+                                                borderColor: 'black',
+                                                backgroundColor: ["#D3EDEE","#91CACC", "#C0A8A3","#5E6565","#E5C0E2","#E0E1B3" ,"#0074D9", "#FF4136", "#2ECC40", "#FF851B", "#7FDBFF"],
+                                            }]
+                                            
+                                        },
+                                        
+                                        options: {
+                                            title:{
+                                                fontSize : 20,
+                                                display : true,
+                                                text: "Actionee Actions",
+                                            },
+                                           
+                                                            
+                                            onClick:function(evt){
+                                                //need to fix this for later
+                                                //alert("this is actionee")
+                                                //var activePoints = charts.getElementsAtEvent(evt);
+                                                
+                                                //var selectedIndex = activePoints[0]._index;
+                                                //alert(selectedIndex)
+                                                //document.location = this.data.datasets[0].data[selectedIndex];
+                                                //document.location = '/home';
+                                                
+                                            }
+                    
+                                        }
+                                    });
+                                
+                                    
+                                </script>
+                             
+                            </div>
+                            <a class="h5" href="http://127.0.0.1:8000/ActioneeList">Go to Your Actions</a>
+                          </div>                      
+                    </div>
+
+                
+            <div class="col-md-6">
+                    <div class="card">
+                            <div class="card-header" style="font-size: large;">
+                              Approver Actions
+                            </div>
+                            <div class="card-body"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                <canvas id="Approver" width="1467" height="733" class="chartjs-render-monitor" style="display: block; height: 489px; width: 978px;"></canvas>
+                                <script>
+                    
+                                    var myChart = document.getElementById('Approver').getContext('2d');
+                                    
+                                    var charts = new Chart(myChart, {
+                                        type: 'pie',
+                                        data : {
+                    
+                                            labels : ['ApproverLevel1', 'ApproverLevel2', 'ApproverLevel3', 'ApproverLevel4', 'ApproverLevel5'],
+                    
+                                            datasets : [{
+                                                
+                                                
+                                                data : [0, 0, 0, 0, 0],
+                    
+                                                borderWidth: 1,
+                                                borderColor: 'black',
+                                                backgroundColor: ["#D3EDEE","#91CACC", "#C0A8A3","#5E6565","#E5C0E2","#E0E1B3" ,"#0074D9", "#FF4136", "#2ECC40", "#FF851B", "#7FDBFF"],
+                                            }]
+                                            
+                                        },
+                                        
+                                        options: {
+                    
+                                            title:{
+                                                display : true,
+                                                text: "Approver Actions",
+                                                fontSize : 20,
+                                            },
+
+                                            onClick:function(vte){
+                                                //alert("this sss")
+                                                //var activePoints = ActioneeChart.getElementsAtEvent(e);
+                                                //var selectedIndex = activePoints[0]._index;
+                                                //document.location = this.data.datasets[0].data[selectedIndex];
+                                                
+                                                
+                                            }
+                                        }
+                                    });
+                                
+                                    
+                                </script>
+                            </div>
+                            <a class="h5" href="http://127.0.0.1:8000/ApproverList">Go to Your Pending Approvals</a>
+                            </div>
+                          </div>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+<!--original-->
+<!--
+<div class="container-fluid">
+    <div style="width:50% ; float:left"> 
+        <canvas id="ActioneeChart"></canvas>
+            <script>
+                Chart.defaults.global.defaultFontColor = 'blue'
+                
+                var myChart = document.getElementById('ActioneeChart').getContext('2d');
+                
+                var charts = new Chart(myChart, {
+                    type: 'polarArea',
+                    
+                    data : {
+
+                        labels : ['Stream1', 'Stream2', 'Stream3'],
+
+                        datasets : [{
+                            
+                            
+                            data : [163, 18, 12],
+
+                            borderWidth: 3,
+                            borderColor: '#777',
+                        }]
+                        
+                    },
+                    
+                    options: {
+                        title:{
+                            fontSize : 20,
+                            display : true,
+                            text: "Actionee Actions",
+                        },
+                       
+                            yAxes: [{
+                                ticks: {
+                                    display:false,
+                                    beginAtZero: true
+                                }
+                            }], 
+                            xAxes: [{
+                                ticks: {
+                                    display:false,
+                                    beginAtZero: true
+                                }
+                            }],              
+                        onClick:function(e){
+                            alert("this is a test");
+                            var activePoints = ActioneeChart.getElementsAtEvent(e);
+                            var selectedIndex = activePoints[0]._index;
+                            document.location = this.data.datasets[0].data[selectedIndex];
+                            //document.location = '/home';
+                            
+                        }
+
+                    }
+                });
+            
+                
+            </script>
+    </div>
+    <div style="width:50% ; float:left"> 
+        <canvas id="Approver"></canvas>
+            <script>
+
+                var myChart = document.getElementById('Approver').getContext('2d');
+                
+                var charts = new Chart(myChart, {
+                    type: 'polarArea',
+                    data : {
+
+                        labels : ['ApproverLevel1', 'ApproverLevel2', 'ApproverLevel3', 'ApproverLevel4', 'ApproverLevel5'],
+
+                        datasets : [{
+                            
+                            
+                            data : [0, 0, 0, 0, 0],
+
+                            borderWidth: 3,
+                            borderColor: '#777',
+                        }]
+                        
+                    },
+                    
+                    options: {
+
+                        title:{
+                            display : true,
+                            text: "Approver Actions",
+                            fontSize : 20,
+                        },
+                    }
+                });
+            
+                
+            </script>
+    </div>
+</div>
+-->
+
+
+              
+
+
+              
+
+              
+
+
+              
+
+              
+
+              
+</main></div>
+
+</body></html>

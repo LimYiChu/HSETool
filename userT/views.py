@@ -15,11 +15,15 @@ from django.views.generic import ListView, DetailView, UpdateView,TemplateView, 
 #test for login required
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-#import pypdftk
+import pypdftk
 from django.views.generic.base import ContextMixin
 from django.views.generic.edit import FormMixin
 from django.core.mail import send_mail
 from .reports import *
+from Trackem.settings import EMAIL_HOST_USER
+from django.template.loader import render_to_string
+from django.template import loader
+from django.core.mail import EmailMessage
 
 
 #import mixins
@@ -373,21 +377,77 @@ def closed(request, **kwargs):
     }
     return render (request, 'userT/reports.html',context )
 
+def GeneratePDF (request):
+    filename = [] # for appending filename place before for loop
+    if (request.POST.get('GeneratePDF')):      
+        x=ActionItems.objects.all()  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
+        y= x.values()          
+        for item in y :            
+            i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file  
+            j = (i + '.pdf')  # easier to breakdown j           
+            del item["id"]      
+            data_dict=item       
+            PDF_PATH = 'static/multiple.pdf'             
+            out_file = 'static/media/' + j   # sending file to media folder inside static folder                                                        
+            generated_pdf = pypdftk.fill_form(
+                pdf_path = PDF_PATH,
+                datas = data_dict,
+                out_file = out_file,                             
+            )
+            filename.append(str(generated_pdf)) #can only append str   
+            context={
+                 'filename' : filename,
+                 'table': True
+            }
+            print(context) # context now outside for loop                   
+        return render(request, 'userT/GeneratePDF.html', context)                    
+    return render(request, 'userT/GeneratePDF.html')
 
+def ReportingTable(request):
+    sub = Subscribe()
+    if request.method == 'POST':
+        #Msg=EmailMessage()
+        sub = Subscribe(request.POST)
+        subject = 'Test for sending email overview'
+        message = 'A summary table should present here'
+        recepient = str (sub ['Email'].value())
+        Msg=EmailMessage(subject, message, EMAIL_HOST_USER, [recepient])
+        Msg.content_subtype="html"
+        Msg.attach_file('C:\\Users\\yh_si\\Desktop\\HSETool-1\\static\\multiple.pdf')
+        Msg.send()
+        context ={
+          'form':sub
+        }
+        return render(request, 'userT/ReportingTable.html',context)
+    return render (request, 'userT/ReportingTable.html', {'form':sub})
 
-#Develop PDF
-def testing(self):    
-    x=ActionItems.objects.filter(pk__icontains=20)
-    y= x.values()
-    for item in y :
-        i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file (refer to line 216)
-        del item["id"]      
-        data_dict=item
-        PDF_PATH = 'multiple.pdf' 
-        out_file = i + 'out_file.pdf' 
-        generated_pdf = pypdftk.fill_form(
-            pdf_path = PDF_PATH,
-            datas = data_dict,
-            out_file = out_file,
-        )
-    return HttpResponse("this is a test")
+#def EmailReminder (request):
+#    return render(request, 'userT/EmailReminder.html')
+
+#Some Class here
+def EmailReminder(request):
+    sub = Subscribe()
+    if request.method == 'POST':
+        sub = Subscribe(request.POST)
+        context_allRou = getuserRoutes(request)
+        Actionee_R =    context_allRou.get('Actionee_Routes')  
+        ActionCount = blfuncActionCount(Actionee_R,0)
+        print(ActionCount)
+        #ActionCount = 20
+        subject = 'Test for sending email overview'
+        message = 'Your pending responses are ' + str(ActionCount) + ' actions.'
+        recepient = str (sub ['Email'].value())
+        #html_message = render_to_string('C:\\Users\\yh_si\\Desktop\\HSETool-1\\userT\\Templates\\userT\\ReportingTable.html')
+        #html_content = render_to_string('ReportingTable.html',context)
+        #text_content = strip_tags(html_content)
+        send_mail(subject, message, EMAIL_HOST_USER, [recepient], fail_silently = False)
+        context = {
+            'form':sub,
+        }
+        return render(request, 'userT/EmailReminder.html', context)
+    return render (request, 'userT/EmailReminder.html', {'form':sub})
+
+    
+
+def Profile (request):
+    return render(request, 'userT/Profile.html')
