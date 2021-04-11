@@ -22,6 +22,7 @@ from django.core.mail import send_mail
 from Trackem.settings import EMAIL_HOST_USER
 from django.template.loader import render_to_string
 from django.template import loader
+from django.core.mail import EmailMessage
 
 
 #import mixins
@@ -374,15 +375,48 @@ def GeneratePDF (request):
 def ReportingTable(request):
     sub = Subscribe()
     if request.method == 'POST':
+        #Msg=EmailMessage()
         sub = Subscribe(request.POST)
         subject = 'Test for sending email overview'
         message = 'A summary table should present here'
         recepient = str (sub ['Email'].value())
-        html_message = render_to_string('C:\\Users\\E\\Desktop\\HSETool-2\\userT\\Templates\\userT\\ReportingTable.html')
-        #html_content = render_to_string('ReportingTable.html',context)
-        #text_content = strip_tags(html_content)
-        send_mail(subject, message, EMAIL_HOST_USER, [recepient], fail_silently = False,html_message=html_message)
-        return render(request, 'userT/ReportingTable.html', {'recepient': recepient})
+        Msg=EmailMessage(subject, message, EMAIL_HOST_USER, [recepient])
+        Msg.content_subtype="html"
+        Msg.attach_file('C:\\Users\\yh_si\\Desktop\\HSETool-1\\static\\multiple.pdf')
+        Msg.send()
+        context ={
+          'form':sub
+        }
+        return render(request, 'userT/ReportingTable.html',context)
     return render (request, 'userT/ReportingTable.html', {'form':sub})
 
+#def EmailReminder (request):
+#    return render(request, 'userT/EmailReminder.html')
 
+#Some Class here
+def EmailReminder(request):
+    sub = Subscribe()
+    if request.method == 'POST':
+        sub = Subscribe(request.POST)
+        context_allRou = getuserRoutes(request)
+        Actionee_R =    context_allRou.get('Actionee_Routes')  
+        ActionCount = blfuncActionCount(Actionee_R,0)
+        print(ActionCount)
+        #ActionCount = 20
+        subject = 'Test for sending email overview'
+        message = 'Your pending responses are ' + str(ActionCount) + ' actions.'
+        recepient = str (sub ['Email'].value())
+        #html_message = render_to_string('C:\\Users\\yh_si\\Desktop\\HSETool-1\\userT\\Templates\\userT\\ReportingTable.html')
+        #html_content = render_to_string('ReportingTable.html',context)
+        #text_content = strip_tags(html_content)
+        send_mail(subject, message, EMAIL_HOST_USER, [recepient], fail_silently = False)
+        context = {
+            'form':sub,
+        }
+        return render(request, 'userT/EmailReminder.html', context)
+    return render (request, 'userT/EmailReminder.html', {'form':sub})
+
+    
+
+def Profile (request):
+    return render(request, 'userT/Profile.html')

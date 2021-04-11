@@ -83,6 +83,8 @@ urlpatterns = [
         path('GeneratePDF/',UserView.GeneratePDF,name='GeneratePDF'),
         #email path
         path('ReportingTable/',UserView.ReportingTable,name='ReportingTable'),
+        path('EmailReminder/',UserView.EmailReminder,name='EmailReminder'),
+        path('Profile/',UserView.Profile,name='Profile'),
       ]
 
 if settings.DEBUG:

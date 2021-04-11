@@ -17,3 +17,9 @@ class Subscribe(forms.Form):
 
     def __str__(self):
         return self.Email
+
+class EmailReminderDiscipline(forms.Form):
+    Discipline = forms.CharField(label='Discipline')
+
+    def __str__(self):
+        return self.Discipline
