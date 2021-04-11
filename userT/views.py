@@ -344,26 +344,27 @@ def multiplefiles (request, **kwargs):
 
 def closed(request, **kwargs):
     
-    
-
-    allOpenActions= blfuncgetallAction('Y', [0,1,2,3])
-    allClosedActions = blfuncgetallAction('Y', [4,5,6])
+    #Function on businees logic to get data based on Queseries, Actionee and Approver levels
+    #most of the data is
+    allOpenActions= blfuncgetallAction('Y', [0,1,2,3,4,5])
+    allClosedActions = blfuncgetallAction('Y', [6])
     
 
     listofOpenClosed = [allOpenActions,allClosedActions]
     labelsOpenClosed = ['Open', 'Closed']
-    chart = showPie(listofOpenClosed,labelsOpenClosed,"Overall Open Actions")
+    chart = showPie(listofOpenClosed,labelsOpenClosed,"Overall Closed Actions")
     
     discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
     #countDiscSub = ActionItems.mdlDisSub
     listcountbyDisSub= []
     listlablebyDisSub =[]
+    closed=[6]
     for itemPair in discsub:
         
-        listcountbyDisSub.append(blgetDiscSubActionCount ('Y',itemPair,[0,1,2,3,4,5]))
+        listcountbyDisSub.append(blgetDiscSubActionCount ('Y',itemPair,[1,2]))
         listlablebyDisSub.append(str(itemPair[0])+"/"+str(itemPair[1]))
     
-    chartDiscSub = showPie(listcountbyDisSub,listlablebyDisSub, "Open Actions by Disc/Sub-Disc")
+    chartDiscSub = showPie(listcountbyDisSub,listlablebyDisSub, "Closed Actions by Disc/Sub-Disc")
     #chartbyDisp = show
     context = {
             "chart":chart,
