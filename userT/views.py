@@ -319,7 +319,8 @@ def rptclosed(request, **kwargs):
     #chartbyDisp = show
     context = {
             "chart":chart,
-            "chartDiscSub":chartDiscSub
+            "chartDiscSub":chartDiscSub,
+            "overall":True
 
     }
     return render (request, 'userT/reports.html',context )
@@ -350,6 +351,7 @@ def rptdiscSlice(request, **kwargs):
 
     context = {
             "chart":chart,
+            "discpslice" : True
             }
     return render (request, 'userT/reports.html', context)
 def rptbyUser(request, **kwargs):
@@ -412,14 +414,19 @@ def EmailReminder(request):
     sub = Subscribe()
     if request.method == 'POST':
         sub = Subscribe(request.POST)
-        context_allRou = getuserRoutes(request)
+        recepient = str (sub ['Email'].value())
+        
+        context_allRou = getuserRoutes(request,recepient)
         Actionee_R =    context_allRou.get('Actionee_Routes')  
         ActionCount = blfuncActionCount(Actionee_R,0)
+        
+        totalaction=sum(ActionCount)
+        
         #Msg=EmailMessage()
         sub = Subscribe(request.POST)
         subject = 'Template for Action Pending Responses'
-        message = 'Clients template. Your pending responses are ' + str(ActionCount) + ' actions.'
-        recepient = str (sub ['Email'].value())
+        message = 'Clients template. Your pending responses are ' + str(totalaction) + ' actions.'
+        
         Msg=EmailMessage(subject, message, EMAIL_HOST_USER, [recepient])
         Msg.content_subtype="html"
         Msg.send()
