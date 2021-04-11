@@ -50,15 +50,17 @@
                                     <br>
                                     <input class="btn btn-lg btn-primary btn-block" type="submit" value="Login">
                                     <input type="hidden" name="next" value="{{ next }}">
-
+                                    <br>
+                                    
 
      
                                 </form>
-
+                                
                 
                     
-                </div>  
-                </div>
+                </div> 
+                </div> <a href="{% url 'password_reset' %}"><button class="btn btn-warning btn-block my-2 my-sm-0"  name ="{% url 'password_reset' %}" type="submit" value="Click">Forgot Password</button> </a>
+            </div> 
             </div>
 </fieldset>
   

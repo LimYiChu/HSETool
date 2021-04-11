@@ -1,0 +1,103 @@
+{% extends "userT\base3.html"%}
+{% load static %}
+{% block Actioneelist%}
+<!doctype html>
+<html lang="en">
+{%load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<body>
+    <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item normal">
+            <a href="/main">Dashboard</a>
+          </li>
+          <li class="breadcrumb-item active">
+              <a aria-current="page">Generate Close-Out Sheet</a>
+          </li>
+        </ol>
+    </nav>
+<!--    Not used
+      <div style="float:right">
+        <div style="float:right col-md-12">
+        
+        </div>
+        </div>
+-->
+
+<br>
+<div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <h5 class="card-header">
+                  Settings
+                </h5>
+                <div class="card-body">
+                  <div class="row">
+                  <div class="col-md-6">
+                  <p class="card-text">
+                    
+                    <h6>With Attachments</h6>
+                    <input type="radio" id="Attachments" name="AttachmentsYes" value="Daily">
+                    <label for="AttachmeentsYes"> Yes</label><br>
+                    <input type="radio" id="Attachments" name="AttachmentsNo" value="Daily" checked>
+                    <label for="AttachmeentsYes"> No</label><br>
+                    <h6>Format</h6>
+                    <input type="radio" id="ReportOutputFormat" name="ReportOutputFormat" value="PDF" checked>
+                    <label for="ReportOutputFormat"> PDF</label><br>
+                    <h6>Studies/ Workshops</h6>
+                    <input type="radio" id="ReportOutputWorkshop" name="ReportOutputWorkshop" value="Daily" checked>
+                    <label for="ReportOutputWorkshopy"> All</label><br>                  
+                  </p>
+                  </div>
+                  <div class="col-md-6">
+                    <p class="card-text">
+                      <h6>Action Status</h6>
+                      <input type="radio" id="ReportOutputStatus" name="ReportOutputStatus" value="Daily" checked>
+                      <label for="ReportOutputStatus"> All </label><br>             
+                      <h6>Organizations</h6>
+                      <input type="radio" id="ReportOutputOrg" name="ReportOutputOrg" value="Daily" checked>
+                      <label for="ReportOutputOrg"> All</label><br>
+                      <h6>Discipline</h6>
+                      <input type="radio" id="ReportOutputDiscipline" name="ReportOutputDiscipline" value="Daily" checked>
+                      <label for="ReportOutputDiscipline"> All</label><br>         
+                    </p>
+                    </div>
+                    <h4 style="text-align:center; color:cadetblue">Default values and options are customizable upon request. </h4>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <form  action="#" method="POST"> 
+                    {%csrf_token%}  
+                    <button class="btn btn-outline-secondary my-2 my-sm-0"  name ="GeneratePDF" type="submit" value="Click">Generate PDF</button>
+                    <button class="btn btn-outline-secondary my-2 my-sm-0"  name ="/main" type="submit" value="Click">Clear</button>                   
+                  </form>
+                </div>
+              </div>
+            </div>       
+</div>
+<br>
+{% if table %}
+<style>
+      .card-columns {
+        column-count: 5;
+     }
+</style>  
+
+<div class="card" style="width: 100%;">
+        <div class="card-header">
+            <div>Close-Out Sheets</div>   
+        </div>
+          <br>
+          <div class="col-md-12"> <button type="button" class="btn btn-secondary" style="width: 100%;">Download All</button><br></div><br>
+          <ul class="list-unstyled card-columns">
+            {% for x in filename %}
+              <li class="list-group-item"><a href=/{{x}}> {{x}}</a></li>
+            {% endfor%}
+          </ul>
+</div>
+
+{% endif %}            
+</body>
+{% endblock %}
+{% endblock %}
