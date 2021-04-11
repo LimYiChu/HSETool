@@ -1,0 +1,96 @@
+
+{% extends "userT\base3.html"%}
+{% block ClosedOut%}
+<nav>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item normal">
+        <a href="/main">Dashboard</a>
+      </li>
+      <li class="breadcrumb-item active">
+          <a aria-current="page">Closed Out Actions</a>
+      </li>
+    </ol>
+</nav>
+
+<style>
+    .left {
+  display: block;
+  margin-left: 3;
+  margin-right: auto;
+  width: 100%;
+}
+.right {
+  display: block;
+  margin-left: auto;
+  margin-right: 3;
+  width: 100%;
+}
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+</style>
+
+
+		
+
+
+
+			<div class="row">
+				<div class="col-md-6">
+					<div class="card">
+						<h5 class="card-header">
+							Status
+						</h5>
+						<div class="card-body">
+							<p class="card-text">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <img src="data:image/png;base64, {{chart|safe}}" alt="Overall Closed Actions" class="left">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <img src="data:image/png;base64, {{chartDiscSub|safe}}" alt="Overall Closed Actions" class="right">
+                                    </div>
+                            </div>
+							</p>
+						</div>
+						<div class="card-footer">
+							<button type="button" class="btn btn-outline-primary" style="float:right">Download</button>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="card">
+						<h5 class="card-header">
+							Filter
+						</h5>
+						<div class="card-body">
+							<p class="card-text">
+                                <h6>Discipline</h6>
+                                <input type="radio" id="Workshops" name="Workshops" value="Daily" checked>
+                                <label for="Workshops"> All</label><br>   
+                                <h6>Sub-Discipline</h6>
+                                <input type="radio" id="ReportOutputOrg" name="ReportOutputOrg" value="Daily" checked>
+                                <label for="ReportOutputOrg"> All</label><br>
+                                <h6>Workshops</h6>
+                                <input type="radio" id="ReportOutputDiscipline" name="ReportOutputDiscipline" value="Daily" checked>
+                                <label for="ReportOutputDiscipline"> All</label>
+                                <h6>Overdue only?</h6>
+                                <input type="radio" id="Overdue" name="ReportOutputDiscipline" value="Daily" checked>
+                                <label for="ReportOutputDiscipline"> All</label><br><br><br><br><br><br><br><br><br><br>    <br> 
+							</p>
+						</div>
+						<div class="card-footer">
+                            <button type="button" class="btn btn-outline-primary" style="float:right">Refresh</button>
+						</div>
+					</div>
+				</div>
+			</div>
+	
+
+
+
+
+{%endblock%}

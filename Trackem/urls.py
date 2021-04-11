@@ -88,6 +88,8 @@ urlpatterns = [
         path('ReportingTable/',UserView.ReportingTable,name='ReportingTable'),
         path('EmailReminder/',UserView.EmailReminder,name='EmailReminder'),
         path('Profile/',UserView.Profile,name='Profile'),
+        path('AllActions/',UserView.AllActions,name='AllActions'),
+        path('DisciplineBreakdown/',UserView.DisciplineBreakdown,name='DisciplineBreakdown'),
       ]
 
 if settings.DEBUG:

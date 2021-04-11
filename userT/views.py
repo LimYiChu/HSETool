@@ -451,3 +451,9 @@ def EmailReminder(request):
 
 def Profile (request):
     return render(request, 'userT/Profile.html')
+
+def AllActions (request):
+    return render(request, 'userT/AllActions.html')
+
+def DisciplineBreakdown (request):
+    return render(request, 'userT/DisciplineBreakdown.html')

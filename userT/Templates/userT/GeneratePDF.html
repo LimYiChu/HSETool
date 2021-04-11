@@ -68,9 +68,11 @@
                 </div>
                 <div class="card-footer">
                   <form  action="#" method="POST"> 
+                    <div style="float:right">
                     {%csrf_token%}  
-                    <button class="btn btn-outline-secondary my-2 my-sm-0"  name ="GeneratePDF" type="submit" value="Click">Generate PDF</button>
-                    <button class="btn btn-outline-secondary my-2 my-sm-0"  name ="/main" type="submit" value="Click">Clear</button>                   
+                    <button class="btn btn-outline-primary my-2 my-sm-0"  name ="/main" type="submit" value="Click">Cancel</button>    
+                    <button class="btn btn-outline-primary my-2 my-sm-0"  name ="GeneratePDF" type="submit" value="Click">Generate PDF</button>
+                  </div>               
                   </form>
                 </div>
               </div>

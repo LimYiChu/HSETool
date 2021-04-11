@@ -27,11 +27,12 @@
 				</h6>
 				<div class="card-body">
 					<p class="card-text">
+                        <p>Please select the desired Excel CSV format file for uploading. It is advisable to check the file for inconsistency prior to the upload process.</p>
 						<form action="" method="POST" enctype="multipart/form-data">
                             {% csrf_token %}  
                             {{form|crispy}}
-                            <button class="btn btn-secondary my-2 my-sm-0" type=submit>
-                                Confirm file
+                            <button class="btn btn-outline-primary my-2 my-sm-0" style="float:right" type=submit>
+                                Confirm and Upload File
                             </button>
                         </form>
 					</p>
