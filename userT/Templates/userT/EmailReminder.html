@@ -35,8 +35,8 @@
                     <label for="IndividualFrequency"> Monthly</label><br>
                   </p>
                 </div>
-                <div class="card-footer">                  
-                  <button type="button" class="btn btn-outline-primary" style="float:right">Update Settings</button>                
+                <div class="card-footer">
+                  <button type="button" class="btn btn-outline-secondary">Update Settings</button>
                 </div>
               </div>
             </div>
@@ -54,7 +54,7 @@
                   </p>
                 </div>
                 <div class="card-footer">
-                  <button type="button" class="btn btn-outline-primary" style="float:right">Update Settings</button>
+                  <button type="button" class="btn btn-outline-secondary">Update Settings</button>
                 </div>
               </div>
             </div>
@@ -72,7 +72,7 @@
                   </p>
                 </div>
                 <div class="card-footer">
-                  <button type="button" class="btn btn-outline-primary" style="float:right">Update Settings</button>
+                  <button type="button" class="btn btn-outline-secondary">Update Settings</button>
                 </div>
               </div>
             </div>
@@ -104,7 +104,7 @@
                   </p>
                 </div>
                 <div class="card-footer">
-                  <button type="button" class="btn btn-outline-primary" style="float:right">Update Settings</button>
+                  <button type="button" class="btn btn-outline-secondary">Update Settings</button>
                 </div>
               </div>
             </div>
@@ -127,7 +127,7 @@
 						</h5>
 						<div class="card-body">
 							<p class="card-text">
-                <form action="" method="POST">
+                <form action="/EmailReminder/" method="POST">
                 {% csrf_token %}
                 <div class = "form-group">
 								<input type="radio" id="EmailPendingResponse" name="EmailPendingResponse" value="" checked>
@@ -148,7 +148,7 @@
 							</p>
 						</div>
 						<div class="card-footer">
-              <input type="submit" name="Subscribe" class="btn btn-outline-primary" value="Send" style="float:right">
+              <input type="submit" name="Subscribe" class="btn btn-outline-secondary" value="Send">
             </form>
 						</div>
 					</div>
@@ -179,7 +179,7 @@
 							</p>
 						</div>
 						<div class="card-footer">
-							<button type="button" class="btn btn-outline-primary" style="float:right">Send</button>
+							<button type="button" class="btn btn-outline-secondary">Send</button>
 						</div>
 					</div>
 					<div class="dropdown">
@@ -212,7 +212,7 @@
 							</p>
 						</div>
 						<div class="card-footer">
-							<button type="button" class="btn btn-outline-primary" style="float:right">Send</button>
+							<button type="button" class="btn btn-outline-secondary">Send</button>
 						</div>
 					</div>					
 				</div>
@@ -229,22 +229,59 @@
               </h5>
               <div class="card-body">
                 <p class="card-text">
-                  <input type="radio" id="vehicle1" name="vehicle1" value="Bike">
-                  <label for="vehicle1"> All Users</label><br>
-                  <input type="radio" id="vehicle2" name="vehicle2" value="Car">
-                  <label for="vehicle2"> Admin</label><br>
-                  <input type="radio" id="vehicle3" name="vehicle3" value="Boat">
-                  <label for="vehicle3"> Specific User</label><br>
-                  <label for="fname">Username</label><br>
-                  <input type="text" id="fname" name="fname" value=""><br>
-                  <input type="radio" id="vehicle3" name="vehicle3" value="Boat">
-                  <label for="vehicle3"> Specific Discipline</label><br>
-                  <label for="fname">Discipline</label><br>
-                  <input type="text" id="fname" name="fname" value=""><br>
+                  <form action="/EmailReminderAttachment/" method="POST">
+                  {% csrf_token %}
+                <div class = "form-group">
+								<input type="radio" id="EmailPendingResponse" name="EmailPendingResponse" value="" checked>
+                <label for="EmailPendingResponse"> All</label><br>
+                <input type="radio" id="EmailPendingResponse" name="EmailPendingResponse" value="" >
+                <label for="EmailPendingResponse"> Overdue Only</label><br>
+                <h6>To</h6>
+                <input type="radio" id="EmailPendingResponseReceipt" name="EmailPendingResponseReceipt" value="">
+                <label for="EmailPendingResponseReceipt"> All Users</label><br>
+                <input type="radio" id="EmailPendingResponseReceipt" name="EmailPendingResponseReceipt" value="">
+                <label for="EmailPendingResponseReceipt"> Specific User</label><br>                
+                 <p> {{ form.as_p }} </p>
+                <input type="radio" id="EmailPendingResponseReceipt" name="EmailPendingResponseReceipt" value="">
+                <label for="EmailPendingResponseReceipt"> Specific Discipline</label><br>
+                <label for="fname">Discipline</label><br>
+                <input type="text" id="fname" name="fname" value=""><br>
+                </div>
+							</p>
+						</div>
+						<div class="card-footer">
+              <input type="submit" name="Subscribe" class="btn btn-outline-secondary" value="Send">
+            </form>
+						</div>
+					</div>
+				
+				</div>
+				<div class="col-md-4">
+					<div class="card">
+						<h5 class="card-header">
+							Pending Approval
+						</h5>
+						<div class="card-body">
+							<p class="card-text">
+								<input type="radio" id="EmailPendingApprover" name="EmailPendingApprover" value="">
+                <label for="EmailPendingApprover"> All</label><br>
+                <input type="radio" id="EmailPendingApprover" name="EmailPendingApprover" value="" checked>
+                <label for="EmailPendingApprover"> Overdue Only</label><br>
+                <h6>To</h6>
+                <input type="radio" id="EmailPendingApproverReceipt" name="EmailPendingApproverReceipt" value="">
+                <label for="EmailPendingApproverReceipt"> All Users</label><br>
+                <input type="radio" id="EmailPendingApproverReceipt" name="EmailPendingApproverReceipt" value="">
+                <label for="EmailPendingApproverReceipt"> Specific User</label><br>
+                <label for="fname">Username</label><br>
+                <input type="text" id="fname" name="fname" value=""><br>
+                <input type="radio" id="EEmailPendingApproverReceipt" name="EmailPendingApproverReceipt" value="">
+                <label for="EmailPendingApproverReceipt"> Specific Discipline</label><br>
+                <label for="fname">Discipline</label><br>
+                <input type="text" id="fname" name="fname" value=""><br>
                 </p>
               </div>
               <div class="card-footer">
-                <button type="button" class="btn btn-outline-primary" style="float:right">Send</button>
+                <button type="button" class="btn btn-outline-secondary">Send</button>
               </div>
             </div>
           </div>
@@ -270,7 +307,7 @@
                 </p>
               </div>
               <div class="card-footer">
-                <button type="button" class="btn btn-outline-primary" style="float:right">Send</button>
+                <button type="button" class="btn btn-outline-secondary">Send</button>
               </div>
             </div>
           </div>
@@ -296,7 +333,7 @@
                 </p>
               </div>
               <div class="card-footer">
-                <button type="button" class="btn btn-outline-primary" style="float:right">Send</button>
+                <button type="button" class="btn btn-outline-secondary">Send</button>
               </div>
             </div>
           </div>
@@ -306,3 +343,4 @@
 
 
 {%endblock%}
+
