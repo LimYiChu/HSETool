@@ -57,7 +57,7 @@ class frmUpdateActioneeForm(forms.ModelForm):
         Div (
                 
             Div ('Response', css_class='col-md-12'),
-            Div ('Attachment', css_class='col-md-12'),
+            #Div ('Attachment', css_class='col-md-12'),
             Div ('FutureAction', css_class='col-md-12'),
             css_class='row',
             ),
@@ -80,7 +80,7 @@ class ApproverForm(forms.ModelForm):
         CommonLayout(),
         Div(
             Div (Field('Response',readonly=True) ,css_class='col-md-12'), 
-            Div (Field('Attachment',disable=True),  css_class='col-md-12'),
+            #Div (Field('Attachment',disable=True),  css_class='col-md-12'),
             Div (Field('FutureAction', readonly=True), css_class='col-md-12'),
             #Div (Field('QueSeries', readonly=True), css_class='col-md-3'),
            #-somehow not working Div (Field('DueDate', readonly=True), css_class='col-md-2'),
@@ -97,8 +97,8 @@ class frmAddRejectReason(forms.ModelForm):
         super(frmAddRejectReason, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_method = 'POST'
-        self.helper.add_input(Submit('Reject', 'Reject with Comments', css_class='btn-primary float-right'))
-        self.helper.add_input(Submit('Cancel', 'Cancel', css_class='btn-primary float-right'))
+        #self.helper.add_input(Submit('Reject', 'Reject with Comments', css_class='btn-primary float-right'))
+        #self.helper.add_input(Submit('Cancel', 'Cancel', css_class='btn-primary float-right'))
         self.helper.layout = Layout(
 
             Div(
@@ -117,8 +117,8 @@ class frmMultipleFiles(forms.ModelForm):
         super(frmMultipleFiles, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_method = 'POST'
-        self.helper.add_input(Submit('Upload', 'Upload File & Confirm', css_class='btn btn-outline-dark float-right col-md-2'))
-        self.helper.add_input(Submit('Cancel', 'Cancel', css_class='btn btn-outline-dark float-right col-md-1'))
+        #self.helper.add_input(Submit('Upload', 'Upload File & Confirm', css_class='btn btn-outline-dark float-right col-md-2'))
+        #self.helper.add_input(Submit('Cancel', 'Cancel', css_class='btn btn-outline-dark float-right col-md-1'))
         
         
         self.helper.layout = Layout(

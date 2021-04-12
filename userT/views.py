@@ -60,20 +60,24 @@ def mainDashboard (request):
     Approver = []
     #get all routes first
     context_allRou = getuserRoutes(request,request.user.email)
-
+    
     #Just get Actionee and Approver Routes, tied into model managers
     Actionee_R =    context_allRou.get('Actionee_Routes')
     Approver_R =    context_allRou.get('Approver_Routes')
 
+    print(Actionee_R)
     
     #This function just does a count using model managers , calling from businesslogic.py
     ActioneeCount = blfuncActionCount(Actionee_R,0)
+    discsub = blgetActioneeDiscSub(Actionee_R)
     
     #Actionee is a different from approver wherein the pie/polar chart actually show the streams. Each stream is just a route
     # a route example is in Action routes table Say EHS: Technical Safety or Marine. 
-    # 
+    #
+    for pairs in discsub:
+        labelsActionee.append(pairs[0])
     for i in range(len(ActioneeCount)):
-        labelsActionee.append('Stream'+str(i+1))
+        
         dataActionee.append(ActioneeCount[i])
        
     #get count for all approver levels just by looping through the key
@@ -82,7 +86,7 @@ def mainDashboard (request):
     for key, value in Approver_R.items():
         x= blfuncActionCount(value,key)
         Approver.insert(key,x)
-        labelsApprover.append('ApproverLevel'+str(key))
+        labelsApprover.append('Level'+str(key))
         dataApprover.append(sum(x))
     #Context just returns to HTML so that we can use it in the HTML page
     Context = {
@@ -188,10 +192,15 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
         if (self.request.POST.get('Reject')):
                 #If reject que series should be 0, but need another intermediate screen for comments
                 #form.instance.QueSeries = 0
-                
+            
                 #Need to do below with HTTPResponseredirect because normal reverse seems to give an str error
                 #reverse simply redirects to url path so can call class RejectReason below since cant really call it from fucntion call directly
                 #makes sense since really django wants to work with views coming from URL paths- simply a strutured way of doing stuff
+            context = {
+                        'StudyActionNo' : form.instance.StudyActionNo
+
+
+                }
             return HttpResponseRedirect(reverse ('RejectComments', kwargs={'forkeyid': form.instance.id}))
 
         if (self.request.POST.get('Cancel')):
@@ -201,6 +210,17 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
         if (self.request.POST.get('Approve')): 
                 #  need another intermediate screen for approval no comments
             form.instance.QueSeries += 1
+            return super().form_valid(form)
+
+        if (self.request.POST.get('Delete')): 
+                #  need another intermediate screen for approval no comments
+            AttachmentID = self.request.POST.get ('filepk') # hidden file that holds ID of the attachment
+            ActionItemID = form.instance.id
+            Status = Attachments.mdlDeleteAttachment.mgrDeleteAttachmentbyID(AttachmentID)
+            
+            return redirect('ActioneeFormMixin' , pk=ActionItemID)
+
+        if (self.request.POST.get('Next')): 
             return super().form_valid(form)
 
     def get_context_data(self,**kwargs):
@@ -216,8 +236,7 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
 class ActioneeItemsMixin(ApproveItemsMixin):
     template_name = "userT/actionUpdateApproveAction.html"
     form_class = frmUpdateActioneeForm
-    success_url = '/ActioneeList/'  
-
+    
     def get_context_data(self,**kwargs):
         fk = self.kwargs.get("pk")
         context = super().get_context_data(**kwargs)
@@ -297,25 +316,27 @@ def rptclosed(request, **kwargs):
     
     #Function on businees logic to get data based on Queseries, Actionee and Approver levels
     #most of the data is
-    allOpenActions= blfuncgetallAction('Y', [0,1,2,3,4,5])
-    allClosedActions = blfuncgetallAction('Y', [6])
+    openActionsQueSeries = [0,1,2,3,4,5]
+    closedActionsQueSeries = [6]
+    allOpenActions= blfuncgetallAction('Y', openActionsQueSeries)
+    allClosedActions = blfuncgetallAction('Y', closedActionsQueSeries)
     
 
     listofOpenClosed = [allOpenActions,allClosedActions]
     labelsOpenClosed = ['Open', 'Closed']
-    chart = showPie(listofOpenClosed,labelsOpenClosed,"Overall Closed Actions")
+    chart = showPie(listofOpenClosed,labelsOpenClosed,"Overall Action Status")
     
     discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
     #countDiscSub = ActionItems.mdlDisSub
     listcountbyDisSub= []
     listlablebyDisSub =[]
-    closed=[6]
+    
     for itemPair in discsub:
         
-        listcountbyDisSub.append(blgetDiscSubActionCount ('Y',itemPair,[1,2]))
-        listlablebyDisSub.append(str(itemPair[0])+"/"+str(itemPair[1]))
+        listcountbyDisSub.append(blgetDiscSubActionCount ('Y',itemPair,openActionsQueSeries))
+        listlablebyDisSub.append(str(itemPair[0]))#+"/"+str(itemPair[1]))
     
-    chartDiscSub = showPie(listcountbyDisSub,listlablebyDisSub, "Closed Actions by Disc/Sub-Disc")
+    chartDiscSub = showPie(listcountbyDisSub,listlablebyDisSub, "Open Actions by Disc/Sub-Disc")
     #chartbyDisp = show
     context = {
             "chart":chart,
@@ -373,10 +394,10 @@ def GeneratePDF (request):
             j = (i + '.pdf')  # easier to breakdown j           
             del item["id"]      
             data_dict=item       
-            PDF_PATH = 'static/multiple.pdf'             
+            x = 'static/multiple.pdf'             
             out_file = 'static/media/' + j   # sending file to media folder inside static folder                                                        
             generated_pdf = pypdftk.fill_form(
-                pdf_path = PDF_PATH,
+                pdf_path = x,
                 datas = data_dict,
                 out_file = out_file,                             
             )

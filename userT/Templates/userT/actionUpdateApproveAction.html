@@ -87,14 +87,23 @@
                     <thead class="thead-light">
                         <tr class="filters">
                           <th onclick="sortTable(0)">
-                            Check Files
+                            Submitted
                           </th>
-                          
+                          <th></th>
                           <tbody>
+                          </tr>
                             {% for X  in object_list %}
                               
                             <tr>
                               <td><a class="article-title" href={{ X.Attachment.url }}>{{ X.Attachment }}</a></td>
+                              <td>
+                                {% if Approver%}
+                                  
+                                {%else%}
+                                <div class="form-group"><input type="hidden" name="filepk" value={{ X.id }}></div>
+                                <div class="form-group"><input type="submit" name="Delete" value="Delete" class="btn btn-outline-primary float-right "  /></div>  
+                                {% endif%}
+                              </td>
                               </tr>
                             </tbody>
                             {% endfor %}
@@ -107,7 +116,7 @@
                   <div class="form-group"><input type="submit" name="Reject" value="Reject..." class="btn btn-outline-primary float-right col-md-1"  id="submit-id-reject"/></div>
                {%else %}
                             
-                  <div class="form-group"><input type="submit" name="Approve" value="Next..." class="btn btn-outline-primary float-right col-md-1"  id="submit-id-approve"/></div> 
+                  <div class="form-group"><input type="submit" name="Next" value="Next..." class="btn btn-outline-primary float-right col-md-1"  id="submit-id-approve"/></div> 
                   <div class="form-group"><input type="submit" name="Cancel" value="Cancel" class="btn btn-outline-primary float-right col-md-1"  id="submit-id-reject"/></div>
                 {%endif %}
               </div>
