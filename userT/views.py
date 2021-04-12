@@ -354,6 +354,17 @@ def rptoverallStatus(request, **kwargs):
                         listcountbyCompany.append(blgetCompanyActionCount (items,openActionsQueSeries))
                             #dont need to append list as its already in the list above
                 chartChanges = showPie(listcountbyCompany,Company, "Open Actions by Company")
+            if ActionsSorton == 'Discipline':
+                discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
+                listcountbyDisSub= []
+                listlablesDisc =[]
+                for itemPair in discsub:
+        
+                    listcountbyDisSub.append(blgetDiscSubActionCount ('Y',itemPair,openActionsQueSeries))
+                    listlablesDisc.append(str(itemPair[0]))#+"/"+str(itemPair[1]))
+    
+                chartChanges = showPie(listcountbyDisSub,listlablesDisc, "Open Actions by Disc/Sub-Disc")
+
         else: #This is for closed actions if selected
             if ActionsSorton == 'Company':
                 Company = ActionRoutes.mdlAllCompany.mgr_getCompanyCount()
@@ -361,6 +372,18 @@ def rptoverallStatus(request, **kwargs):
                         listcountbyCompany.append(blgetCompanyActionCount (items,closedActionsQueSeries))
                             #dont need to append list as its already in the list above
                 chartChanges = showPie(listcountbyCompany,Company, "Open Actions by Company")
+
+            if ActionsSorton == 'Discipline':
+                
+                discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
+                listcountbyDisSub= []
+                listlablesDisc =[]
+                for itemPair in discsub:
+        
+                    listcountbyDisSub.append(blgetDiscSubActionCount ('Y',itemPair,closedActionsQueSeries))
+                    listlablesDisc.append(str(itemPair[0]))#+"/"+str(itemPair[1]))
+    
+                chartChanges = showPie(listcountbyDisSub,listlablesDisc, "Open Actions by Disc/Sub-Disc")
     context = {
             "chart":chart,
             "chartChanges":chartChanges,
