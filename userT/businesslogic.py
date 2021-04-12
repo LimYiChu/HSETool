@@ -86,8 +86,14 @@ def blgetDiscSubActionCount(workshop,discsub,quelist):
    
     return count
    
+def blgetCompanyActionCount(company,quelist) :
 
+    count = 0
 
+    for eachQs in quelist:
+        count += ActionItems.mdlgetActionCompanyCount.mgr_getCompanyCount(company,eachQs) 
+   
+    return count
 def blgetActioneeItemsbyStream(contextRoutes,stream): 
     que = 0 #denotes actionee items
     firststream = []

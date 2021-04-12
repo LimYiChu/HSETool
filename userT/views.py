@@ -312,7 +312,7 @@ def multiplefiles (request, **kwargs):
     return render(request, 'userT/multiplefiles.html',context)
 
 
-def rptclosed(request, **kwargs):
+def rptoverallStatus(request, **kwargs):
     
     #Function on businees logic to get data based on Queseries, Actionee and Approver levels
     #most of the data is
@@ -321,26 +321,49 @@ def rptclosed(request, **kwargs):
     allOpenActions= blfuncgetallAction('Y', openActionsQueSeries)
     allClosedActions = blfuncgetallAction('Y', closedActionsQueSeries)
     
-
+    #this is for overall charts
     listofOpenClosed = [allOpenActions,allClosedActions]
     labelsOpenClosed = ['Open', 'Closed']
     chart = showPie(listofOpenClosed,labelsOpenClosed,"Overall Action Status")
     
+    #this is for disc/sub-disipline
     discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
     #countDiscSub = ActionItems.mdlDisSub
+    #important to separate list otherwise it will fuck it up
     listcountbyDisSub= []
-    listlablebyDisSub =[]
-    
+    listlablesDisc =[]
+    listcountbyCompany= []
+    listlabelsCompany = []
+
+    #default view
     for itemPair in discsub:
         
         listcountbyDisSub.append(blgetDiscSubActionCount ('Y',itemPair,openActionsQueSeries))
-        listlablebyDisSub.append(str(itemPair[0]))#+"/"+str(itemPair[1]))
+        listlablesDisc.append(str(itemPair[0]))#+"/"+str(itemPair[1]))
     
-    chartDiscSub = showPie(listcountbyDisSub,listlablebyDisSub, "Open Actions by Disc/Sub-Disc")
-    #chartbyDisp = show
+    chartChanges = showPie(listcountbyDisSub,listlablesDisc, "Open Actions by Disc/Sub-Disc")
+
+    #if generatePdf is hit
+    if request.method == 'POST':
+        ActionStatus = request.POST.get ('ActionStatus')
+        ActionsSorton = request.POST.get ('SortOn')
+        if ActionStatus =='Open':
+            if ActionsSorton == 'Company':
+                Company = ActionRoutes.mdlAllCompany.mgr_getCompanyCount()
+                for items in Company:
+                        listcountbyCompany.append(blgetCompanyActionCount (items,openActionsQueSeries))
+                            #dont need to append list as its already in the list above
+                chartChanges = showPie(listcountbyCompany,Company, "Open Actions by Company")
+        else: #This is for closed actions if selected
+            if ActionsSorton == 'Company':
+                Company = ActionRoutes.mdlAllCompany.mgr_getCompanyCount()
+                for items in Company:
+                        listcountbyCompany.append(blgetCompanyActionCount (items,closedActionsQueSeries))
+                            #dont need to append list as its already in the list above
+                chartChanges = showPie(listcountbyCompany,Company, "Open Actions by Company")
     context = {
             "chart":chart,
-            "chartDiscSub":chartDiscSub,
+            "chartChanges":chartChanges,
             "overall":True
 
     }

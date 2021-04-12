@@ -13,7 +13,8 @@ class QuerySet(models.QuerySet):
         return self.filter (Disipline__icontains=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1]).filter (QueSeries__iexact=que).count ()
     def get_mgrComments(self,fkey):
         return self.filter(Action__pk=fkey)
-    
+    def get_mgrCompanyCount(self,Company,que):
+        return self.filter (Organisation__icontains=Company).filter (QueSeries__iexact=que).count()
     # def get_Approver1(self,userorganisation,userdisipline,usersubdisipline):
     #     return self.filter(Organisation__icontains=userorganisation).filter(Disipline__icontains=userdisipline).filter(Subdisipline__icontains=usersubdisipline)
     # def get_Approver2(self,useremail):
@@ -49,6 +50,11 @@ class mgrgetActionDiscSubCount(models.Manager):
     def mgr_getDiscSubItemsCount(self,workshop,DiscSub,que):
         return self.get_queryset().get_DiscSubActionsCount(workshop,DiscSub,que)
 
+class mgrgetActionCompanyCount(models.Manager):
+    def get_queryset (self):
+        return QuerySet(self.model, using=self._db)
+    def mgr_getCompanyCount(self,Company,que):
+        return self.get_queryset().get_mgrCompanyCount(Company,que)
 
 class Approver1Manager(models.Manager):
     def get_queryset (self):
