@@ -97,4 +97,9 @@ class ActionRoutes(models.Model):
     #Approver4       = models.ForeignKey(CustomUser,null=True, on_delete=models.SET_NULL, related_name='Approver4')
     #Approver5       = models.ForeignKey(CustomUser,null=True, on_delete=models.SET_NULL, related_name='Approver5')
 
+class Workshops(models.Model):
+    
 
+    Workshops    = models.CharField(max_length=100, null=True)
+    DateRange   = models.DateTimeField(null=True)
+    AttendanceList  = models.CharField(max_length=100, null=True)
