@@ -46,7 +46,7 @@
                                         <img src="data:image/png;base64, {{chart|safe}}" alt="Overall Closed Actions" class="left">
                                     </div>
                                     <div class="col-md-6">
-                                        <img src="data:image/png;base64, {{chartDiscSub|safe}}" alt="Overall Closed Actions" class="right">
+                                        <img src="data:image/png;base64, {{chartChanges|safe}}" alt="Overall Closed Actions" class="right">
                                     </div>
                             </div>
 							</p>
@@ -64,23 +64,25 @@
 						</h5>
 						<div class="card-body">
 							<p class="card-text">
+                <form method="POST" enctype = 'multipart/form-data' > 
+                  {% csrf_token %}  
+                  <fieldset class="form-group" >
                                 <h6>Action Status</h6>
                                 <input type="radio" id="ActionStatus" name="ActionStatus" value="Open" checked>
                                 <label for="ActionStatus"> Open</label><br>   
                                 <input type="radio" id="ActionStatus" name="ActionStatus" value="Closed">
                                 <label for="ActionStatuss"> Closed</label><br>
-                                <input type="radio" id="ActionStatus" name="ActionStatus" value="Both">
-                                <label for="ActionStatus"> Both</label><br>
+                                
                                 <h6>Sort By</h6>
-                                <input type="radio" id="PieChartSort" name="PieChartSort" value="Organizations" checked>
+                                <input type="radio" id="SortOn" name="SortOn" value="Company" checked>
                                 <label for="PieChartSort"> Organizations</label><br>
-                                <input type="radio" id="PieChartSort" name="PieChartSort" value="Disciplines" checked>
+                                <input type="radio" id="SortOn" name="SortOn" value="Disciplines" checked>
                                 <label for="PieChartSort"> Disciplines</label><br>
-                                <input type="radio" id="PieChartSort" name="PieChartSort" value="Workshops" checked>
+                                <input type="radio" id="SortOn" name="SortOn" value="Workshops" checked>
                                 <label for="PieChartSort"> Workshops</label><br>
-                                <input type="radio" id="PieChartSort" name="PieChartSort" value="All" checked>
+                                <input type="radio" id="SortOn" name="SortOn" value="All" checked>
                                 <label for="PieChartSort"> All</label><br>                                
-                                <h6>Show Overdue Only</h6>
+                                <h6>Overdue Actions</h6>
                                 <input type="radio" id="OverdueOnly" name="OverdueOnly" value="Yes" checked>
                                 <label for="OverdueOnly"> Yes</label><br>   
                                 <input type="radio" id="OverdueOnly" name="OverdueOnly" value="No" checked>
@@ -89,8 +91,10 @@
 							</p>
 						</div>
 						<div class="card-footer">
-                            <button type="button" class="btn btn-outline-primary" style="float:right">Generate Graph</button>
+              <div class="form-group"><input type="submit" name="GenerateGraph" value="Generate Graph" class="btn btn-outline-primary float-right "  /></div>       
+                      
 						</div>
+            </fieldset>
 					</div>
 				</div>
 
@@ -102,7 +106,7 @@
 
 <br>
 
-<div class="row">
+<!--<div class="row">
     <div class="col-md-12">
         <div class="card">
             <h5 class="card-header">
@@ -125,7 +129,7 @@
         </div>
     </div>
 </div>
-<br>
+<br>-->
 <!--Dummy Table-->
 <div class="row">
 	<div class="col-md-12">

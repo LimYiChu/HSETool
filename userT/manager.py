@@ -21,7 +21,14 @@ class RoutesQuerySet(models.QuerySet):
         finallistoflist = [x for x in listoflist if x] #strip of the first blank, the append into initiliased list of list creates a blank at the start
         return finallistoflist
 
+    def get_mgrgetCompany(self):
+        allRoutes =self.filter()
+        Company = []
+        for items in allRoutes:
+            Company.append(items.Organisation)
 
+        return list(set(Company)) #- Returns non Duplicate values
+        
 class ActioneeManager(models.Manager):
     def get_queryset (self):
         return RoutesQuerySet(self.model, using=self._db)
@@ -40,6 +47,12 @@ class mgrgetDiscSub (models.Manager):
         return RoutesQuerySet(self.model, using=self._db)
     def mgr_getDiscSub(self):
         return self.get_queryset().get_AllDiscSub()
+
+class mgrgetCompany (models.Manager):
+    def get_queryset (self):
+        return RoutesQuerySet(self.model, using=self._db)
+    def mgr_getCompanyCount(self):
+        return self.get_queryset().get_mgrgetCompany()
 
 # class Approver2Manager(models.Manager):
 #     def get_queryset (self):
