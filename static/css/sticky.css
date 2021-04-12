@@ -1,0 +1,13 @@
+.postitnote  {
+    width:250px;
+  height:240px;
+  position:relative;
+  background:beige;
+  overflow:hidden;
+  margin:30px auto;
+  padding:20px;
+  border-radius:0 0 0 30px/45px;
+  font-family: 'Times New Roman', cursive;
+  line-height:1.7em;
+  font-size:19px;
+  } 
