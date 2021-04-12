@@ -3,6 +3,22 @@ from django.http import HttpResponse
 
 from UploadExcel.models import ActionItems
 
+def blgetActioneeDiscSub(routes):
+    discsub=[]
+    listoflist =[[]]
+     
+    for items in routes:
+        discsub.append(items.Disipline)
+        discsub.append(items.Subdisipline)
+         
+        listoflist.append(discsub)
+        discsub=[]
+        
+    finallistoflist = [x for x in listoflist if x]
+
+    return finallistoflist
+
+
 def blfuncActioneeComDisSub(contextRoutes,que):
    #This functionality already works 
     firststream = []

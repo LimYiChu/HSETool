@@ -30,7 +30,7 @@ class ActionItems(models.Model):
     FutureAction    =   models.TextField(null=True,blank=True)
     
     DueDate         =   models.DateField(auto_now_add=True, null=True,blank=True)
-    QueSeries       =   models.IntegerField(default=0,blank=True) #try to make the queseries value default to 0 when not included in the templated uploaded.
+    QueSeries       =   models.IntegerField(blank=True,null=True) #try to make the queseries value default to 0 when not included in the templated uploaded.
     objects = models.Manager()
     myActionItems = myActionItemManager()
     myActionItemsCount = myActionCount()
@@ -68,6 +68,7 @@ class Attachments (models.Model):
     DateAdded = models.DateTimeField(auto_now_add=True)
     objects = models.Manager()
     
+    mdlDeleteAttachment = mgrDeleteAttachment()
     class Meta:
        verbose_name_plural = "Attachments"
 

@@ -53,10 +53,11 @@
                     
                                                 borderWidth: 1,
                                                 borderColor: 'black',
-                                                backgroundColor: ["#D3EDEE","#91CACC", "#C0A8A3","#5E6565","#E5C0E2","#E0E1B3" ,"#0074D9", "#FF4136", "#2ECC40", "#FF851B", "#7FDBFF"],
+                                                backgroundColor: ["#D3EDEE","#91CACC", "#C0A8A3","#5E6565","#E5C0E2",
+                                                "#E0E1B3" ,"#0074D9", "#FF4136", "#2ECC40", "#FF851B", "#7FDBFF"],
+                                                hoverBorderColor: "#f5f6fa"
                                             }]
-                                            
-                                        },
+                                            },
                                         
                                         options: {
                                             title:{
@@ -93,7 +94,7 @@
             <div class="col-md-6">
                     <div class="card">
                             <div class="card-header" style="font-size: large;">
-                              Approver Actions
+                              Approver Actions (Cummulative)
                             </div>
                             <div class="card-body">
                                 <canvas id="Approver"></canvas>
@@ -126,7 +127,7 @@
                                                 text: "Approver Actions",
                                                 fontSize : 20,
                                             },
-
+                                            tooltips: {enabled: true},
                                             onClick:function(vte){
                                                 //alert("this sss")
                                                 //var activePoints = ActioneeChart.getElementsAtEvent(e);

@@ -71,6 +71,13 @@ class mdlSetQueSeries(models.Manager):
         obj.QueSeries = Que
         obj.save(update_fields=["QueSeries"],using=self.db)
 
+
+class mgrDeleteAttachment(models.Manager):
+
+    def mgrDeleteAttachmentbyID(self,ID):
+        obj = get_object_or_404(self.model, id=ID)
+        obj.delete()
+        return True
 # class Approver2Manager(models.Manager):
 #     def get_queryset (self):
 #         return RoutesQuerySet(self.model, using=self._db)

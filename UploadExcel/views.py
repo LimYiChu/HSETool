@@ -52,32 +52,5 @@ def Load (request):
     return render(request, 'uploadExcel/upload.html', {'form':form})
     
 def LoadRoutes (request):
-    UploadExl.objects.all().delete()
-    if request.method == 'POST':
-        form = UploadExlForm(request.POST ,request.FILES)
-        if form.is_valid():
-            form.save()
-            form = UploadExlForm()
-            obj = UploadExl.objects.get()
-            
-            with open (obj.filename.path, 'r') as input_file:
-                csv_reader = csv.reader(input_file)
-                for i, row in enumerate(csv_reader):
-            
-                    ActionItems.objects.create(
-                    StudyActionNo= row [1],
-                    StudyName= row[2],
-                    Facility=row[3],
-                    ProjectPhase=row[4],
-                    Cause= row [5],
-                    Consequence= row[6],
-                    Recommendations= row[7],
-                    Organisation=row[8],
-                    Disipline=row[9],
-                    Subdisipline=row[10],
-                    FutureAction=row[11],
-                    DueDate=row[12],
-                    )
-    else:
-        form = UploadExlForm()
-        return render(request, 'uploadExcel/upload.html', {'form':form})
+    #to load routes from excel when required
+    pass
