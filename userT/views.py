@@ -486,3 +486,6 @@ def AllActions (request):
 
 def DisciplineBreakdown (request):
     return render(request, 'userT/DisciplineBreakdown.html')
+
+def StickyNote(request):
+    return render(request, 'userT/StickyNote.html')

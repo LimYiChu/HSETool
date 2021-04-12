@@ -93,6 +93,8 @@ urlpatterns = [
         path('DisciplineBreakdown/',UserView.DisciplineBreakdown,name='DisciplineBreakdown'),
         path('EmailReminder/',UserView.EmailReminder,name='EmailReminder'),
         path('EmailReminderAttachment/',UserView.EmailReminderAttachment,name='EmailReminderAttachment'),
+        #StickyNote
+        path('StickyNote/',UserView.StickyNote,name='StickyNote'),
       ]
 
 if settings.DEBUG:

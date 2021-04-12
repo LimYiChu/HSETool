@@ -44,6 +44,7 @@ def Load (request):
                     Subdisipline=row[10],
                     FutureAction=row[11],
                     DueDate=row[12],
+                    QueSeries=row[13],
                     
                     )
     else:

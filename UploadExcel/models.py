@@ -59,7 +59,7 @@ class Comments (models.Model):
        verbose_name_plural = "Comments"
 
     def __str__(self): 
-       return '%s ---%s' %(self.Action.StudyActionNo, self.Username)
+       return '%s ---%s' %(self.Action.StudyActionNo, self.Username) #if someone delete all Actions before Attachments, come here to fix
 
 class Attachments (models.Model):
     Action = models.ForeignKey(ActionItems, on_delete=models.SET_NULL,null=True) #cant have related name as it throws a spanner in the works
