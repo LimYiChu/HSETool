@@ -20,7 +20,7 @@ def showPie(dataAct,labelsAct,Title):
     
     data = dataAct
     labels =labelsAct
-    colors = ["#D3EDEE","#91CACC", "#C0A8A3","#5E6565","85343F"]
+    colors = ["#D3EDEE","#91CACC", "#C0A8A3","#5E6565"]
     radius = 0.8
     
     def explode(dataslice):
