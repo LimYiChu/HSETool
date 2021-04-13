@@ -24,7 +24,7 @@ from Trackem.settings import EMAIL_HOST_USER
 from django.template.loader import render_to_string
 from django.template import loader
 from django.core.mail import EmailMessage
-
+from openpyxl import Workbook
 
 #import mixins
 from django.views.generic.detail import SingleObjectMixin
@@ -311,9 +311,45 @@ def multiplefiles (request, **kwargs):
 
     return render(request, 'userT/multiplefiles.html',context)
 
+def createExcelReports(request,**kwargs):
+    
+    allfields = [f.name for f in ActionItems._meta.get_fields()] 
+    
+    del allfields[0:2] # pop the first 2 in the list since its the foreign key
+    
+    allWorkshops = ActionItems.objects.all()
+    
+    workbook = Workbook()
+            
+    worksheet = workbook.active
+    worksheet.title = 'ActionItems'
+            
+    columns = allfields
+    
+    row_num = 1
+
+    for col_num, column_title in enumerate(columns, 1):
+                cell = worksheet.cell(row=row_num, column=col_num)
+                cell.value = column_title
+    row=[]
+    for actions in allWorkshops:
+           
+            row_num += 1
+            row=[]
+            for field in allfields:
+                    param = 'actions.'+ str(field)
+                    row.append (eval(param))
+                   
+            
+            
+            for col_num, cell_value in enumerate(row, 1):
+                    cell = worksheet.cell(row=row_num, column=col_num)
+                    cell.value = cell_value
+                
+    workbook.save('ActionItemsDemo.xlsx')
 
 def rptoverallStatus(request, **kwargs):
-    
+    #this function is too messy and needs to be cleaned up
     #Function on businees logic to get data based on Queseries, Actionee and Approver levels
     #most of the data is
     openActionsQueSeries = [0,1,2,3,4,5]
@@ -328,8 +364,8 @@ def rptoverallStatus(request, **kwargs):
     
     #this is for disc/sub-disipline
     discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
-    #countDiscSub = ActionItems.mdlDisSub
-    #important to separate list otherwise it will fuck it up
+    
+    #important to separate list , reusing list will fuck it up by adding list below to this one
     listcountbyDisSub= []
     listlablesDisc =[]
     listcountbyCompany= []
@@ -343,10 +379,17 @@ def rptoverallStatus(request, **kwargs):
     
     chartChanges = showPie(listcountbyDisSub,listlablesDisc, "Open Actions by Disc/Sub-Disc")
 
-    #if generatePdf is hit
+    #if generatePdf is hit, the selection is checked and graphs generated internally
     if request.method == 'POST':
+
         ActionStatus = request.POST.get ('ActionStatus')
         ActionsSorton = request.POST.get ('SortOn')
+        ViewExcel = request.POST.get('viewExcel')
+        print("POST")
+        if (ViewExcel):
+            print("INVIEWEXCEL")
+            createExcelReports(request)
+            
         if ActionStatus =='Open':
             if ActionsSorton == 'Company':
                 Company = ActionRoutes.mdlAllCompany.mgr_getCompanyCount()
