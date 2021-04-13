@@ -32,7 +32,7 @@
   width: 80%;
 }
 </style>
-
+            {% if overall %}
 			<div class="row">
 				<div class="col-md-10">
 					<div class="card">
@@ -56,6 +56,30 @@
 						</div>
 					</div>
 				</div>
+                {%endif%}
+                {%if discpslice%}
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <h5 class="card-header">
+                                Actions Status
+                            </h5>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <img src="data:image/png;base64, {{chart|safe}}" alt="Overall Closed Actions" class="left">
+                                        </div>
+                                        
+                                </div>
+                                </p>
+                            </div>
+                            <div class="card-footer">
+                                <button type="button" class="btn btn-outline-primary" style="float:right">Download</button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif%}
 				{% if overall %}
                 <div class="col-md-2">
 					<div class="card">
@@ -100,7 +124,38 @@
 
                 {%endif%}
                 {%if discpslice%}
-                    <!--HS to add filters for Discpline-->
+                <div class="col-md-2">
+					<div class="card">
+						<h5 class="card-header">
+							Filter Chart 
+						</h5>
+						<div class="card-body">
+							<p class="card-text">
+                <form method="POST" enctype = 'multipart/form-data' > 
+                  {% csrf_token %}  
+                  <fieldset class="form-group" >
+                                <h6>Sort By</h6>
+                                <input type="radio" id="SortOn" name="SortOn" value="Company">
+                                <label for="PieChartSort"> Pending Responses</label><br>
+                                <input type="radio" id="SortOn" name="SortOn" value="Discipline" >
+                                <label for="PieChartSort"> Pending Approver</label><br>
+                                <input type="radio" id="SortOn" name="SortOn" value="Workshops" Checked>
+                                <label for="PieChartSort"> All</label><br>                                
+                                <h6>Overdue Actions</h6>
+                                <input type="radio" id="OverdueOnly" name="OverdueOnly" value="Yes" checked>
+                                <label for="OverdueOnly"> Yes</label><br>   
+                                <input type="radio" id="OverdueOnly" name="OverdueOnly" value="No" >
+                                <label for="OverdueOnly"> No</label> 
+                                
+							</p>
+						</div>
+						<div class="card-footer">
+              <div class="form-group"><input type="submit" name="GenerateGraph" value="Generate Graph" class="btn btn-outline-primary float-right "  /></div>       
+                      
+						</div>
+            </fieldset>
+					</div>
+				</div>
                 {% endif%}
 			</div>
 
@@ -131,6 +186,7 @@
 </div>
 <br>-->
 <!--Dummy Table-->
+{% if overall %}
 <div class="row">
 	<div class="col-md-12">
         <div class="card">
@@ -146,5 +202,8 @@
         </div>
     </div>
 </div>
-
+{%endif%}
+{%if discpslice%}
+<!--Can put something here-->
+{%endif%}
 {%endblock%}
