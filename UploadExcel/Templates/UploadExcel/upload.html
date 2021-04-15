@@ -1,11 +1,44 @@
 {% extends "userT\base3.html"%}
 {%load crispy_forms_tags %}
+
 {% crispy form form.helper%}
-{% block ApproverDetails%}
+
+    {% block ToolTip %}
 
 
-<body>
-  
+    <div class="postitnote sticky "  style="font-size:small; font-family:Lato; margin-right:5px;margin-left:5px "> 
+        <div class="col-md-1;margin-right:5px;margin-left:5px">
+           <table class="sticky table table-hover" > <!--set to maximum 20 rows per page-->
+            <thead class="thead">
+              <tr>
+                <th>
+                  ToolTip
+                </th>
+              
+              </tr>
+              
+          </thead>
+          <tbody>
+            
+    
+            <tr>
+            <td>Please select the desired CSV format (Converted from Excel would be easiest) file for uploading. It is advisable to check the file for inconsistency prior to the upload process.</td>
+          
+            
+            </tr>
+            
+            </tbody>
+        </table>
+        
+      </div>
+      <br>
+      <br>
+    </div>
+      
+    {%endblock%}
+
+    {% block FileUpload%}
+    <div>
 <nav>
     <ol class="breadcrumb">
         <li class="breadcrumb-item normal">
@@ -17,24 +50,37 @@
     </ol>
 </nav>
 
+</div>
 
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-md-12">
 			<div class="card">
 				<h6 class="card-header">
-					Upload Excel
+					Upload File
 				</h6>
 				<div class="card-body">
 					<p class="card-text">
-                        <p>Please select the desired Excel CSV format file for uploading. It is advisable to check the file for inconsistency prior to the upload process.</p>
-						<form action="" method="POST" enctype="multipart/form-data">
+                        
+						<form method="POST" enctype = 'multipart/form-data' >  
+                            <fieldset class="form-group" > <!--Fieldset is ultimtely important and must be inside the form and encompass the buttons. 
+                                The buttons was removed from forms into direct HTml to give the btn-outline-primary class. In forms it does not work
+                            -->
                             {% csrf_token %}  
-                            {{form|crispy}}
-                            <button class="btn btn-outline-primary my-2 my-sm-0" style="float:right" type=submit>
-                                Confirm and Upload File
-                            </button>
+                            {%crispy form_upload form_upload.helper%}
+                            <div class="form-group"><input type="submit" name="Upload" value=" Upload Files " class="btn btn-outline-primary float-right "  id="submit-id-approve"/></div> 
+                            <div class="form-group"><input type="submit" name="Cancel" value="Cancel" class="btn btn-outline-primary float-right col-md-1"  id="submit-id-reject"/></div>
+                        </fieldset>
                         </form>
+
+                        {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                            <p style="color:blue" class={{message.tags}}>{{ message }}</p>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+
 					</p>
 				</div>
 				
@@ -43,7 +89,7 @@
 	</div>
 </div>
     
-</body>     
+  
 
 
 {%endblock%}

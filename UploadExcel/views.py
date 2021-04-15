@@ -17,17 +17,19 @@ import csv
 @csrf_exempt
 
 def Load (request):
-        
+    
     if request.method == 'POST':
-        UploadExl.objects.all().delete()
+        #UploadExl.objects.all().delete()
        # ActionItems.objects.all().delete()
-        form = UploadExlForm(request.POST ,request.FILES)
-        if form.is_valid():
-            form.save()
-            form = UploadExlForm()
-            obj = UploadExl.objects.get()
+        form_upload = UploadExlForm(request.POST ,request.FILES)
+        if form_upload.is_valid():
+            form_upload.instance.Username = request.user.email
+            form_upload.save()
+            ID = form_upload.instance.id
+            form_upload = UploadExlForm()
+            obj = UploadExl.objects.get(id=ID)
             
-            with open (obj.filename.path, 'r') as input_file:
+            with open (obj.Filename.path, 'r') as input_file:
                 csv_reader = csv.reader(input_file)
                 for i, row in enumerate(csv_reader):
             
@@ -47,10 +49,16 @@ def Load (request):
                     QueSeries=row[13],
                     
                     )
+            messages.add_message(request, messages.SUCCESS, 'File Uploaded Successfully')
     else:
-        form = UploadExlForm()
-        print ("IN NOT VALID")
-    return render(request, 'uploadExcel/upload.html', {'form':form})
+        form_upload= UploadExlForm()
+    
+    context = {
+        'form_upload' : form_upload
+
+    }
+
+    return render(request, 'uploadExcel/upload.html', context)
     
 def LoadRoutes (request):
     #to load routes from excel when required

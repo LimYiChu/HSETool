@@ -28,7 +28,10 @@ class RoutesQuerySet(models.QuerySet):
             Company.append(items.Organisation)
 
         return list(set(Company)) #- Returns non Duplicate values
-        
+    
+    def mgrgetActApp(self,DiscSub):
+        return self.filter (Disipline__icontains=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1])
+
 class ActioneeManager(models.Manager):
     def get_queryset (self):
         return RoutesQuerySet(self.model, using=self._db)
@@ -54,6 +57,11 @@ class mgrgetCompany (models.Manager):
     def mgr_getCompanyCount(self):
         return self.get_queryset().get_mgrgetCompany()
 
+class mgrActioneeApprover (models.Manager):
+    def get_queryset (self):
+        return RoutesQuerySet(self.model, using=self._db)
+    def mgr_getActApp(self,DiscSub):
+        return self.get_queryset().mgrgetActApp(DiscSub)
 # class Approver2Manager(models.Manager):
 #     def get_queryset (self):
 #         return RoutesQuerySet(self.model, using=self._db)

@@ -4,11 +4,12 @@ from .manager import *
 # Create your models here.
 class UploadExl(models.Model):
 
-    filename            =   models.FileField(upload_to='excelUpload')
-    uploaded            =   models.DateTimeField(auto_now_add=True)
-    
+    Filename            =   models.FileField(upload_to='excelUpload')
+    DateAdded            =   models.DateTimeField(auto_now_add=True)
+    Username = models.CharField(max_length=255,null=True,blank=True)
+    objects = models.Manager()
     def __str__(self):
-        return f"filename: {self.id}"
+        return '%s ---%s' %(self.Filename, self.Username)
 
 class ActionItems(models.Model):
    

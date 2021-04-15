@@ -57,7 +57,7 @@
 					</div>
 				</div>
             </div>
-				{% if overall %}
+				{% if discpslice %}
             <div class="row">
                 <div class="col-md-12">
 					<div class="card">
@@ -77,23 +77,33 @@
                                     <label for="ActionStatuss"> Closed</label><br>
                                 </div>
                                 <div class="float-left col-md-3">
-                                <h6>Sort By</h6>
-                                <input type="radio" id="SortOn" name="SortOn" value="Company" >
-                                <label for="PieChartSort"> Company</label><br>
-                                <input type="radio" id="SortOn" name="SortOn" value="Discipline" >
-                                <label for="PieChartSort"> Discipline</label><br>
-                                <input type="radio" id="SortOn" name="SortOn" value="Workshops" >
-                                <label for="PieChartSort"> Workshops</label><br>
-                                <!--<input type="radio" id="SortOn" name="SortOn" value="All" >
-                                <label for="PieChartSort"> All</label><br>-->
+                                    <h6>Select Discipline/Sub</h6>
+                                    {%for items in Company%}
+    
+                                    <div class="col-md-3">
+                                   
+                                    
+                                    <input type="radio" id="SortOn" name="SortOn" value={{items}} >
+                                    <label for="BarChartSort"> {{items}}</label><br>
+                                    
+                                    </div>
+                                    {%endfor%}
+                                    </div>
+
+                                <div class="float-left col-md-3">
+                                <h6>Select Discipline/Sub</h6>
+                                {%for ItemPair in discpslice%}
+
+                                <div class="col-md-3">
+                               
+                                
+                                <input type="radio" id="SortOn" name="SortOn" value={{ItemPair}} >
+                                <label for="BarChartSort"> {{ItemPair}}</label><br>
+                                
                                 </div>
-                                <div class="float-left col-md-3">                           
-                                <h6>Overdue Actions</h6>
-                                <input type="radio" id="OverdueOnly" name="OverdueOnly" value="Yes" >
-                                <label for="OverdueOnly"> Yes</label><br>   
-                                <input type="radio" id="OverdueOnly" name="OverdueOnly" value="No" >
-                                <label for="OverdueOnly"> No</label> 
-                            </div>
+                                {%endfor%}
+                                </div>
+                                
 							
 						</div>
 						<div class="card-footer">
@@ -101,7 +111,6 @@
                       
 						</div>
                             </fieldset>
-                        </form>
 					</div>
 				</div>
 
