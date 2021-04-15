@@ -1,0 +1,148 @@
+
+{% extends "userT\base3.html"%}
+{% block ClosedOut%}
+<nav>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item normal">
+        <a href="/main">Dashboard</a>
+      </li>
+      <li class="breadcrumb-item active">
+          <a aria-current="page">Actions Summary</a>
+      </li>
+    </ol>
+</nav>
+
+<style>
+    .left {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+}
+.right {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+}
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+}
+</style>
+
+			<div class="row">
+				<div class="col-md-12">
+					<div class="card">
+						<h5 class="card-header">
+							Actions Status by Studies/Workshops
+						</h5>
+						<div class="card-body">
+							<p class="card-text">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <img src="data:image/png;base64, {{chart|safe}}" alt="Overall Closed Actions" class="left">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <img src="data:image/png;base64, {{chartChanges|safe}}" alt="Overall Closed Actions" class="right">
+                                    </div>
+                            </div>
+							</p>
+						</div>
+						<div class="card-footer">
+							<button type="button" class="btn btn-outline-primary" style="float:right">Download</button>
+						</div>
+					</div>
+				</div>
+            </div>
+				{% if discpslice %}
+            <div class="row">
+                <div class="col-md-12">
+					<div class="card">
+						<h5 class="card-header">
+							Select filters
+						</h5>
+						<div class="card-body">
+							<p class="card-text">
+                <form method="POST" enctype = 'multipart/form-data' > 
+                  {% csrf_token %}  
+                            <fieldset class="form-group" >
+                                <div class="float-left col-md-3">
+                                    <h6>Action Status</h6>
+                                    <input type="radio" id="ActionStatus" name="ActionStatus" value="Open" >
+                                    <label for="ActionStatus"> Open</label><br>   
+                                    <input type="radio" id="ActionStatus" name="ActionStatus" value="Closed">
+                                    <label for="ActionStatuss"> Closed</label><br>
+                                </div>
+                                <div class="float-left col-md-3">
+                                    <h6>Select Discipline/Sub</h6>
+                                    {%for items in Company%}
+    
+                                    <div class="col-md-3">
+                                   
+                                    
+                                    <input type="radio" id="SortOn" name="SortOn" value={{items}} >
+                                    <label for="BarChartSort"> {{items}}</label><br>
+                                    
+                                    </div>
+                                    {%endfor%}
+                                    </div>
+
+                                <div class="float-left col-md-3">
+                                <h6>Select Discipline/Sub</h6>
+                                {%for ItemPair in discpslice%}
+
+                                <div class="col-md-3">
+                               
+                                
+                                <input type="radio" id="SortOn" name="SortOn" value={{ItemPair}} >
+                                <label for="BarChartSort"> {{ItemPair}}</label><br>
+                                
+                                </div>
+                                {%endfor%}
+                                </div>
+                                
+							
+						</div>
+						<div class="card-footer">
+                            <div class="form-group"><input type="submit" name="GenerateGraph" value="Generate Graph" class="btn btn-outline-primary float-right "  /></div>       
+                      
+						</div>
+                            </fieldset>
+					</div>
+				</div>
+
+                {%endif%}
+                {%if discpslice%}
+                    <!--HS to add filters for Discpline-->
+                {% endif%}
+			
+
+<!--<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <h5 class="card-header">
+                Filter Table
+            </h5>
+            <div class="card-body">
+                <p class="card-text">
+                    <h6>Sort By</h6>
+                    <input type="radio" id="TableSort" name="TableSort" value="Organizations" checked>
+                    <label for="PieChartSort"> Organizations</label><br>
+                    <input type="radio" id="TableSort" name="TableSort" value="Disciplines" checked>
+                    <label for="TableSort"> Disciplines</label><br>
+                    <input type="radio" id="TableSort" name="TableSort" value="Workshops" checked>
+                    <label for="TableSort"> Workshops</label>                                                            
+                </p>
+            </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-outline-primary" style="float:right">Generate Table</button>
+            </div>
+        </div>
+    </div>
+</div>
+<br>-->
+
+{%endblock%}

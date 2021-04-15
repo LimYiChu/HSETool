@@ -21,7 +21,8 @@
     </nav>
 
 <!--Filter-->
-<div class="col-md-12">
+<div class="row">
+  <div class="col-md-12">
   <div class="card">
     <h5 class="card-header">
       Filter
@@ -60,13 +61,27 @@
       </form>
     </div>
   </div>
-</div>   
+  </div> 
+</div>  
 
-<br>
-<div style="float:right">
-  <form class="form-inline" >
-    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search" title="Search">
-   </form>
+
+<div class="row">
+	<div class="col-md-12">
+        <div class="card">
+        <div><h5 class="card-header">
+            Summary Excel Tables
+        </h5></div>
+            <div class="card-body">
+              <form method="POST" enctype = 'multipart/form-data' > 
+                {% csrf_token %} 
+                <fieldset class="form-group" >
+             </div>
+             <div class="card-footer">
+              <div class="form-group"><input type="submit" name="viewExcel" value="View Excel" class="btn btn-outline-primary float-right "  /></div>
+            </div>   
+        </div>
+      </fieldset>
+  </div>
 </div>
 
 <br>

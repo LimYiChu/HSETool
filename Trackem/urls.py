@@ -89,7 +89,7 @@ urlpatterns = [
         #email path
         path('ReportingTable/',UserView.ReportingTable,name='ReportingTable'),
         path('Profile/',UserView.Profile,name='Profile'),
-        path('allactions/',UserView.AllActions,name='AllActions'),
+        path('reppmt/',UserView.repPMTExcel,name='reppmt'),
         path('DisciplineBreakdown/',UserView.DisciplineBreakdown,name='DisciplineBreakdown'),
         path('EmailReminder/',UserView.EmailReminder,name='EmailReminder'),
         path('EmailReminderAttachment/',UserView.EmailReminderAttachment,name='EmailReminderAttachment'),

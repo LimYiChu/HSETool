@@ -25,6 +25,7 @@ from django.template.loader import render_to_string
 from django.template import loader
 from django.core.mail import EmailMessage
 from openpyxl import Workbook
+import pandas as pd
 
 #import mixins
 from django.views.generic.detail import SingleObjectMixin
@@ -311,21 +312,19 @@ def multiplefiles (request, **kwargs):
 
     return render(request, 'userT/multiplefiles.html',context)
 
-def createExcelReports(request,**kwargs):
+def createExcelReports(request,filename,**kwargs):
     
     allfields = [f.name for f in ActionItems._meta.get_fields()] 
-    
-    del allfields[0:2] # pop the first 2 in the list since its the foreign key
+    del allfields[0:2] # pop the first 2 in the list since it returns the foreign key
     
     allWorkshops = ActionItems.objects.all()
     
-    workbook = Workbook()
-            
+    #excel part - using from openpyxl import Workbook
+    workbook = Workbook()       
     worksheet = workbook.active
-    worksheet.title = 'ActionItems'
+    worksheet.title = 'Action Items'
             
     columns = allfields
-    
     row_num = 1
 
     for col_num, column_title in enumerate(columns, 1):
@@ -340,13 +339,11 @@ def createExcelReports(request,**kwargs):
                     param = 'actions.'+ str(field)
                     row.append (eval(param))
                    
-            
-            
             for col_num, cell_value in enumerate(row, 1):
                     cell = worksheet.cell(row=row_num, column=col_num)
                     cell.value = cell_value
                 
-    workbook.save('ActionItemsDemo.xlsx')
+    workbook.save(filename)
 
 def rptoverallStatus(request, **kwargs):
     #this function is too messy and needs to be cleaned up
@@ -385,9 +382,9 @@ def rptoverallStatus(request, **kwargs):
         ActionStatus = request.POST.get ('ActionStatus')
         ActionsSorton = request.POST.get ('SortOn')
         ViewExcel = request.POST.get('viewExcel')
-        print("POST")
+       
         if (ViewExcel):
-            print("INVIEWEXCEL")
+          
             createExcelReports(request)
             
         if ActionStatus =='Open':
@@ -414,7 +411,7 @@ def rptoverallStatus(request, **kwargs):
                 for items in Company:
                         listcountbyCompany.append(blgetCompanyActionCount (items,closedActionsQueSeries))
                             #dont need to append list as its already in the list above
-                chartChanges = showPie(listcountbyCompany,Company, "Open Actions by Company")
+                chartChanges = showPie(listcountbyCompany,Company, "Closed Actions by Company")
 
             if ActionsSorton == 'Discipline':
                 
@@ -426,7 +423,7 @@ def rptoverallStatus(request, **kwargs):
                     listcountbyDisSub.append(blgetDiscSubActionCount ('Y',itemPair,closedActionsQueSeries))
                     listlablesDisc.append(str(itemPair[0]))#+"/"+str(itemPair[1]))
     
-                chartChanges = showPie(listcountbyDisSub,listlablesDisc, "Open Actions by Disc/Sub-Disc")
+                chartChanges = showPie(listcountbyDisSub,listlablesDisc, "Closed Actions by Disc/Sub-Disc")
     context = {
             "chart":chart,
             "chartChanges":chartChanges,
@@ -441,38 +438,76 @@ def rptdiscSlice(request, **kwargs):
     #most of the data is
     TotalCount = [0,1,2,3,4,5,6]
     OpenAccount = [0,1,2,3,4,5]
+    ApproverQList = [1,2,3,4,5]
+    ActioneeQlist = [0]
+    Company = ActionRoutes.mdlAllCompany.mgr_getCompanyCount()
     discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
-    
+
     listcountbyDisSub= []
     listlablebyDisSub =[]
     totalcountbyDisSub = []
+    listofstringDiscSub =[]
     Title = "Open Actions by Discipline"
     label1 = "Open Actions"
     label2 = "Total Actions"
-    generalxlabel = "Discipline"
-
+    generalxlabel = "By Discipline"
+    
+    labelActionee = "Actionee"
+    labelApprover = "Approver"
+    TitleActApp = "Actionee-Approver Open items"
+    
+    listofPairActioneeCount = []
+    listofPairApproverCount = []
     for itemPair in discsub:
         
         listcountbyDisSub.append(blgetDiscSubActionCount ('Y',itemPair,OpenAccount))
         totalcountbyDisSub.append(blgetDiscSubActionCount ('Y',itemPair,TotalCount))
         listlablebyDisSub.append(str(itemPair[0])) # to include sub disc later -- +"/"+str(itemPair[1])
-    
-    chart = showbar(listcountbyDisSub,totalcountbyDisSub,listlablebyDisSub, label1,label2,generalxlabel,Title)
+        listofstringDiscSub.append(str(itemPair[0]+"/"+ itemPair[1]))
 
+        listofPairActioneeCount.append(blgetDiscSubActionCount ('Y',itemPair,[0]))
+        listofPairApproverCount.append(blgetDiscSubActionCount ('Y',itemPair,ApproverQList))
+
+    #cleaner to do a second loop
+    
+    listoflist = [[]]
+
+
+    # for itemPair in discsub:
+        
+    #     routesfortheDiscpline = ActionRoutes.mdlgetActioneeAppr.mgr_getActApp(itemPair)
+
+        
+        
+    #     for items in routesfortheDiscpline:
+        
+            
+    #         listofPairActioneeCount.append(blgetDiscSubActionCount ('Y',itemPair,[0]))
+    #         listofPairApproverCount.append(blgetDiscSubActionCount ('Y',itemPair,ApproverQList))
+    #         listofPairNameCount.append(items.Actionee)
+    #         print (listofPairNameCount)
+    #         listoflist.append(listofPairNameCount)
+    #         listofPairNameCount = []
+
+    chart = showbar(listcountbyDisSub,totalcountbyDisSub,listlablebyDisSub, label1,label2,generalxlabel,Title)
+    chartChanges = showbar(listofPairActioneeCount,listofPairApproverCount,listlablebyDisSub,labelActionee,labelApprover,generalxlabel,TitleActApp )
     context = {
             "chart":chart,
-            "discpslice" : True
+            "chartChanges":chartChanges,
+            "discpslice" : listofstringDiscSub,
+            "Company" : Company
+            
             }
-    return render (request, 'userT/reports.html', context)
+    return render (request, 'userT/repDisc.html', context)
+
 def rptbyUser(request, **kwargs):
     context_allRou = getuserRoutes(request,request.user.email)
     Actionee_R =    context_allRou.get('Actionee_Routes')
     
-
-    
     #This function just does a count using model managers , calling from businesslogic.py
     ActioneeCount = blfuncActionCount(Actionee_R,0)
     return render (request, 'userT/reports.html')
+    
 def GeneratePDF (request):
     filename = [] # for appending filename place before for loop
     if (request.POST.get('GeneratePDF')):      
@@ -570,8 +605,16 @@ def EmailReminderAttachment(request):
 def Profile (request):
     return render(request, 'userT/Profile.html')
 
-def AllActions (request):
-    return render(request, 'userT/AllActions.html')
+def repPMTExcel (request):
+    
+    if request.method == 'POST':
+        ViewExcel = request.POST.get('viewExcel')
+       
+        if (ViewExcel):
+          
+            createExcelReports(request,"AllActions.xlsx")
+
+    return render(request, 'userT/repPMTExcel.html')
 
 def DisciplineBreakdown (request):
     return render(request, 'userT/DisciplineBreakdown.html')
