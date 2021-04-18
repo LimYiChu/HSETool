@@ -1,0 +1,108 @@
+﻿1,HZD-01,HAZID,BRG WHB,3,2. External Impact – Dropped / Swung Object from platform activities (platform south hydrocarbon piping area is exposed to swing path),LOC of hydrocarbon condensate / gas leading to fire & explosion at BRG WHB & potential multiple fatalities,"1. Integrity of crane & lifting apparatus.
+2. Ex rated equipment (minimum Zone 2).
+3. F&G detection & ESD systems
+4. Emergency response equipment (i.e. muster area, liferaft, rescue equipment, rescue boat)
+5. Fire extinguishers
+6. Main Deck is plated and has no hydrocarbon process on this deck.
+7. Pipeline is on Platform South while lifting from boat takes place from Platform North.",5A,Place restriction on lifting over the pipeline on Platform South and the vent boom on Platform East. (No go zone will be indicated on Main Deck Layout Drawing.),,RWP,Mechanical,Mechanical,,29-Feb-20,0,,"Condensate, NGL"
+1,HZD-02,HAZID,BRG WHB,3,5. Leaks from flange / connection during draining activities of portable drain tote tank.,LOC of hydrocarbon condensate / gas leading to potential injury to personnel,"1. Flange management system
+2. Ex rated equipment (minimum Zone 2).
+3. F&G detection & ESD systems
+4. Emergency response equipment (i.e. muster area, liferaft, rescue equipment, rescue boat)
+5. Fire extinguishers
+6. Draining takes place after topsides is depressurised. 
+7. Draining activity is manual.",3B,"SOP to be developed for safe draining to tote tank. 
+SOP to consider Hess Mercury Management Plan.",,RWP,Project,Project,,30-Apr-20,1,,"Condensate, NGL"
+1,HZD-03,HAZID,BRG WHB,3,8. Loss of containment from riser flange ,LOC of hydrocarbon condensate / gas leading to fire & explosion at BRG WHB & potential multiple fatalities,"1. Flange management system
+2. Ex rated equipment (minimum Zone 2).
+3. F&G detection & ESD systems
+4. Emergency response equipment (i.e. muster area, liferaft, rescue equipment, rescue boat)
+5. Fire extinguishers
+6. Double block and bleed (DBB) provided for choke valve change out
+7. JSA prior to maintenance activities.",5A,Review requirement for firewall (instead of steel wall - radiation shield) to separate muster area from riser ESD valve in EERA.,,RWP,Safety,Safety,,29-Feb-20,2,,"Condensate, NGL"
+1,HZD-04,HAZID,BRG WHB,3,8. Loss of containment from riser flange ,LOC of hydrocarbon condensate / gas leading to fire & explosion at BRG WHB & potential multiple fatalities,"1. Flange management system
+2. Ex rated equipment (minimum Zone 2).
+3. F&G detection & ESD systems
+4. Emergency response equipment (i.e. muster area, liferaft, rescue equipment, rescue boat)
+5. Fire extinguishers
+6. Double block and bleed (DBB) provided for choke valve change out
+7. JSA prior to maintenance activities.",5A,"To consider extending the muster area to accommodate 25 pax at 0.8m2 per person, if possible.",,RWP,Safety,Safety,,29-Feb-20,3,,"Condensate, NGL"
+1,HZD-05,HAZID,BRG WHB,3,Lightning strike ignition of gas vent,Fire at gas vent,"1. All venting is manual except blowdown during SIPROD.
+2. Emergency response equipment (i.e. muster area, liferaft, rescue equipment, rescue boat)
+3. Vent Dispersion and Ignited Vent Radiation Study will be used for sizing the vent boom.",2B,Vent Dispersion and Ignition Study to recommend reducing radiation on sensitive areas as low as possible considering structural constraints.,,RWP,Safety,Safety,,29-Feb-20,0,,Hydrocarbon gas
+1,HZD-06,HAZID,BRG WHB,3,Lightning strike ignition of gas vent,Fire at gas vent,"1. All venting is manual except blowdown during SIPROD.
+2. Emergency response equipment (i.e. muster area, liferaft, rescue equipment, rescue boat)
+3. Vent Dispersion and Ignited Vent Radiation Study will be used for sizing the vent boom.",2B,Review requirement for automatic blowdown during SIPROD (can this be manual from drilling rig).,,RWP,Process,Process,,17-Mar-20,0,,Hydrocarbon gas
+1,HZD-07,HAZID,BRG WHB,3,Leaks and hose break,Methanol fire with potential injury to personnel.,"1. Methanol is only used for well start up and will be removed when not in use.
+2. Coaming provided for the methanol tote tank.
+3. ARAFFF provided in methanol tote tank area.
+4. Ex rated equipment (minimum Zone 2).
+5. Flame detector x 3 around the methanol skid
+6. Emergency response equipment (i.e. muster area, liferaft, rescue equipment, rescue boat)",4B,Review whether permanent or temporary flame detector is require given that methanol is only used during well start up when the platform is manned.,,RWP,Instrument,Instrument,,30-Apr-20,0,,Methanol
+1,HZD-08,HAZID,BRG WHB,3,Leaks and hose break,Methanol fire with potential injury to personnel.,"1. Methanol is only used for well start up and will be removed when not in use.
+2. Coaming provided for the methanol tote tank.
+3. ARAFFF provided in methanol tote tank area.
+4. Ex rated equipment (minimum Zone 2).
+5. Flame detector x 3 around the methanol skid
+6. Emergency response equipment (i.e. muster area, liferaft, rescue equipment, rescue boat)",4B,Carry forward lesson learnt from previous hand injury accident in Hess to design the methanol tote tank flexible hose coupling.,,RWP,Mechanical,Mechanical,,17-Mar-20,0,,Methanol
+1,HZD-09,HAZID,BRG WHB,3,Relocation of crane boom rest,Inaccessibility and potential for personnel to fall from height when unfastening crane boom rest for relocation.,"1. PPE
+2. PTW",4A,Ensure sufficient access around crane boom rest on platform north west to allow for unbolting of boom rest safely.,,RWP,Structural,Structural,,17-Mar-20,0,,
+1,HZD-10,HAZID,BRG WHB,3,"1. Bad weather.
+2. Crane Failure.
+3. Operator error. ","LOC of hydrocarbon condensate / gas leading to fire & explosion at BRG WHB & potential multiple fatalities
+","1. Limitation on crane operation during bad weather. 
+2. Crane overload protection system. 
+3. Crane Operator competency.
+4. Lifting equipment inspection and maintenance
+
+See 01.05",5A,"Develop specific SOP for crane operations for crane package (SOP to include operating limit, robway switch, no go zones and etc.)",,RWP,Project,Project,,30-Apr-20,0,,Overhead equipment
+1,HZD-11,HAZID,BRG WHB,3,Crane boom length insufficient,Inability to reach supply vessel laydown area,1. Material Handling Study,3B,"Outboard lifting PDMS review to be performed to ensure that the supply vessel laydown area can be reached.
+Material handling study to take account specific vessel proposed for this facility.",,RWP,Mechanical,Mechanical,,17-Mar-20,0,,Overhead equipment
+1,HZD-12,HAZID,BRG WHB,3,"Swell greater than 2m
+wind greather than 20knots",Boat can not approach the platform for personal transfer resulting in personal stranded on platform.,1. Weather forecast.,2C,To review provision for personnel stranded on WHP.,,HESS,Project & Production,Project & Production,,15-May-20,0,,Sea state
+1,HZD-13,HAZID,BRG WHB,3,Low temperature during well start up due to pressure drop,1. Cold surfaces with potential for personnel injury,"1. Methanol injection
+2. Cage provided around cold surfaces in areas that can be reached by personnel",4A,Review the personnel protection requirement for cold surfaces and warm up line during well start up,,RWP,Process,Process,,29-Feb-20,0,,Process piping between – 25 °C and – 80 °C
+1,HZD-14,HAZID,BRG WHB,3,"1. Damaged insulation
+2. Unauthorized entry into transformer area",Potential fatality by electrocution.,"1. Eletrical protection available given short circuit.
+2. Earth fault protection
+3. PTW to access transformer area
+4. First aid and medical provision. 
+",4B,Provide safety signage at transformer area. ,,RWP,Safety,Safety,,17-Mar-20,0,,Voltage > 50 V to 440 V in cables
+1,HZD-15,HAZID,BRG WHB,3,Operating launcher door with nitrogen being present.,Potential fatality due to asphyxiation.,1. Pigging procedure and pig door interlock.,4B,Review working space allowance behind pig launcher to ensure is sufficient for intelligent pigging operation.,,RWP,Piping,Piping,,14-Mar-20,0,,Excessive N2
+1,HZD-16,HAZID,BRG WHB,3,1. Leak,"For hydrocarbon releases, see 01.05. 
+CO2 / H2S release – potential fatality due to asphyxiation toxic exposure.","1. Piping design integrity and CRA cladding.
+2. F&G detection & ESD systems
+3. Emergency response equipment (i.e. muster area, liferaft)
+4. EBA provided on CPP.",4B,Safety study will review a CPP dispersion analysis.,,RWP,Safety,Safety,,29-Apr-20,2,,Excessive CO2
+1,HZD-17,HAZID,BRG WHB,3,1. Well intervention activity,Well blowout leading to fire & explosion at BRG WHB & potential multiple fatalities,"1. Design integrity of wellhead.
+2. Well integrity assurance program.
+3. Well control and alarm.
+4. Well shutdown mechanism.
+5. Ex rated equipment (minimum Zone 2). However, there are some zone 1 area in wellbay
+6. F&G detection & ESD systems  hook up to the drilling rig (4 ESD pushbuttons on drilling rig)
+7. Emergency response equipment (i.e. primary muster area at drilling rig, secondary muster area at Sump Deck,liferaft, rescue equipment, rescue boat)
+8. Mud used to pressurised well during drilling.
+9. Firewater monitor during drilling from Driling Rig.
+10. Function and pressure test on BOP at fix schedule. 
+11. Maintain and verify dual barriers policy
+12. SIMOPS procedure
+13. SIPROD procedure by Rig",5A,Locate pushbutton on rig in location such that inadvertent activation is avoided,,HESS,Drilling,Drilling,,14-Mar-20,2,,Hydrocarbons in formation
+1,HZD-18,HAZID,BRG WHB,3,Rigless well clean up during SIPROD,1. High radiation from burner boom resulting injury to personal,"1. Deluge system with redundant firewater pumps will be used to provide the water curtain around burner boom
+2. Monitoring of radiation level during well clean up
+3. Drilling risk assessment
+4. Well clean up activity will be stopped if wind direction is from burner boom towards platform.",3C,Drilling contractor to share the radiation report and drilling risk assessment,,HESS,Drilling,Drilling,,14-Mar-20,2,,High radiation from burner boom on the platform
+1,HZD-19,HAZID,BRG WHB,3,Rigless well clean up during SIPROD,1. High radiation from burner boom resulting injury to personal,"1. Deluge system with redundant firewater pumps will be used to provide the water curtain around burner boom
+2. Monitoring of radiation level during well clean up
+3. Drilling risk assessment
+4. Well clean up activity will be stopped if wind direction is from burner boom towards platform.",3C,"Consider relocation burner boom or drilling to provide additional safety equipment and location.
+(Current fixed safety equipment location is just below the burner boom)",,HESS,Drilling,Drilling,,14-Mar-20,2,,High radiation from burner boom on the platform
+1,HZD-20,HAZID,BRG WHB,3,Rigless well clean up during SIPROD,2. High noise during well clean up  resulting injury to personal,"1. Noise study will be perform before SIPROD
+2. Regular noise monitoring during well clean up
+3. Hearing protection
+4. Drilling risk assessment
+5. Well clean up activity will be stopped if wind direction is from burner boom towards platform.",2C,Drilling contractor to share the noise report and drilling risk assessment,,HESS,Drilling,Drilling,,14-Mar-20,2,,High radiation from burner boom on the platform
+1,HZD-21,HAZID,BRG WHB,3,Rigless well clean up during SIPROD,3. Mercury vapour dispersion on platform  resulting injury to personal,"1. Well clean up activity will be stopped if wind direction is from burner boom towards platform.
+2. Deluge system with redundant firewater pumps will be used to provide the water curtain around burner boom",2C,Dispersion and radiation report (for burner boom) to consider mercury.,,HESS,Drilling,Drilling,,14-Mar-20,2,,High radiation from burner boom on the platform
+1,HZD-22,HAZID,BRG WHB,3,Rigless well clean up during SIPROD,3. Mercury vapour dispersion on platform  resulting injury to personal,"1. Well clean up activity will be stopped if wind direction is from burner boom towards platform.
+2. Deluge system with redundant firewater pumps will be used to provide the water curtain around burner boom",2C,Check burner boom location wrt prevailing wind at schedule time for rigless well clean up.,,HESS,Drilling,Drilling,,14-Mar-20,2,,High radiation from burner boom on the platform
+1,HZD-23,HAZID,BRG WHB,3,Additional lighting requirement during well intervention,Insufficient lighting for safe work leading to personal injury.,1. Platform lighting already provided,2B,Well intervention to advise power requirement for lighting during well intervention and project to confirm whether sufficient power is available on platform. ,,RWP,Electrical,Electrical,,14-Mar-20,2,,Lighting
