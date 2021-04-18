@@ -1,4 +1,4 @@
-{% extends "userT\base3.html"%}
+{% extends "userT/base3.html"%}
 {%load crispy_forms_tags %}
 
 {% block Actioneelist%}
@@ -18,45 +18,50 @@
        
       </ol>
     </nav>
-    <div class="col-md-12">
-  <div class="card">
+<div class="col-md-12">
+<div class="card">
     <div class="card-header" style="font-size: large;">
      Your Actions
     </div>
     <div class="card-body">
         <div class="row">
-               <div class="card">
-                        <div class="card-header" style="font-size: large;">
-                              Actionee Actions
-                        </div>
-                        {%for chart in charts%}
-                        <div class="row">
-                            <div class="card-body col-md-3" style="float:left">
-                               
-                                    <div class=" "></div>
-                                        <img src="data:image/png;base64, {{chart|safe}}" alt="Overall Closed Actions" class="left">
-                                    </div>
-                          
-                             
-                            </div>
-                            {%endfor%}
-                        </div>
-                            <a class="h5" href="/ActioneeList">Go to Your Actions</a>
-                          </div>                      
-                </div>
-                <div class=" "></div>
-                <img src="data:image/png;base64, {{apprchart|safe}}" alt="Overall Closed Actions" class="left">
+            <div class="col-md-6">
+            <div class="card">
+            <div class="card-header" style="font-size: large;">
+            Actionee Actions
+            </div>
+            <div class="card-body left">
+            {%for chart in charts%}
+            <img src="data:image/png;base64, {{chart|safe}}" alt="Overall Closed Actions" width="50%" height="50%">
+            {%endfor%}
+            </div>
+            <a class="h5" href="/ActioneeList">Go to Your Actions</a>
+            </div>                      
+            </div>       
+            <div class="col-md-6">
+            <div class="card">
+            <div class="card-header" style="font-size: large;">
+            Approver Actions (Cummulative)
+            </div>
+            <div class="card-body">
+            <img src="data:image/png;base64, {{apprchart|safe}}" alt="Overall Closed Actions">
+            </div>
+            <a class="h5" href="/ApproverList">Go to Your Pending Approvals</a>
+            </div>
             </div>
         </div>
-            
     </div>
-                
+</div>
+</div>
+</div>
+</div>
 
-
+<br>
+<!--spare from original-->
     <div class="col-md-6">
         <div class="card">
                 <div class="card-header" style="font-size: large;">
-                  Approver Actions (Cummulative)
+                  Approver Actions (Cummulative) BACKUP
                 </div>
                 <div class="card-body">
                     <canvas id="Approver"></canvas>
