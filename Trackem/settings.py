@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     #'django_seed',
 
 ]
-AUTH_USER_MODEL =   'userT.CustomUser'#
+AUTH_USER_MODEL =   'userT.CustomUser'#using custom user so can put in disipline etc
+USE_TZ = True #to use time zone to help with  with auto_now thatts giving a wrong time
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

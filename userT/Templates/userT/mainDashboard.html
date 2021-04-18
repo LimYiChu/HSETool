@@ -24,136 +24,89 @@
      Your Actions
     </div>
     <div class="card-body">
-    <div class="row">
-    <div class="col-md-6">
-      
-<!--first chart changed colour to test-->
-                        <div class="card">
-                            <div class="card-header" style="font-size: large;">
+        <div class="row">
+               <div class="card">
+                        <div class="card-header" style="font-size: large;">
                               Actionee Actions
-                            </div>
-                            <div class="card-body">
-                                <canvas id="ActioneeChart"></canvas>
-                                <script>
-                                    Chart.defaults.global.defaultFontColor = 'black'
-                                    
-                                    var myChart = document.getElementById('ActioneeChart').getContext('2d');
-                                    
-                                    var charts = new Chart(myChart, {
-                                        type: 'pie',
-                                        
-                                        data : {
-                    
-                                            labels : {{labelsActionee|safe}},
-                    
-                                            datasets : [{
-                                                
-                                                
-                                                data : {{dataActionee|safe}},
-                    
-                                                borderWidth: 1,
-                                                borderColor: 'black',
-                                                backgroundColor: ["#D3EDEE","#91CACC", "#C0A8A3","#5E6565","#E5C0E2",
-                                                "#E0E1B3" ,"#0074D9", "#FF4136", "#2ECC40", "#FF851B", "#7FDBFF"],
-                                                hoverBorderColor: "#f5f6fa"
-                                            }]
-                                            },
-                                        
-                                        options: {
-                                            title:{
-                                                fontSize : 20,
-                                                display : true,
-                                                text: "Actionee Actions",
-                                            },
-                                           
-                                                            
-                                            onClick:function(evt){
-                                                //need to fix this for later
-                                                //alert("this is actionee")
-                                                //var activePoints = charts.getElementsAtEvent(evt);
-                                                
-                                                //var selectedIndex = activePoints[0]._index;
-                                                //alert(selectedIndex)
-                                                //document.location = this.data.datasets[0].data[selectedIndex];
-                                                //document.location = '/home';
-                                                
-                                            }
-                    
-                                        }
-                                    });
-                                
-                                    
-                                </script>
+                        </div>
+                        {%for chart in charts%}
+                        <div class="row">
+                            <div class="card-body col-md-3" style="float:left">
+                               
+                                    <div class=" "></div>
+                                        <img src="data:image/png;base64, {{chart|safe}}" alt="Overall Closed Actions" class="left">
+                                    </div>
+                          
                              
                             </div>
+                            {%endfor%}
+                        </div>
                             <a class="h5" href="/ActioneeList">Go to Your Actions</a>
                           </div>                      
-                    </div>
-
-                
-            <div class="col-md-6">
-                    <div class="card">
-                            <div class="card-header" style="font-size: large;">
-                              Approver Actions (Cummulative)
-                            </div>
-                            <div class="card-body">
-                                <canvas id="Approver"></canvas>
-                                <script>
-                    
-                                    var myChart = document.getElementById('Approver').getContext('2d');
-                                    
-                                    var charts = new Chart(myChart, {
-                                        type: 'pie',
-                                        data : {
-                    
-                                            labels : {{labelsApprover|safe}},
-                    
-                                            datasets : [{
-                                                
-                                                
-                                                data : {{dataApprover|safe}},
-                    
-                                                borderWidth: 1,
-                                                borderColor: 'black',
-                                                backgroundColor: ["#D3EDEE","#91CACC", "#C0A8A3","#5E6565","#E5C0E2","#E0E1B3" ,"#0074D9", "#FF4136", "#2ECC40", "#FF851B", "#7FDBFF"],
-                                            }]
-                                            
-                                        },
-                                        
-                                        options: {
-                    
-                                            title:{
-                                                display : true,
-                                                text: "Approver Actions",
-                                                fontSize : 20,
-                                            },
-                                            tooltips: {enabled: true},
-                                            onClick:function(vte){
-                                                //alert("this sss")
-                                                //var activePoints = ActioneeChart.getElementsAtEvent(e);
-                                                //var selectedIndex = activePoints[0]._index;
-                                                //document.location = this.data.datasets[0].data[selectedIndex];
-                                                
-                                                
-                                            }
-                                        }
-                                    });
-                                
-                                    
-                                </script>
-                            </div>
-                            <a class="h5" href="/ApproverList">Go to Your Pending Approvals</a>
-                            </div>
-                          </div>
-</div>
-                    </div>
                 </div>
+                <div class=" "></div>
+                <img src="data:image/png;base64, {{apprchart|safe}}" alt="Overall Closed Actions" class="left">
             </div>
         </div>
+            
     </div>
+                
 
 
-
+    <div class="col-md-6">
+        <div class="card">
+                <div class="card-header" style="font-size: large;">
+                  Approver Actions (Cummulative)
+                </div>
+                <div class="card-body">
+                    <canvas id="Approver"></canvas>
+                    <script>
+        
+                        var myChart = document.getElementById('Approver').getContext('2d');
+                        
+                        var charts = new Chart(myChart, {
+                            type: 'pie',
+                            data : {
+        
+                                labels : {{labelsApprover|safe}},
+        
+                                datasets : [{
+                                    
+                                    
+                                    data : {{dataApprover|safe}},
+        
+                                    borderWidth: 1,
+                                    borderColor: 'black',
+                                    backgroundColor: ["#D3EDEE","#91CACC", "#C0A8A3","#5E6565","#E5C0E2","#E0E1B3" ,"#0074D9", "#FF4136", "#2ECC40", "#FF851B", "#7FDBFF"],
+                                }]
+                                
+                            },
+                            
+                            options: {
+        
+                                title:{
+                                    display : true,
+                                    text: "Approver Actions",
+                                    fontSize : 20,
+                                },
+                                tooltips: {enabled: true},
+                                onClick:function(vte){
+                                    //alert("this sss")
+                                    //var activePoints = ActioneeChart.getElementsAtEvent(e);
+                                    //var selectedIndex = activePoints[0]._index;
+                                    //document.location = this.data.datasets[0].data[selectedIndex];
+                                    
+                                    
+                                }
+                            }
+                        });
+                    
+                        
+                    </script>
+                </div>
+                <a class="h5" href="/ApproverList">Go to Your Pending Approvals</a>
+                </div>
+              </div>
 <!--original-->
 <!--
 <div class="container-fluid">
