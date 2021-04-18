@@ -16,12 +16,12 @@ def get_graph():
 
 def showPie(dataAct,labelsAct,Title):
     plt.switch_backend('AGG')
-    #plt.style.use("fivethirtyeight") - used in Coreyvideo, not sure why its better but leave it first
+    #plt.style.use("fivethirtyeight") #- used in Coreyvideo, not sure why its better but leave it first
     
     data = dataAct
     labels =labelsAct
-    colors = ["#D3EDEE","#91CACC", "#C0A8A3","#5E6565"]
-    radius = 0.8
+    colors = ["#D3EDEE","#5E6565","#91CACC", "#C0A8A3",]
+    radius = 0.6
     
     def explode(dataslice):
     

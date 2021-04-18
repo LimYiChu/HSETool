@@ -31,7 +31,9 @@ class ActionItems(models.Model):
     FutureAction    =   models.TextField(null=True,blank=True)
     
     DueDate         =   models.DateField(auto_now_add=True, null=True,blank=True)
-    QueSeries       =   models.IntegerField(blank=True,null=True) #try to make the queseries value default to 0 when not included in the templated uploaded.
+    QueSeries       =   models.IntegerField(blank=True,null=True,default=0) #try to make the queseries value default to 0 when not included in the templated uploaded.
+    
+    Guidewords      =  models.TextField(null=True,blank=True)
     objects = models.Manager()
     myActionItems = myActionItemManager()
     myActionItemsCount = myActionCount()

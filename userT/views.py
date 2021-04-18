@@ -26,7 +26,7 @@ from django.template import loader
 from django.core.mail import EmailMessage
 from openpyxl import Workbook
 import pandas as pd
-
+from django.utils import timezone
 #import mixins
 from django.views.generic.detail import SingleObjectMixin
 #from .forms import UserRegisterForm
@@ -50,7 +50,8 @@ def register (request):
         return render(request, 'userT/register.html', {'form': form})
 
 def mainDashboard (request):
-        
+    
+    
     #for chart.js Html only
     labelsActionee = []
     dataActionee = []
@@ -59,18 +60,51 @@ def mainDashboard (request):
     dataApprover = []
     #This contain the entire Approver list for all levels
     Approver = []
-    #get all routes first
+
+    #get workshops
+    studies = blgetAllStudies()
+
+    #get all routes
     context_allRou = getuserRoutes(request,request.user.email)
     
     #Just get Actionee and Approver Routes, tied into model managers
     Actionee_R =    context_allRou.get('Actionee_Routes')
     Approver_R =    context_allRou.get('Approver_Routes')
 
-    print(Actionee_R)
     
+    charts=[]
+    stripedCount =[]
+    stripedlabels = []
+    #loop through each workshop and get counts
     #This function just does a count using model managers , calling from businesslogic.py
+    for eachstudy in studies:
+        StudyName = eachstudy.StudyName
+        labels=[]
+        countbyStudies = blActionCountbyStudies(Actionee_R,StudyName,0)
+        
+        
+        
+        #i have to stick this below as its an odd problem in python when returning below it changes original labels
+        #Need to change this
+        for items in Actionee_R:
+
+            labels.append(items.Disipline)
+        
+        
+        stripedCount, stripedlabels = stripAndmatch(countbyStudies,labels)
+        
+        charts.append(showPie(stripedCount,stripedlabels,StudyName))
+        stripedCount =[]
+        stripedlabels =[]
+        countbyStudies = []
+ 
+    
+    
     ActioneeCount = blfuncActionCount(Actionee_R,0)
+    
     discsub = blgetActioneeDiscSub(Actionee_R)
+    
+    
     
     #Actionee is a different from approver wherein the pie/polar chart actually show the streams. Each stream is just a route
     # a route example is in Action routes table Say EHS: Technical Safety or Marine. 
@@ -89,8 +123,14 @@ def mainDashboard (request):
         Approver.insert(key,x)
         labelsApprover.append('Level'+str(key))
         dataApprover.append(sum(x))
+    
+    apprchart=showPie(dataApprover,labelsApprover,"Approver Charts")
+
+    print (apprchart)
     #Context just returns to HTML so that we can use it in the HTML page
     Context = {
+        'charts' : charts,
+        'apprchart' : apprchart,
         'Actionee_Count' : ActioneeCount,
         'Approver_Count'       : Approver,
         'labelsActionee' : labelsActionee,
@@ -357,6 +397,8 @@ def rptoverallStatus(request, **kwargs):
     #this is for overall charts
     listofOpenClosed = [allOpenActions,allClosedActions]
     labelsOpenClosed = ['Open', 'Closed']
+    print (listofOpenClosed)
+    print (labelsOpenClosed)
     chart = showPie(listofOpenClosed,labelsOpenClosed,"Overall Action Status")
     
     #this is for disc/sub-disipline
@@ -458,6 +500,7 @@ def rptdiscSlice(request, **kwargs):
     
     listofPairActioneeCount = []
     listofPairApproverCount = []
+    discsub
     for itemPair in discsub:
         
         listcountbyDisSub.append(blgetDiscSubActionCount ('Y',itemPair,OpenAccount))
@@ -471,7 +514,7 @@ def rptdiscSlice(request, **kwargs):
     #cleaner to do a second loop
     
     listoflist = [[]]
-
+    
 
     # for itemPair in discsub:
         
