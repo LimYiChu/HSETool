@@ -20,8 +20,8 @@ def showPie(dataAct,labelsAct,Title):
     
     data = dataAct
     labels =labelsAct
-    colors = ["#D3EDEE","#5E6565","#91CACC", "#C0A8A3",]
-    radius = 0.6
+    colors = ["#9BBFE0", "#E8A09A", "#D3EDEE","#FBE29F",  "#C6D68F","#5E6565","#91CACC", "#C0A8A3",]
+    radius = 1.0
     
     def explode(dataslice):
     
@@ -36,12 +36,16 @@ def showPie(dataAct,labelsAct,Title):
         absolute = int(round(pct/100.*np.sum(allvals)))
         return "{:.1f}%\n({:d} Actions)".format(pct, absolute)
 
+    fig = plt.figure()
+    fig.suptitle(Title, fontsize=25, fontweight='bold', wrap=True)
+    plt.rcParams['font.size'] = 18.0
+    plt.rcParams['font.weight'] = "bold"
     #strdisplay = '%.1f %%'
     #strdisplay ='%d'
     #lamda is just an inline function - nothing fancy
     plt.pie(data,labels=labels,colors=colors, radius = radius, startangle = 90,  explode = explodeslice, shadow=True,autopct=lambda pct: func(pct, data), wedgeprops ={'edgecolor':'black'})
 
-    plt.title (Title)
+    #plt.title (Title)
     plt.tight_layout()
     
     # plt.figure(figsize=(10,5))

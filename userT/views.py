@@ -69,20 +69,24 @@ def mainDashboard (request):
     
     #Just get Actionee and Approver Routes, tied into model managers
     Actionee_R =    context_allRou.get('Actionee_Routes')
-    Approver_R =    context_allRou.get('Approver_Routes')
+    Approver_R =    context_allRou.get('Approver_Routes') #this is a dictionary item {1,[list of routes]}
 
-    
+   
     charts=[]
+    apprcharts =[]
     stripedCount =[]
     stripedlabels = []
     #loop through each workshop and get counts
     #This function just does a count using model managers , calling from businesslogic.py
+    print (Actionee_R)
     for eachstudy in studies:
         StudyName = eachstudy.StudyName
+        
         labels=[]
-        countbyStudies = blActionCountbyStudies(Actionee_R,StudyName,0)
+        labelsapp =[]
+        #countbyStudies = blActionCountbyStudies(Actionee_R,StudyName,0) - old way limited by three streams 
         
-        
+        countbyStudies= blActionCountbyStudiesStream(Actionee_R,StudyName,0) # unlimited actionee
         
         #i have to stick this below as its an odd problem in python when returning below it changes original labels
         #Need to change this
@@ -93,27 +97,42 @@ def mainDashboard (request):
         
         stripedCount, stripedlabels = stripAndmatch(countbyStudies,labels)
         
-        charts.append(showPie(stripedCount,stripedlabels,StudyName))
+        # For studies check if actually assigned to it or if count is 0 then just dont generate graph
+        if stripedCount != []:
+            
+            charts.append(showPie(stripedCount,stripedlabels,StudyName))
+        
+        
+        #the key starts at 1 which is good thing and hence just pass to get count from queseries
+        for key, value in Approver_R.items():
+            for items in value:
+                labelsapp.append(items.Disipline)
+        
+        
+        
+        for QueSeries, Routes in Approver_R.items():
+            
+           
+            #listofCount= blActionCountbyStudies(Routes,StudyName,QueSeries)
+            listofCountManyApprovers =blActionCountbyStudiesStream(Routes,StudyName,QueSeries) #improved version multiple approvers
+           
+
+            sumoflistCount = sum(listofCountManyApprovers)
+            if (sumoflistCount > 0):
+                labelsApprover.append('Level'+str(QueSeries))
+                dataApprover.append(sumoflistCount)
+        
+        #dont want a blank pie to be appended on with no data since it loops through studies
+        if dataApprover != []:
+            apprcharts.append(showPie(dataApprover,labelsApprover,StudyName))
+
+        
+        dataApprover = []
+        labelsApprover =[]
         stripedCount =[]
         stripedlabels =[]
         countbyStudies = []
  
-    
-    
-    ActioneeCount = blfuncActionCount(Actionee_R,0)
-    
-    discsub = blgetActioneeDiscSub(Actionee_R)
-    
-    
-    
-    #Actionee is a different from approver wherein the pie/polar chart actually show the streams. Each stream is just a route
-    # a route example is in Action routes table Say EHS: Technical Safety or Marine. 
-    #
-    for pairs in discsub:
-        labelsActionee.append(pairs[0])
-    for i in range(len(ActioneeCount)):
-        
-        dataActionee.append(ActioneeCount[i])
        
     #get count for all approver levels just by looping through the key
     #Not very accurate but im summing approver level actions together
@@ -124,15 +143,15 @@ def mainDashboard (request):
         labelsApprover.append('Level'+str(key))
         dataApprover.append(sum(x))
     
-    apprchart=showPie(dataApprover,labelsApprover,"Approver Charts")
+    #apprchart=showPie(dataApprover,labelsApprover,"Approver Charts")
 
-    print (apprchart)
+    
     #Context just returns to HTML so that we can use it in the HTML page
     Context = {
         'charts' : charts,
-        'apprchart' : apprchart,
-        'Actionee_Count' : ActioneeCount,
-        'Approver_Count'       : Approver,
+        'apprcharts' : apprcharts,
+        
+        #'Approver_Count'       : Approver,
         'labelsActionee' : labelsActionee,
         'dataActionee' : dataActionee,
         'labelsApprover' : labelsApprover,
@@ -397,8 +416,7 @@ def rptoverallStatus(request, **kwargs):
     #this is for overall charts
     listofOpenClosed = [allOpenActions,allClosedActions]
     labelsOpenClosed = ['Open', 'Closed']
-    print (listofOpenClosed)
-    print (labelsOpenClosed)
+    
     chart = showPie(listofOpenClosed,labelsOpenClosed,"Overall Action Status")
     
     #this is for disc/sub-disipline
@@ -528,7 +546,7 @@ def rptdiscSlice(request, **kwargs):
     #         listofPairActioneeCount.append(blgetDiscSubActionCount ('Y',itemPair,[0]))
     #         listofPairApproverCount.append(blgetDiscSubActionCount ('Y',itemPair,ApproverQList))
     #         listofPairNameCount.append(items.Actionee)
-    #         print (listofPairNameCount)
+    #         
     #         listoflist.append(listofPairNameCount)
     #         listofPairNameCount = []
 
