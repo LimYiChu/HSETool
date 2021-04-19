@@ -70,6 +70,28 @@ def blActionCountbyStudies(contextRoutes,studies,que):
     #return ActionItems.ActioneeItems.get_myItemsbyCompDisSub(blvarorganisation,blvardisipline,blvarSUbdisipline)
     return [ firststream,  secondstream,  thirdstream]
 
+def blActionCountbyStudiesStream(contextRoutes,studies,que):
+
+    streams = []
+    finalstreams = []
+    secondstream = 0
+    thirdstream = 0
+    
+    for x, item in enumerate(contextRoutes):
+        blvarorganisation   = item.Organisation
+        blvardisipline  = item.Disipline
+        blvarSUbdisipline  = item.Subdisipline
+        blque               =   que
+       
+        
+        streams.append(ActionItems.myActionItemsCount.mgr_myItemsCountbyStudies(studies,blvarorganisation,
+                                                                blvardisipline,
+                                                                blvarSUbdisipline,blque))
+        
+    #finalstreams.append (streams)
+    #return ActionItems.ActioneeItems.get_myItemsbyCompDisSub(blvarorganisation,blvardisipline,blvarSUbdisipline)
+    return streams
+
 def blfuncActionCount(contextRoutes,que):
    #This functionality already works
    #Initilises count in case 
@@ -151,7 +173,11 @@ def blgetAllStudies ():
     return Studies.objects.all()
 
 def stripAndmatch(lstcount,lstlabels):
-    #print (lstlabels)
+    
+    # extends the list if the actionee routes are only1 (anything less than 3)
+    #needs a buffer of 3 to get it right 
+    lstlabels.extend([0] * (3 - len(lstlabels)))
+   
     indextoremove =[]
     newlabels = lstlabels
     newlstcount = lstcount
@@ -160,11 +186,9 @@ def stripAndmatch(lstcount,lstlabels):
         if X == 0:
             indextoremove.append(index)
     
-    #print (indextoremove)
     for index in sorted(indextoremove, reverse=True):
         del newlstcount[index]
         del newlabels[index]
             
-    #print (lstcount)
-    #print (lstlabels)
+    
     return newlstcount, newlabels
