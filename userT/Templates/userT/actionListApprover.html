@@ -1,4 +1,4 @@
-{% extends "userT\base3.html"%}
+{% extends "userT/base3.html"%}
 {% block ApproverList%}
 <!doctype html>
 <html lang="en">
@@ -121,35 +121,35 @@
     
    
 
-      <div class="card" style="border-color: black" >
-        <table class="table table-striped table-hover" id="myTable"> <!--set to maximum 20 rows per page-->
+     
+        <table class="table table-striped table-hover" id="example"> <!--set to maximum 20 rows per page-->
           <thead class="thead-dark">
             <tr>
-              <th onclick="sortTable(0)">
+              <th>
                 StudyActionNo
               </th>
-              <th onclick="sortTable(1)">
+              <th>
                 StudyName
               </th>
-              <th onclick="sortTable(2)"> 
+              <th> 
                 Disipline
               </th>
-              <th onclick="sortTable(3)">
+              <th>
                 Subdisipline
               </th>
-              <th onclick="sortTable(4)">
+              <th>
                 Cause
               </th>
-              <th onclick="sortTable(5)">
+              <th>
                 Consequence
               </th>
-              <th onclick="sortTable(6)">
+              <th>
                 Recommendations
               </th>
-              <th onclick="sortTable(7)">
+              <th >
                 InitialRisk
               </th>
-              <th onclick="sortTable(8)">
+              <th >
                 Response
               </th>
               
@@ -174,7 +174,7 @@
             {%endfor%}
           </tbody>
         </table>
-      </div>
+      
 </body>     
 <br>
           
