@@ -1,4 +1,4 @@
-{% extends "userT\base3.html"%}
+{% extends "userT/base3.html"%}
 {%load crispy_forms_tags %}
 {% crispy form form.helper%}
 
@@ -9,7 +9,7 @@
 
 <body>
 
-    <div> <!--be careful with the div in the form it seems to submit the items in div tags. so if you have plain text it wont submit-->
+    
         <form method="POST" enctype = 'multipart/form-data' >  
             <fieldset class="form-group" >
             {% csrf_token %}  
@@ -18,11 +18,11 @@
             <div class="form-group"><input type="submit" name="Cancel" value="Cancel" class="btn btn-outline-primary float-right col-md-1"  id="submit-id-reject"/></div>
         </fieldset>
         </form> 
-    </div>
-
-        <div>
-            <div class="row" >
-                <table class="table table-striped table-hover"> <!--set to maximum 20 rows per page-->
+   
+<br>
+       
+            <div class="col-md-12" >
+                <table class="table table-striped table-hover" id="example"> <!--set to maximum 20 rows per page-->
                     <thead class="thead-dark">
                         <tr>
                         <th>
@@ -41,14 +41,14 @@
         
                         <tr>
                         <td>{{ items.DateAdded }}</td>
-                        <td>{{ items.Reason }}<</td>
-                        <td>{{ items.Username}}<</td>
+                        <td>{{ items.Reason }}</td>
+                        <td>{{ items.Username}}</td>
                         </tr>
                         {%endfor%}
         
                     </tbody>
                 </div>
-        <div>
+     
 
 </body>
 {%endblock%}

@@ -32,3 +32,14 @@
   thead input {
     width: 100%;
   } 
+  .pagination a.active {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .pagination a:hover:not(.active) {background-color: #ddd;}
+
+}
+
+
+

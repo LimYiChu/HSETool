@@ -686,3 +686,9 @@ def DisciplineBreakdown (request):
 
 def StickyNote(request):
     return render(request, 'userT/StickyNote.html')
+
+def IndividualBreakdownByActions(request):
+    return render(request, 'userT/IndividualBreakdownByActions.html')
+
+def IndividualBreakdownByUsers(request):
+    return render(request, 'userT/IndividualBreakdownByUsers.html')

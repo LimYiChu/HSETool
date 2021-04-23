@@ -13,7 +13,7 @@
           <a href="/main">Dashboard</a>
         </li>
         <li class="breadcrumb-item active">
-            <a aria-current="page">Actionee List</a>
+            <a aria-current="page">Individual Breakdown - By Actions</a>
         </li>
 
       </ol>
@@ -31,7 +31,7 @@
 <br>
 
 
-
+<!--
 <script>
 function myFunction() {
   var input, filter, table, tr, td, i;
@@ -119,10 +119,9 @@ function myFunction() {
   }
 </script>
 
-
+-->
 
 <div>
-
   <table id="example" class="table table-striped table-hover" style="width:100%">
     <thead class="thead-dark">
           <tr class="filters">
@@ -139,107 +138,46 @@ function myFunction() {
               Subdisipline
             </th>
             <th>
-              Cause
+              Status
             </th>
             <th>
-              Consequence
-            </th>
-            <th>
-              Recommendations
+              Current Actionee/Approver
             </th>
             <th>
               InitialRisk
             </th>
             <th>
-              Response
+              ResidualRisk
             </th>
         </tr>
     </thead>
     <tbody>
-      {% for routes  in object_list %}
-        {% for x  in routes %}
+   
       <tr>
-        <td><a class="article-title" href="{% url  'ActioneeFormMixin' x.id %}">{{ x.StudyActionNo }}</a></td>
-        <td>{{ x.StudyName }}</td>
-        <td>{{ x.Disipline }}</td>
-        <td>{{ x.Subdisipline }}</td>
-        <td>{{ x.Cause }}</td>
-        <td>{{ x.Consequence }}</td>
-        <td><a class="article-title" href="{% url  'ActioneeFormMixin' x.id %}">{{ x.Recommendations }}</a></td>
-        <td>{{ x.InitialRisk }}</td>
-        <td>{{ x.Response }}</td>
-        {%endfor%}
-      {%endfor%}
+        <td>CRA-001</td>
+        <td>CRA</td>
+        <td>HUC</td>
+        <td>HUC</td>
+        <td>In Progress</td>
+        <td>Construction Lead abc@xyz.com</td>
+        <td>E5-High</a></td>
+        <td>A1-Low</td>
+      </tr> 
+      <tr>
+        <td>CRA-002</td>
+        <td>CRA</td>
+        <td>HUC</td>
+        <td>HUC</td>
+        <td>In Progress</td>
+        <td>Construction Lead abc@xyz.com</td>
+        <td>E5-High</a></td>
+        <td>A1-Low</td>
+      </tr> 
       </tbody>
   
   </table>
 </div>
 
-  <!--Original-->
-  <!--
-
-    
-<div class="card" style="border-color: black;">
-
-      <table  class="table table-striped table-hover display" id="myTable"> 
-      
-        <thead class="thead-dark ">
-            <tr class="filters">
-              <th onclick="sortTable(0)">
-                StudyActionNo
-              </th>
-              
-              <th>
-                StudyName
-              </th>
-              <th>
-                Disipline
-              </th>
-              <th>
-                Subdisipline
-              </th>
-              <th>
-                Cause
-              </th>
-              <th>
-                Consequence
-              </th>
-              <th>
-                Recommendations
-              </th>
-              <th>
-                InitialRisk
-              </th>
-              <th>
-                Response
-              </th>
-              
-             </tr>
-          </thead>
-          <tbody>
-            {% for routes  in object_list %}
-              {% for x  in routes %}
-            <tr>
-              <td><a class="article-title" href="{% url  'ActioneeFormMixin' x.id %}">{{ x.StudyActionNo }}</a></td>
-              <td>{{ x.StudyName }}</td>
-              <td>{{ x.Disipline }}</td>
-              <td>{{ x.Subdisipline }}</td>
-              <td>{{ x.Cause }}</td>
-              <td>{{ x.Consequence }}</td>
-              <td><a class="article-title" href="{% url  'ActioneeFormMixin' x.id %}">{{ x.Recommendations }}</a></td>
-              <td>{{ x.InitialRisk }}</td>
-              <td>{{ x.Response }}</td>
-              {%endfor%}
-            {%endfor%}
-            </tbody>
-            </table>
-
- </div>
-          -->
-
-          
-           
-         
 </body>     
 
 {%endblock%}

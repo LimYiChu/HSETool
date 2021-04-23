@@ -1,25 +1,3 @@
-$(document).ready(function() {
-    // Setup - add a text input to each footer cell
-    $('#MyTable thead tr').clone(true).appendTo( '#MyTable thead' );
-    $('#MyTable thead tr:eq(1) th').each( function (i) {
-        var title = $(this).text();
-        $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
- 
-        $( 'input', this ).on( 'keyup change', function () {
-            if ( table.column(i).search() !== this.value ) {
-                table
-                    .column(i)
-                    .search( this.value )
-                    .draw();
-            }
-        } );
-    } );
- 
-    var table = $('#MyTable').DataTable( {
-        orderCellsTop: true,
-        fixedHeader: true
-    } );
-} );
 
 $(document).ready(function() {
     // Setup - add a text input to each footer cell
@@ -40,6 +18,8 @@ $(document).ready(function() {
  
     var table = $('#example').DataTable( {
         orderCellsTop: true,
-        fixedHeader: true
+        fixedHeader: true,
+         "lengthMenu": [[-1, 10, 25, 50, 100], ["All", 10, 25, 50, 100]]
     } );
 } );
+
