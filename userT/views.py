@@ -74,11 +74,11 @@ def mainDashboard (request):
    
     charts=[]
     apprcharts =[]
-    stripedCount =[]
-    stripedlabels = []
+    stripCount =[]
+    striplabels = []
     #loop through each workshop and get counts
     #This function just does a count using model managers , calling from businesslogic.py
-    print (Actionee_R)
+    
     for eachstudy in studies:
         StudyName = eachstudy.StudyName
         
@@ -86,21 +86,15 @@ def mainDashboard (request):
         labelsapp =[]
         #countbyStudies = blActionCountbyStudies(Actionee_R,StudyName,0) - old way limited by three streams 
         
-        countbyStudies= blActionCountbyStudiesStream(Actionee_R,StudyName,0) # unlimited actionee
+        countbyStudies, labels= blActionCountbyStudiesStream(Actionee_R,StudyName,0) # unlimited actionee
         
-        #i have to stick this below as its an odd problem in python when returning below it changes original labels
-        #Need to change this
-        for items in Actionee_R:
-
-            labels.append(items.Disipline)
-        
-        
-        stripedCount, stripedlabels = stripAndmatch(countbyStudies,labels)
-        
+             
+        stripCount, striplabels ,  = stripAndmatch(countbyStudies,labels)
+    
         # For studies check if actually assigned to it or if count is 0 then just dont generate graph
-        if stripedCount != []:
+        if stripCount != []:
             
-            charts.append(showPie(stripedCount,stripedlabels,StudyName))
+            charts.append(showPie(stripCount,striplabels,StudyName))
         
         
         #the key starts at 1 which is good thing and hence just pass to get count from queseries
@@ -114,7 +108,7 @@ def mainDashboard (request):
             
            
             #listofCount= blActionCountbyStudies(Routes,StudyName,QueSeries)
-            listofCountManyApprovers =blActionCountbyStudiesStream(Routes,StudyName,QueSeries) #improved version multiple approvers
+            listofCountManyApprovers,labelsapp =blActionCountbyStudiesStream(Routes,StudyName,QueSeries) #improved version multiple approvers
            
 
             sumoflistCount = sum(listofCountManyApprovers)
@@ -125,6 +119,10 @@ def mainDashboard (request):
         #dont want a blank pie to be appended on with no data since it loops through studies
         if dataApprover != []:
             apprcharts.append(showPie(dataApprover,labelsApprover,StudyName))
+            #print (dataApprover)
+            #print(type (dataApprover))
+            #print (labelsApprover)
+            #print(type (labelsApprover))
 
         
         dataApprover = []
@@ -195,9 +193,11 @@ class ActioneeList (ListView):
     def get_queryset(self):
         userZemail = self.request.user.email
         ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
-        actioneeItems = blfuncActioneeComDisSub(ActioneeRoutes,0)
-     
-        return actioneeItems
+        #actioneeItems = blfuncActioneeComDisSub(ActioneeRoutes,0) - To be deleted - this was limited to 3 streams
+        ActioneeActions = blallActionsComDisSub(ActioneeRoutes,0)
+
+        
+        return ActioneeActions
     
     
 class ApproverList (ListView):
@@ -210,8 +210,9 @@ class ApproverList (ListView):
         Approver_R =    context_allRou.get('Approver_Routes')
         
         for key, value in Approver_R.items():
-            x = blfuncActioneeComDisSub(value,key)
-            ApproverActions.insert(key,x)
+            #x = blfuncActioneeComDisSub(value,key)
+            allactionItems= blallActionsComDisSub(value,key)
+            ApproverActions.insert(key,allactionItems)
             
         
         return ApproverActions
@@ -298,14 +299,17 @@ class ActioneeItemsMixin(ApproveItemsMixin):
     form_class = frmUpdateActioneeForm
     
     def get_context_data(self,**kwargs):
-        fk = self.kwargs.get("pk")
+        fk = self.kwargs.get("pk") #its actually the id and used as foreign key
         context = super().get_context_data(**kwargs)
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(fk)
         context['Approver'] = False
+
+        discsub = blgetAttibutesfromID(fk)
+        ApproverLevel = blgetApproverLevel()
         return context
 
     def get_success_url(self):
-         return reverse ('multiplefiles', kwargs={'forkeyid': self.object.id})
+        return reverse ('multiplefiles', kwargs={'forkeyid': self.object.id})
 
 def ContactUs (request):
     return render(request, 'userT/ContactUs.html')

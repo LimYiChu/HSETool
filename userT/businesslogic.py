@@ -4,6 +4,38 @@ from django.http import HttpResponse
 from UploadExcel.models import ActionItems
 from .models import *
 
+def blgetAttibutesfromID (ID):
+    # just returns the company, disipline and sub from one object
+    orgdiscsub= []
+    obj=ActionItems.objects.get(id=ID)
+    
+    
+    orgdiscsub.append(obj.Disipline)
+    orgdiscsub.append(obj.Subdisipline)
+    orgdiscsub.append(obj.Organisation)
+    
+    return orgdiscsub
+
+def blgetApproverLevel (lstorgdiscsub):
+
+    obj= ActionRoutes.mdlgetApproverLevel.mgr_getApproverLevel (lstorgdiscsub)
+        
+    allfields = [f.name for f in ActionRoutes._meta.get_fields()] 
+    del allfields[0:3] #- remove ID field, company and discpline - need to be carefull with this 
+    
+    blnOverride = False # sets the override to true when you hit the first Approver being none
+    for fields in allfields:
+        
+        for x, items in enumerate(obj):
+            param = 'items.'+ str(fields)
+            
+            if (eval(param) == None and ("Approver" in fields)and (blnOverride==False) ):
+                blnOverride = True
+                ApproverLevel = fields[-1]# only 9 Approvers allowed then 
+    
+    return ApproverLevel
+
+
 def blgetActioneeDiscSub(routes):
     discsub=[]
     listoflist =[[]]
@@ -19,9 +51,49 @@ def blgetActioneeDiscSub(routes):
 
     return finallistoflist
 
+def blallActionsComDisSub(contextRoutes,que):
+    
+    streams = []
+
+    for x, item in enumerate(contextRoutes):
+        blvarorganisation   = item.Organisation
+        blvardisipline  = item.Disipline
+        blvarSUbdisipline  = item.Subdisipline
+
+        streams.append (ActionItems.myActionItems.get_myItemsbyCompDisSub(blvarorganisation,
+                                                                blvardisipline,
+                                                               blvarSUbdisipline,que))
+    
+    
+    return streams
+
 def blfuncActioneeComDisSub(contextRoutes,que):
    #This functionality already works 
     firststream = []
+    secondstream = []
+    thirdstream = []
+    for x, item in enumerate(contextRoutes):
+        blvarorganisation   = item.Organisation
+        blvardisipline  = item.Disipline
+        blvarSUbdisipline  = item.Subdisipline
+        if x==0:
+            firststream = ActionItems.myActionItems.get_myItemsbyCompDisSub(blvarorganisation,
+                                                                blvardisipline,
+                                                                blvarSUbdisipline,que)
+        if x==1:
+            secondstream = ActionItems.myActionItems.get_myItemsbyCompDisSub(blvarorganisation,
+                                                                blvardisipline,
+                                                                blvarSUbdisipline,que)
+        if x==2:
+            thirdstream = ActionItems.myActionItems.get_myItemsbyCompDisSub(blvarorganisation,
+                                                                blvardisipline,
+                                                                blvarSUbdisipline,que)
+    #return ActionItems.ActioneeItems.get_myItemsbyCompDisSub(blvarorganisation,blvardisipline,blvarSUbdisipline)
+    return firststream, secondstream, thirdstream
+    #(Organisation__icontains=blvarorganisation).filter(Disipline__icontains=blvardisipline).filter(Subdisipline__icontains=blvarSUbdisipline)
+def blActioneeComDisSubManyStr(contextRoutes,que):
+   #This functionality already works 
+    streams = []
     secondstream = []
     thirdstream = []
     for x, item in enumerate(contextRoutes):
@@ -72,7 +144,8 @@ def blActionCountbyStudies(contextRoutes,studies,que):
 
 def blActionCountbyStudiesStream(contextRoutes,studies,que):
 
-    streams = []
+    streamscount = []
+    streamdisc  = []
     finalstreams = []
     secondstream = 0
     thirdstream = 0
@@ -84,13 +157,13 @@ def blActionCountbyStudiesStream(contextRoutes,studies,que):
         blque               =   que
        
         
-        streams.append(ActionItems.myActionItemsCount.mgr_myItemsCountbyStudies(studies,blvarorganisation,
+        streamscount.append(ActionItems.myActionItemsCount.mgr_myItemsCountbyStudies(studies,blvarorganisation,
                                                                 blvardisipline,
                                                                 blvarSUbdisipline,blque))
-        
+        streamdisc.append (blvardisipline)
     #finalstreams.append (streams)
     #return ActionItems.ActioneeItems.get_myItemsbyCompDisSub(blvarorganisation,blvardisipline,blvarSUbdisipline)
-    return streams
+    return streamscount, streamdisc
 
 def blfuncActionCount(contextRoutes,que):
    #This functionality already works
@@ -172,23 +245,23 @@ def blgetAllStudies ():
 
     return Studies.objects.all()
 
-def stripAndmatch(lstcount,lstlabels):
+def stripAndmatch(lstcount,lstlabel):
     
     # extends the list if the actionee routes are only1 (anything less than 3)
     #needs a buffer of 3 to get it right 
-    lstlabels.extend([0] * (3 - len(lstlabels)))
+    #lstlabels.extend([0] * (3 - len(lstlabels)))
    
     indextoremove =[]
-    newlabels = lstlabels
+    #newlabels = lstlabels
     newlstcount = lstcount
-    for index, X in enumerate(newlstcount):
+    for index, X in enumerate(lstcount):
        
         if X == 0:
             indextoremove.append(index)
     
     for index in sorted(indextoremove, reverse=True):
         del newlstcount[index]
-        del newlabels[index]
+        del lstlabel[index]
             
     
-    return newlstcount, newlabels
+    return newlstcount,lstlabel

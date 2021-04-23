@@ -31,7 +31,10 @@ class RoutesQuerySet(models.QuerySet):
     
     def mgrgetActApp(self,DiscSub):
         return self.filter (Disipline__icontains=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1])
+    def mgrgetApprLevel(self,CompDiscSub):
+        return self.filter (Disipline__icontains=CompDiscSub[0]).filter(Subdisipline__icontains=CompDiscSub[1]).filter(Organisation__icontains=CompDiscSub[2])
 
+        
 class ActioneeManager(models.Manager):
     def get_queryset (self):
         return RoutesQuerySet(self.model, using=self._db)
@@ -62,6 +65,12 @@ class mgrActioneeApprover (models.Manager):
         return RoutesQuerySet(self.model, using=self._db)
     def mgr_getActApp(self,DiscSub):
         return self.get_queryset().mgrgetActApp(DiscSub)
+
+class mmgrgetApproverLevel (models.Manager):
+    def get_queryset (self):
+        return RoutesQuerySet(self.model, using=self._db)
+    def mgr_getApproverLevel(self,CompDiscSub):
+        return self.get_queryset().mgrgetApprLevel(CompDiscSub)
 # class Approver2Manager(models.Manager):
 #     def get_queryset (self):
 #         return RoutesQuerySet(self.model, using=self._db)

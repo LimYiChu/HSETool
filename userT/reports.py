@@ -33,18 +33,20 @@ def showPie(dataAct,labelsAct,Title):
     #Taken from mathplot lib site to get both values and percenatge and lable it accordingly
     #using numpy to calculate
     def func(pct, allvals):
+        
         absolute = int(round(pct/100.*np.sum(allvals)))
-        return "{:.1f}%\n({:d} Actions)".format(pct, absolute)
+        return "{:.0f} %\n({:d})".format(pct, absolute) #"{:.0f} %\n({:d} Actions)".format(pct, absolute)
 
     fig = plt.figure()
-    fig.suptitle(Title, fontsize=25, fontweight='bold', wrap=True)
+    fig.suptitle(Title, fontsize=21, fontweight='bold', wrap=True)
     plt.rcParams['font.size'] = 18.0
     plt.rcParams['font.weight'] = "bold"
     #strdisplay = '%.1f %%'
     #strdisplay ='%d'
     #lamda is just an inline function - nothing fancy
-    plt.pie(data,labels=labels,colors=colors, radius = radius, startangle = 90,  explode = explodeslice, shadow=True,autopct=lambda pct: func(pct, data), wedgeprops ={'edgecolor':'black'})
+    plt.pie(data,colors=colors, radius = radius, startangle = 90,  explode = explodeslice, shadow=True,autopct=lambda pct: func(pct, data), wedgeprops ={'edgecolor':'black'})
 
+    plt.legend(labels, bbox_to_anchor=(1,1), loc="upper left")
     #plt.title (Title)
     plt.tight_layout()
     

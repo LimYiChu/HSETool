@@ -105,20 +105,23 @@ class ActionRoutes(models.Model):
     Disipline       = models.CharField(max_length=100, null=True)
     Subdisipline    = models.CharField(max_length=100, null=True)
     Studies         = models.ForeignKey(Studies, on_delete=models.SET_NULL,related_name="comments",null=True,blank=True)
-    Actionee        =   models.CharField(max_length=100, null=True)
-    Approver1        =  models.CharField(max_length=100, null=True)
-    Approver2       =   models.CharField(max_length=100, null=True)
-    Approver3       =   models.CharField(max_length=100, null=True)
-    Approver4       =   models.CharField(max_length=100, null=True)
-    Approver5       =   models.CharField(max_length=100, null=True)
-
+    Actionee        =   models.CharField(max_length=100, null=True,blank=True)
+    Approver1        =  models.CharField(max_length=100, null=True,blank=True)
+    Approver2       =   models.CharField(max_length=100, null=True,blank=True)
+    Approver3       =   models.CharField(max_length=100, null=True,blank=True)
+    Approver4       =   models.CharField(max_length=100, null=True,blank=True)
+    Approver5       =   models.CharField(max_length=100, null=True,blank=True)
+    Approver6       =   models.CharField(max_length=100, null=True,blank=True)
+    Approver7       =   models.CharField(max_length=100, null=True,blank=True)
+    Approver8       =   models.CharField(max_length=100, null=True,blank=True)
+    
     objects = models.Manager()
     ActioneeRo = ActioneeManager()
     ApproverRo = ApproverManager()
     mdlAllDiscSub  = mgrgetDiscSub()
     mdlAllCompany = mgrgetCompany()
     mdlgetActioneeAppr = mgrActioneeApprover()
-    
+    mdlgetApproverLevel = mmgrgetApproverLevel()
     class Meta:
        verbose_name_plural = "ActionRoutes" #this if not done gives a view of Studiess
 
