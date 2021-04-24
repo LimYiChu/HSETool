@@ -31,6 +31,7 @@ def Load (request):
             
             with open (obj.Filename.path, 'r') as input_file:
                 csv_reader = csv.reader(input_file)
+                next(csv_reader)
                 for i, row in enumerate(csv_reader):
             
                     ActionItems.objects.create(
@@ -49,8 +50,8 @@ def Load (request):
                     Subdisipline=row[13],
                     FutureAction=row[14],
                     DueDate=row[15],
-                    QueSeries=row[16],
-                    Guidewords = row[17],
+                    Guidewords = row[16],
+                    #QueSeries=row[17],
                     
                     )
             messages.add_message(request, messages.SUCCESS, 'File Uploaded Successfully')
