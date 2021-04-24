@@ -108,7 +108,51 @@ class ApproverForm(forms.ModelForm):
     class Meta:
         model = ActionItems
         fields = '__all__'
-    
+
+class frmApproverConfirmation(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(frmApproverConfirmation, self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_show_labels = True
+        self.helper.form_enctype = 'multipart/form-data'
+        self.helper.form_method = 'POST'
+        #self.helper.add_input(Submit('Reject', 'Reject', css_class='btn-primary float-right'))
+        #self.helper.add_input(Submit('Approve', 'Approve & Sign', css_class='btn-primary float-right'))
+        self.helper.layout = Layout(
+        Div(
+            Div(Field('StudyActionNo',readonly=True),   css_class='col-md-3'), 
+            Div (Field('StudyName',readonly=True),  css_class='col-md-3'),
+            Div (Field('ProjectPhase', readonly=True), css_class='col-md-6'),
+            #Div (Field('QueSeries', readonly=True), css_class='col-md-3'),
+           #-somehow not working Div (Field('DueDate', readonly=True), css_class='col-md-2'),
+            css_class='row',
+        ),
+        Div(
+            Div (Field('Recommendations',readonly=True) ,css_class='col-md-12'), 
+            #Div (Field('Attachment',disable=True),  css_class='col-md-12'),
+            Div (Field('Response', readonly=True), css_class='col-md-12'),
+            #Div (Field('QueSeries', readonly=True), css_class='col-md-3'),
+           #-somehow not working Div (Field('DueDate', readonly=True), css_class='col-md-2'),
+            css_class='row',
+          
+           ),
+        Div (Field('Cause', type="hidden")),
+         Div (Field('Guidewords', type="hidden")), Div (Field('DueDate', type="hidden")),
+            Div (Field('Safeguard', type="hidden")),
+            Div (Field('Consequence', type="hidden")),
+           Div (Field('FutureAction', type="hidden")),
+           Div (Field('Facility', type="hidden")),
+            Div (Field('InitialRisk', type="hidden")),
+            Div (Field('ResidualRisk', type="hidden")),
+            Div (Field('Disipline', type="hidden")),
+            Div (Field('Subdisipline', type="hidden")),
+            Div (Field('Organisation', type="hidden")),
+           Div (Field('QueSeries', type="hidden")),
+        )
+    class Meta:
+        model = ActionItems
+        fields = '__all__'
+
 class frmAddRejectReason(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(frmAddRejectReason, self).__init__(*args, **kwargs)

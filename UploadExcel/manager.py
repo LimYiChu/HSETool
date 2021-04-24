@@ -12,6 +12,17 @@ class QuerySet(models.QuerySet):
         return self.filter(StudyName__icontains=studies).filter(Organisation__icontains=organisation).filter(Disipline__icontains=disipline).filter(
             
                             Subdisipline__icontains=subdisipline).filter(QueSeries__iexact=que).count ()
+    
+    def set_field(self,ID, fields, value):
+        
+        
+        return self.filter (id=ID).update (**{fields: value})
+    
+    def get_field(self,ID, fields):
+                
+        return self.filter (id=ID).values(fields)
+        #field = eval('obj.'+fields)
+        #return field
 
     def get_allActionsCount(self,workshop,que):
         return self.filter (QueSeries__iexact=que).count ()
@@ -85,6 +96,19 @@ class mdlSetQueSeries(models.Manager):
         obj.QueSeries = Que
         obj.save(update_fields=["QueSeries"],using=self.db)
 
+class mgrSetfields(models.Manager):
+    def get_queryset (self):
+         return QuerySet(self.model, using=self._db)
+    def mgrSetField(self,ID, fields, value):
+         #lookup = str(fields)+'__icontains' - This is how you search dynamically but since we are setting it
+         return self.get_queryset().set_field(ID, fields, value)
+
+class mgrgetfields(models.Manager):
+    def get_queryset (self):
+         return QuerySet(self.model, using=self._db)
+    def mgrGetField(self,ID, fields):
+         #lookup = str(fields)+'__icontains' - This is how you search dynamically but since we are setting it
+         return self.get_queryset().get_field(ID, fields)
 
 class mgrDeleteAttachment(models.Manager):
 

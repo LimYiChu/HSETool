@@ -31,10 +31,50 @@ def blgetApproverLevel (lstorgdiscsub):
             
             if (eval(param) == None and ("Approver" in fields)and (blnOverride==False) ):
                 blnOverride = True
-                ApproverLevel = fields[-1]# only 9 Approvers allowed then 
+                ApproverLevel = fields[-1]# only 9 Approvers allowed for now 
     
     return ApproverLevel
 
+def blsetApproverLevelTarget(ID,ApproverLevel):
+    
+    x= ActionItems.mdlSetField.mgrSetField(ID,"QueSeriesTarget",ApproverLevel)
+
+def blgetFieldValue(ID,field):
+    
+    return ActionItems.mdlgetField.mgrGetField(ID,field)
+
+def blgetApproverLevelTarget(ID,field):
+    
+    return ActionItems.mdlSetField.mgrgetField(ID,field)
+def blgetSignotories (lstorgdiscsub):
+    #in - list of company disc sub
+    # - out Actionee names approver names - basically the signatories
+    obj= ActionRoutes.mdlgetApproverLevel.mgr_getApproverLevel (lstorgdiscsub)
+        
+    allfields = [f.name for f in ActionRoutes._meta.get_fields()] 
+    del allfields[0:3] #- remove ID field, company and discpline , can remove others- need to be carefull with this 
+    
+    blnOverride = False # sets the override to true when you hit the first Approver being none
+    SigPair = []
+    finalSigPair =[]
+    for fields in allfields:
+        
+        for x, items in enumerate(obj): #getattr doesnt work so just iterate the object again - not effiecient but not too bad
+            
+            
+            if (("Approver" in fields)or ("Actionee" in fields) ):
+                
+                param = 'items.'+ str(fields)
+                fieldValue = eval(param)
+                if ( fieldValue != None): 
+                    SigPair.append(fields)
+                    SigPair.append (fieldValue)
+
+                finalSigPair.append (SigPair)# only 9 Approvers allowed for now
+
+                SigPair =[] 
+    
+    return finalSigPair
 
 def blgetActioneeDiscSub(routes):
     discsub=[]
