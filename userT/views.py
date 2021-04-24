@@ -119,11 +119,7 @@ def mainDashboard (request):
         #dont want a blank pie to be appended on with no data since it loops through studies
         if dataApprover != []:
             apprcharts.append(showPie(dataApprover,labelsApprover,StudyName))
-            #print (dataApprover)
-            #print(type (dataApprover))
-            #print (labelsApprover)
-            #print(type (labelsApprover))
-
+            
         
         dataApprover = []
         labelsApprover =[]
@@ -232,18 +228,14 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
     form_class = ApproverForm
     success_url = '/ApproverList/'
 
-
     def get(self, request, *args, **kwargs):
         #uses pk key to automatically get objext
         self.object = self.get_object(queryset=ActionItems.objects.all())
         
         return super().get(request, *args, **kwargs)
+
     def get_object(self,queryset=None):
         queryset=ActionItems.objects.all()
-       
-        #self.object = self.get_object(queryset=ActionItems.objects.all())
-        #return super().get(request, *args, **kwargs)
-        #X = queryset.get(id=self.kwargs['pk'])
        
         return queryset.get(id=self.kwargs['pk'])
        
@@ -266,11 +258,21 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
 
         if (self.request.POST.get('Cancel')):
 #             
-           return HttpResponseRedirect('/ActioneeList/')
+           return HttpResponseRedirect('/ApproverList/')
 
         if (self.request.POST.get('Approve')): 
                 #  need another intermediate screen for approval no comments
-            form.instance.QueSeries += 1
+            
+            # ID =self.kwargs["pk"]
+            # field = "QueSeriesTarget"
+            
+            # ApproverLevel =  blgetFieldValue(ID,field)
+            
+            # if (form.instance.QueSeries == (ApproverLevel[0].get(field)-1)): 
+            #     form.instance.QueSeries = 99 # Random far end number to show all closed
+            # else:
+            #     form.instance.QueSeries += 1
+
             return super().form_valid(form)
 
         if (self.request.POST.get('Delete')): 
@@ -287,12 +289,53 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
     def get_context_data(self,**kwargs):
         fk = self.kwargs.get("pk")
         context = super().get_context_data(**kwargs)
+        discsub = blgetAttibutesfromID(fk)
+        Signatories = blgetSignotories(discsub)
+
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(fk)
         context['Approver'] = True
+        context ['Signatories'] = Signatories
         return context
 
     def get_queryset(self):
        return self.object.attachments_set.all()
+
+    def get_success_url(self):
+        return reverse ('ApproverConfirm', kwargs={'id': self.object.id})
+
+class ApproverConfirm(UpdateView):
+    
+    template_name = "userT/ApproverConfirmation.html"
+    form_class = frmApproverConfirmation
+    success_url = '/ApproverList/'
+    
+    def form_valid(self,form):
+        if (self.request.POST.get('Cancel')):
+#             
+           return HttpResponseRedirect('/ApproverList/')
+
+        if (self.request.POST.get('ApproveConfirm')): 
+                #  need another intermediate screen for approval no comments
+            
+            ID =self.kwargs["id"]
+            print (ID)
+            field = "QueSeriesTarget"
+            
+            ApproverLevel =  blgetFieldValue(ID,field)
+            
+            if (form.instance.QueSeries == (ApproverLevel[0].get(field)-1)): 
+                form.instance.QueSeries = 99 # Random far end number to show all closed
+            else:
+                form.instance.QueSeries += 1
+
+            return super().form_valid(form)
+
+    def get_object(self,queryset=None):
+        queryset=ActionItems.objects.all()
+        print(self.kwargs['id'])
+        return queryset.get(id=self.kwargs['id'])
+
+    
 
 class ActioneeItemsMixin(ApproveItemsMixin):
     template_name = "userT/actionUpdateApproveAction.html"
@@ -301,11 +344,20 @@ class ActioneeItemsMixin(ApproveItemsMixin):
     def get_context_data(self,**kwargs):
         fk = self.kwargs.get("pk") #its actually the id and used as foreign key
         context = super().get_context_data(**kwargs)
-        context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(fk)
-        context['Approver'] = False
+        
 
         discsub = blgetAttibutesfromID(fk)
-        ApproverLevel = blgetApproverLevel()
+        ApproverLevel = blgetApproverLevel(discsub)
+        
+        blsetApproverLevelTarget(fk,ApproverLevel)
+        
+        Signatories = blgetSignotories(discsub)
+        
+        context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(fk)
+        context['Approver'] = False
+        context ['ApproverLevel'] = ApproverLevel
+        context ['Signatories'] = Signatories
+        
         return context
 
     def get_success_url(self):
@@ -412,8 +464,8 @@ def rptoverallStatus(request, **kwargs):
     #this function is too messy and needs to be cleaned up
     #Function on businees logic to get data based on Queseries, Actionee and Approver levels
     #most of the data is
-    openActionsQueSeries = [0,1,2,3,4,5]
-    closedActionsQueSeries = [6]
+    openActionsQueSeries = [0,1,2,3,4,5,6,7,8]
+    closedActionsQueSeries = [99]
     allOpenActions= blfuncgetallAction('Y', openActionsQueSeries)
     allClosedActions = blfuncgetallAction('Y', closedActionsQueSeries)
     

@@ -39,6 +39,8 @@ class ActionItems(models.Model):
     myActionItemsCount = myActionCount()
     mdlallActionItemsCount = mgrallActionCount()
     mdlQueSeries = mdlSetQueSeries()
+    mdlSetField = mgrSetfields()
+    mdlgetField = mgrgetfields()
     mdlgetActionDiscSubCount = mgrgetActionDiscSubCount()
     mdlgetActionCompanyCount = mgrgetActionCompanyCount()
     #Approver1RoItems = Approver1ItemManager()
