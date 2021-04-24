@@ -23,7 +23,7 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.conf.urls.static import static
 from django.conf import settings
-
+from Tenant.views import our_team
 
 urlpatterns = [
       # Load excel actions, routes ,
@@ -97,6 +97,9 @@ urlpatterns = [
         path('StickyNote/',UserView.StickyNote,name='StickyNote'),
         path('IndividualBreakdownByActions/',UserView.IndividualBreakdownByActions,name='IndividualBreakdownByActions'),
         path('IndividualBreakdownByUsers/',UserView.IndividualBreakdownByUsers,name='IndividualBreakdownByUsers'),
+
+        #tenant
+        path('our_team/', our_team, name='our_team')
       ]
 
 if settings.DEBUG:
