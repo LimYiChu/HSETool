@@ -1,4 +1,3 @@
-
 $(document).ready(function() {
     // Setup - add a text input to each footer cell
     $('#example thead tr').clone(true).appendTo( '#example thead' );
@@ -19,7 +18,7 @@ $(document).ready(function() {
     var table = $('#example').DataTable( {
         orderCellsTop: true,
         fixedHeader: true,
-         "lengthMenu": [[-1, 10, 25, 50, 100, 200], ["All", 10, 25, 50, 100, 200]]
+         "lengthMenu": [[-1, 10, 25, 50, 100], ["All", 10, 25, 50, 100]]
     } );
 } );
 
