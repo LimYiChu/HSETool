@@ -91,7 +91,7 @@ class Studies (models.Model):
     ProjectPhase = models.CharField(max_length=200, null=True)
     AttendanceList  = models.CharField(max_length=1000, null=True)
     DateConducted = models.DateField(auto_now_add=True,null=True)
-    
+    objects = models.Manager()
     class Meta:
        verbose_name_plural = "Studies" #this if not done gives a view of Studiess
 
