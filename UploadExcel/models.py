@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from .manager import *
+from simple_history.models import HistoricalRecords
 # Create your models here.
 class UploadExl(models.Model):
 
@@ -34,6 +35,7 @@ class ActionItems(models.Model):
     QueSeries       =   models.IntegerField(blank=True,null=True,default=0) #try to make the queseries value default to 0 when not included in the templated uploaded.
     QueSeriesTarget =   models.IntegerField(blank=True,null=True,default=0)
     Guidewords      =  models.TextField(null=True,blank=True)
+    history = HistoricalRecords()
     objects = models.Manager()
     myActionItems = myActionItemManager()
     myActionItemsCount = myActionCount()
