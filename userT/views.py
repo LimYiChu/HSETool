@@ -163,7 +163,7 @@ def getActionDetails(request, id=None):
     return render(request, "userT/detailactions.html", context)
 
 def getuserRoutes(request,useremail):
-    ApproverLevel = 5
+    ApproverLevel = 8
     userZemail = useremail
     Approver_Routes = {}
 
@@ -289,7 +289,7 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
     def get_context_data(self,**kwargs):
         fk = self.kwargs.get("pk")
         context = super().get_context_data(**kwargs)
-        discsub = blgetAttibutesfromID(fk)
+        discsub = blgetDiscSubOrgfromID(fk)
         Signatories = blgetSignotories(discsub)
 
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(fk)
@@ -318,7 +318,7 @@ class ApproverConfirm(UpdateView):
                 #  need another intermediate screen for approval no comments
             
             ID =self.kwargs["id"]
-            print (ID)
+           
             field = "QueSeriesTarget"
             
             ApproverLevel =  blgetFieldValue(ID,field)
@@ -332,7 +332,7 @@ class ApproverConfirm(UpdateView):
 
     def get_object(self,queryset=None):
         queryset=ActionItems.objects.all()
-        print(self.kwargs['id'])
+      
         return queryset.get(id=self.kwargs['id'])
 
     
@@ -346,12 +346,12 @@ class ActioneeItemsMixin(ApproveItemsMixin):
         context = super().get_context_data(**kwargs)
         
 
-        discsub = blgetAttibutesfromID(fk)
-        ApproverLevel = blgetApproverLevel(discsub)
+        discsuborg = blgetDiscSubOrgfromID(fk)
+        ApproverLevel = blgetApproverLevel(discsuborg)
         
         blsetApproverLevelTarget(fk,ApproverLevel)
         
-        Signatories = blgetSignotories(discsub)
+        Signatories = blgetSignotories(discsuborg)
         
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(fk)
         context['Approver'] = False
@@ -389,7 +389,42 @@ class RejectReason (CreateView):
         context = super().get_context_data(**kwargs)
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(fk)
         return context
+
+def IndividualBreakdownByUsers(request):
+    #Need to do some maths here  most of the functions have been charted out just need to remap back to individual
+    # 2 functions need to merge
+    discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
+   
+    #Signatories = 
+    
+    QueOpen = [0,1,2,3,4,5,6,7,8,9]
+    QueClosed = [99]
+    Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)          
+   
+    context = {
         
+        'Indisets' : Indisets,
+        
+    }
+            
+    return render(request, 'userT/Indibreakbyuser.html',context)
+
+def IndividualBreakdownByActions(request):
+    
+    allactions = ActionItems.objects.all()
+                #blgetdetailsofeachActions(allactions)
+    tableattributes = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','InitialRisk']
+   
+    lstofindiactions = blgetActionStuckAt(allactions, tableattributes)
+
+    context ={
+        
+        'context' : lstofindiactions
+
+    }
+
+    return render(request, 'userT/Indibreakdownbyactions.html', context)
+
 def ContactUs (request):
     return render(request, 'userT/ContactUs.html')
 
@@ -464,16 +499,17 @@ def rptoverallStatus(request, **kwargs):
     #this function is too messy and needs to be cleaned up
     #Function on businees logic to get data based on Queseries, Actionee and Approver levels
     #most of the data is
-    openActionsQueSeries = [0,1,2,3,4,5,6,7,8]
+    openActionsQueSeries = [0,1,2,3,4,5,6,7,8,9]
     closedActionsQueSeries = [99]
     allOpenActions= blfuncgetallAction('Y', openActionsQueSeries)
     allClosedActions = blfuncgetallAction('Y', closedActionsQueSeries)
-    
+    charts =[]
+    chartChanges =[]
     #this is for overall charts
     listofOpenClosed = [allOpenActions,allClosedActions]
     labelsOpenClosed = ['Open', 'Closed']
     
-    chart = showPie(listofOpenClosed,labelsOpenClosed,"Overall Action Status")
+    charts.append(showPie(listofOpenClosed,labelsOpenClosed,"Overall Action Status"))
     
     #this is for disc/sub-disipline
     discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
@@ -490,7 +526,7 @@ def rptoverallStatus(request, **kwargs):
         listcountbyDisSub.append(blgetDiscSubActionCount ('Y',itemPair,openActionsQueSeries))
         listlablesDisc.append(str(itemPair[0]))#+"/"+str(itemPair[1]))
     
-    chartChanges = showPie(listcountbyDisSub,listlablesDisc, "Open Actions by Disc/Sub-Disc")
+    chartChanges.append(showPie(listcountbyDisSub,listlablesDisc, "Open Actions by Disc/Sub-Disc"))
 
     #if generatePdf is hit, the selection is checked and graphs generated internally
     if request.method == 'POST':
@@ -504,13 +540,16 @@ def rptoverallStatus(request, **kwargs):
             createExcelReports(request)
             
         if ActionStatus =='Open':
+            chartChanges = []
             if ActionsSorton == 'Company':
+                
                 Company = ActionRoutes.mdlAllCompany.mgr_getCompanyCount()
                 for items in Company:
                         listcountbyCompany.append(blgetCompanyActionCount (items,openActionsQueSeries))
                             #dont need to append list as its already in the list above
-                chartChanges = showPie(listcountbyCompany,Company, "Open Actions by Company")
+                chartChanges.append(showPie(listcountbyCompany,Company, "Open Actions by Company"))
             if ActionsSorton == 'Discipline':
+                
                 discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
                 listcountbyDisSub= []
                 listlablesDisc =[]
@@ -519,29 +558,69 @@ def rptoverallStatus(request, **kwargs):
                     listcountbyDisSub.append(blgetDiscSubActionCount ('Y',itemPair,openActionsQueSeries))
                     listlablesDisc.append(str(itemPair[0]))#+"/"+str(itemPair[1]))
     
-                chartChanges = showPie(listcountbyDisSub,listlablesDisc, "Open Actions by Disc/Sub-Disc")
+                chartChanges.append(showPie(listcountbyDisSub,listlablesDisc, "Open Actions by Disc/Sub-Disc"))
+            
+            if ActionsSorton == 'Workshops':
+                workshops = Studies.objects.all()
+                
+                countbyStudies = []
+                for x in workshops:
+
+                    countbyStudies.append(blallActionCountbyStudies(x.StudyName,openActionsQueSeries))
+                    countbyStudies.append(blallActionCountbyStudies(x.StudyName,closedActionsQueSeries))
+
+                    
+                    chartChanges.append(showPie(countbyStudies,labelsOpenClosed,x.StudyName))
+                    #chart = showPie(listofOpenClosed,labelsOpenClosed,"Overall Studies Action Status")
+                    
+                    countbyStudies = []
+                    #stripCount, striplabels ,  = st  ripAndmatch(countbyStudies,labels)
+    
+                    # For studies check if actually assigned to it or if count is 0 then just dont generate graph
+                    #if stripCount != []:
+            
+                        #charts.append(showPie(stripCount,striplabels,StudyName))
 
         else: #This is for closed actions if selected
+            chartChanges = []
             if ActionsSorton == 'Company':
                 Company = ActionRoutes.mdlAllCompany.mgr_getCompanyCount()
+                
                 for items in Company:
                         listcountbyCompany.append(blgetCompanyActionCount (items,closedActionsQueSeries))
                             #dont need to append list as its already in the list above
-                chartChanges = showPie(listcountbyCompany,Company, "Closed Actions by Company")
+                chartChanges.append(showPie(listcountbyCompany,Company, "Closed Actions by Company"))
 
             if ActionsSorton == 'Discipline':
                 
                 discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
                 listcountbyDisSub= []
                 listlablesDisc =[]
+                
                 for itemPair in discsub:
         
                     listcountbyDisSub.append(blgetDiscSubActionCount ('Y',itemPair,closedActionsQueSeries))
                     listlablesDisc.append(str(itemPair[0]))#+"/"+str(itemPair[1]))
     
-                chartChanges = showPie(listcountbyDisSub,listlablesDisc, "Closed Actions by Disc/Sub-Disc")
+                chartChanges.append(showPie(listcountbyDisSub,listlablesDisc, "Closed Actions by Disc/Sub-Disc"))
+    
+            if ActionsSorton == 'Workshops':
+                workshops = Studies.objects.all()
+                
+                countbyStudies = []
+                for x in workshops:
+
+                    countbyStudies.append(blallActionCountbyStudies(x.StudyName,openActionsQueSeries))
+                    countbyStudies.append(blallActionCountbyStudies(x.StudyName,closedActionsQueSeries))
+
+                    
+                    chartChanges.append(showPie(countbyStudies,labelsOpenClosed,x.StudyName))
+                    #chart = showPie(listofOpenClosed,labelsOpenClosed,"Overall Studies Action Status")
+                    
+                    countbyStudies = []
+    
     context = {
-            "chart":chart,
+            "charts":charts,
             "chartChanges":chartChanges,
             "overall":True
 
@@ -579,8 +658,8 @@ def rptdiscSlice(request, **kwargs):
         
         listcountbyDisSub.append(blgetDiscSubActionCount ('Y',itemPair,OpenAccount))
         totalcountbyDisSub.append(blgetDiscSubActionCount ('Y',itemPair,TotalCount))
-        listlablebyDisSub.append(str(itemPair[0])) # to include sub disc later -- +"/"+str(itemPair[1])
-        listofstringDiscSub.append(str(itemPair[0]+"/"+ itemPair[1]))
+        listlablebyDisSub.append(str(itemPair[0][0:6])) # to include sub disc later -- +"/"+str(itemPair[1])
+        listofstringDiscSub.append(str(itemPair[0][0:6]+"/"+ itemPair[1]))
 
         listofPairActioneeCount.append(blgetDiscSubActionCount ('Y',itemPair,[0]))
         listofPairApproverCount.append(blgetDiscSubActionCount ('Y',itemPair,ApproverQList))
@@ -723,7 +802,10 @@ def Profile (request):
     return render(request, 'userT/Profile.html')
 
 def repPMTExcel (request):
-    
+    openActionsQueSeries = [0,1,2,3,4,5,6,7,8,9]
+    closedActionsQueSeries = [99]
+    YetToRespondQue =[0]
+    pendingApprovalQue = [1,2,3,4,5,6,7,8,9]
     if request.method == 'POST':
         ViewExcel = request.POST.get('viewExcel')
        
@@ -731,7 +813,28 @@ def repPMTExcel (request):
           
             createExcelReports(request,"AllActions.xlsx")
 
-    return render(request, 'userT/repPMTExcel.html')
+    allstudies = Studies.objects.all()
+                
+    lstcountbyStudies = []
+    lstofstudiesdetails =[]
+    for Study in allstudies:
+        lstcountbyStudies.append (Study.StudyName)
+        lstcountbyStudies.append(blallActionCountbyStudies(Study.StudyName,openActionsQueSeries))
+        lstcountbyStudies.append (blallActionCountbyStudies(Study.StudyName,YetToRespondQue))
+        lstcountbyStudies.append (blallActionCountbyStudies(Study.StudyName,pendingApprovalQue))
+        lstcountbyStudies.append (blallActionCountbyStudies(Study.StudyName,closedActionsQueSeries))
+        
+        lstofstudiesdetails.append(lstcountbyStudies)
+        lstcountbyStudies =[]
+    
+        
+    print(lstofstudiesdetails)
+    context = {
+
+        'lstofstudiesdetails' : lstofstudiesdetails,
+
+    }
+    return render(request, 'userT/repPMTExcel.html', context)
 
 def DisciplineBreakdown (request):
     return render(request, 'userT/DisciplineBreakdown.html')
@@ -739,8 +842,4 @@ def DisciplineBreakdown (request):
 def StickyNote(request):
     return render(request, 'userT/StickyNote.html')
 
-def IndividualBreakdownByActions(request):
-    return render(request, 'userT/IndividualBreakdownByActions.html')
 
-def IndividualBreakdownByUsers(request):
-    return render(request, 'userT/IndividualBreakdownByUsers.html')
