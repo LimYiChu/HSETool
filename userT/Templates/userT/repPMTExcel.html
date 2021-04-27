@@ -36,7 +36,10 @@
                               Open Actions
                             </th>
                             <th>
-                              Responded
+                              Yet to Respond
+                            </th>
+                            <th>
+                              Pending Approval
                             </th>
                             <th>
                               Closed
@@ -45,21 +48,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                   
+                      {% for items in lstofstudiesdetails%}
+                      
                       <tr>
-                        <td>CRA</td>
-                        <td>12</td>
+                        <td>{{items.0}}</td>
+                        <td>{{items.1}}</td>
                         
-                        <td>2</td>
-                        <td>8</td>
+                        <td>{{items.2}}</td>
+                        <td>{{items.3}}</td>
+                        <td>{{items.4}}</td>
                       </tr> 
-                      <tr>
-                        <td>HAZID</td>
-                        <td>12</td>
-                        
-                        <td>2</td>
-                        <td>8</td>
-                      </tr> 
+                      {%endfor%}
+                      
                       </tbody>
                   
                   </table>
@@ -76,7 +76,7 @@
     </div>
 
 <!--Filter-->
-<div class="row">
+<!--<div class="row">
   <div class="col-md-12">
   <div class="card">
     <h5 class="card-header">
@@ -117,7 +117,7 @@
     </div>
   </div>
   </div> 
-</div>  
+</div>  -->
 
 
 
