@@ -603,6 +603,22 @@ def rptoverallStatus(request, **kwargs):
                     listlablesDisc.append(str(itemPair[0]))#+"/"+str(itemPair[1]))
     
                 chartChanges.append(showPie(listcountbyDisSub,listlablesDisc, "Closed Actions by Disc/Sub-Disc"))
+    
+            if ActionsSorton == 'Workshops':
+                workshops = Studies.objects.all()
+                
+                countbyStudies = []
+                for x in workshops:
+
+                    countbyStudies.append(blallActionCountbyStudies(x.StudyName,openActionsQueSeries))
+                    countbyStudies.append(blallActionCountbyStudies(x.StudyName,closedActionsQueSeries))
+
+                    
+                    chartChanges.append(showPie(countbyStudies,labelsOpenClosed,x.StudyName))
+                    #chart = showPie(listofOpenClosed,labelsOpenClosed,"Overall Studies Action Status")
+                    
+                    countbyStudies = []
+    
     context = {
             "charts":charts,
             "chartChanges":chartChanges,
@@ -786,7 +802,10 @@ def Profile (request):
     return render(request, 'userT/Profile.html')
 
 def repPMTExcel (request):
-    
+    openActionsQueSeries = [0,1,2,3,4,5,6,7,8,9]
+    closedActionsQueSeries = [99]
+    YetToRespondQue =[0]
+    pendingApprovalQue = [1,2,3,4,5,6,7,8,9]
     if request.method == 'POST':
         ViewExcel = request.POST.get('viewExcel')
        
@@ -794,7 +813,28 @@ def repPMTExcel (request):
           
             createExcelReports(request,"AllActions.xlsx")
 
-    return render(request, 'userT/repPMTExcel.html')
+    allstudies = Studies.objects.all()
+                
+    lstcountbyStudies = []
+    lstofstudiesdetails =[]
+    for Study in allstudies:
+        lstcountbyStudies.append (Study.StudyName)
+        lstcountbyStudies.append(blallActionCountbyStudies(Study.StudyName,openActionsQueSeries))
+        lstcountbyStudies.append (blallActionCountbyStudies(Study.StudyName,YetToRespondQue))
+        lstcountbyStudies.append (blallActionCountbyStudies(Study.StudyName,pendingApprovalQue))
+        lstcountbyStudies.append (blallActionCountbyStudies(Study.StudyName,closedActionsQueSeries))
+        
+        lstofstudiesdetails.append(lstcountbyStudies)
+        lstcountbyStudies =[]
+    
+        
+    print(lstofstudiesdetails)
+    context = {
+
+        'lstofstudiesdetails' : lstofstudiesdetails,
+
+    }
+    return render(request, 'userT/repPMTExcel.html', context)
 
 def DisciplineBreakdown (request):
     return render(request, 'userT/DisciplineBreakdown.html')
