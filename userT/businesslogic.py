@@ -4,9 +4,8 @@ from django.http import HttpResponse
 from UploadExcel.models import ActionItems
 from .models import *
 
-def blgetDiscSubOrgfromID (ID):
+def blgetAttibutesfromID (ID):
     # just returns the company, disipline and sub from one object
-    #had to place the org at the last because already done other functions to return  DiscSub as first 2 index and wanted to reuse them
     orgdiscsub= []
     obj=ActionItems.objects.get(id=ID)
     
@@ -18,8 +17,7 @@ def blgetDiscSubOrgfromID (ID):
     return orgdiscsub
 
 def blgetApproverLevel (lstorgdiscsub):
-    #returns the approver level from routes, if 3 approvers it returns 4 meaning 4th is blank. 
-    #basiclly looks up the route table and returns the next blank where field is approver
+
     obj= ActionRoutes.mdlgetApproverLevel.mgr_getApproverLevel (lstorgdiscsub)
         
     allfields = [f.name for f in ActionRoutes._meta.get_fields()] 
@@ -48,63 +46,9 @@ def blgetFieldValue(ID,field):
 def blgetApproverLevelTarget(ID,field):
     
     return ActionItems.mdlSetField.mgrgetField(ID,field)
-
-def blgetIndiResponseCount(discsuborg,queseriesset,queseriesclosed):
-
-    indiPendingSeries =[]
-    completePendingPair = []
-    for itemtriplet in discsuborg:
-        totalopencount = blgetDiscSubActionCount ('Y',itemtriplet,queseriesset)
-        totalclosedcount = blgetDiscSubActionCount ('Y',itemtriplet,queseriesclosed)
-        lstofActioneeApprover = blgetSignotories(itemtriplet)
-        #indiPendingPair.append(itemtriplet)
-        for indique,indipair in enumerate(lstofActioneeApprover):
-            if (indipair != []):
-                
-                indiPendingSeries.append(indique) #Append QueSeries
-                lstindique = [indique] #make que series into list otherwise doesn work
-                indiPendingSeries.append(indipair[1]) #make que series into list otherwise doesn work
-                pendingResponse = blgetDiscSubActionCount ('Y',itemtriplet,lstindique)
-                indiPendingSeries.append(pendingResponse)
-                indiPendingSeries.append(totalopencount)
-                indiPendingSeries.append(totalclosedcount)
-            
-            
-            completePendingPair.append (indiPendingSeries)
-            indiPendingSeries = []
-
-    finallistoflist = [x for x in completePendingPair if x]    
-    return finallistoflist
-
-def blgetActionStuckAt(allactions, lstoftableattributes):
-
-    lstActionDetails = []
-    lstgettriplet = []
-    lstofindiactions =[]
-    for items in allactions:
-        for x in lstoftableattributes:
-            lstActionDetails.append(eval('items.'+str(x)))
-        # lstActionDetails.append(items.StudyActionNo)
-        # lstActionDetails.append(items.StudyName)
-        # lstActionDetails.append(items.Recommendations)
-        # lstActionDetails.append(items.Response)
-        # lstActionDetails.append(items.Disipline)
-        # lstActionDetails.append(items.Subdisipline)
-        # lstActionDetails.append(items.InitialRisk)
-        lstgettriplet = [items.Disipline,items.Subdisipline,items.Organisation]
-        lstofActioneeAppr = blgetSignotories (lstgettriplet)
-
-        
-        if items.QueSeries != 99 : # basically its looks at que series and then matches it against the list of entire signatories above
-            lststuckAt = lstofActioneeAppr[items.QueSeries]
-            lstActionDetails.append("--".join(lststuckAt))
-        
-        lstofindiactions.append (lstActionDetails)
-        lstActionDetails =[]
-    return lstofindiactions
 def blgetSignotories (lstorgdiscsub):
     #in - list of company disc sub
-    # - out Actionee & Approver approver names - basically the signatories
+    # - out Actionee names approver names - basically the signatories
     obj= ActionRoutes.mdlgetApproverLevel.mgr_getApproverLevel (lstorgdiscsub)
         
     allfields = [f.name for f in ActionRoutes._meta.get_fields()] 
@@ -260,15 +204,6 @@ def blActionCountbyStudiesStream(contextRoutes,studies,que):
     #finalstreams.append (streams)
     #return ActionItems.ActioneeItems.get_myItemsbyCompDisSub(blvarorganisation,blvardisipline,blvarSUbdisipline)
     return streamscount, streamdisc
-def blallActionCountbyStudies(studies,quelist):
-
-    count = 0
-    
-    for que in quelist:
-        count += ActionItems.myActionItemsCount.mgr_allItemsCountbyStudies(studies,que) 
-   
-    return count
-
 
 def blfuncActionCount(contextRoutes,que):
    #This functionality already works

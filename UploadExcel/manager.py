@@ -12,10 +12,7 @@ class QuerySet(models.QuerySet):
         return self.filter(StudyName__icontains=studies).filter(Organisation__icontains=organisation).filter(Disipline__icontains=disipline).filter(
             
                             Subdisipline__icontains=subdisipline).filter(QueSeries__iexact=que).count ()
-
-    def get_allActionsCountbyStudies(self,studies, que):
-        return self.filter(StudyName__icontains=studies).filter(QueSeries__iexact=que).count ()
-            
+    
     def set_field(self,ID, fields, value):
         
         
@@ -59,8 +56,6 @@ class myActionCount(models.Manager):
         return self.get_queryset().get_myActionsCount(userorganisation,userdisipline,usersubdisipline,que)
     def mgr_myItemsCountbyStudies(self,studies, organisation,disipline,subdisipline,que):
         return self.get_queryset().get_myActionsCountbyStudies(studies, organisation,disipline,subdisipline,que)
-    def mgr_allItemsCountbyStudies(self,studies,que):
-        return self.get_queryset().get_allActionsCountbyStudies(studies,que)
 
 class mgrallActionCount(models.Manager):
     def get_queryset (self):
