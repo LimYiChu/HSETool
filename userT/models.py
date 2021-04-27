@@ -63,6 +63,7 @@ class CustomUser(AbstractBaseUser):
     def get_short_name(self):
         return self.fullname
 
+    @property
     def is_staff(self):
         return self.staff
 
