@@ -3,6 +3,31 @@ from django.http import HttpResponse
 
 from UploadExcel.models import ActionItems
 from .models import *
+def blgettimeStampforSignatories (id, Signatories):
+        #pass in all Signatories and ID of action
+        #return Signatories with Time Stamp
+        #firstgetcurrentqueseries
+        
+        
+        
+        
+        
+        
+        lstofDictQueSeries = ActionItems.objects.filter(id=id).values('QueSeries')
+        currentQueSeries = lstofDictQueSeries[0].get('QueSeries')
+        print('In Businesslogic')
+        print (currentQueSeries)
+        #next get all history that has got to do with ID
+        y = ActionItems.history.filter(id=id).filter(QueSeries=currentQueSeries).order_by('-history_date').values()
+
+        print (y[0].get('history_date'))                                    
+        for index, items in enumerate(Signatories):
+            print(index,items)
+        
+        
+        NoofSigned = currentQueSeries+1  #que series will decide number of people whom have signed +1 because actionee is 0- Need a matching list index
+
+        return NoofSigned
 
 def blgetDiscSubOrgfromID (ID):
     # just returns the company, disipline and sub from one object
@@ -268,7 +293,7 @@ def blallActionCountbyStudies(studies,quelist):
         count += ActionItems.myActionItemsCount.mgr_allItemsCountbyStudies(studies,que) 
    
     return count
-
+#def blgetActionsResponded 
 
 def blfuncActionCount(contextRoutes,que):
    #This functionality already works

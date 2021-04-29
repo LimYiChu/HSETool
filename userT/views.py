@@ -287,12 +287,19 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
             return super().form_valid(form)
 
     def get_context_data(self,**kwargs):
-        fk = self.kwargs.get("pk")
+        idAI = self.kwargs.get("pk")
         context = super().get_context_data(**kwargs)
-        discsub = blgetDiscSubOrgfromID(fk)
+        discsub = blgetDiscSubOrgfromID(idAI)
         Signatories = blgetSignotories(discsub)
 
-        context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(fk)
+        
+       
+        #print(blgettimeStampforSignatories (idAI, Signatories) )
+
+        # for items in y:
+        #     print(items.history_date)
+
+        context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(idAI)
         context['Approver'] = True
         context ['Signatories'] = Signatories
         return context
@@ -352,6 +359,8 @@ class ActioneeItemsMixin(ApproveItemsMixin):
         blsetApproverLevelTarget(fk,ApproverLevel)
         
         Signatories = blgetSignotories(discsuborg)
+        
+        
         
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(fk)
         context['Approver'] = False
@@ -413,9 +422,9 @@ def IndividualBreakdownByActions(request):
     
     allactions = ActionItems.objects.all()
                 #blgetdetailsofeachActions(allactions)
-    tableattributes = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','InitialRisk']
+    lstattributes = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','InitialRisk']
    
-    lstofindiactions = blgetActionStuckAt(allactions, tableattributes)
+    lstofindiactions = blgetActionStuckAt(allactions, lstattributes)
 
     context ={
         
