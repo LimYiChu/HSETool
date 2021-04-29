@@ -71,7 +71,17 @@
                     <div style="float:right">
                     {%csrf_token%}  
                     <button class="btn btn-outline-primary my-2 my-sm-0"  name ="/main" type="submit" value="Click">Cancel</button>    
-                    <button class="btn btn-outline-primary my-2 my-sm-0"  name ="GeneratePDF" type="submit" value="Click">Generate PDF</button>
+                    <button class="btn btn-outline-primary my-2 my-sm-0"  name ="GeneratePDF" type="submit" value="Click" onclick="spinner()">Generate PDF </button>
+                    
+                    <div class="loader">
+                      <div class="loading"> 
+                        
+                    </div>
+                      </div>
+                    </div>
+                   <div class="spinner" role="status">
+                      <span class="visually-hidden">Loading...</span>
+
                   </div>               
                   </form>
                 </div>
@@ -101,5 +111,54 @@
 
 {% endif %}            
 </body>
+
+<!--Testing-->
+
+
+
+<script type="text/javascript">
+    function spinner() {
+        document.getElementsByClassName("loader")[0].style.display = "block";
+        document.getElementsByClassName("spinner")[0].style.display = "block";
+    }
+</script> 
+
+<style>
+
+{
+  margin: 0;
+  padding: 0;
+}
+
+.loader {
+  display: none;
+  top: 93%;
+  left: 90%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.loading {
+  border: 2px solid #ccc;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border-top-color: #1ecd97;
+  border-left-color: #1ecd97;
+  animation: spin 1s infinite ease-in;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+</style>
+
+
 {% endblock %}
 {% endblock %}

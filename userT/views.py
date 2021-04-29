@@ -802,6 +802,17 @@ def Profile (request):
     return render(request, 'userT/Profile.html')
 
 def repPMTExcel (request):
+#yhs testing
+    discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
+   
+    #Signatories = 
+    
+    QueOpen = [0,1,2,3,4,5,6,7,8,9]
+    QueClosed = [99]
+    Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)          
+    allactions = ActionItems.objects.all()
+    tableattributes = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','InitialRisk']
+    lstofindiactions = blgetActionStuckAt(allactions, tableattributes)
     openActionsQueSeries = [0,1,2,3,4,5,6,7,8,9]
     closedActionsQueSeries = [99]
     YetToRespondQue =[0]
@@ -832,7 +843,8 @@ def repPMTExcel (request):
     context = {
 
         'lstofstudiesdetails' : lstofstudiesdetails,
-
+        'Indisets' : Indisets,
+        'context' : lstofindiactions,
     }
     return render(request, 'userT/repPMTExcel.html', context)
 
