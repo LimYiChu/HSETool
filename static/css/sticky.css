@@ -40,11 +40,6 @@
   .pagination a:hover:not(.active) {background-color: #ddd;}
 
 }
-
-
-
-body {font-family: Arial;}
-
 /* Style the tab */
 .tab {
   overflow: hidden;
@@ -52,7 +47,7 @@ body {font-family: Arial;}
   background-color: #f1f1f1;
 }
 
-/* Style the buttons inside the tab */
+/* Style the buttons that are used to open the tab content */
 .tab button {
   background-color: inherit;
   float: left;
@@ -61,7 +56,6 @@ body {font-family: Arial;}
   cursor: pointer;
   padding: 14px 16px;
   transition: 0.3s;
-  font-size: 17px;
 }
 
 /* Change background color of buttons on hover */
@@ -81,5 +75,4 @@ body {font-family: Arial;}
   border: 1px solid #ccc;
   border-top: none;
 }
-
 
