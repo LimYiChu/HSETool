@@ -39,19 +39,19 @@ urlpatterns = [
         path('accounts/login/', auth_views.LoginView.as_view(template_name='userT/login.html'),name='login'),
         path('ActioneeList/', login_required(UserView.ActioneeList.as_view()), name='UserActionList' ),
                 #path('UA/', UserView.yourActions.as_view(), name='UserActions' ),
-        re_path(r'^(?P<id>\d+)/$', userView.getActionDetails,name='getActionsDetails'),
+        re_path(r'^(?P<id>\d+)/$', login_required(userView.getActionDetails),name='getActionsDetails'),
        # path('password_reset/', auth_views.PasswordResetView.as_view(template_name='userT/reset.html') ,name='password_reset'),
-        path('routesX/', userView.getuserRoutes, name='routesX' ),
-        path('main/', UserView.mainDashboard, name='main' ),
+        path('routesX/', login_required(userView.getuserRoutes), name='routesX' ),
+        path('main/', login_required(UserView.mainDashboard), name='main' ),
        
        #List path using class listview to get actionee and approver
-        path('ActioneeList/', UserView.ActioneeList.as_view(), name='UserActionList' ),
-        path('ApproverList/', UserView.ApproverList.as_view(), name='ApproverList' ),
+        path('ActioneeList/', login_required(UserView.ActioneeList.as_view()), name='UserActionList' ),
+        path('ApproverList/', login_required(UserView.ApproverList.as_view()), name='ApproverList' ),
 
        
-        re_path(r'^(?P<id>\d+)/$', userView.getActionDetails,name='getActionsDetails'),
+        re_path(r'^(?P<id>\d+)/$', login_required(userView.getActionDetails),name='getActionsDetails'),
        
-        path('routesX/', userView.getuserRoutes, name='routesX' ),
+        path('routesX/', login_required(userView.getuserRoutes), name='routesX' ),
         #path('ActioneeList/<int:pk>/', userView.ActionDetails(),name='ActionsDetails'),
        
         
@@ -59,10 +59,10 @@ urlpatterns = [
         #path('UA/', UserView.UserActions, name='UserActions' ),
 
         #Following urls are for actionee approvers updates and approvals
-        path('ActioneeList/<int:pk>/update', UserView.ActioneeItemsMixin.as_view(), name='ActioneeFormMixin' ),
-        path('ActioneeList/<int:id>/', UserView.DetailActioneeItems.as_view(), name='DetailsForm' ),
+        path('ActioneeList/<int:pk>/update', login_required(UserView.ActioneeItemsMixin.as_view()), name='ActioneeFormMixin' ),
+        path('ActioneeList/<int:id>/', login_required(UserView.DetailActioneeItems.as_view()), name='DetailsForm' ),
         #path('ApproverList/<int:id>/approve', UserView.ApproveItems.as_view(), name='ApproveForm' ),
-        path('ApproverList/<int:pk>/approve', UserView.ApproveItemsMixin.as_view(), name='ApproveFormMixin' ),
+        path('ApproverList/<int:pk>/approve', login_required(UserView.ApproveItemsMixin.as_view()), name='ApproveFormMixin' ),
 
         #Following URLs are for reseting and changing password. Note that the reset password via email is yet to be set up. Right now please obtain the link in the terminal upon requesting password reset.
         path('password_change/done/',auth_views.PasswordChangeDoneView.as_view(template_name='userT/password_change_done.html'),name='password_change_done'),
@@ -71,35 +71,35 @@ urlpatterns = [
         path('reset/<uidb64>/<token>',auth_views.PasswordResetConfirmView.as_view(),name='password_reset_confirm'),
         path('password_reset/',auth_views.PasswordResetView.as_view(template_name='userT/password_reset_form.html'),name='password_reset'),
         path('reset/done/',auth_views.PasswordResetCompleteView.as_view(template_name='userT/password_reset_complete.html'),name='password_reset_complete'),
-        path('ContactUs/',UserView.ContactUs,name='ContactUs'),
+        path('ContactUs/',login_required(UserView.ContactUs),name='ContactUs'),
         
         
         #path('ContactUs/',UserView.ContactUs,name='ContactUs'),
 
         #Following url /s for rejection 
-        re_path(r'Comments/(?P<forkeyid>\d+)$', UserView.RejectReason.as_view(), name='RejectComments' ),
-        re_path(r'multiplefiles/(?P<forkeyid>\d+)$', UserView.multiplefiles, name='multiplefiles' ),
-        re_path(r'ApproverConfirm/(?P<id>\d+)$', UserView.ApproverConfirm.as_view(), name='ApproverConfirm' ),
+        re_path(r'Comments/(?P<forkeyid>\d+)$', login_required(UserView.RejectReason.as_view()), name='RejectComments' ),
+        re_path(r'multiplefiles/(?P<forkeyid>\d+)$', login_required(UserView.multiplefiles), name='multiplefiles' ),
+        re_path(r'ApproverConfirm/(?P<id>\d+)$', login_required(UserView.ApproverConfirm.as_view()), name='ApproverConfirm' ),
         #following url for reporting
-        path('actionstatus/', UserView.rptoverallStatus, name='actionstatus' ),
-        path('discslice/', UserView.rptdiscSlice, name='discslice' ),
-        path('rptbyuser/', UserView.rptbyUser, name='rptbyuser' ),
+        path('actionstatus/', login_required(UserView.rptoverallStatus), name='actionstatus' ),
+        path('discslice/', login_required(UserView.rptdiscSlice), name='discslice' ),
+        path('rptbyuser/', login_required(UserView.rptbyUser), name='rptbyuser' ),
         #pdf path
-        path('GeneratePDF/',UserView.GeneratePDF,name='GeneratePDF'),
+        path('GeneratePDF/',login_required(UserView.GeneratePDF),name='GeneratePDF'),
         #email path
-        path('ReportingTable/',UserView.ReportingTable,name='ReportingTable'),
-        path('Profile/',UserView.Profile,name='Profile'),
-        path('reppmt/',UserView.repPMTExcel,name='reppmt'),
-        path('DisciplineBreakdown/',UserView.DisciplineBreakdown,name='DisciplineBreakdown'),
-        path('EmailReminder/',UserView.EmailReminder,name='EmailReminder'),
-        path('EmailReminderAttachment/',UserView.EmailReminderAttachment,name='EmailReminderAttachment'),
+        path('ReportingTable/',login_required(UserView.ReportingTable),name='ReportingTable'),
+        path('Profile/',login_required(UserView.Profile),name='Profile'),
+        path('reppmt/',login_required(UserView.repPMTExcel),name='reppmt'),
+        path('DisciplineBreakdown/',login_required(UserView.DisciplineBreakdown),name='DisciplineBreakdown'),
+        path('EmailReminder/',login_required(UserView.EmailReminder),name='EmailReminder'),
+        path('EmailReminderAttachment/',login_required(UserView.EmailReminderAttachment),name='EmailReminderAttachment'),
         #StickyNote
-        path('StickyNote/',UserView.StickyNote,name='StickyNote'),
-        path('IndividualBreakdownByActions/',UserView.IndividualBreakdownByActions,name='IndividualBreakdownByActions'),
-        path('IndividualBreakdownByUsers/',UserView.IndividualBreakdownByUsers,name='IndividualBreakdownByUsers'),
+        path('StickyNote/',login_required(UserView.StickyNote),name='StickyNote'),
+        path('IndividualBreakdownByActions/',login_required(UserView.IndividualBreakdownByActions),name='IndividualBreakdownByActions'),
+        path('IndividualBreakdownByUsers/',login_required(UserView.IndividualBreakdownByUsers),name='IndividualBreakdownByUsers'),
 
         #tenant
-        path('our_team/', our_team, name='our_team')
+        path('our_team/', login_required(our_team), name='our_team')
       ]
 
 if settings.DEBUG:
