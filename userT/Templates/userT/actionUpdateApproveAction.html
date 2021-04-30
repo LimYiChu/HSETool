@@ -2,6 +2,7 @@
 
 {%load crispy_forms_tags %}
 {% crispy form form.helper%}
+{% load tz %}
 
 {% block RejectReason %}
 
@@ -36,6 +37,7 @@
     </div>
   </div>
     {%endif%}
+    
   {%endblock%}
 {% block ApproverDetails%}
 
@@ -132,10 +134,12 @@
                   <tbody>
                     {%for items in Signatories %}
                     <tr height="15  px">
-                      {%for x in items %}
+                      
                     
-                    <td>{{ x}}</td>
-                    {%endfor%}
+                    <td>{{ items.0}}</td>
+                    <td>{{ items.1}}</td>
+                    <td>{{ items.2|localtime}}</td>
+                   
                     </tr>
                    
                     {%endfor%}
@@ -167,4 +171,6 @@
 
 </body>
 </div>
+
 {%endblock%}
+
