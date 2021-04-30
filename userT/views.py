@@ -76,27 +76,34 @@ def mainDashboard (request):
     apprcharts =[]
     stripCount =[]
     striplabels = []
+    QueOpen = [1,2,3,4,5,6,7,8,9]
+    QueClosed =99  #something wrong this fucntion wrote it early but needs a bit more to accept list
     #loop through each workshop and get counts
     #This function just does a count using model managers , calling from businesslogic.py
     
+    #Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)
+    #blgetDiscSubOrgfromID(idAI)
     for eachstudy in studies:
         StudyName = eachstudy.StudyName
         
         labels=[]
         labelsapp =[]
+
+        labelsclosed =[]
         #countbyStudies = blActionCountbyStudies(Actionee_R,StudyName,0) - old way limited by three streams 
         
         countbyStudies, labels= blActionCountbyStudiesStream(Actionee_R,StudyName,0) # unlimited actionee
-        
+        countbyStudiesClosed, labelsClosed= blActionCountbyStudiesStream(Actionee_R,StudyName,QueClosed)
              
         stripCount, striplabels ,  = stripAndmatch(countbyStudies,labels)
-    
+
+        stripCountClosed, striplabelsClosed ,  = stripAndmatch(countbyStudiesClosed,labelsClosed)
         # For studies check if actually assigned to it or if count is 0 then just dont generate graph
         if stripCount != []:
             
             charts.append(showPie(stripCount,striplabels,StudyName))
         
-        
+            charts.append(showPie(stripCountClosed,striplabelsClosed,StudyName +" -- Closed Actions"))
         #the key starts at 1 which is good thing and hence just pass to get count from queseries
         for key, value in Approver_R.items():
             for items in value:
@@ -293,8 +300,8 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
         Signatories = blgetSignotories(discsub)
 
         
-       
-        #print(blgettimeStampforSignatories (idAI, Signatories) )
+        print (Signatories)
+        lstSignatoriesTimeStamp= blgettimeStampforSignatories (idAI, Signatories) 
 
         # for items in y:
         #     print(items.history_date)
