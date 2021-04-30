@@ -23,7 +23,7 @@ def showPie(dataAct,labelsAct,title):
     data = dataAct
     labels =labelsAct
     colors = ["#9BBFE0", "#E8A09A", "#D3EDEE","#FBE29F",  "#C6D68F","#5E6565","#91CACC", "#C0A8A3",]
-    radius = 1.0
+    radius = 0.8 #yhs changed to 0.8 from 1.0
     
     def explode(dataslice):
     
@@ -50,7 +50,7 @@ def showPie(dataAct,labelsAct,title):
     #lamda is just an inline function - nothing fancy
     plt.pie(data,colors=colors, radius = radius, startangle = 90,  explode = explodeslice, shadow=True,autopct=lambda pct: func(pct, data), wedgeprops ={'edgecolor':'black'})
 
-    plt.legend(labels, bbox_to_anchor=(0.82,1.0), loc="upper left")
+    plt.legend(labels, bbox_to_anchor=(0.90,1.2), loc="upper left") #yhs changed to 0.90 and 1.2
     #plt.title (Title)
     plt.tight_layout()
     
@@ -81,7 +81,7 @@ def showbar (listcountbyDisSub,totalcountbyDisSub,listlablebyDisSub, label1,labe
     x_indexes = np.arange(len(labels_x_axes))
     #y_indexes = np.arange(0, maxcount,stepcount)
     #y_indexes = np.arange(0, 2,0.5)
-    width=0.25
+    width=0.40
     #x_index
     plt.bar(x_indexes, data_y_axes, label=label1, width=width, color="#91CACC")
     plt.bar(x_indexes-width, totalcountbyDisSub, label=label2, width=width, color="#5E6565")
@@ -90,8 +90,8 @@ def showbar (listcountbyDisSub,totalcountbyDisSub,listlablebyDisSub, label1,labe
     #fig.suptitle(title, fontsize=15, fontweight='bold', wrap=True)
     #plt.rcParams['font.size'] = 15.0
     #plt.rcParams['font.weight'] = "bold"
-    plt.rcParams["figure.figsize"] = (8,10)
-    plt.rcParams['axes.autolimit_mode'] = 'round_numbers'
+    plt.rcParams["figure.figsize"] = (6,6)
+    #plt.rcParams['axes.autolimit_mode'] = 'round_numbers'
 
     plt.legend()
     plt.title (title,fontsize=20, fontweight='bold', wrap=True)
