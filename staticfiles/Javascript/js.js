@@ -94,6 +94,54 @@ $(document).ready(function() {
     } );
   } );
   
+  $(document).ready(function() {
+    // Setup - add a text input to each footer cell
+    $('#table4 thead tr').clone(true).appendTo( '#table4 thead' );
+    $('#table4 thead tr:eq(1) th').each( function (i) {
+        var title = $(this).text();
+        $(this).html( '<input type="text" placeholder="Search" />' );
+  
+        $( 'input', this ).on( 'keyup change', function () {
+            if ( table.column(i).search() !== this.value ) {
+                table
+                    .column(i)
+                    .search( this.value )
+                    .draw();
+            }
+        } );
+    } );
+  
+    var table = $('#table4').DataTable( {
+        orderCellsTop: true,
+        fixedHeader: true,
+         "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]]
+    } );
+  } );
+  
+  $(document).ready(function() {
+    // Setup - add a text input to each footer cell
+    $('#table5 thead tr').clone(true).appendTo( '#table5 thead' );
+    $('#table5 thead tr:eq(1) th').each( function (i) {
+        var title = $(this).text();
+        $(this).html( '<input type="text" placeholder="Search" />' );
+  
+        $( 'input', this ).on( 'keyup change', function () {
+            if ( table.column(i).search() !== this.value ) {
+                table
+                    .column(i)
+                    .search( this.value )
+                    .draw();
+            }
+        } );
+    } );
+  
+    var table = $('#table5').DataTable( {
+        orderCellsTop: true,
+        fixedHeader: true,
+         "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]]
+    } );
+  } );
+  
 
 function openReport(evt, ReportName) {
     var i, tabcontent, tablinks;
