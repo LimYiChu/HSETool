@@ -4,6 +4,22 @@ from django.http import HttpResponse
 from UploadExcel.models import ActionItems
 from .models import *
 
+def blgetbyStdudiesCount(Studies,OpenQue,YetToRespondQue,pendingApprovalQue,closedActionsQueSeries):
+   
+    lstcountbyStudies = []
+    lstofstudiesdetails =[]
+    for Study in Studies:
+        lstcountbyStudies.append (Study.StudyName)
+        lstcountbyStudies.append  (blallActionCountbyStudies(Study.StudyName,OpenQue))
+        lstcountbyStudies.append (blallActionCountbyStudies(Study.StudyName,YetToRespondQue))
+        lstcountbyStudies.append (blallActionCountbyStudies(Study.StudyName,pendingApprovalQue))
+        lstcountbyStudies.append (blallActionCountbyStudies(Study.StudyName,closedActionsQueSeries))
+        
+        lstofstudiesdetails.append(lstcountbyStudies)
+        lstcountbyStudies =[]
+    
+    return lstofstudiesdetails
+
 def blgettimeStampforSignatories (id, Signatories):
         #pass in all Signatories and ID of action
         #return Signatories with Time Stamp
@@ -87,7 +103,10 @@ def blgetIndiResponseCount(discsuborg,queseriesset,queseriesclosed):
 
     indiPendingSeries =[]
     completePendingPair = []
+
+    #first loop through all routes disc/sub/org
     for itemtriplet in discsuborg:
+        
         totalopencount = blgetDiscSubActionCount ('Y',itemtriplet,queseriesset)
         totalclosedcount = blgetDiscSubActionCount ('Y',itemtriplet,queseriesclosed)
         lstofActioneeApprover = blgetSignotories(itemtriplet)
@@ -95,14 +114,19 @@ def blgetIndiResponseCount(discsuborg,queseriesset,queseriesclosed):
         for indique,indipair in enumerate(lstofActioneeApprover):
             if (indipair != []):
                 
-                indiPendingSeries.append(indique) #Append QueSeries
+                #indiPendingSeries.append(indique) #Append QueSeries
                 lstindique = [indique] #make que series into list otherwise doesn work
-                indiPendingSeries.append(indipair[1]) #make que series into list otherwise doesn work
+                indiPendingSeries.append(indipair[1]) #append Name - 
                 pendingResponse = blgetDiscSubActionCount ('Y',itemtriplet,lstindique)
-                indiPendingSeries.append(pendingResponse)
+                #for items in itemtriplet:
+                #wanted to append and not have list of list of disc sub org
+                indiPendingSeries.append(indipair[0]) #AppendRole
                 indiPendingSeries.append(totalopencount)
+                indiPendingSeries.append(pendingResponse)
+                indiPendingSeries.append('/'.join(itemtriplet))
                 indiPendingSeries.append(totalclosedcount)
-            
+                
+                
             
             completePendingPair.append (indiPendingSeries)
             indiPendingSeries = []
@@ -115,26 +139,24 @@ def blgetActionStuckAt(allactions, lstoftableattributes):
     lstActionDetails = []
     lstgettriplet = []
     lstofindiactions =[]
+
     for items in allactions:
         for x in lstoftableattributes:
-            lstActionDetails.append(eval('items.'+str(x)))
-        # lstActionDetails.append(items.StudyActionNo)
-        # lstActionDetails.append(items.StudyName)
-        # lstActionDetails.append(items.Recommendations)
-        # lstActionDetails.append(items.Response)
-        # lstActionDetails.append(items.Disipline)
-        # lstActionDetails.append(items.Subdisipline)
-        # lstActionDetails.append(items.InitialRisk)
+            lstActionDetails.append(eval('items.'+str(x))) #gets the value by basically executing the content
+       
         lstgettriplet = [items.Disipline,items.Subdisipline,items.Organisation]
         lstofActioneeAppr = blgetSignotories (lstgettriplet)
 
         
         if items.QueSeries != 99 : # basically its looks at que series and then matches it against the list of entire signatories above
-            lststuckAt = lstofActioneeAppr[items.QueSeries]
-            lstActionDetails.append("--".join(lststuckAt))
-        
+            lststuckAt = lstofActioneeAppr[items.QueSeries]#basically just uses QueSeries to tell us where its stuck at
+            lstActionDetails.append("/".join(lststuckAt)) # Because there is 2 parts to the formula = Actionee , gunav -- So im Just joining them into string
+        else:
+            lstActionDetails.append ("Closed") # if its 99 just have a tag closed
+           
         lstofindiactions.append (lstActionDetails)
         lstActionDetails =[]
+
     return lstofindiactions
 def blgetSignotories (lstorgdiscsub):
     #in - list of company disc sub

@@ -9,6 +9,7 @@ from UploadExcel.forms import *
 from django.contrib.auth import get_user_model
 import matplotlib as plt
 from .businesslogic import *
+from .excelReports import *
 from .models import *
 from UploadExcel.models import *
 from django.views.generic import ListView, DetailView, UpdateView,TemplateView, CreateView
@@ -24,9 +25,9 @@ from Trackem.settings import EMAIL_HOST_USER
 from django.template.loader import render_to_string
 from django.template import loader
 from django.core.mail import EmailMessage
-from openpyxl import Workbook
 import pandas as pd
 from django.utils import timezone
+import os
 #import mixins
 from django.views.generic.detail import SingleObjectMixin
 #from .forms import UserRegisterForm
@@ -478,38 +479,7 @@ def multiplefiles (request, **kwargs):
 
     return render(request, 'userT/multiplefiles.html',context)
 
-def createExcelReports(request,filename,**kwargs):
-    
-    allfields = [f.name for f in ActionItems._meta.get_fields()] 
-    del allfields[0:2] # pop the first 2 in the list since it returns the foreign key
-    
-    allWorkshops = ActionItems.objects.all()
-    
-    #excel part - using from openpyxl import Workbook
-    workbook = Workbook()       
-    worksheet = workbook.active
-    worksheet.title = 'Action Items'
-            
-    columns = allfields
-    row_num = 1
 
-    for col_num, column_title in enumerate(columns, 1):
-                cell = worksheet.cell(row=row_num, column=col_num)
-                cell.value = column_title
-    row=[]
-    for actions in allWorkshops:
-           
-            row_num += 1
-            row=[]
-            for field in allfields:
-                    param = 'actions.'+ str(field)
-                    row.append (eval(param))
-                   
-            for col_num, cell_value in enumerate(row, 1):
-                    cell = worksheet.cell(row=row_num, column=col_num)
-                    cell.value = cell_value
-                
-    workbook.save(filename)
 
 def rptoverallStatus(request, **kwargs):
     #this function is too messy and needs to be cleaned up
@@ -818,49 +788,71 @@ def Profile (request):
     return render(request, 'userT/Profile.html')
 
 def repPMTExcel (request):
-#yhs testing
-    discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
    
     #Signatories = 
-    
+    #get individual actions
     QueOpen = [0,1,2,3,4,5,6,7,8,9]
     QueClosed = [99]
-    Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)          
+    discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
+    Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
+    tableindiheader = ['User','Role', 'Open Actions' ,'Pending Res/Appr','Organisation Route','Closed']
+    #Get all Actions
     allactions = ActionItems.objects.all()
-    tableattributes = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','InitialRisk']
-    lstofindiactions = blgetActionStuckAt(allactions, tableattributes)
-    openActionsQueSeries = [0,1,2,3,4,5,6,7,8,9]
-    closedActionsQueSeries = [99]
+
+    tableallheader = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
+    lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
+    
+    #lastly
+    
     YetToRespondQue =[0]
-    pendingApprovalQue = [1,2,3,4,5,6,7,8,9]
-    if request.method == 'POST':
-        ViewExcel = request.POST.get('viewExcel')
-       
-        if (ViewExcel):
-          
-            createExcelReports(request,"AllActions.xlsx")
+    ApprovalQue = [1,2,3,4,5,6,7,8,9]
 
     allstudies = Studies.objects.all()
-                
-    lstcountbyStudies = []
-    lstofstudiesdetails =[]
-    for Study in allstudies:
-        lstcountbyStudies.append (Study.StudyName)
-        lstcountbyStudies.append(blallActionCountbyStudies(Study.StudyName,openActionsQueSeries))
-        lstcountbyStudies.append (blallActionCountbyStudies(Study.StudyName,YetToRespondQue))
-        lstcountbyStudies.append (blallActionCountbyStudies(Study.StudyName,pendingApprovalQue))
-        lstcountbyStudies.append (blallActionCountbyStudies(Study.StudyName,closedActionsQueSeries))
-        
-        lstofstudiesdetails.append(lstcountbyStudies)
-        lstcountbyStudies =[]
+    tablestudiesheader = ['Studies','Open Actions', 'Yet to Respond' ,'Pending Appr','Closed']
+    lstbyWorkshop = blgetbyStdudiesCount(allstudies,QueOpen,YetToRespondQue,ApprovalQue,QueClosed)
     
-        
-    print(lstofstudiesdetails)
+
+    if request.method == 'POST':
+                
+        if (request.POST.get('allActions')):
+          
+            #workbook= createExcelReports(request,"\\excelDownload\\AllActions3.xlsx")
+            tableallheader.append("Current Actionee/Approver") #appends the last column that the list spits out
+            workbook = excelAllActions(lstofallactions,tableallheader,"All Action Items")
+            
+            response = HttpResponse(content_type='application/ms-excel') #
+            response['Content-Disposition'] = 'attachment; filename=AllActions6.xlsx' 
+            workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
+            return response
+        elif (request.POST.get('indiActions')):
+            
+
+            workbook = excelAllActions(Indisets,tableindiheader,"Individual Actions")
+            
+            response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
+            response['Content-Disposition'] = 'attachment; filename=AllActions6.xlsx' 
+            workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
+            return response
+
+        elif (request.POST.get('allStudies')):
+            
+
+            workbook = excelAllActions(lstbyWorkshop,tablestudiesheader,"Workshop Actions")
+            
+            response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
+            response['Content-Disposition'] = 'attachment; filename=AllActions6.xlsx' 
+            workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
+            return response
+            
+
     context = {
 
-        'lstofstudiesdetails' : lstofstudiesdetails,
+        'lstbyWorkshop' : lstbyWorkshop,
         'Indisets' : Indisets,
-        'context' : lstofindiactions,
+        'lstofallactions' : lstofallactions,
+        'tableindiheader' : tableindiheader,
+        'tablestudiesheader' : tablestudiesheader,
+        'tableallheader' : tableallheader
     }
     return render(request, 'userT/repPMTExcel.html', context)
 
