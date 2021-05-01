@@ -6,8 +6,8 @@ from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import Paragraph, Frame, SimpleDocTemplate
 from reportlab.platypus.flowables import Flowable
-from UploadExcel.models import ActionItems
-
+from UploadExcel.models import *
+from .models import *
 
 
 
@@ -32,84 +32,89 @@ def get_overlay_canvas() -> io.BytesIO:
     styles=getSampleStyleSheet()
     
     #Study Action No
-    x=ActionItems.objects.filter(pk__iexact=20)
-    y=x.values('StudyActionNo')
-    text=y
+    item=ActionItems.objects.filter(pk__iexact=1209)
+    for attr in item :  
+        text=str(attr.StudyActionNo)
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
     frameStudyActionNo=Frame(210,804,80,25, showBoundary=0)
     frameStudyActionNo.addFromList(flow_obj,pdf)
 
     #Date 
-    text='''
-    DDMMYYYY
-    '''
+    x=ActionItems.objects.filter(pk__iexact=1209)
+    print(x)
+    for y in x :
+        print(y.DueDate)
+    text=str(y.DueDate)
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
     frameDate=Frame(535,804,80,25, showBoundary=0)
     frameDate.addFromList(flow_obj,pdf)
     
     #Workshops/Studies
-    text='''
-    CRA/ HAZID
-    '''
+    x=ActionItems.objects.filter(pk__iexact=1209)
+    print(x)
+    for y in x :
+        print(y.StudyName)
+    text=str(y.StudyName)
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
     frameWorkshop=Frame(130,789,80,25, showBoundary=0)
     frameWorkshop.addFromList(flow_obj,pdf)
 
-     #Cause Box
-    text='''
-    HUC1
-    '''
+     #ActioneeName
+    x=ActionRoutes.objects.filter(pk__iexact=1209)
+    for y in x :
+        text=y.Actionee
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
     frameCause=Frame(400,520,80,25, showBoundary=0)
     frameCause.addFromList(flow_obj,pdf)
 
-     #Cause Box
+     #DateResponded
     text='''
     DDMMYY
     '''
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
-    frameCause2=Frame(510,520,80,25, showBoundary=0)
-    frameCause2.addFromList(flow_obj,pdf)
+    frameDate=Frame(510,520,80,25, showBoundary=0)
+    frameDate.addFromList(flow_obj,pdf)
 
     #Cause Box
-    text='''
-    Cause ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    very long cause ------------------------------------
-    too long the cause
-    '''
+    x=ActionItems.objects.filter(pk__iexact=1209)
+    print(x)
+    for y in x :
+        print(y.Cause)
+    text=(y.Cause)
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
-    frameCause3=Frame(20,720,590,60, showBoundary=0)
-    frameCause3.addFromList(flow_obj,pdf)
+    frameCause=Frame(20,720,590,60, showBoundary=0)
+    frameCause.addFromList(flow_obj,pdf)
    
     #consqeuence
-   
-    text='''
-    this time its a very long consequence.................equence...........this time its a very long consequence..........................................................................................................................................................................................this time its a very long consequence....................this time its a very long consequence............................................................................................................................................................................................................................................................. 
-    '''
+    x=ActionItems.objects.filter(pk__iexact=1209)
+    print(x)
+    for y in x :
+        print(y.Consequence)
+    text=y.Consequence
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
     frameConsequence=Frame(20,640,590,60, showBoundary=0)
     frameConsequence.addFromList(flow_obj,pdf)
     
     #Recommendations
-    text='''
-    Long Recommendations
-    '''
+    x=ActionItems.objects.filter(pk__iexact=1209)
+    for y in x :
+        text=y.Recommendations
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
     frameRecommendations=Frame(20,545,590,75, showBoundary=0)
     frameRecommendations.addFromList(flow_obj,pdf)
     
     #Action Response
-    text='''
-    Yet another long responses
-    '''
+    x=ActionItems.objects.filter(pk__iexact=1209)
+    for y in x :
+        text=y.Response
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
     frameActionResponse=Frame(20,390,590,130, showBoundary=0)
@@ -117,9 +122,9 @@ def get_overlay_canvas() -> io.BytesIO:
     
  
     #Future Actions
-    text='''
-    Future Actions here
-    '''
+    x=ActionItems.objects.filter(pk__iexact=1209)
+    for y in x :
+        text=y.FutureAction
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
     frameFutureActions=Frame(20,105,590,50, showBoundary=0)

@@ -99,7 +99,9 @@ urlpatterns = [
         path('IndividualBreakdownByUsers/',login_required(UserView.IndividualBreakdownByUsers),name='IndividualBreakdownByUsers'),
 
         #tenant
-        path('our_team/', login_required(our_team), name='our_team')
+        path('our_team/', login_required(our_team), name='our_team'),
+
+        path('PDFtest/', UserView.PDFtest, name='PDFtest'),
       ]
 
 if settings.DEBUG:

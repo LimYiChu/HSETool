@@ -872,3 +872,6 @@ def StickyNote(request):
     return render(request, 'userT/StickyNote.html')
 
 
+def PDFtest(request):
+    run()
+    return HttpResponse('TEST')
