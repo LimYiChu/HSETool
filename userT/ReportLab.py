@@ -6,12 +6,16 @@ from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import Paragraph, Frame, SimpleDocTemplate
 from reportlab.platypus.flowables import Flowable
+from UploadExcel.models import ActionItems
+
+
+
 
 def run():
     canvas_data = get_overlay_canvas()
     template_path='Sapura ATR Template.pdf'
     form = merge(canvas_data,template_path )
-    save(form, filename='Output22.pdf') #this need to be looped and change name after each action.
+    save(form, filename='TestOutput.pdf') #this need to be looped and change name after each action.
 
 def get_overlay_canvas() -> io.BytesIO:
     data = io.BytesIO()
@@ -28,13 +32,13 @@ def get_overlay_canvas() -> io.BytesIO:
     styles=getSampleStyleSheet()
     
     #Study Action No
-    text='''
-    HZD-1
-    '''
+    x=ActionItems.objects.filter(pk__iexact=20)
+    y=x.values('StudyActionNo')
+    text=y
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
-    frame=Frame(210,804,80,25, showBoundary=0)
-    frame.addFromList(flow_obj,pdf)
+    frameStudyActionNo=Frame(210,804,80,25, showBoundary=0)
+    frameStudyActionNo.addFromList(flow_obj,pdf)
 
     #Date 
     text='''
@@ -42,8 +46,8 @@ def get_overlay_canvas() -> io.BytesIO:
     '''
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
-    frame=Frame(535,804,80,25, showBoundary=0)
-    frame.addFromList(flow_obj,pdf)
+    frameDate=Frame(535,804,80,25, showBoundary=0)
+    frameDate.addFromList(flow_obj,pdf)
     
     #Workshops/Studies
     text='''
@@ -51,8 +55,8 @@ def get_overlay_canvas() -> io.BytesIO:
     '''
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
-    frame=Frame(130,789,80,25, showBoundary=0)
-    frame.addFromList(flow_obj,pdf)
+    frameWorkshop=Frame(130,789,80,25, showBoundary=0)
+    frameWorkshop.addFromList(flow_obj,pdf)
 
      #Cause Box
     text='''
@@ -60,8 +64,8 @@ def get_overlay_canvas() -> io.BytesIO:
     '''
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
-    frame=Frame(400,520,80,25, showBoundary=0)
-    frame.addFromList(flow_obj,pdf)
+    frameCause=Frame(400,520,80,25, showBoundary=0)
+    frameCause.addFromList(flow_obj,pdf)
 
      #Cause Box
     text='''
@@ -69,8 +73,8 @@ def get_overlay_canvas() -> io.BytesIO:
     '''
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
-    frame=Frame(510,520,80,25, showBoundary=0)
-    frame.addFromList(flow_obj,pdf)
+    frameCause2=Frame(510,520,80,25, showBoundary=0)
+    frameCause2.addFromList(flow_obj,pdf)
 
     #Cause Box
     text='''
@@ -80,8 +84,8 @@ def get_overlay_canvas() -> io.BytesIO:
     '''
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
-    frame=Frame(20,720,590,60, showBoundary=0)
-    frame.addFromList(flow_obj,pdf)
+    frameCause3=Frame(20,720,590,60, showBoundary=0)
+    frameCause3.addFromList(flow_obj,pdf)
    
     #consqeuence
    
@@ -90,8 +94,8 @@ def get_overlay_canvas() -> io.BytesIO:
     '''
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
-    frame=Frame(20,640,590,60, showBoundary=0)
-    frame.addFromList(flow_obj,pdf)
+    frameConsequence=Frame(20,640,590,60, showBoundary=0)
+    frameConsequence.addFromList(flow_obj,pdf)
     
     #Recommendations
     text='''
@@ -99,8 +103,8 @@ def get_overlay_canvas() -> io.BytesIO:
     '''
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
-    frame=Frame(20,545,590,75, showBoundary=0)
-    frame.addFromList(flow_obj,pdf)
+    frameRecommendations=Frame(20,545,590,75, showBoundary=0)
+    frameRecommendations.addFromList(flow_obj,pdf)
     
     #Action Response
     text='''
@@ -108,8 +112,8 @@ def get_overlay_canvas() -> io.BytesIO:
     '''
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
-    frame=Frame(20,390,590,130, showBoundary=0)
-    frame.addFromList(flow_obj,pdf)
+    frameActionResponse=Frame(20,390,590,130, showBoundary=0)
+    frameActionResponse.addFromList(flow_obj,pdf)
     
  
     #Future Actions
@@ -118,8 +122,8 @@ def get_overlay_canvas() -> io.BytesIO:
     '''
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
-    frame=Frame(20,105,590,50, showBoundary=0)
-    frame.addFromList(flow_obj,pdf)
+    frameFutureActions=Frame(20,105,590,50, showBoundary=0)
+    frameFutureActions.addFromList(flow_obj,pdf)
 
     #Attachments
     text='''
@@ -127,8 +131,8 @@ def get_overlay_canvas() -> io.BytesIO:
     '''
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
-    frame=Frame(20,44,590,45, showBoundary=0)
-    frame.addFromList(flow_obj,pdf)
+    frameAttachments=Frame(20,44,590,45, showBoundary=0)
+    frameAttachments.addFromList(flow_obj,pdf)
 
     #Approver 1
     text='''
@@ -136,8 +140,8 @@ def get_overlay_canvas() -> io.BytesIO:
     '''
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
-    frame=Frame(20,350,150,25, showBoundary=0)
-    frame.addFromList(flow_obj,pdf)
+    frameApprover1=Frame(20,350,150,25, showBoundary=0)
+    frameApprover1.addFromList(flow_obj,pdf)
 
     #Approver 1 Signature
     text='''
@@ -145,8 +149,8 @@ def get_overlay_canvas() -> io.BytesIO:
     '''
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
-    frame=Frame(200,350,400,25, showBoundary=0)
-    frame.addFromList(flow_obj,pdf)
+    frameApprover1Sig=Frame(200,350,400,25, showBoundary=0)
+    frameApprover1Sig.addFromList(flow_obj,pdf)
 
     pdf.save()
     data.seek(0)
