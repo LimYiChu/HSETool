@@ -29,6 +29,7 @@ import pandas as pd
 from django.utils import timezone
 #import mixins
 from django.views.generic.detail import SingleObjectMixin
+from userT.ReportLab import run
 #from .forms import UserRegisterForm
 # Create your views here.
 

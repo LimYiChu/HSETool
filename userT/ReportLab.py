@@ -7,29 +7,19 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import Paragraph, Frame, SimpleDocTemplate
 from reportlab.platypus.flowables import Flowable
 
-
-
-
 def run():
     canvas_data = get_overlay_canvas()
     template_path='Sapura ATR Template.pdf'
     form = merge(canvas_data,template_path )
-    save(form, filename='Output22.pdf')
-
-
+    save(form, filename='Output22.pdf') #this need to be looped and change name after each action.
 
 def get_overlay_canvas() -> io.BytesIO:
     data = io.BytesIO()
     pdf = canvas.Canvas(data)
     pdf.setFont ("Helvetica",10)
     #drawstrings for non-box entries.
-    pdf.drawString(x=376, y=447, text='') #21 #710 #psd is 10 pts(Y-AXIS) starting from bottom of P , Y IS INVERTED START FROM TOP 0, whole page is 840 on y measured using point in pdf(pixel)
+    #pdf.drawString(x=376, y=447, text='') #21 #710 #psd is 10 pts(Y-AXIS) starting from bottom of P , Y IS INVERTED START FROM TOP 0, whole page is 840 on y measured using point in pdf(pixel)
     
-    pdf.drawString(x=210, y=814, text='action 1')
-    pdf.drawString(x=535, y=814, text='Date X')
-    pdf.drawString(x=130, y=799, text='CRA')
-    pdf.drawString(x=400, y=530, text='HUC')
-    pdf.drawString(x=510, y=530, text='DDMMYYYY')
     #draw frames for boxes e.g. Cause, consequence etc.
     
     #required for frames
@@ -37,6 +27,51 @@ def get_overlay_canvas() -> io.BytesIO:
     flow_obj=[]
     styles=getSampleStyleSheet()
     
+    #Study Action No
+    text='''
+    HZD-1
+    '''
+    p_text=Paragraph(text,style=styles["Normal"])
+    flow_obj.append(p_text)
+    frame=Frame(210,804,80,25, showBoundary=0)
+    frame.addFromList(flow_obj,pdf)
+
+    #Date 
+    text='''
+    DDMMYYYY
+    '''
+    p_text=Paragraph(text,style=styles["Normal"])
+    flow_obj.append(p_text)
+    frame=Frame(535,804,80,25, showBoundary=0)
+    frame.addFromList(flow_obj,pdf)
+    
+    #Workshops/Studies
+    text='''
+    CRA/ HAZID
+    '''
+    p_text=Paragraph(text,style=styles["Normal"])
+    flow_obj.append(p_text)
+    frame=Frame(130,789,80,25, showBoundary=0)
+    frame.addFromList(flow_obj,pdf)
+
+     #Cause Box
+    text='''
+    HUC1
+    '''
+    p_text=Paragraph(text,style=styles["Normal"])
+    flow_obj.append(p_text)
+    frame=Frame(400,520,80,25, showBoundary=0)
+    frame.addFromList(flow_obj,pdf)
+
+     #Cause Box
+    text='''
+    DDMMYY
+    '''
+    p_text=Paragraph(text,style=styles["Normal"])
+    flow_obj.append(p_text)
+    frame=Frame(510,520,80,25, showBoundary=0)
+    frame.addFromList(flow_obj,pdf)
+
     #Cause Box
     text='''
     Cause ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
