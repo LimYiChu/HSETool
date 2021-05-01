@@ -34,38 +34,34 @@ def get_overlay_canvas() -> io.BytesIO:
     #Study Action No
     item=ActionItems.objects.filter(pk__iexact=1209)
     for attr in item :  
-        text=str(attr.StudyActionNo)
+        text=attr.StudyActionNo
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
     frameStudyActionNo=Frame(210,804,80,25, showBoundary=0)
     frameStudyActionNo.addFromList(flow_obj,pdf)
 
     #Date 
-    x=ActionItems.objects.filter(pk__iexact=1209)
-    print(x)
-    for y in x :
-        print(y.DueDate)
-    text=str(y.DueDate)
+    item=ActionItems.objects.filter(pk__iexact=1209)
+    for attr in item :     
+        text=str(attr.DueDate)
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
     frameDate=Frame(535,804,80,25, showBoundary=0)
     frameDate.addFromList(flow_obj,pdf)
     
     #Workshops/Studies
-    x=ActionItems.objects.filter(pk__iexact=1209)
-    print(x)
-    for y in x :
-        print(y.StudyName)
-    text=str(y.StudyName)
+    item=ActionItems.objects.filter(pk__iexact=1209)
+    for attr in item :
+        text=str(attr.StudyName)
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
     frameWorkshop=Frame(130,789,80,25, showBoundary=0)
     frameWorkshop.addFromList(flow_obj,pdf)
 
      #ActioneeName
-    x=ActionRoutes.objects.filter(pk__iexact=1209)
-    for y in x :
-        text=y.Actionee
+    item=ActionRoutes.objects.filter(pk__iexact=1209)
+    for attr in item :
+        text=attr.Actionee
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
     frameCause=Frame(400,520,80,25, showBoundary=0)
@@ -81,31 +77,27 @@ def get_overlay_canvas() -> io.BytesIO:
     frameDate.addFromList(flow_obj,pdf)
 
     #Cause Box
-    x=ActionItems.objects.filter(pk__iexact=1209)
-    print(x)
-    for y in x :
-        print(y.Cause)
-    text=(y.Cause)
+    item=ActionItems.objects.filter(pk__iexact=1209)
+    for attr in item :
+        text=(attr.Cause)
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
     frameCause=Frame(20,720,590,60, showBoundary=0)
     frameCause.addFromList(flow_obj,pdf)
    
     #consqeuence
-    x=ActionItems.objects.filter(pk__iexact=1209)
-    print(x)
-    for y in x :
-        print(y.Consequence)
-    text=y.Consequence
+    item=ActionItems.objects.filter(pk__iexact=1209)
+    for attr in item :
+        text=(attr.Consequence)
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
     frameConsequence=Frame(20,640,590,60, showBoundary=0)
     frameConsequence.addFromList(flow_obj,pdf)
     
     #Recommendations
-    x=ActionItems.objects.filter(pk__iexact=1209)
-    for y in x :
-        text=y.Recommendations
+    item=ActionItems.objects.filter(pk__iexact=1209)
+    for attr in item :
+        text=(attr.Recommendations)
     p_text=Paragraph(text,style=styles["Normal"])
     flow_obj.append(p_text)
     frameRecommendations=Frame(20,545,590,75, showBoundary=0)
