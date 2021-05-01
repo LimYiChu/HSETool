@@ -1,3 +1,4 @@
+from collections import Counter
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import base64
@@ -23,7 +24,7 @@ def showPie(dataAct,labelsAct,title):
     data = dataAct
     labels =labelsAct
     colors = ["#9BBFE0", "#E8A09A", "#D3EDEE","#FBE29F",  "#C6D68F","#5E6565","#91CACC", "#C0A8A3",]
-    radius = 0.8 #yhs changed to 0.8 from 1.0
+    radius = 1.0 
     
     def explode(dataslice):
     
@@ -65,7 +66,7 @@ def showPie(dataAct,labelsAct,title):
     graph =get_graph()
     return graph
 
-def showbar (listcountbyDisSub,totalcountbyDisSub,listlablebyDisSub, label1,label2,generalxlabel, title):
+def showbar (listcountbyDisSub,totalcountbyDisSub,listlablebyDisSub, label1,label2,generalxlabel, title,):
 
     plt.switch_backend('AGG') #- must do for django rendering but in the process cant show in python direct
 
@@ -81,21 +82,34 @@ def showbar (listcountbyDisSub,totalcountbyDisSub,listlablebyDisSub, label1,labe
     x_indexes = np.arange(len(labels_x_axes))
     #y_indexes = np.arange(0, maxcount,stepcount)
     #y_indexes = np.arange(0, 2,0.5)
-    width=0.40
-    #x_index
-    plt.bar(x_indexes, data_y_axes, label=label1, width=width, color="#91CACC")
-    plt.bar(x_indexes-width, totalcountbyDisSub, label=label2, width=width, color="#5E6565")
+    
     
     #fig = plt.figure()
     #fig.suptitle(title, fontsize=15, fontweight='bold', wrap=True)
     #plt.rcParams['font.size'] = 15.0
     #plt.rcParams['font.weight'] = "bold"
-    plt.rcParams["figure.figsize"] = (6,6)
+    
     #plt.rcParams['axes.autolimit_mode'] = 'round_numbers'
 
+    count = len(listlablebyDisSub)
+    if count >=5:
+        plt.rcParams["figure.figsize"] = (12,8)  
+        width=0.20
+
+
+    plt.rcParams["figure.figsize"] = (7,8) 
+    width=0.35
+
+    print(count)
+         
+    #x_index
+    plt.bar(x_indexes, data_y_axes, label=label1, width=width, color="#91CACC")
+    plt.bar(x_indexes-width, totalcountbyDisSub, label=label2, width=width, color="#5E6565")
+    
+     
     plt.legend()
     plt.title (title,fontsize=20, fontweight='bold', wrap=True)
-    plt.xticks (ticks=x_indexes-(width/2) , labels=labels_x_axes, fontsize='12',fontweight='bold')
+    plt.xticks (ticks=x_indexes-(width/2) , labels=labels_x_axes, fontsize='8',fontweight='bold', rotation='90')
     #plt.yticks(y_indexes)
     #plt.gca().yax
     plt.xlabel (generalxlabel)

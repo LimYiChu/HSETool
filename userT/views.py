@@ -647,13 +647,14 @@ def rptdiscSlice(request, **kwargs):
     
     #Function on businees logic to get data based on Queseries, Actionee and Approver levels
     #most of the data is
-    TotalCount = [0,1,2,3,4,5,6]
-    OpenAccount = [0,1,2,3,4,5]
-    ApproverQList = [1,2,3,4,5]
+    TotalCount = [0,1,2,3,4,5,6,7,8,9,99]  #yhs updated to make flexible path
+    OpenAccount = [0,1,2,3,4,5,6,7,8,9]
+    ApproverQList = [1,2,3,4,5,6,7,8,9]
     ActioneeQlist = [0]
     Company = ActionRoutes.mdlAllCompany.mgr_getCompanyCount()
-    discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
+    discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg()
 
+    
     listcountbyDisSub= []
     listlablebyDisSub =[]
     totalcountbyDisSub = []
@@ -661,7 +662,7 @@ def rptdiscSlice(request, **kwargs):
     Title = "Open Actions by Discipline"
     label1 = "Open Actions"
     label2 = "Total Actions"
-    generalxlabel = "By Discipline"
+    generalxlabel = ""  #yhs removed
     
     labelActionee = "Actionee"
     labelApprover = "Approver"
@@ -674,8 +675,8 @@ def rptdiscSlice(request, **kwargs):
         
         listcountbyDisSub.append(blgetDiscSubActionCount ('Y',itemPair,OpenAccount))
         totalcountbyDisSub.append(blgetDiscSubActionCount ('Y',itemPair,TotalCount))
-        listlablebyDisSub.append(str(itemPair[0][0:6])) # to include sub disc later -- +"/"+str(itemPair[1])
-        listofstringDiscSub.append(str(itemPair[0][0:6]+"/"+ itemPair[1]))
+        listlablebyDisSub.append(str(itemPair[2]+"/"+ itemPair[0]+"/"+ itemPair[1])) # to include sub disc later -- +"/"+str(itemPair[1])
+        listofstringDiscSub.append(str(itemPair[0]+"/"+ itemPair[1]))
 
         listofPairActioneeCount.append(blgetDiscSubActionCount ('Y',itemPair,[0]))
         listofPairApproverCount.append(blgetDiscSubActionCount ('Y',itemPair,ApproverQList))

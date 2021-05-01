@@ -14,21 +14,22 @@
 <style>
     .left {
   display: block;
-  margin-left: auto;
+  margin-left: 0%;
   margin-right: auto;
   width: 80%;
 }
 .right {
   display: block;
   margin-left: auto;
-  margin-right: auto;
+  margin-right: 0%;
   width: 80%;
 }
 .center {
   display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 80%;
+  margin-left: 10%;
+  margin-right: 10%;
+  width: 100%;
+  Height: 100%;
 }
 </style>
 
@@ -40,13 +41,18 @@
 						</h5>
 						<div class="card-body">
 							<p class="card-text">
+                                <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <img src="data:image/png;base64, {{chart|safe}}" alt="Overall Closed Actions" class="left">
+                                    <div class="col-md-12">
+                                        <img src="data:image/png;base64, {{chart|safe}}" alt="Overall Closed Actions" class="center" style="width:70%; height:70%">
                                     </div>
-                                    <div class="col-md-6">
-                                        <img src="data:image/png;base64, {{chartChanges|safe}}" alt="Overall Closed Actions" class="right">
+                                </div>
+                                    
+                                <div class="col-md-12">
+                                    <div class="col-md-12">
+                                        <img src="data:image/png;base64, {{chartChanges|safe}}" alt="Overall Closed Actions" class="center" style="width:70%; height:70%">
                                     </div>
+                                </div>
                             </div>
 							</p>
 						</div>
