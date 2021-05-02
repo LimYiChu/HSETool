@@ -95,11 +95,11 @@ def showbar (listcountbyDisSub,totalcountbyDisSub,listlablebyDisSub, label1,labe
 
     count = len(listlablebyDisSub) #If too many disciplines--> make the x axis longer such that they are not crowded
     if count >=5:
-        plt.rcParams["figure.figsize"] = (8,6)  
+        plt.rcParams["figure.figsize"] = (7,5)  
         width=0.20
 
 
-    plt.rcParams["figure.figsize"] = (7,8) 
+    plt.rcParams["figure.figsize"] = (6,8) 
     width=0.35
 
     
