@@ -701,15 +701,15 @@ def rptdiscSlice(request, **kwargs):
     #         
     #         listoflist.append(listofPairNameCount)
     #         listofPairNameCount = []
-
+    Dispcount = len(listlablebyDisSub)
     chart = showbar(listcountbyDisSub,totalcountbyDisSub,listlablebyDisSub, label1,label2,generalxlabel,Title)
     chartChanges = showbar(listofPairActioneeCount,listofPairApproverCount,listlablebyDisSub,labelActionee,labelApprover,generalxlabel,TitleActApp )
     context = {
             "chart":chart,
             "chartChanges":chartChanges,
             "discpslice" : listofstringDiscSub,
-            "Company" : Company
-            
+            "Company" : Company, 
+            "Dispcount": Dispcount
             }
     return render (request, 'userT/repDisc.html', context)
 

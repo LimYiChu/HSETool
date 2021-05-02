@@ -5,6 +5,8 @@ import base64
 import math
 from io import BytesIO
 import numpy as np
+from matplotlib.ticker import (MultipleLocator, AutoMinorLocator, FormatStrFormatter,)
+
 
 def get_graph():
     #copied from youtube - cant explain much but basically it buffers into some base 64 sort of image
@@ -23,7 +25,7 @@ def showPie(dataAct,labelsAct,title):
     
     data = dataAct
     labels =labelsAct
-    colors = ["#9BBFE0", "#E8A09A", "#D3EDEE","#FBE29F",  "#C6D68F","#5E6565","#91CACC", "#C0A8A3",]
+    colors = ["#9BBFE0", "#E8A09A", "#D3EDEE","#FBE29F",  "#C6D68F","#5E6565","#91CACC", "#C0A8A3", "linen", "slategray", "plum"]
     radius = 1.0 
     
     def explode(dataslice):
@@ -78,7 +80,7 @@ def showbar (listcountbyDisSub,totalcountbyDisSub,listlablebyDisSub, label1,labe
     if maxcount >= 5:
 
         stepcount = math.ceil(maxcount/5)
-        print(stepcount)
+        
     x_indexes = np.arange(len(labels_x_axes))
     #y_indexes = np.arange(0, maxcount,stepcount)
     #y_indexes = np.arange(0, 2,0.5)
@@ -91,22 +93,20 @@ def showbar (listcountbyDisSub,totalcountbyDisSub,listlablebyDisSub, label1,labe
     
     #plt.rcParams['axes.autolimit_mode'] = 'round_numbers'
 
-    count = len(listlablebyDisSub)
+    count = len(listlablebyDisSub) #If too many disciplines--> make the x axis longer such that they are not crowded
     if count >=5:
-        plt.rcParams["figure.figsize"] = (12,8)  
+        plt.rcParams["figure.figsize"] = (8,6)  
         width=0.20
 
 
     plt.rcParams["figure.figsize"] = (7,8) 
     width=0.35
 
-    print(count)
+    
          
     #x_index
     plt.bar(x_indexes, data_y_axes, label=label1, width=width, color="#91CACC")
-    plt.bar(x_indexes-width, totalcountbyDisSub, label=label2, width=width, color="#5E6565")
-    
-     
+    plt.bar(x_indexes-width, totalcountbyDisSub, label=label2, width=width, color="#5E6565")    
     plt.legend()
     plt.title (title,fontsize=20, fontweight='bold', wrap=True)
     plt.xticks (ticks=x_indexes-(width/2) , labels=labels_x_axes, fontsize='8',fontweight='bold', rotation='90')
@@ -114,5 +114,13 @@ def showbar (listcountbyDisSub,totalcountbyDisSub,listlablebyDisSub, label1,labe
     #plt.gca().yax
     plt.xlabel (generalxlabel)
     plt.tight_layout()
+    plt.grid(axis = 'y') #add gridlines for y axis
+
+    #testing for y-axis major and minor ticks (still not working)
+    #labels_y_axes =totalcountbyDisSub
+    
+    #plt.xticks.set_minor_locator(ticker.AutoMinorLocator())
+    
+
     graph =get_graph()
     return graph
