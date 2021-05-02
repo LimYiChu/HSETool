@@ -1,9 +1,12 @@
+from collections import Counter
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import base64
 import math
 from io import BytesIO
 import numpy as np
+from matplotlib.ticker import (MultipleLocator, AutoMinorLocator, FormatStrFormatter,)
+
 
 def get_graph():
     #copied from youtube - cant explain much but basically it buffers into some base 64 sort of image
@@ -22,8 +25,8 @@ def showPie(dataAct,labelsAct,title):
     
     data = dataAct
     labels =labelsAct
-    colors = ["#9BBFE0", "#E8A09A", "#D3EDEE","#FBE29F",  "#C6D68F","#5E6565","#91CACC", "#C0A8A3",]
-    radius = 1.0 #yhs changed to 0.8 from 1.0
+    colors = ["#9BBFE0", "#E8A09A", "#D3EDEE","#FBE29F",  "#C6D68F","#5E6565","#91CACC", "#C0A8A3", "linen", "slategray", "plum"]
+    radius = 1.0 
     
     def explode(dataslice):
     
@@ -65,7 +68,7 @@ def showPie(dataAct,labelsAct,title):
     graph =get_graph()
     return graph
 
-def showbar (listcountbyDisSub,totalcountbyDisSub,listlablebyDisSub, label1,label2,generalxlabel, title):
+def showbar (listcountbyDisSub,totalcountbyDisSub,listlablebyDisSub, label1,label2,generalxlabel, title,):
 
     plt.switch_backend('AGG') #- must do for django rendering but in the process cant show in python direct
 
@@ -77,28 +80,47 @@ def showbar (listcountbyDisSub,totalcountbyDisSub,listlablebyDisSub, label1,labe
     if maxcount >= 5:
 
         stepcount = math.ceil(maxcount/5)
-        print(stepcount)
+        
     x_indexes = np.arange(len(labels_x_axes))
     #y_indexes = np.arange(0, maxcount,stepcount)
     #y_indexes = np.arange(0, 2,0.5)
-    width=0.40
-    #x_index
-    plt.bar(x_indexes, data_y_axes, label=label1, width=width, color="#91CACC")
-    plt.bar(x_indexes-width, totalcountbyDisSub, label=label2, width=width, color="#5E6565")
+    
     
     #fig = plt.figure()
     #fig.suptitle(title, fontsize=15, fontweight='bold', wrap=True)
     #plt.rcParams['font.size'] = 15.0
     #plt.rcParams['font.weight'] = "bold"
-    plt.rcParams["figure.figsize"] = (6,6)
+    
     #plt.rcParams['axes.autolimit_mode'] = 'round_numbers'
 
+    count = len(listlablebyDisSub) #If too many disciplines--> make the x axis longer such that they are not crowded
+    if count >=5:
+        plt.rcParams["figure.figsize"] = (7,5)  
+        width=0.20
+
+
+    plt.rcParams["figure.figsize"] = (6,8) 
+    width=0.35
+
+    
+         
+    #x_index
+    plt.bar(x_indexes, data_y_axes, label=label1, width=width, color="#91CACC")
+    plt.bar(x_indexes-width, totalcountbyDisSub, label=label2, width=width, color="#5E6565")    
     plt.legend()
     plt.title (title,fontsize=20, fontweight='bold', wrap=True)
-    plt.xticks (ticks=x_indexes-(width/2) , labels=labels_x_axes, fontsize='12',fontweight='bold')
+    plt.xticks (ticks=x_indexes-(width/2) , labels=labels_x_axes, fontsize='8',fontweight='bold', rotation='90')
     #plt.yticks(y_indexes)
     #plt.gca().yax
     plt.xlabel (generalxlabel)
     plt.tight_layout()
+    plt.grid(axis = 'y') #add gridlines for y axis
+
+    #testing for y-axis major and minor ticks (still not working)
+    #labels_y_axes =totalcountbyDisSub
+    
+    #plt.xticks.set_minor_locator(ticker.AutoMinorLocator())
+    
+
     graph =get_graph()
     return graph

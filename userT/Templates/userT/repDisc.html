@@ -14,24 +14,25 @@
 <style>
     .left {
   display: block;
-  margin-left: auto;
+  margin-left: 0%;
   margin-right: auto;
   width: 80%;
 }
 .right {
   display: block;
   margin-left: auto;
-  margin-right: auto;
+  margin-right: 0%;
   width: 80%;
 }
 .center {
   display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 80%;
+  margin-left: 10%;
+  margin-right: 10%;
+  width: 100%;
+  Height: 100%;
 }
 </style>
-
+{% if Dispcount >= 5 %} <!--if more than 5 discipline, then the bar chart will be wide and long-->
 			<div class="row">
 				<div class="col-md-12">
 					<div class="card">
@@ -41,13 +42,12 @@
 						<div class="card-body">
 							<p class="card-text">
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <img src="data:image/png;base64, {{chart|safe}}" alt="Overall Closed Actions" class="left">
+                                    <div class="col-md-12">
+                                        <img src="data:image/png;base64, {{chart|safe}}" alt="Overall Closed Actions" class="center" style="width:70%; height:60%" >
+                                    </div>                     
+                                    <div class="col-md-12">
+                                        <img src="data:image/png;base64, {{chartChanges|safe}}" alt="Overall Closed Actions" class="center" style="width:70%; height:60%">  
                                     </div>
-                                    <div class="col-md-6">
-                                        <img src="data:image/png;base64, {{chartChanges|safe}}" alt="Overall Closed Actions" class="right">
-                                    </div>
-                            </div>
 							</p>
 						</div>
 						<div class="card-footer">
@@ -56,6 +56,38 @@
 					</div>
 				</div>
             </div>
+
+{% else %}<!--if less than 5 discipline, then the bar chart will square ish-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <h5 class="card-header">
+                Actions Status by Studies/Workshops
+            </h5>
+            <div class="card-body">
+                <p class="card-text">
+                   
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img src="data:image/png;base64, {{chart|safe}}" alt="Overall Closed Actions" class="center" style="width:70%; height:100%">
+                        </div>
+                
+                        
+                   
+                        <div class="col-md-6">
+                            <img src="data:image/png;base64, {{chartChanges|safe}}" alt="Overall Closed Actions" class="center" style="width:70%; height:100%">
+                        </div>
+                  
+                </div>
+                </p>
+            </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-outline-primary" style="float:right">Download</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 				{% if discpslice %}
             <div class="row">
                 <div class="col-md-12">
@@ -76,7 +108,7 @@
                                     <label for="ActionStatuss"> Closed</label><br>
                                 </div>
                                 <div class="float-left col-md-3">
-                                    <h6>Select Discipline/Sub</h6>
+                                    <h6>Select Organisations</h6>
                                     {%for items in Company%}
     
                                     <div class="col-md-3">
