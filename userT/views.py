@@ -34,7 +34,8 @@ from django.views.generic.detail import SingleObjectMixin
 # Create your views here.
 
 from UploadExcel.forms import *
-@csrf_exempt
+
+
 
 def register (request):
     if request.method == 'POST':
@@ -202,7 +203,28 @@ class ActioneeList (ListView):
 
         
         return ActioneeActions
+
+class HistoryList (ListView):
+    template_name   =   'userT/listHistory.html'
     
+    def get_queryset(self):
+        userZemail = self.request.user.email
+        ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
+
+        
+
+        lstgetHistoryforUser             = blgetHistoryforUser(userZemail)
+        
+
+        #print (historyforuser)
+
+        #lstDictQueSeries = ActionItems.objects.filter(id=id).values('QueSeries')
+        #currentQueSeries = lstDictQueSeries[0].get('QueSeries')
+        #actioneeItems = blfuncActioneeComDisSub(ActioneeRoutes,0) - To be deleted - this was limited to 3 streams
+        ActioneeActions = blallActionsComDisSub(ActioneeRoutes,0)
+        print (ActioneeActions)
+        
+        return ActioneeActions    
     
 class ApproverList (ListView):
     template_name   =   'userT/actionListApprover.html'

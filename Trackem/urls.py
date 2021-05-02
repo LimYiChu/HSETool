@@ -47,6 +47,7 @@ urlpatterns = [
        #List path using class listview to get actionee and approver
         path('ActioneeList/', login_required(UserView.ActioneeList.as_view()), name='UserActionList' ),
         path('ApproverList/', login_required(UserView.ApproverList.as_view()), name='ApproverList' ),
+        path('HistoryList/', login_required(UserView.HistoryList.as_view()), name='HistoryList' ),
 
        
         re_path(r'^(?P<id>\d+)/$', login_required(userView.getActionDetails),name='getActionsDetails'),
@@ -98,6 +99,7 @@ urlpatterns = [
         path('IndividualBreakdownByActions/',login_required(UserView.IndividualBreakdownByActions),name='IndividualBreakdownByActions'),
         path('IndividualBreakdownByUsers/',login_required(UserView.IndividualBreakdownByUsers),name='IndividualBreakdownByUsers'),
 
+        
         #tenant
         path('our_team/', login_required(our_team), name='our_team')
       ]

@@ -3,7 +3,15 @@ from django.http import HttpResponse
 
 from UploadExcel.models import ActionItems
 from .models import *
+def blgetHistoryforUser(useremail):
+    
+    #first get user ID from CustomUser as only user id is used in history tables
+    lstUserSeries =  CustomUser.objects.filter(email=useremail).values()
+    currentUserID = lstUserSeries[0].get('id')
+    
+    #get all history values from history tables first
 
+    pass
 def blgetbyStdudiesCount(Studies,OpenQue,YetToRespondQue,pendingApprovalQue,closedActionsQueSeries):
    
     lstcountbyStudies = []
