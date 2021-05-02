@@ -61,6 +61,7 @@ urlpatterns = [
 
         #Following urls are for actionee approvers updates and approvals
         path('ActioneeList/<int:pk>/update', login_required(UserView.ActioneeItemsMixin.as_view()), name='ActioneeFormMixin' ),
+        path('HistoryList/<int:pk>/update', login_required(UserView.HistoryItemsMixin.as_view()), name='HistoryFormMixin' ),
         path('ActioneeList/<int:id>/', login_required(UserView.DetailActioneeItems.as_view()), name='DetailsForm' ),
         #path('ApproverList/<int:id>/approve', UserView.ApproveItems.as_view(), name='ApproveForm' ),
         path('ApproverList/<int:pk>/approve', login_required(UserView.ApproveItemsMixin.as_view()), name='ApproveFormMixin' ),

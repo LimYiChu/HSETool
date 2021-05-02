@@ -208,23 +208,18 @@ class HistoryList (ListView):
     template_name   =   'userT/listHistory.html'
     
     def get_queryset(self):
+        #historically only get queue for all approver levels that he person is the actionee instead of everything else
         userZemail = self.request.user.email
         ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
 
         
 
-        lstgetHistoryforUser             = blgetHistoryforUser(userZemail)
+        lstgetHistoryforUser             = blgetHistoryforUser(userZemail,ActioneeRoutes)
         
 
-        #print (historyforuser)
-
-        #lstDictQueSeries = ActionItems.objects.filter(id=id).values('QueSeries')
-        #currentQueSeries = lstDictQueSeries[0].get('QueSeries')
-        #actioneeItems = blfuncActioneeComDisSub(ActioneeRoutes,0) - To be deleted - this was limited to 3 streams
-        ActioneeActions = blallActionsComDisSub(ActioneeRoutes,0)
-        print (ActioneeActions)
         
-        return ActioneeActions    
+        
+        return lstgetHistoryforUser    
     
 class ApproverList (ListView):
     template_name   =   'userT/actionListApprover.html'
@@ -373,6 +368,34 @@ class ApproverConfirm(UpdateView):
         return queryset.get(id=self.kwargs['id'])
 
     
+
+class HistoryItemsMixin(ApproveItemsMixin):
+    template_name = "userT/historyPullBack.html"
+    form_class = frmApproverConfirmation
+    
+    def get_context_data(self,**kwargs):
+        fk = self.kwargs.get("pk") #its actually the id and used as foreign key
+        context = super().get_context_data(**kwargs)
+        
+
+        discsuborg = blgetDiscSubOrgfromID(fk)
+        ApproverLevel = blgetApproverLevel(discsuborg)
+        
+        blsetApproverLevelTarget(fk,ApproverLevel)
+        
+        Signatories = blgetSignotories(discsuborg)
+        
+        
+        
+        context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(fk)
+        context['Approver'] = False
+        context ['ApproverLevel'] = ApproverLevel
+        context ['Signatories'] = Signatories
+        
+        return context
+
+    def get_success_url(self):
+        return reverse ('multiplefiles', kwargs={'forkeyid': self.object.id})
 
 class ActioneeItemsMixin(ApproveItemsMixin):
     template_name = "userT/actionUpdateApproveAction.html"

@@ -147,11 +147,9 @@ function myFunction() {
             <th>
               Recommendations
             </th>
-            <th>
-              InitialRisk
-            </th>
-            <th>
-              Response
+            
+            <th width="30%">
+              Response To pull back
             </th>
         </tr>
     </thead>
@@ -159,14 +157,14 @@ function myFunction() {
       {% for routes  in object_list %}
         {% for x  in routes %}
       <tr>
-        <td><a class="article-title" href="{% url  'ActioneeFormMixin' x.id %}">{{ x.StudyActionNo }}</a></td>
+        <td><a class="article-title" href="{% url  'HistoryFormMixin' x.id %}">{{ x.StudyActionNo }}</a></td>
         <td>{{ x.StudyName }}</td>
         <td>{{ x.Disipline }}</td>
         <td>{{ x.Subdisipline }}</td>
         <td>{{ x.Cause }}</td>
         <td>{{ x.Consequence }}</td>
-        <td><a class="article-title" href="{% url  'ActioneeFormMixin' x.id %}">{{ x.Recommendations }}</a></td>
-        <td>{{ x.InitialRisk }}</td>
+        <td><a class="article-title" href="{% url  'HistoryFormMixin' x.id %}">{{ x.Recommendations }}</a></td>
+       
         <td>{{ x.Response }}</td>
         {%endfor%}
       {%endfor%}

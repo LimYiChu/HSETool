@@ -3,15 +3,37 @@ from django.http import HttpResponse
 
 from UploadExcel.models import ActionItems
 from .models import *
-def blgetHistoryforUser(useremail):
+def blgetHistoryforUser(useremail, actioneeroutes):
     
     #first get user ID from CustomUser as only user id is used in history tables
+    ApproverQue = [1,2,3,4,5,6,7,8,9]
     lstUserSeries =  CustomUser.objects.filter(email=useremail).values()
     currentUserID = lstUserSeries[0].get('id')
-    
-    #get all history values from history tables first
 
-    pass
+    #get all history values from history tables first
+    userHistoric = ActionItems.history.filter(history_user_id=currentUserID).order_by('-history_date')
+    actionsintheQue = blallActionsComDisSubbyList(actioneeroutes,ApproverQue)
+
+    return actionsintheQue
+    
+
+def blallActionsComDisSubbyList(contextRoutes,quelist):
+    
+    streams = []
+
+    
+    for x, item in enumerate(contextRoutes):
+        blvarorganisation   = item.Organisation
+        blvardisipline  = item.Disipline
+        blvarSUbdisipline  = item.Subdisipline
+
+        for que in quelist:
+            streams.append (ActionItems.myActionItems.get_myItemsbyCompDisSub(blvarorganisation,
+                                                                blvardisipline,
+                                                               blvarSUbdisipline,que))
+    
+    return streams
+    
 def blgetbyStdudiesCount(Studies,OpenQue,YetToRespondQue,pendingApprovalQue,closedActionsQueSeries):
    
     lstcountbyStudies = []
