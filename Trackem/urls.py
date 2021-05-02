@@ -47,7 +47,10 @@ urlpatterns = [
        #List path using class listview to get actionee and approver
         path('ActioneeList/', login_required(UserView.ActioneeList.as_view()), name='UserActionList' ),
         path('ApproverList/', login_required(UserView.ApproverList.as_view()), name='ApproverList' ),
-
+        re_path(r'ApproverConfirm/(?P<id>\d+)$', login_required(UserView.ApproverConfirm.as_view()), name='ApproverConfirm' ),
+        
+        path('HistoryList/', login_required(UserView.HistoryList.as_view()), name='HistoryList' ),
+        re_path(r'HistoryConfirm/(?P<id>\d+)$', login_required(UserView.HistoryConfirm.as_view()), name='HistoryConfirm' ),
        
         re_path(r'^(?P<id>\d+)/$', login_required(userView.getActionDetails),name='getActionsDetails'),
        
@@ -60,6 +63,7 @@ urlpatterns = [
 
         #Following urls are for actionee approvers updates and approvals
         path('ActioneeList/<int:pk>/update', login_required(UserView.ActioneeItemsMixin.as_view()), name='ActioneeFormMixin' ),
+        path('HistoryList/<int:pk>/update', login_required(UserView.HistoryItemsMixin.as_view()), name='HistoryFormMixin' ),
         path('ActioneeList/<int:id>/', login_required(UserView.DetailActioneeItems.as_view()), name='DetailsForm' ),
         #path('ApproverList/<int:id>/approve', UserView.ApproveItems.as_view(), name='ApproveForm' ),
         path('ApproverList/<int:pk>/approve', login_required(UserView.ApproveItemsMixin.as_view()), name='ApproveFormMixin' ),
@@ -79,7 +83,7 @@ urlpatterns = [
         #Following url /s for rejection 
         re_path(r'Comments/(?P<forkeyid>\d+)$', login_required(UserView.RejectReason.as_view()), name='RejectComments' ),
         re_path(r'multiplefiles/(?P<forkeyid>\d+)$', login_required(UserView.multiplefiles), name='multiplefiles' ),
-        re_path(r'ApproverConfirm/(?P<id>\d+)$', login_required(UserView.ApproverConfirm.as_view()), name='ApproverConfirm' ),
+        
         #following url for reporting
         path('actionstatus/', login_required(UserView.rptoverallStatus), name='actionstatus' ),
         path('discslice/', login_required(UserView.rptdiscSlice), name='discslice' ),
@@ -98,6 +102,7 @@ urlpatterns = [
         path('IndividualBreakdownByActions/',login_required(UserView.IndividualBreakdownByActions),name='IndividualBreakdownByActions'),
         path('IndividualBreakdownByUsers/',login_required(UserView.IndividualBreakdownByUsers),name='IndividualBreakdownByUsers'),
 
+        
         #tenant
         path('our_team/', login_required(our_team), name='our_team'),
 

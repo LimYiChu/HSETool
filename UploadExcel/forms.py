@@ -137,7 +137,8 @@ class frmApproverConfirmation(forms.ModelForm):
           
            ),
         Div (Field('Cause', type="hidden")),
-         Div (Field('Guidewords', type="hidden")), Div (Field('DueDate', type="hidden")),
+         Div (Field('Guidewords', type="hidden")), 
+         #Div (Field('DueDate', type="hidden")),
             Div (Field('Safeguard', type="hidden")),
             Div (Field('Consequence', type="hidden")),
            Div (Field('FutureAction', type="hidden")),

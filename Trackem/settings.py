@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -47,7 +48,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'Tenant',
     'simple_history',
-    #'djcelery',
+    
     #'django_seed',
 
 ]
@@ -173,11 +174,3 @@ EMAIL_HOST_USER = 'actionstracker@gmail.com'
 EMAIL_HOST_PASSWORD = 'Helloworld2021'
 EMAIL_USE_SSL = False
 
-#Celery Settings
-#BROKER_URL = 'django://' #hold what is django broker
-#CELERY_ACCEPT_CONTENT = ['json']
-#CELERY_TASK_SERIALIZER = 'json'
-#CELERY_RESULT_SERIALIZER = 'json'
-#CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
-#CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
-#djcelery.setup_loader()
