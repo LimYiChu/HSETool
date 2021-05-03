@@ -53,7 +53,7 @@ def showPie(dataAct,labelsAct,title):
     #lamda is just an inline function - nothing fancy
     plt.pie(data,colors=colors, radius = radius, startangle = 90,  explode = explodeslice, shadow=True,autopct=lambda pct: func(pct, data), wedgeprops ={'edgecolor':'black'})
 
-    plt.legend(labels, bbox_to_anchor=(0.90,1.2), loc="upper left") #yhs changed to 0.90 and 1.2
+    plt.legend(labels, bbox_to_anchor=(0.80,1.2), loc="upper left") #yhs changed to 0.80 and 1.2
     #plt.title (Title)
     plt.tight_layout()
     
@@ -85,7 +85,16 @@ def showbar (listcountbyDisSub,totalcountbyDisSub,listlablebyDisSub, label1,labe
     #y_indexes = np.arange(0, maxcount,stepcount)
     #y_indexes = np.arange(0, 2,0.5)
     
+    count = len(listlablebyDisSub) #If too many disciplines--> make the x axis longer such that they are not crowded
+    if count >=5:
+        plt.rcParams["figure.figsize"] = (8,6)  
+        width=0.35
+    else:
+        plt.rcParams["figure.figsize"] = (6,8) 
+        width=0.35
+
     
+         
     #fig = plt.figure()
     #fig.suptitle(title, fontsize=15, fontweight='bold', wrap=True)
     #plt.rcParams['font.size'] = 15.0
@@ -93,23 +102,13 @@ def showbar (listcountbyDisSub,totalcountbyDisSub,listlablebyDisSub, label1,labe
     
     #plt.rcParams['axes.autolimit_mode'] = 'round_numbers'
 
-    count = len(listlablebyDisSub) #If too many disciplines--> make the x axis longer such that they are not crowded
-    if count >=5:
-        plt.rcParams["figure.figsize"] = (7,5)  
-        width=0.20
-
-
-    plt.rcParams["figure.figsize"] = (6,8) 
-    width=0.35
-
     
-         
     #x_index
     plt.bar(x_indexes, data_y_axes, label=label1, width=width, color="#91CACC")
     plt.bar(x_indexes-width, totalcountbyDisSub, label=label2, width=width, color="#5E6565")    
     plt.legend()
-    plt.title (title,fontsize=20, fontweight='bold', wrap=True)
-    plt.xticks (ticks=x_indexes-(width/2) , labels=labels_x_axes, fontsize='8',fontweight='bold', rotation='90')
+    plt.title (title,fontsize=13, fontweight='normal', wrap=True)
+    plt.xticks (ticks=x_indexes-(width/2) , labels=labels_x_axes, fontsize='10',fontweight='normal', rotation='90')
     #plt.yticks(y_indexes)
     #plt.gca().yax
     plt.xlabel (generalxlabel)

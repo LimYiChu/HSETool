@@ -26,14 +26,17 @@
 }
 .center {
   display: block;
-  margin-left: 10%;
-  margin-right: 10%;
+  margin-left: 20%;
+  margin-right: 20%;
   width: 100%;
   Height: 100%;
 }
 </style>
+
+<div class="row">
 {% if Dispcount >= 5 %} <!--if more than 5 discipline, then the bar chart will be wide and long-->
-			<div class="row">
+
+
 				<div class="col-md-12">
 					<div class="card">
 						<h5 class="card-header">
@@ -42,23 +45,23 @@
 						<div class="card-body">
 							<p class="card-text">
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        <img src="data:image/png;base64, {{chart|safe}}" alt="Overall Closed Actions" class="center" style="width:70%; height:60%" >
+                                    <div class="col-md-12 center">
+                                        <img src="data:image/png;base64, {{chart|safe}}" alt="Overall Closed Actions"  >
                                     </div>                     
-                                    <div class="col-md-12">
-                                        <img src="data:image/png;base64, {{chartChanges|safe}}" alt="Overall Closed Actions" class="center" style="width:70%; height:60%">  
+                                    <div class="col-md-12 center">
+                                        <img src="data:image/png;base64, {{chartChanges|safe}}" alt="Overall Closed Actions"  >  
                                     </div>
 							</p>
 						</div>
-						<div class="card-footer">
+                        <!--<div class="card-footer">
 							<button type="button" class="btn btn-outline-primary" style="float:right">Download</button>
-						</div>
+						</div>-->   <!--Suddenly something wrong with footers....-->
 					</div>
 				</div>
-            </div>
+            
 
 {% else %}<!--if less than 5 discipline, then the bar chart will square ish-->
-<div class="row">
+
     <div class="col-md-12">
         <div class="card">
             <h5 class="card-header">
@@ -66,48 +69,44 @@
             </h5>
             <div class="card-body">
                 <p class="card-text">
-                   
                     <div class="row">
-                        <div class="col-md-6">
-                            <img src="data:image/png;base64, {{chart|safe}}" alt="Overall Closed Actions" class="center" style="width:70%; height:100%">
+                        <div class="col-md-6 left">
+                            <img src="data:image/png;base64, {{chart|safe}}" alt="Overall Closed Actions" >
+                        </div>                      
+                        <div class="col-md-6 right">
+                            <img src="data:image/png;base64, {{chartChanges|safe}}" alt="Overall Closed Actions">
                         </div>
-                
-                        
-                   
-                        <div class="col-md-6">
-                            <img src="data:image/png;base64, {{chartChanges|safe}}" alt="Overall Closed Actions" class="center" style="width:70%; height:100%">
-                        </div>
-                  
                 </div>
                 </p>
             </div>
-            <div class="card-footer">
-                <button type="button" class="btn btn-outline-primary" style="float:right">Download</button>
-            </div>
+           <!--<div class="card-footer">
+							<button type="button" class="btn btn-outline-primary" style="float:right">Download</button>
+						</div>-->   <!--Suddenly something wrong with footers....-->
         </div>
     </div>
-</div>
+
 {% endif %}
-				{% if discpslice %}
-            <div class="row">
+</div>
+{% if discpslice %}
+
                 <div class="col-md-12">
 					<div class="card">
 						<h5 class="card-header">
 							Select filters
 						</h5>
-						<div class="card-body">
-							<p class="card-text">
+					<div class="card-body">
+						<p class="card-text">
                 <form method="POST" enctype = 'multipart/form-data' > 
                   {% csrf_token %}  
-                            <fieldset class="form-group" >
-                                <div class="float-left col-md-3">
+                        <fieldset class="form-group" >
+                        <div class="float-left col-md-3">
                                     <h6>Action Status</h6>
                                     <input type="radio" id="ActionStatus" name="ActionStatus" value="Open" >
                                     <label for="ActionStatus"> Open</label><br>   
                                     <input type="radio" id="ActionStatus" name="ActionStatus" value="Closed">
                                     <label for="ActionStatuss"> Closed</label><br>
-                                </div>
-                                <div class="float-left col-md-3">
+                        </div>
+                        <div class="float-left col-md-3">
                                     <h6>Select Organisations</h6>
                                     {%for items in Company%}
     
@@ -119,9 +118,9 @@
                                     
                                     </div>
                                     {%endfor%}
-                                    </div>
+                        </div>
 
-                                <div class="float-left col-md-3">
+                        <div class="float-left col-md-3">
                                 <h6>Select Discipline/Sub</h6>
                                 {%for ItemPair in discpslice%}
 
@@ -133,15 +132,13 @@
                                 
                                 </div>
                                 {%endfor%}
-                                </div>
-                                
-							
-						</div>
+                        </div> 
+                        </p>       
+					</div>
 						<div class="card-footer">
                             <div class="form-group"><input type="submit" name="GenerateGraph" value="Generate Graph" class="btn btn-outline-primary float-right "  /></div>       
-                      
 						</div>
-                            </fieldset>
+                        </fieldset>
 					</div>
 				</div>
 
@@ -149,7 +146,7 @@
                 {%if discpslice%}
                     <!--HS to add filters for Discpline-->
                 {% endif%}
-			
+
 
 <!--<div class="row">
     <div class="col-md-12">
