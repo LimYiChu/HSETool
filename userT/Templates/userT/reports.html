@@ -11,26 +11,7 @@
     </ol>
 </nav>
 
-<style>
-    .left {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 80%;
-}
-.right {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 80%;
-}
-.center {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 80%;
-}
-</style>
+
             {% if overall %}
 			<div class="row">
 				<div class="col-md-12">
@@ -43,20 +24,20 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         {%for chart in charts%}
-                                        <img src="data:image/png;base64, {{chart|safe}}" alt="Overall Closed Actions" class="left">
+                                        <img src="data:image/png;base64, {{chart|safe}}" alt="Overall Closed Actions">
                                         {%endfor%}
                                     </div>
                                     {%for chart in chartChanges%}
                                     <div class="col-md-6">
-                                        <img src="data:image/png;base64, {{chart|safe}}" alt="Overall Closed Actions" class="right">
+                                        <img src="data:image/png;base64, {{chart|safe}}" alt="Overall Closed Actions">
                                     </div>
                                     {%endfor%}
                             </div>
 							</p>
 						</div>
-						<!--<div class="card-footer">
+						<div class="card-footer">
 							<button type="button" class="btn btn-outline-primary" style="float:right">Download</button>
-						</div>-->
+						</div>
 					</div>
 				</div>
             </div>

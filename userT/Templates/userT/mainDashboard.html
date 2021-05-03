@@ -35,7 +35,7 @@
                 </div>
                 <div>
                 {%for chart in charts%}
-                <div style="float:left;" class="card-body " >
+                <div style="float:left;" class="card-body " > <!--the float could be the cuase of the image changing position-->
                 <a href="/ActioneeList">
                 <img src="data:image/png;base64, {{chart|safe}}" alt="Actionee"  >
                 </a>

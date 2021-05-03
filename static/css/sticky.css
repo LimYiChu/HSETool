@@ -1,6 +1,6 @@
 .postitnote  {
-    width:250px;
-  height:240px;
+    width:250px; /*original value width 250px, height240px*/
+  height: 500px;
   position:relative;
   background:beige;
   overflow:hidden;
@@ -11,24 +11,7 @@
   line-height:1.7em;
   font-size:19px;
   } 
-  .left {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 80%;
-  }
-  .right {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 80%;
-  }
-  .center {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 80%;
-  }
+  
   thead input {
     width: 100%;
   } 
