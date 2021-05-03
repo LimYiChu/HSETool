@@ -43,6 +43,7 @@ urlpatterns = [
        # path('password_reset/', auth_views.PasswordResetView.as_view(template_name='userT/reset.html') ,name='password_reset'),
         path('routesX/', login_required(userView.getuserRoutes), name='routesX' ),
         path('main/', login_required(UserView.mainDashboard), name='main' ),
+        path('', login_required(UserView.mainDashboard), name='main' ),
        
        #List path using class listview to get actionee and approver
         path('ActioneeList/', login_required(UserView.ActioneeList.as_view()), name='UserActionList' ),
