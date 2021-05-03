@@ -18,7 +18,7 @@
        
       </ol>
     </nav>
-<div class="col-md-12">
+<div class="col-md-12 center">
 <div class="card">
     <div class="card-header" style="font-size: large;">
      Your Actions
@@ -27,19 +27,22 @@
         <div class="row">
             <div class="col-md-12" >
             <div class="card">
-                <div class="card-header" style="font-size: large;">
-                Actionee Actions
+                <div class="card-header" style="font-size: large" >
+                    <a href="/ActioneeList" >
+                        Actionee Action                
+                       </a>
+                    
                 </div>
                 <div>
                 {%for chart in charts%}
                 <div style="float:left;" class="card-body " >
-            
-                <img src="data:image/png;base64, {{chart|safe}}" alt="Overall Closed Actions" width="80%" height="80%">
-            
+                <a href="/ActioneeList">
+                <img src="data:image/png;base64, {{chart|safe}}" alt="Actionee"  >
+                </a>
                 </div>
                 {%endfor%}
             </div>
-            <a class="h5" href="/ActioneeList">Go to All Your Actions</a>
+            <!--<a class="h5" href="/ActioneeList">Go to All Your Actions</a>--><!--Not used-->
             </div>                      
             </div>
         </div> 
@@ -48,7 +51,9 @@
             <div class="col-md-12">
             <div class="card">
             <div class="card-header" style="font-size: large;">
-            Approver Actions (Cummulative)
+            <a href="/ApproverList">
+                Approver Actions (Cummulative)
+            </a>
             </div>
             <div>
                 {%for apprcharts in apprcharts%}
@@ -59,7 +64,7 @@
             </div>
             {%endfor%}
             </div>
-            <a class="h5" href="/ApproverList">Go to Your Pending Approvals</a>
+            <!--<a class="h5" href="/ApproverList">Go to Your Pending Approvals</a>--> <!--Not Used-->
             </div>
             </div>
         </div>
