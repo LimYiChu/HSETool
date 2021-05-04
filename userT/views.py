@@ -811,7 +811,7 @@ def ReportingTable(request):
         subject = 'Test for sending email overview'
         message = 'A summary table should present here'
         recepient = str (sub ['Email'].value())
-        Msg=EmailMessage(subject, message, EMAIL_HOST_USER, [recepient])
+        Msg=EmailMessage(subject, message, emailSender, [recepient])
         Msg.content_subtype="html"
         Msg.attach_file('C:\\Users\\yh_si\\Desktop\\HSETool-1\\static\\multiple.pdf')
         Msg.send()
@@ -841,7 +841,7 @@ def EmailReminder(request):
         subject = 'Template for Action Pending Responses'
         message = 'Clients template. Your pending responses are ' + str(totalaction) + ' actions.'
         
-        Msg=EmailMessage(subject, message, EMAIL_HOST_USER, [recepient])
+        Msg=EmailMessage(subject, message, emailSender, [recepient])
         Msg.content_subtype="html"
         Msg.send()
         context ={
@@ -858,7 +858,7 @@ def EmailReminderAttachment(request):
         subject = 'Template for sending out weekly report'
         message = 'Clients weekly report template & attachment.'
         recepient = str (sub ['Email'].value())
-        Msg=EmailMessage(subject, message, EMAIL_HOST_USER, [recepient])
+        Msg=EmailMessage(subject, message, emailSender, [recepient])
         Msg.content_subtype="html"
         Msg.attach_file('C:\\Users\yh_si\Desktop\HSETool-1\static\weeklyreporttemplate.pdf')
         Msg.send()
