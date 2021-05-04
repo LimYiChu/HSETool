@@ -9,6 +9,7 @@ from UploadExcel.forms import *
 from django.contrib.auth import get_user_model
 import matplotlib as plt
 from .businesslogic import *
+from .email import *
 from .excelReports import *
 from .models import *
 from UploadExcel.models import *
@@ -21,7 +22,7 @@ from django.views.generic.base import ContextMixin
 from django.views.generic.edit import FormMixin
 from django.core.mail import send_mail
 from .reports import *
-from Trackem.settings import EMAIL_HOST_USER
+#from Trackem.settings import EMAIL_HOST_USER - to delete and change as per discussion with edward it uses deault EMail user in settings
 from django.template.loader import render_to_string
 from django.template import loader
 from django.core.mail import EmailMessage
@@ -35,8 +36,7 @@ from userT.ReportLab import run
 # Create your views here.
 
 from UploadExcel.forms import *
-
-
+emailSender ="support@prism-ehstools.awsapps.com"
 
 def register (request):
     if request.method == 'POST':
@@ -269,13 +269,13 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
             
                 #Need to do below with HTTPResponseredirect because normal reverse seems to give an str error
                 #reverse simply redirects to url path so can call class RejectReason below since cant really call it from fucntion call directly
-                #makes sense since really django wants to work with views coming from URL paths- simply a strutured way of doing stuff
+                #makes sense since really django wants to work with views coming from URL paths- simply a structured way of doing stuff
             context = {
                         'StudyActionNo' : form.instance.StudyActionNo
 
 
                 }
-            return HttpResponseRedirect(reverse ('RejectComments', kwargs={'forkeyid': form.instance.id}))
+            return HttpResponseRedirect(reverse ('RejectReason', kwargs={'forkeyid': form.instance.id})) #this is key as wanted another screen on the first reject
 
         if (self.request.POST.get('Cancel')):
 #             
@@ -465,8 +465,23 @@ class RejectReason (CreateView):
             ID = self.kwargs['forkeyid']
             #set using model manager since we want it back to actionee it has to be set at QueSeries=0
             ActionItems.mdlQueSeries.mgrsetQueSeries(ID,0)
+            
             form.instance.Action_id = ID
             form.instance.Username = self.request.user.email
+            rejectreason =  form.instance.Reason
+            listSubjectContent = blbuildRejectionemail (ID, rejectreason)
+            
+            
+
+            
+            discsub = blgetDiscSubOrgfromID(ID)
+            
+            
+            Signatoryemails = blgetSignatoryemail(discsub)
+            ContentSubject  =blbuildRejectionemail(ID,rejectreason)
+
+            success = emailSendindividual(emailSender,Signatoryemails,ContentSubject[0], ContentSubject[1]) #send email, the xyz is dummy data and not used
+            
             return super().form_valid(form)
         if (self.request.POST.get('Cancel')):
             #cant use success url, its got assocaition with dict object, so have to use below
