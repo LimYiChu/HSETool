@@ -3,6 +3,18 @@ from django.http import HttpResponse
 
 from UploadExcel.models import ActionItems
 from .models import *
+
+def blbuildRejectionemail(ID,RejectReason):
+    Content=[]
+    actionDetails = ActionItems.objects.filter(id=ID).values() # Since off the bat i did not pass any other information besides ID to rejection form i now have to information back for emails
+    studyActionNo =  actionDetails[0].get('StudyActionNo')
+    studyName = actionDetails[0].get('StudyName')
+    response = actionDetails[0].get('Response')
+
+    Content.append(studyActionNo + " from " + studyName + " has been rejected ") #This is subject
+    Content.append("Rejection Reason : " + RejectReason + "...Response" + response) #this is the content of the email
+
+    return Content
 def blgetHistoryforUser(useremail, actioneeroutes):
     
     #first get user ID from CustomUser as only user id is used in history tables
@@ -219,6 +231,15 @@ def blgetSignotories (lstorgdiscsub):
     finallistoflist = [x for x in finalSigPair if x]
     #print (finallistoflist)
     return finallistoflist
+def blgetSignatoryemail(lstdiscsuborg):
+    
+    pairSignatories = blgetSignotories(lstdiscsuborg) #just reusing what is already done 
+
+    for items in pairSignatories:
+        items.pop(0)
+    
+    lstfinal = [''.join(ele) for ele in pairSignatories] #this is just list comprehensioin to return a list and not list of list
+    return lstfinal 
 
 def blgetActioneeDiscSub(routes):
     discsub=[]
