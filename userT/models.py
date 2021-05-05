@@ -47,7 +47,7 @@ class CustomUser(AbstractBaseUser):
     organisation   =   models.CharField(max_length=254, blank=True, null=True)
     designation     =    models.CharField(max_length=254, blank=True, null=True)
     expiration     =  models.DateTimeField(null=True) 
-    active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
     admin = models.BooleanField(default=False)
     staff = models.BooleanField(default=True)
     objects =   UserManager()
@@ -71,11 +71,6 @@ class CustomUser(AbstractBaseUser):
         # Simplest possible answer: All admins are staff
         return self.admin
 
-    def is_active(self):
-        #"Is the user a member of staff?"
-        # Simplest possible answer: All admins are staff
-        return self.active
-
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
         # Simplest possible answer: Yes, always
@@ -85,7 +80,7 @@ class CustomUser(AbstractBaseUser):
         #"Does the user have permissions to view the app `app_label`?"
         # Simplest possible answer: Yes, always
         return True
-
+#changed active to is_active
 class Studies (models.Model):
     StudyName = models.CharField(max_length=200, null=True)
     ProjectPhase = models.CharField(max_length=200, null=True)
