@@ -80,7 +80,7 @@ class CustomUser(AbstractBaseUser):
         #"Does the user have permissions to view the app `app_label`?"
         # Simplest possible answer: Yes, always
         return True
-
+#changed active to is_active
 class Studies (models.Model):
     StudyName = models.CharField(max_length=200, null=True)
     ProjectPhase = models.CharField(max_length=200, null=True)
