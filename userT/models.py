@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from .manager import *
 from django.conf import settings
+
 #user= settings.AUTH_USER_MODEL
 
 from django.contrib.auth.models import ( 
@@ -47,7 +48,7 @@ class CustomUser(AbstractBaseUser):
     organisation   =   models.CharField(max_length=254, blank=True, null=True)
     designation     =    models.CharField(max_length=254, blank=True, null=True)
     expiration     =  models.DateTimeField(null=True) 
-    is_active = models.BooleanField(default=True)
+    active = models.BooleanField(default=True) #first change
     admin = models.BooleanField(default=False)
     staff = models.BooleanField(default=True)
     objects =   UserManager()
@@ -70,6 +71,11 @@ class CustomUser(AbstractBaseUser):
         #"Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.admin
+
+    def is_active(self): #second change
+        #"Is the user a member of staff?"
+        # Simplest possible answer: All admins are staff
+        return self.active
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
