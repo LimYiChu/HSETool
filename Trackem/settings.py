@@ -174,3 +174,12 @@ EMAIL_HOST_USER = 'support@prism-ehstools.awsapps.com'
 EMAIL_HOST_PASSWORD = 'Nice10day'
 EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = 'support@prism-ehstools.awsapps.com'
+
+#gmail email settings
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_HOST = 'smtp.gmail.com'
+#EMAIL_USE_TLS = True
+#EMAIL_PORT = 587
+#EMAIL_HOST_USER = 'actionstracker@gmail.com'
+#EMAIL_HOST_PASSWORD = 'Helloworld2021'
+#EMAIL_USE_SSL = False
