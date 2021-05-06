@@ -48,7 +48,7 @@ class CustomUser(AbstractBaseUser):
     organisation   =   models.CharField(max_length=254, blank=True, null=True)
     designation     =    models.CharField(max_length=254, blank=True, null=True)
     expiration     =  models.DateTimeField(null=True) 
-    active = models.BooleanField(default=True) #first change
+    is_active = models.BooleanField(default=True) #according to django contrib doc, is_active returned here
     admin = models.BooleanField(default=False)
     staff = models.BooleanField(default=True)
     objects =   UserManager()
@@ -72,10 +72,10 @@ class CustomUser(AbstractBaseUser):
         # Simplest possible answer: All admins are staff
         return self.admin
 
-    def is_active(self): #second change
+    #def is_active(self): #after referring to django contrib docs, this does not work
         #"Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
-        return self.active
+    #    return self.active
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
