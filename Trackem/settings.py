@@ -173,4 +173,4 @@ EMAIL_PORT = 465
 EMAIL_HOST_USER = 'support@prism-ehstools.awsapps.com'
 EMAIL_HOST_PASSWORD = 'Nice10day'
 EMAIL_USE_SSL = True
-
+DEFAULT_FROM_EMAIL = 'support@prism-ehstools.awsapps.com'
