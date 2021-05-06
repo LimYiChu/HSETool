@@ -31,7 +31,7 @@ from django.utils import timezone
 import os
 #import mixins
 from django.views.generic.detail import SingleObjectMixin
-from userT.ReportLab import run
+from userT.PDFGenerator import run
 #from .forms import UserRegisterForm
 # Create your views here.
 
