@@ -102,7 +102,7 @@ urlpatterns = [
         path('StickyNote/',login_required(UserView.StickyNote),name='StickyNote'),
         path('IndividualBreakdownByActions/',login_required(UserView.IndividualBreakdownByActions),name='IndividualBreakdownByActions'),
         path('IndividualBreakdownByUsers/',login_required(UserView.IndividualBreakdownByUsers),name='IndividualBreakdownByUsers'),
-
+        path('closeoutsheet/',login_required(UserView.closeoutsheet),name='closeoutsheet'),
         
         #tenant
         path('our_team/', login_required(our_team), name='our_team'),

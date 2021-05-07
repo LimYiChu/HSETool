@@ -62,6 +62,36 @@ def blgetbyStdudiesCount(Studies,OpenQue,YetToRespondQue,pendingApprovalQue,clos
     
     return lstofstudiesdetails
 
+#YHS copying for test
+def blallActionCountbyDisipline(disipline,quelist):
+
+    count = 0
+    
+    for que in quelist:
+        count += ActionItems.myActionItemsCount.mgr_myItemsCountbyStudies(disipline,que) #Stuck here.
+       
+   
+    return count
+   
+
+def blgetbyDispCount(discsuborg,OpenQue,YetToRespondQue,pendingApprovalQue,closedActionsQueSeries):
+   
+    lstcountbydisciplines = []
+    lstofdisciplinesdetails =[]
+    for disipline in discsuborg:
+        lstcountbydisciplines.append (blgetIndiResponseCount(disipline.discount))
+        lstcountbydisciplines.append (blallActionCountbyDisipline(disipline.discount,OpenQue))
+        lstcountbydisciplines.append (blallActionCountbyDisipline(disipline.discount,YetToRespondQue))
+        lstcountbydisciplines.append (blallActionCountbyDisipline(disipline.discount,pendingApprovalQue))
+        lstcountbydisciplines.append (blallActionCountbyDisipline(disipline.discount,closedActionsQueSeries))
+        
+        lstofdisciplinesdetails.append(lstcountbydisciplines)
+        lstbydiscipline =[]
+    
+    return lstbydiscipline
+
+#end of test code
+
 def blgettimeStampforSignatories (id, Signatories):
         #pass in all Signatories and ID of action
         #return Signatories with Time Stamp
@@ -479,3 +509,4 @@ def stripAndmatch(lstcount,lstlabel):
             
     
     return newlstcount,lstlabel
+

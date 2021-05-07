@@ -896,6 +896,87 @@ def repPMTExcel (request):
 
     allstudies = Studies.objects.all()
     tablestudiesheader = ['Studies','Open Actions', 'Yet to Respond' ,'Pending Appr','Closed']
+    disciplinestatusheader = ['Disipline','Open Actions', 'Yet to Respond' ,'Pending Appr','Closed']
+    lstbyWorkshop = blgetbyStdudiesCount(allstudies,QueOpen,YetToRespondQue,ApprovalQue,QueClosed)
+    lstbydiscipline = blgetbyDispCount(discsuborg,QueOpen,YetToRespondQue,ApprovalQue,QueClosed)  #HOLD
+
+    if request.method == 'POST':
+                
+        if (request.POST.get('allActions')):
+          
+            #workbook= createExcelReports(request,"\\excelDownload\\AllActions3.xlsx")
+            tableallheader.append("Current Actionee/Approver") #appends the last column that the list spits out
+            workbook = excelAllActions(lstofallactions,tableallheader,"All Action Items")
+            
+            response = HttpResponse(content_type='application/ms-excel') #
+            response['Content-Disposition'] = 'attachment; filename=AllActions6.xlsx' 
+            workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
+            return response
+        elif (request.POST.get('indiActions')):
+            
+
+            workbook = excelAllActions(Indisets,tableindiheader,"Individual Actions")
+            
+            response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
+            response['Content-Disposition'] = 'attachment; filename=AllActions6.xlsx' 
+            workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
+            return response
+
+        elif (request.POST.get('allStudies')):
+            
+
+            workbook = excelAllActions(lstbyWorkshop,tablestudiesheader,"Workshop Actions")
+            
+            response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
+            response['Content-Disposition'] = 'attachment; filename=AllActions6.xlsx' 
+            workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
+            return response
+            
+
+    context = {
+
+        'lstbyWorkshop' : lstbyWorkshop,
+        'Indisets' : Indisets,
+        'lstofallactions' : lstofallactions,
+        'tableindiheader' : tableindiheader,
+        'tablestudiesheader' : tablestudiesheader,
+        'tableallheader' : tableallheader,
+        'disciplinestatusheader' : disciplinestatusheader, #YHS Test
+        'lstbydiscipline' : lstbydiscipline, #YHS Test
+    }
+    return render(request, 'userT/repPMTExcel.html', context)
+
+def DisciplineBreakdown (request):
+    return render(request, 'userT/DisciplineBreakdown.html')
+
+def StickyNote(request):
+    return render(request, 'userT/StickyNote.html')
+
+
+def PDFtest(request):
+    run()
+    return HttpResponse('TEST')
+
+#this part need to be tidied up. For time's sake i just copy all from def repPMTExcel. 
+def closeoutsheet(request): #new naming convention - all small letters
+    QueOpen = [0,1,2,3,4,5,6,7,8,9]
+    QueClosed = [99]
+    discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
+    Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
+    tableindiheader = ['User','Role', 'Open Actions' ,'Pending Res/Appr','Organisation Route','Closed']
+    #Get all Actions
+    allactions = ActionItems.objects.all()
+
+    tableallheader = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
+    lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
+    
+    #lastly
+    
+    YetToRespondQue =[0]
+    ApprovalQue = [1,2,3,4,5,6,7,8,9]
+
+    allstudies = Studies.objects.all()
+    tablestudiesheader = ['Studies','Open Actions', 'Yet to Respond' ,'Pending Appr','Closed']
     lstbyWorkshop = blgetbyStdudiesCount(allstudies,QueOpen,YetToRespondQue,ApprovalQue,QueClosed)
     
 
@@ -941,15 +1022,4 @@ def repPMTExcel (request):
         'tablestudiesheader' : tablestudiesheader,
         'tableallheader' : tableallheader
     }
-    return render(request, 'userT/repPMTExcel.html', context)
-
-def DisciplineBreakdown (request):
-    return render(request, 'userT/DisciplineBreakdown.html')
-
-def StickyNote(request):
-    return render(request, 'userT/StickyNote.html')
-
-
-def PDFtest(request):
-    run()
-    return HttpResponse('TEST')
+    return render(request, 'userT/closeoutsheet.html', context)
