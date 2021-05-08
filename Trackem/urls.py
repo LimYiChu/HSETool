@@ -90,7 +90,7 @@ urlpatterns = [
         path('discslice/', login_required(UserView.rptdiscSlice), name='discslice' ),
         path('rptbyuser/', login_required(UserView.rptbyUser), name='rptbyuser' ),
         #pdf path
-        path('GeneratePDF/',login_required(UserView.pdftest),name='GeneratePDF'),
+        #path('GeneratePDF/',login_required(UserView.pdftest),name='GeneratePDF'),
         #email path
         path('ReportingTable/',login_required(UserView.ReportingTable),name='ReportingTable'),
         path('Profile/',login_required(UserView.Profile),name='Profile'),

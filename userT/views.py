@@ -974,22 +974,9 @@ def closeoutsheet(request): #new naming convention - all small letters
     allactions = ActionItems.objects.all()
     tableallheader = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
     lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
-    
-    
-
-    context = {
-
-        'lstbyWorkshop' : lstbyWorkshop,
-        'lstofallactions' : lstofallactions,
-        
-    }
-
-    return render(request, 'userT/closeoutsheet.html', context)
-
-def pdftest(request):
     filename = [] # for appending filename place before for loop
     if (request.POST.get('GeneratePDF')): 
-        x=ActionItems.objects.filter(StudyName='HAZID')  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
+        x=ActionItems.objects.all()  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
         y= x.values()          
         for item in y :            
             i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file  
@@ -999,15 +986,47 @@ def pdftest(request):
             out_file = 'static/media/' + j
             pdfgenerate('atrtemplateautofontreadonly.pdf',out_file,data_dict)
             filename.append(out_file) #can only append str   
-            context={
+            context1={
                 'filename' : filename,
-                'table': True
+                'table': True,
+                'lstbyWorkshop' : lstbyWorkshop,
+                'lstofallactions' : lstofallactions,
             }
-            #return HttpResponse('TEST')
-        #     return render(request, 'userT/closeoutsheet.html', context)
-        # return render(request, 'userT/closeoutsheet.html')
-        return render(request, 'userT/GeneratePDF.html', context)                    
-    return render(request, 'userT/GeneratePDF.html')
+        return render(request, 'userT/closeoutsheet.html', context1)                    
+    
+
+    context = {
+
+        'lstbyWorkshop' : lstbyWorkshop,
+        'lstofallactions' : lstofallactions,
+        
+        
+    }
+
+    return render(request, 'userT/closeoutsheet.html', context)
+
+# def closeoutsheet(request):
+#     filename = [] # for appending filename place before for loop
+#     if (request.POST.get('GeneratePDF')): 
+#         x=ActionItems.objects.filter(StudyName='HAZID')  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
+#         y= x.values()          
+#         for item in y :            
+#             i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file  
+#             j = (i + '.pdf')  # easier to breakdown j           
+#             del item["id"]      
+#             data_dict=item
+#             out_file = 'static/media/' + j
+#             pdfgenerate('atrtemplateautofontreadonly.pdf',out_file,data_dict)
+#             filename.append(out_file) #can only append str   
+#             context={
+#                 'filename' : filename,
+#                 'table': True
+#             }
+#             #return HttpResponse('TEST')
+#         #     return render(request, 'userT/closeoutsheet.html', context)
+#         # return render(request, 'userT/closeoutsheet.html')
+#         return render(request, 'userT/closeoutsheet.html', context)                    
+#     return render(request, 'userT/closeoutsheet.html')
         
 
 
