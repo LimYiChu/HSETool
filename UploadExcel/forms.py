@@ -64,7 +64,7 @@ class frmUpdateActioneeForm(forms.ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_show_labels = True
         self.helper.form_method = 'POST'
-        
+        self.fields['Response'].required = True #yhs added. now response is compulsory. need to test if upload empty sheets. what will happen?
         #self.helper.add_input(Submit('Upload', 'Next...', css_class='btn btn-outline-dark float-right col-md-1'))
         #self.helper.add_input(Submit('Cancel', 'Cancel', css_class='btn btn-outline-dark float-right col-md-1'))
 
@@ -73,7 +73,7 @@ class frmUpdateActioneeForm(forms.ModelForm):
         
         Div (
                 
-            Div ('Response', css_class='col-md-12'),
+            Div ('Response', required=True, css_class='col-md-12'),#YHS Testing
             #Div ('Attachment', css_class='col-md-12'),
             Div ('FutureAction', css_class='col-md-12'),
             css_class='row',
@@ -158,13 +158,14 @@ class frmAddRejectReason(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(frmAddRejectReason, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
+        self.fields['Reason'].required = True        #yhs added. 
         self.helper.form_method = 'POST'
         #self.helper.add_input(Submit('Reject', 'Reject with Comments', css_class='btn-primary float-right'))
         #self.helper.add_input(Submit('Cancel', 'Cancel', css_class='btn-primary float-right'))
         self.helper.layout = Layout(
 
             Div(
-            Div (Field('Reason') ,css_class='col-md-12'), 
+            Div (Field('Reason'), required=True, css_class='col-md-12'),    #yhs added requierd =true
             Div (Field('Username', type="hidden")),
             
             ),
