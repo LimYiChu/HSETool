@@ -31,7 +31,7 @@ from django.utils import timezone
 import os
 #import mixins
 from django.views.generic.detail import SingleObjectMixin
-from userT.PDFGenerator import run
+from userT.pdfgenerator import pdfgenerate
 #from .forms import UserRegisterForm
 # Create your views here.
 
@@ -985,3 +985,27 @@ def closeoutsheet(request): #new naming convention - all small letters
     }
 
     return render(request, 'userT/closeoutsheet.html', context)
+
+def pdftest(request):
+    filename = [] # for appending filename place before for loop
+    if (request.POST.get('allActions')): 
+        x=ActionItems.objects.filter(StudyName='HAZID')  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
+        y= x.values()          
+        for item in y :            
+            i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file  
+            j = (i + '.pdf')  # easier to breakdown j           
+            del item["id"]      
+            data_dict=item
+            pdfgenerate('atrtemplateautofontreadonly.pdf',j,data_dict)
+            filename.append(str(pdfgenerate)) #can only append str   
+            context={
+                'filename' : filename,
+                'table': True
+            }
+            
+            #return HttpResponse('TEST')
+            return render(request, 'userT/closeoutsheet.html', context)
+        return render(request, 'userT/closeoutsheet.html') 
+
+
+
