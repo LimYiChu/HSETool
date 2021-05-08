@@ -14,22 +14,18 @@ def pdfgenerate(input_pdf_path, output_pdf_path, data_dict):
     #         annotation.update(pdfrw.PdfDict(Ff=1))#locks fillable field
     # pdfrw.PdfWriter().write(output_pdf_path, template_pdf)
   
-    ANNOT_KEY = '/Annots'
-    ANNOT_FIELD_KEY = '/T'
-    SUBTYPE_KEY = '/Subtype'
-    WIDGET_SUBTYPE_KEY = '/Widget'
     N = 1
-    annotations = template_pdf.pages[0][ANNOT_KEY] # Only annotations that are Widgets Text
+    annotations = template_pdf.pages[0]['/Annots'] # Only annotations that are Widgets Text
     for annotation in annotations:
-        if annotation[SUBTYPE_KEY] == WIDGET_SUBTYPE_KEY:
-            if annotation[ANNOT_FIELD_KEY]:
-                key = annotation[ANNOT_FIELD_KEY][1:-1] # Remove parentheses
+        if annotation['/Subtype'] == '/Widget':
+            if annotation['/T']:
+                key = annotation['/T'][1:-1] # Remove parentheses
                 if key in data_dict.keys():
                     annotation.update(
-                        pdfrw.PdfDict(T="{}".format(key + str(N)))
+                        pdfrw.PdfDict(T="{}".format(key + str(N))) #this one not sure yet
                     )
                     annotation.update(
-                        pdfrw.PdfDict(V="{}".format(data_dict[key])) 
+                        pdfrw.PdfDict(V="{}".format(data_dict[key])) #takes the data from models with[key]
                     )
         #annotation.update(pdfrw.PdfDict(Ff=1))
     N += 1
