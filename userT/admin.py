@@ -41,3 +41,4 @@ class UserAdmin2(BaseUserAdmin):
 admin.site.register(CustomUser,UserAdmin2)
 admin.site.register(ActionRoutes)
 admin.site.register(Studies)
+admin.site.register(RiskMatrix)

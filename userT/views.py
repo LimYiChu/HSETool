@@ -38,32 +38,94 @@ from userT.ReportLab import run
 from UploadExcel.forms import *
 emailSender ="support@prism-ehstools.awsapps.com"
 
-def register (request):
-    if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
+def googlecharts(request):
+    
+     #get all routes
+    context_allRou = getuserRoutes(request,request.user.email)
+    
+    #Just get Actionee and Approver Routes, tied into model managers
+    Actionee_R =    context_allRou.get('Actionee_Routes')
+    Approver_R =    context_allRou.get('Approver_Routes') 
+    studies = blgetAllStudies()
+
+   
+    stripCount =[]
+    striplabels = []
+    QueOpen = [1,2,3,4,5,6,7,8,9]
+    QueClosed =99
+    finallist=[]
+    chartcontent =[]
+    xyz =[]
+    for eachstudy in studies:
         
-            #usernames =   form.cleaned_data.get('username')
-           # messages.success(request, 'account has been created')
-        if form.is_valid():
-            form.save()
-            return render(request, 'userT/home.html')
-    else:
-       #form =  UserRegisterForm()
-       #form = UserCreationForm()
-        return render(request, 'userT/register.html', {'form': form})
+        StudyName = eachstudy.StudyName
+
+        labels=[]
+        labelsapp =[]
+
+        countbyStudies, labels= blActionCountbyStudiesStream(Actionee_R,StudyName,0) # unlimited actionee
+        
+             
+        stripCount, striplabels ,  = stripAndmatch(countbyStudies,labels) # must do to strip all 0 and match to only items that have count
+        newStudyName = "///" + StudyName + ":::"
+
+        googlechartlist = blprepareGoogleCharts(striplabels,stripCount,newStudyName)
+
+        #print("google chart list")
+        #print (googlechartlist)  
+        
+        #newStudyName = "///" + StudyName + ":::"
+        #chartcontent.append(['By Studies :', newStudyName])
+        
+        #chartcontent.append(googlechartlist)
+        #print("CHART CONTENT")
+        #print (chartcontent)
+        #print (blprepareGoogleCharts(googlechartlist,)) 
+        #striplabels += stripCount #this way it adds as string and not appends another array
+    
+        
+         #countbyStudiesClosed, labelsClosed= blActionCountbyStudiesStream(Actionee_R,StudyName,QueClosed)
+        
+       
+        #if stripCount != []:
+        
+        
+        
+        finallist.append(googlechartlist)
+        striplabels = []
+        chartcontent =[]    
+        googlechartlist =[]
+      
+           
+    content = []
+    content1 =  [['Count', 'Open/Closed'],
+          ['EHS',     11],
+          ['Mech',      2],
+          ['Drilling',  2],
+          ['Operations', 2],
+          ['Elec',    7]]
+    
+    content2 =  [['Count', 'Open/Closed'],
+          ['EHS',     50],
+          ['Mech',      2],
+          ['Drilling',  2],
+          ['Operations', 2],
+          ['Elec',    7]]
+
+    content.append(content1)
+    content.append(content2)
+    
+    context = {
+        
+        'content' : finallist,
+        'charttitles' : "XYZ"
+      
+
+    }
+    return render(request, 'userT/googlecharts.html',context)
 
 def mainDashboard (request):
-    
-    
-    #for chart.js Html only
-    labelsActionee = []
-    dataActionee = []
-
-    labelsApprover = []
-    dataApprover = []
-    #This contain the entire Approver list for all levels
-    Approver = []
-
+   
     #get workshops
     studies = blgetAllStudies()
 
@@ -72,11 +134,11 @@ def mainDashboard (request):
     
     #Just get Actionee and Approver Routes, tied into model managers
     Actionee_R =    context_allRou.get('Actionee_Routes')
-    Approver_R =    context_allRou.get('Approver_Routes') #this is a dictionary item {1,[list of routes]}
+    Approver_R =    context_allRou.get('Approver_Routes') 
 
    
-    charts=[]
-    apprcharts =[]
+   #charts=[]
+   
     stripCount =[]
     striplabels = []
     QueOpen = [1,2,3,4,5,6,7,8,9]
@@ -86,80 +148,55 @@ def mainDashboard (request):
     
     #Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)
     #blgetDiscSubOrgfromID(idAI)
+    finallist =[]
+    appfinalist =[]
+    labelsApprover =[]
+    dataApprover =[]
     for eachstudy in studies:
         StudyName = eachstudy.StudyName
         
         labels=[]
-        labelsapp =[]
-
-        labelsclosed =[]
-        #countbyStudies = blActionCountbyStudies(Actionee_R,StudyName,0) - old way limited by three streams 
+        
         
         countbyStudies, labels= blActionCountbyStudiesStream(Actionee_R,StudyName,0) # unlimited actionee
         countbyStudiesClosed, labelsClosed= blActionCountbyStudiesStream(Actionee_R,StudyName,QueClosed)
              
         stripCount, striplabels ,  = stripAndmatch(countbyStudies,labels)
+        
+        newStudyName = "///" + StudyName + ":::"
 
-        stripCountClosed, striplabelsClosed ,  = stripAndmatch(countbyStudiesClosed,labelsClosed)
-        # For studies check if actually assigned to it or if count is 0 then just dont generate graph
-        if stripCount != []:
-            
-            charts.append(showPie(stripCount,striplabels,StudyName))
-        
-            charts.append(showPie(stripCountClosed,striplabelsClosed,StudyName +" -- Closed Actions"))
-        #the key starts at 1 which is good thing and hence just pass to get count from queseries
-        for key, value in Approver_R.items():
-            for items in value:
-                labelsapp.append(items.Disipline)
-        
-        
-        
+        googlechartlist = blprepareGoogleCharts(striplabels,stripCount,newStudyName)
+
+        #stripCountClosed, striplabelsClosed ,  = stripAndmatch(countbyStudiesClosed,labelsClosed)
+      
         for QueSeries, Routes in Approver_R.items():
             
-           
-            #listofCount= blActionCountbyStudies(Routes,StudyName,QueSeries)
             listofCountManyApprovers,labelsapp =blActionCountbyStudiesStream(Routes,StudyName,QueSeries) #improved version multiple approvers
            
-
             sumoflistCount = sum(listofCountManyApprovers)
+            
             if (sumoflistCount > 0):
                 labelsApprover.append('Level'+str(QueSeries))
                 dataApprover.append(sumoflistCount)
-        
-        #dont want a blank pie to be appended on with no data since it loops through studies
-        if dataApprover != []:
-            apprcharts.append(showPie(dataApprover,labelsApprover,StudyName))
-            
+                chartappdata = blprepareGoogleCharts(labelsApprover,dataApprover,newStudyName)
+                
+        appfinalist.append(chartappdata)
+        finallist.append(googlechartlist)
+    
+        googlechartlist =[]
         
         dataApprover = []
         labelsApprover =[]
-        stripedCount =[]
-        stripedlabels =[]
-        countbyStudies = []
- 
-       
-    #get count for all approver levels just by looping through the key
-    #Not very accurate but im summing approver level actions together
-    # key is already rationalised in getuserRoutes
-    for key, value in Approver_R.items():
-        x= blfuncActionCount(value,key)
-        Approver.insert(key,x)
-        labelsApprover.append('Level'+str(key))
-        dataApprover.append(sum(x))
-    
-    #apprchart=showPie(dataApprover,labelsApprover,"Approver Charts")
-
-    
-    #Context just returns to HTML so that we can use it in the HTML page
-    Context = {
-        'charts' : charts,
-        'apprcharts' : apprcharts,
         
-        #'Approver_Count'       : Approver,
-        'labelsActionee' : labelsActionee,
-        'dataActionee' : dataActionee,
-        'labelsApprover' : labelsApprover,
-        'dataApprover' : dataApprover,
+        countbyStudies = []
+
+    print (appfinalist)
+    Context = {
+      
+        
+        'content' : finallist,
+        'appfinalist' : appfinalist,
+        
             }
     return render(request, 'userT/mainDashboard.html',Context)
 
@@ -317,7 +354,7 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
 
         
        
-        lstSignatoriesTimeStamp= blgettimeStampforSignatories (idAI, Signatories) 
+        lstSignatoriesTimeStamp= blgettimeStampforSignatories (idAI, Signatories) #it changes the signatories directly
 
 
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(idAI)
@@ -428,20 +465,22 @@ class ActioneeItemsMixin(ApproveItemsMixin):
     form_class = frmUpdateActioneeForm
     
     def get_context_data(self,**kwargs):
-        fk = self.kwargs.get("pk") #its actually the id and used as foreign key
+        IdAI = self.kwargs.get("pk") #its actually the id and used as foreign key
         context = super().get_context_data(**kwargs)
         
 
-        discsuborg = blgetDiscSubOrgfromID(fk)
+        discsuborg = blgetDiscSubOrgfromID(IdAI)
         ApproverLevel = blgetApproverLevel(discsuborg)
         
-        blsetApproverLevelTarget(fk,ApproverLevel)
+        blsetApproverLevelTarget(IdAI,ApproverLevel)
         
         Signatories = blgetSignotories(discsuborg)
         
+        lstSignatoriesTimeStamp= blgettimeStampforSignatories (IdAI, Signatories)
         
+        print (lstSignatoriesTimeStamp)
         
-        context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(fk)
+        context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(IdAI)
         context['Approver'] = False
         context ['ApproverLevel'] = ApproverLevel
         context ['Signatories'] = Signatories
@@ -880,7 +919,11 @@ def repPMTExcel (request):
     #get individual actions
     QueOpen = [0,1,2,3,4,5,6,7,8,9]
     QueClosed = [99]
+    YetToRespondQue =[0]
+    ApprovalQue = [1,2,3,4,5,6,7,8,9]
+    TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
     discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
+    
     Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
     tableindiheader = ['User','Role', 'Open Actions' ,'Pending Res/Appr','Organisation Route','Closed']
     #Get all Actions
@@ -888,17 +931,24 @@ def repPMTExcel (request):
 
     tableallheader = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
     lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
-    
+    #lstofallactions=[]
     #lastly
     
-    YetToRespondQue =[0]
-    ApprovalQue = [1,2,3,4,5,6,7,8,9]
-
+    
+    #for workshop based view
     allstudies = Studies.objects.all()
     tablestudiesheader = ['Studies','Open Actions', 'Yet to Respond' ,'Pending Appr','Closed']
     lstbyWorkshop = blgetbyStdudiesCount(allstudies,QueOpen,YetToRespondQue,ApprovalQue,QueClosed)
     
+    #for Disipline based view
+    tabledischeader = ['Discipline','Open Actions', 'In-Progress', 'Yet to Respond' ,'Closed','Total Actions']
+    
 
+    lstbyDisc= blaggregatebyDisc(discsuborg, QueOpen, ApprovalQue,YetToRespondQue,QueClosed,TotalQue)
+    
+    #due date based view
+
+    
     if request.method == 'POST':
                 
         if (request.POST.get('allActions')):
@@ -908,7 +958,7 @@ def repPMTExcel (request):
             workbook = excelAllActions(lstofallactions,tableallheader,"All Action Items")
             
             response = HttpResponse(content_type='application/ms-excel') #
-            response['Content-Disposition'] = 'attachment; filename=AllActions6.xlsx' 
+            response['Content-Disposition'] = 'attachment; filename=byAllActions.xlsx' 
             workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
             return response
         elif (request.POST.get('indiActions')):
@@ -917,7 +967,7 @@ def repPMTExcel (request):
             workbook = excelAllActions(Indisets,tableindiheader,"Individual Actions")
             
             response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
-            response['Content-Disposition'] = 'attachment; filename=AllActions6.xlsx' 
+            response['Content-Disposition'] = 'attachment; filename=byIndividual.xlsx' 
             workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
             return response
 
@@ -927,18 +977,29 @@ def repPMTExcel (request):
             workbook = excelAllActions(lstbyWorkshop,tablestudiesheader,"Workshop Actions")
             
             response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
-            response['Content-Disposition'] = 'attachment; filename=AllActions6.xlsx' 
+            response['Content-Disposition'] = 'attachment; filename=byStudies.xlsx' 
+            workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
+            return response
+        
+        elif (request.POST.get('bydiscipline')):
+            
+
+            workbook = excelAllActions(lstbyDisc,tabledischeader,"Discipline Actions")
+            
+            response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
+            response['Content-Disposition'] = 'attachment; filename=byDiscipline.xlsx' 
             workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
             return response
             
 
     context = {
-
+        'lstbyDisc' : lstbyDisc,
         'lstbyWorkshop' : lstbyWorkshop,
         'Indisets' : Indisets,
         'lstofallactions' : lstofallactions,
         'tableindiheader' : tableindiheader,
         'tablestudiesheader' : tablestudiesheader,
+        'tabledischeader' : tabledischeader ,
         'tableallheader' : tableallheader
     }
     return render(request, 'userT/repPMTExcel.html', context)
@@ -953,3 +1014,17 @@ def StickyNote(request):
 def PDFtest(request):
     run()
     return HttpResponse('TEST')
+
+def register (request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        
+            #usernames =   form.cleaned_data.get('username')
+           # messages.success(request, 'account has been created')
+        if form.is_valid():
+            form.save()
+            return render(request, 'userT/home.html')
+    else:
+       #form =  UserRegisterForm()
+       #form = UserCreationForm()
+        return render(request, 'userT/register.html', {'form': form})

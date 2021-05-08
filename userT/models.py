@@ -98,6 +98,18 @@ class Studies (models.Model):
     def __str__(self): 
        return '%s ---%s' %(self.StudyName, self.ProjectPhase)
 
+class RiskMatrix (models.Model):
+    Consequence = models.CharField(max_length=20, null=True,blank=True)
+    Likelihood = models.CharField(max_length=20, null=True,blank=True)
+    Combined  = models.CharField(max_length=100, null=True,blank=True)
+    Ranking = models.CharField(max_length=100, null=True,blank=True)
+    objects = models.Manager()
+    class Meta:
+       verbose_name_plural = "RiskMatrix" #this if not done gives a view of Studiess
+
+    def __str__(self): 
+       return '%s ---%s' %(self.Combined, self.Ranking)
+
 class ActionRoutes(models.Model):
     
 

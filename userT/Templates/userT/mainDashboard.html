@@ -1,19 +1,85 @@
 {% extends "userT/base3.html"%}
 {%load crispy_forms_tags %}
 
-{% block Actioneelist%}
+{% block maindashboard%}
 <!--hidden for styling-->
 <!--
 <h1>Your Actions</h1>
 -->
-      
+<head>
+    
+    <script type="text/javascript">
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(starter); //cant call drawchart with paarmeters, need the parameters to make the code effcient
+    
+        function starter(){
+            
+            
+            {% for chart in content%}
+             
+                drawChart({{chart|safe}} , {{ forloop.counter }},'{{chart.0}}',false);
+            
+            {%endfor%}
+
+            {% for appchart in appfinalist%}
+             
+            drawChart({{appchart|safe}} , {{ forloop.counter }},'{{appchart.0}}',true);
+        
+            {%endfor%}
+        }
+      function drawChart(values,index,chartTitle,approver) {
+        
+        firstindex = chartTitle.lastIndexOf("///")+3
+        
+        lastindex = chartTitle.lastIndexOf(":::")
+        var newtitle = chartTitle.substring(firstindex,lastindex );
+       
+        var data = google.visualization.arrayToDataTable(values);
+
+        var options = {
+          title: newtitle,
+          is3D : true,
+          titleTextStyle: {
+            color: 'Black',    // any HTML string color ('red', '#cc00cc')
+            fontName: 'Helvetica', // i.e. 'Times New Roman'
+            fontSize: 20, // 12, 18 whatever you want (don't specify px)
+            bold: false,    // true or false
+            italic: false   // true of false
+                        },
+            height: 500,
+            width: 700,
+            chartArea:{left:20,top:100,width:'80%',height:'80%'},
+            legend : {position: 'side', textStyle: {color: 'black', fontSize: 16}} //have to add this in otherwise charts seem small...like your dick
+        };
+        
+        if (approver==false){
+        var strpie = "piechart";
+        var finalpie = strpie.concat(index);
+        var chart = new google.visualization.PieChart(document.getElementById(finalpie));
+        chart.draw(data, options);
+        }
+
+        if (approver==true){
+            var strpie = "apppiechart";
+            var finalpie = strpie.concat(index);
+            var chart = new google.visualization.PieChart(document.getElementById(finalpie));
+            chart.draw(data, options);
+            }
+        //var chart2 = new google.visualization.PieChart(document.getElementById('piechart2'));
+        
+    //chart2.draw(data, options);
+       
+      }
+     
+    </script>
+  </head>
 <div class="row">
 <!--breadcrumbs - needs to be automated.-->
 <div class="row" >
     <nav>
       <ol class="breadcrumb" style="bg-light;">
         <li class="breadcrumb-item-active">
-          <a aria-current="page" style="font-size:x-large">Dashboard</a>
+          <a aria-current="page" style="font-size:x-large"><h3>Dashboard</h3></a>
         </li>
        
       </ol>
@@ -21,27 +87,35 @@
 <div class="col-md-12 center">
 <div class="card">
     <div class="card-header" style="font-size: large;">
-     Your Actions
+    <h3> Your Actions</h3>
     </div>
     <div class="card-body">
         <div class="row">
             <div class="col-md-12" >
             <div class="card">
-                <div class="card-header" style="font-size: large" >
+                    <div class="card-header" style="font-size: large" >
+
                     <a href="/ActioneeList" >
-                        Actionee Action                
+                       <h4> Actionee Action </h4>               
                        </a>
                     
+                    </div>
+                <div >
+                
+                    <div class="card-body " > <!--the float could be the cuase of the image changing position-->
+                        <a href="/ActioneeList"> 
+                        <div style="float:left;" id="piechart1" ></div> <!--DONT ADD WIDTH TO ELEMENT, resize from google chart-->
+                        <div style="float:left;" id="piechart2" ></div>
+                        <div style="float:left;" id="piechart3" ></div>
+                        <div style="float:left;" id="piechart4" ></div>
+                        <div style="float:left;" id="piechart5" ></div>
+                        <div style="float:left;" id="piechart6" ></div>
+                        <div style="float:left;" id="piechart7" ></div>
+                        <div style="float:left;" id="piechart8" ></div>
+                        <div style="float:left;" id="piechart9" ></div>
+                    </div>
+                
                 </div>
-                <div>
-                {%for chart in charts%}
-                <div style="float:left;" class="card-body " > <!--the float could be the cuase of the image changing position-->
-                <a href="/ActioneeList">
-                <img src="data:image/png;base64, {{chart|safe}}" alt="Actionee"  >
-                </a>
-                </div>
-                {%endfor%}
-            </div>
             <!--<a class="h5" href="/ActioneeList">Go to All Your Actions</a>--><!--Not used-->
             </div>                      
             </div>
@@ -49,20 +123,23 @@
 
         <div class="row">         
             <div class="col-md-12">
-            <div class="card">
-            <div class="card-header" style="font-size: large;">
-            <a href="/ApproverList">
-                Approver Actions (Cummulative)
-            </a>
-            </div>
-            <div>
-                {%for apprcharts in apprcharts%}
-            <div style="float:left;" class="card-body">
-               
-            <img src="data:image/png;base64, {{apprcharts|safe}}" alt="Overall Closed Actions" width="80%" height="80%">
-               
-            </div>
-            {%endfor%}
+                <div class="card">
+                    <div class="card-header" style="font-size: large;">
+                            <a href="/ApproverList">
+                        <h4>Approver Actions (Cummulative)</h4>
+                            </a>
+                    </div>
+                    <div class="card-body " > 
+                        <a href="/ApproverList">
+                        <div style="float:left;" id="apppiechart1" ></div> <!--DONT ADD WIDTH TO ELEMENT, resize from google chart-->
+                        <div style="float:left;" id="apppiechart2" ></div>
+                        <div style="float:left;" id="apppiechart3" ></div>
+                        <div style="float:left;" id="apppiechart4" ></div>
+                        <div style="float:left;" id="apppiechart5" ></div>
+                        <div style="float:left;" id="apppiechart6" ></div>
+                        <div style="float:left;" id="apppiechart7" ></div>
+                        <div style="float:left;" id="apppiechart8" ></div>
+                        <div style="float:left;" id="apppiechart9" ></div>
             </div>
             <!--<a class="h5" href="/ApproverList">Go to Your Pending Approvals</a>--> <!--Not Used-->
             </div>
@@ -76,161 +153,7 @@
 </div>
 
 <br>
-<!--spare from original-->
-    <!--<div class="col-md-6">
-        <div class="card">
-                <div class="card-header" style="font-size: large;">
-                  Approver Actions (Cummulative) BACKUP
-                </div>
-                <div class="card-body">
-                    <canvas id="Approver"></canvas>
-                    <script>
-        
-                        var myChart = document.getElementById('Approver').getContext('2d');
-                        
-                        var charts = new Chart(myChart, {
-                            type: 'pie',
-                            data : {
-        
-                                labels : {{labelsApprover|safe}},
-        
-                                datasets : [{
-                                    
-                                    
-                                    data : {{dataApprover|safe}},
-        
-                                    borderWidth: 1,
-                                    borderColor: 'black',
-                                    backgroundColor: ["#D3EDEE","#91CACC", "#C0A8A3","#5E6565","#E5C0E2","#E0E1B3" ,"#0074D9", "#FF4136", "#2ECC40", "#FF851B", "#7FDBFF"],
-                                }]
-                                
-                            },
-                            
-                            options: {
-        
-                                title:{
-                                    display : true,
-                                    text: "Approver Actions",
-                                    fontSize : 20,
-                                },
-                                tooltips: {enabled: true},
-                                onClick:function(vte){
-                                    //alert("this sss")
-                                    //var activePoints = ActioneeChart.getElementsAtEvent(e);
-                                    //var selectedIndex = activePoints[0]._index;
-                                    //document.location = this.data.datasets[0].data[selectedIndex];
-                                    
-                                    
-                                }
-                            }
-                        });
-                    
-                        
-                    </script>
-                </div>
-                <a class="h5" href="/ApproverList">Go to Your Pending Approvals</a>
-                </div>
-              </div>
-<!--original-->
-<!--
-<div class="container-fluid">
-    <div style="width:50% ; float:left"> 
-        <canvas id="ActioneeChart"></canvas>
-            <script>
-                Chart.defaults.global.defaultFontColor = 'blue'
-                
-                var myChart = document.getElementById('ActioneeChart').getContext('2d');
-                
-                var charts = new Chart(myChart, {
-                    type: 'polarArea',
-                    
-                    data : {
 
-                        labels : {{labelsActionee|safe}},
-
-                        datasets : [{
-                            
-                            
-                            data : {{dataActionee|safe}},
-
-                            borderWidth: 3,
-                            borderColor: '#777',
-                        }]
-                        
-                    },
-                    
-                    options: {
-                        title:{
-                            fontSize : 20,
-                            display : true,
-                            text: "Actionee Actions",
-                        },
-                       
-                            yAxes: [{
-                                ticks: {
-                                    display:false,
-                                    beginAtZero: true
-                                }
-                            }], 
-                            xAxes: [{
-                                ticks: {
-                                    display:false,
-                                    beginAtZero: true
-                                }
-                            }],              
-                        onClick:function(e){
-                            alert("this is a test");
-                            var activePoints = ActioneeChart.getElementsAtEvent(e);
-                            var selectedIndex = activePoints[0]._index;
-                            document.location = this.data.datasets[0].data[selectedIndex];
-                            //document.location = '/home';
-                            
-                        }
-
-                    }
-                });
-            
-                
-            </script>
-    </div>
-    <div style="width:50% ; float:left"> 
-        <canvas id="Approver"></canvas>
-            <script>
-
-                var myChart = document.getElementById('Approver').getContext('2d');
-                
-                var charts = new Chart(myChart, {
-                    type: 'polarArea',
-                    data : {
-
-                        labels : {{labelsApprover|safe}},
-
-                        datasets : [{
-                            
-                            
-                            data : {{dataApprover|safe}},
-
-                            borderWidth: 3,
-                            borderColor: '#777',
-                        }]
-                        
-                    },
-                    
-                    options: {
-
-                        title:{
-                            display : true,
-                            text: "Approver Actions",
-                            fontSize : 20,
-                        },
-                    }
-                });
-            
-                
-            </script>
-    </div>
-</div>
--->
 {%endblock%}
 
 

@@ -4,6 +4,23 @@ from django.http import HttpResponse
 from UploadExcel.models import ActionItems
 from .models import *
 
+def blprepareGoogleCharts (labels,count,newstudyname):
+    initiallist =[]
+    finallist =[]
+    Startlist = ['By Studies',newstudyname ]
+    for index , disc in  enumerate(labels):
+
+        initiallist.append(disc)
+        initiallist.append(count[index])
+
+        finallist.append(initiallist)
+
+        initiallist=[]
+    
+    finallist.insert(0,Startlist)
+
+    return finallist
+
 def blbuildRejectionemail(ID,RejectReason):
     Content=[]
     actionDetails = ActionItems.objects.filter(id=ID).values() # Since off the bat i did not pass any other information besides ID to rejection form i now have to information back for emails
@@ -45,7 +62,29 @@ def blallActionsComDisSubbyList(contextRoutes,quelist):
                                                                blvarSUbdisipline,que))
     
     return streams
+def blaggregatebyDisc(discsuborg, QueOpen, YetToRespondQue,ApprovalQue,QueClosed,TotalQue):
+    lstofdiscdetails =[]
+    lstcountbydisc =[]
+    for disc in discsuborg:
+        lstcountbydisc.append (disc[0])
+        lstcountbydisc.append  (blallActionCountbyDisc(disc[0],QueOpen))
+        lstcountbydisc.append (blallActionCountbyDisc(disc[0],YetToRespondQue))
+        lstcountbydisc.append (blallActionCountbyDisc(disc[0],ApprovalQue))
+        lstcountbydisc.append (blallActionCountbyDisc(disc[0],QueClosed))
+        lstcountbydisc.append (blallActionCountbyDisc(disc[0],TotalQue))
+        lstofdiscdetails.append(lstcountbydisc)
+        lstcountbydisc =[]
     
+   
+    return lstofdiscdetails
+def blallActionCountbyDisc(Disc,quelist):
+
+    count = 0
+    
+    for que in quelist:
+        count += ActionItems.myActionItemsCount.mgr_allItemsCountbyDisc(Disc,que) 
+   
+    return count
 def blgetbyStdudiesCount(Studies,OpenQue,YetToRespondQue,pendingApprovalQue,closedActionsQueSeries):
    
     lstcountbyStudies = []
@@ -78,7 +117,7 @@ def blgettimeStampforSignatories (id, Signatories):
         #print (y[lstdictHistory].get('history_date'))
         finallstoflst = []                                   
         for index, items in enumerate(Signatories):
-            if index < currentQueSeries:
+            if index < currentQueSeries: 
                 #get all time stamps for all que series
                 #index basically denominates Que series level. if Current que series =2 then only actionee = 0 and Approver 1 has signed
                 lstdictHistory = ActionItems.history.filter(id=id).filter(QueSeries=index).order_by('-history_date').values()
@@ -86,7 +125,9 @@ def blgettimeStampforSignatories (id, Signatories):
                 items.append(timestamp)
                 finallstoflst.append(items)
                 items =[]
+            
             else:
+                #this simply says that i will give a time stamp for rest of levels to 0- no date and time
                 items.append(0)
                 finallstoflst.append(items)
                 items =[]
@@ -184,14 +225,22 @@ def blgetActionStuckAt(allactions, lstoftableattributes):
 
     for items in allactions:
         for x in lstoftableattributes:
-            lstActionDetails.append(eval('items.'+str(x))) #gets the value by basically executing the content
+            lstActionDetails.append(eval('items.'+str(x))) #gets the value by basically executing the string content, just dynamic content stuff
        
-        lstgettriplet = [items.Disipline,items.Subdisipline,items.Organisation]
+        #the disc sub and company are not case sensitive but space sensitive, remove leading and end white spaces
+        #bug fixes for version 1.8
+        strdiscipline = items.Disipline.rstrip().lstrip()
+        strsubdiscipline = items.Subdisipline.rstrip().lstrip()
+        strorganisation = items.Organisation.rstrip().lstrip()
+        #end bug fix - should move this into signatories
+        lstgettriplet = [strdiscipline,strsubdiscipline,strorganisation]
         lstofActioneeAppr = blgetSignotories (lstgettriplet)
 
         
-        if items.QueSeries != 99 : # basically its looks at que series and then matches it against the list of entire signatories above
+        if items.QueSeries != 99 and (lstofActioneeAppr !=[]): # basically its looks at que series and then matches it against the list of entire signatories above
             lststuckAt = lstofActioneeAppr[items.QueSeries]#basically just uses QueSeries to tell us where its stuck at
+            
+            
             lstActionDetails.append("/".join(lststuckAt)) # Because there is 2 parts to the formula = Actionee , gunav -- So im Just joining them into string
         else:
             lstActionDetails.append ("Closed") # if its 99 just have a tag closed
@@ -203,6 +252,13 @@ def blgetActionStuckAt(allactions, lstoftableattributes):
 def blgetSignotories (lstorgdiscsub):
     #in - list of company disc sub
     # - out Actionee & Approver approver names - basically the signatories
+    
+    #need to strip white spaces in case its passed
+    stripedDisc = lstorgdiscsub[0].rstrip().lstrip()
+    stripedSub = lstorgdiscsub[1].rstrip().lstrip()
+    stripedOrg = lstorgdiscsub[2].rstrip().lstrip()
+    
+    stripedDiscSubOrg = [stripedDisc,stripedSub,stripedOrg]
     obj= ActionRoutes.mdlgetApproverLevel.mgr_getApproverLevel (lstorgdiscsub)
         
     allfields = [f.name for f in ActionRoutes._meta.get_fields()] 
