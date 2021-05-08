@@ -31,7 +31,7 @@ from django.utils import timezone
 import os
 #import mixins
 from django.views.generic.detail import SingleObjectMixin
-from userT.PDFGenerator import run
+from userT.pdfgenerator import pdfgenerate
 #from .forms import UserRegisterForm
 # Create your views here.
 
@@ -777,31 +777,31 @@ def rptbyUser(request, **kwargs):
     ActioneeCount = blfuncActionCount(Actionee_R,0)
     return render (request, 'userT/reports.html')
     
-def GeneratePDF (request):
-    filename = [] # for appending filename place before for loop
-    if (request.POST.get('GeneratePDF')):      
-        x=ActionItems.objects.all()  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
-        y= x.values()          
-        for item in y :            
-            i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file  
-            j = (i + '.pdf')  # easier to breakdown j           
-            del item["id"]      
-            data_dict=item       
-            x = 'static/multiple.pdf'             
-            out_file = 'static/media/' + j   # sending file to media folder inside static folder                                                        
-            generated_pdf = pypdftk.fill_form(
-                pdf_path = x,
-                datas = data_dict,
-                out_file = out_file,                             
-            )
-            filename.append(str(generated_pdf)) #can only append str   
-            context={
-                 'filename' : filename,
-                 'table': True
-            }
+# def GeneratePDF (request):
+#     filename = [] # for appending filename place before for loop
+#     if (request.POST.get('GeneratePDF')):      
+#         x=ActionItems.objects.all()  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
+#         y= x.values()          
+#         for item in y :            
+#             i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file  
+#             j = (i + '.pdf')  # easier to breakdown j           
+#             del item["id"]      
+#             data_dict=item       
+#             x = 'static/multiple.pdf'             
+#             out_file = 'static/media/' + j   # sending file to media folder inside static folder                                                        
+#             generated_pdf = pypdftk.fill_form(
+#                 pdf_path = x,
+#                 datas = data_dict,
+#                 out_file = out_file,                             
+#             )
+#             filename.append(str(generated_pdf)) #can only append str   
+#             context={
+#                  'filename' : filename,
+#                  'table': True
+#             }
                               
-        return render(request, 'userT/GeneratePDF.html', context)                    
-    return render(request, 'userT/GeneratePDF.html')
+#         return render(request, 'userT/GeneratePDF.html', context)                    
+#     return render(request, 'userT/GeneratePDF.html')
 
 def ReportingTable(request):
     sub = Subscribe()
@@ -882,6 +882,9 @@ def repPMTExcel (request):
     QueClosed = [99]
     discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
     Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
+    #YHS
+    print(Indisets)
+    #YHS
     tableindiheader = ['User','Role', 'Open Actions' ,'Pending Res/Appr','Organisation Route','Closed']
     #Get all Actions
     allactions = ActionItems.objects.all()
@@ -896,9 +899,13 @@ def repPMTExcel (request):
 
     allstudies = Studies.objects.all()
     tablestudiesheader = ['Studies','Open Actions', 'Yet to Respond' ,'Pending Appr','Closed']
+    disciplinestatusheader = ['Disipline','Open Actions', 'Yet to Respond' ,'Pending Appr','Closed']
     lstbyWorkshop = blgetbyStdudiesCount(allstudies,QueOpen,YetToRespondQue,ApprovalQue,QueClosed)
-    
+   #YHS
 
+   # lstbydiscipline = blgetbyDispCount(discsuborg,QueOpen,YetToRespondQue,ApprovalQue,QueClosed)  #HOLD
+
+#YHS end of test code
     if request.method == 'POST':
                 
         if (request.POST.get('allActions')):
@@ -939,7 +946,9 @@ def repPMTExcel (request):
         'lstofallactions' : lstofallactions,
         'tableindiheader' : tableindiheader,
         'tablestudiesheader' : tablestudiesheader,
-        'tableallheader' : tableallheader
+        'tableallheader' : tableallheader,
+        'disciplinestatusheader' : disciplinestatusheader, #YHS Test
+        #'lstbydiscipline' : lstbydiscipline, #YHS Test
     }
     return render(request, 'userT/repPMTExcel.html', context)
 
@@ -950,6 +959,75 @@ def StickyNote(request):
     return render(request, 'userT/StickyNote.html')
 
 
-def PDFtest(request):
-    run()
-    return HttpResponse('TEST')
+# def PDFtest(request):
+#     run()
+#     return HttpResponse('TEST')
+
+#this part need to be tidied up. For time's sake i just copy from def (repPMTExcel). by YHS
+def closeoutsheet(request): #new naming convention - all small letters
+    QueOpen = [0,1,2,3,4,5,6,7,8,9]
+    QueClosed = [99]
+    YetToRespondQue =[0]
+    ApprovalQue = [1,2,3,4,5,6,7,8,9]
+    allstudies = Studies.objects.all()
+    lstbyWorkshop = blgetbyStdudiesCount(allstudies,QueOpen,YetToRespondQue,ApprovalQue,QueClosed)
+    allactions = ActionItems.objects.all()
+    tableallheader = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
+    lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
+    filename = [] # for appending filename place before for loop
+    if (request.POST.get('GeneratePDF')): 
+        x=ActionItems.objects.all()  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
+        y= x.values()          
+        for item in y :            
+            i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file  
+            j = (i + '.pdf')  # easier to breakdown j           
+            del item["id"]      
+            data_dict=item
+            out_file = 'static/media/' + j
+            pdfgenerate('atrtemplateautofontreadonly.pdf',out_file,data_dict)
+            filename.append(out_file) #can only append str   
+            context1={
+                'filename' : filename,
+                'table': True,
+                'lstbyWorkshop' : lstbyWorkshop,
+                'lstofallactions' : lstofallactions,
+            }
+        return render(request, 'userT/closeoutsheet.html', context1)                    
+    
+
+    context = {
+
+        'lstbyWorkshop' : lstbyWorkshop,
+        'lstofallactions' : lstofallactions,
+        
+        
+    }
+
+    return render(request, 'userT/closeoutsheet.html', context)
+
+# def closeoutsheet(request):
+#     filename = [] # for appending filename place before for loop
+#     if (request.POST.get('GeneratePDF')): 
+#         x=ActionItems.objects.filter(StudyName='HAZID')  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
+#         y= x.values()          
+#         for item in y :            
+#             i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file  
+#             j = (i + '.pdf')  # easier to breakdown j           
+#             del item["id"]      
+#             data_dict=item
+#             out_file = 'static/media/' + j
+#             pdfgenerate('atrtemplateautofontreadonly.pdf',out_file,data_dict)
+#             filename.append(out_file) #can only append str   
+#             context={
+#                 'filename' : filename,
+#                 'table': True
+#             }
+#             #return HttpResponse('TEST')
+#         #     return render(request, 'userT/closeoutsheet.html', context)
+#         # return render(request, 'userT/closeoutsheet.html')
+#         return render(request, 'userT/closeoutsheet.html', context)                    
+#     return render(request, 'userT/closeoutsheet.html')
+        
+
+
+

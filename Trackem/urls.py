@@ -90,7 +90,7 @@ urlpatterns = [
         path('discslice/', login_required(UserView.rptdiscSlice), name='discslice' ),
         path('rptbyuser/', login_required(UserView.rptbyUser), name='rptbyuser' ),
         #pdf path
-        path('GeneratePDF/',login_required(UserView.GeneratePDF),name='GeneratePDF'),
+        #path('GeneratePDF/',login_required(UserView.pdftest),name='GeneratePDF'),
         #email path
         path('ReportingTable/',login_required(UserView.ReportingTable),name='ReportingTable'),
         path('Profile/',login_required(UserView.Profile),name='Profile'),
@@ -102,12 +102,12 @@ urlpatterns = [
         path('StickyNote/',login_required(UserView.StickyNote),name='StickyNote'),
         path('IndividualBreakdownByActions/',login_required(UserView.IndividualBreakdownByActions),name='IndividualBreakdownByActions'),
         path('IndividualBreakdownByUsers/',login_required(UserView.IndividualBreakdownByUsers),name='IndividualBreakdownByUsers'),
-
+        path('closeoutsheet/',login_required(UserView.closeoutsheet),name='closeoutsheet'),
         
         #tenant
         path('our_team/', login_required(our_team), name='our_team'),
 
-        path('PDFtest/', UserView.PDFtest, name='PDFtest'),
+        #path('PDFtest/', UserView.PDFtest, name='PDFtest'),
       ]
 
 if settings.DEBUG:

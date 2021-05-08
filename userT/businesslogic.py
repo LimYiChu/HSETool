@@ -18,7 +18,7 @@ def blbuildRejectionemail(ID,RejectReason):
 def blgetHistoryforUser(useremail, actioneeroutes):
     
     #first get user ID from CustomUser as only user id is used in history tables
-    ApproverQue = [1,2,3,4,5,6,7,8,9]
+    ApproverQue = [1,2,3,4,5,6,7,8,9,99]
     lstUserSeries =  CustomUser.objects.filter(email=useremail).values()
     currentUserID = lstUserSeries[0].get('id')
 
@@ -61,6 +61,36 @@ def blgetbyStdudiesCount(Studies,OpenQue,YetToRespondQue,pendingApprovalQue,clos
         lstcountbyStudies =[]
     
     return lstofstudiesdetails
+
+#YHS copying for test
+#def blallActionCountbyDisipline(disipline,quelist):
+
+#    count = 0
+    
+#    for que in quelist:
+#        count += ActionItems.myActionItemsCount.mgr_myItemsCountbyStudies(disipline,que) #Stuck here.
+       
+   
+#    return count
+   
+
+#def blgetbyDispCount(discsuborg,OpenQue,YetToRespondQue,pendingApprovalQue,closedActionsQueSeries):
+   
+#    lstcountbydisciplines = []
+#    lstofdisciplinesdetails =[]
+#    for disipline in discsuborg:
+#        lstcountbydisciplines.append (blgetIndiResponseCount(disipline.discount))
+#        lstcountbydisciplines.append (blallActionCountbyDisipline(disipline.discount,OpenQue))
+#        lstcountbydisciplines.append (blallActionCountbyDisipline(disipline.discount,YetToRespondQue))
+#        lstcountbydisciplines.append (blallActionCountbyDisipline(disipline.discount,pendingApprovalQue))
+#        lstcountbydisciplines.append (blallActionCountbyDisipline(disipline.discount,closedActionsQueSeries))
+#        
+#        lstofdisciplinesdetails.append(lstcountbydisciplines)
+#        lstbydiscipline =[]
+    
+#    return lstbydiscipline
+
+#end of test code
 
 def blgettimeStampforSignatories (id, Signatories):
         #pass in all Signatories and ID of action
@@ -479,3 +509,4 @@ def stripAndmatch(lstcount,lstlabel):
             
     
     return newlstcount,lstlabel
+
