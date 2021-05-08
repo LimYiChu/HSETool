@@ -29,9 +29,11 @@ class CommonLayout (Layout):
         super().__init__(
             
             Div(
-            Div(Field('StudyActionNo',readonly=True),   css_class='col-md-3'), 
+            Div(Field('StudyActionNo',readonly=True),   css_class='col-md-2'), 
             Div (Field('StudyName',readonly=True),  css_class='col-md-3'),
-            Div (Field('ProjectPhase', readonly=True), css_class='col-md-6'),
+            Div (Field('ProjectPhase', readonly=True), css_class='col-md-3'),
+            Div (Field('InitialRisk', readonly=True), css_class='col-md-2'),
+            Div (Field('ResidualRisk', readonly=True), css_class='col-md-2'),
             #Div (Field('QueSeries', readonly=True), css_class='col-md-3'),
            #-somehow not working Div (Field('DueDate', readonly=True), css_class='col-md-2'),
             css_class='row',
@@ -49,8 +51,7 @@ class CommonLayout (Layout):
             Div (
                 
             Div (Field('Facility', type="hidden")),
-            Div (Field('InitialRisk', type="hidden")),
-            Div (Field('ResidualRisk', type="hidden")),
+            
             Div (Field('Disipline', type="hidden")),
             Div (Field('Subdisipline', type="hidden")),
             Div (Field('Organisation', type="hidden")),

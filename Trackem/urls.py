@@ -81,6 +81,9 @@ urlpatterns = [
         
         #path('ContactUs/',UserView.ContactUs,name='ContactUs'),
 
+        #test googleapi
+        path('googlecharts/',login_required(UserView.googlecharts),name='googlecharts'),
+        
         #Following url /s for rejection 
         re_path(r'Comments/(?P<forkeyid>\d+)$', login_required(UserView.RejectReason.as_view()), name='RejectReason' ),
         re_path(r'multiplefiles/(?P<forkeyid>\d+)$', login_required(UserView.multiplefiles), name='multiplefiles' ),
