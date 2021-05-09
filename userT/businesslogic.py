@@ -289,6 +289,7 @@ def blgetActionStuckAt(allactions, lstoftableattributes):
         lstActionDetails =[]
 
     return lstofindiactions
+
 def blgetSignotories (lstorgdiscsub):
     #in - list of company disc sub
     # - out Actionee & Approver approver names - basically the signatories

@@ -20,38 +20,133 @@
     </ol>
 
   </nav>
+
   <div class="row">
     <div class="col-md-12">
         <div class="card">
           <div><h5 class="card-header">
               Generate Close-Out Sheets
           </h5></div>
-
           <div class="tab">
             <button class="tablinks" onclick="openReport(event, 'All')">All</button>
             {% for items in lstbyWorkshop%}
-           
             <button class="tablinks" onclick="openReport(event, '{{items.0}}')" >{{items.0}}</button>
             {%endfor%}
           </div>
+
           <form  action="#" method="POST"> 
           <div id = "All"class="tabcontent" style="border-left:0pc; border-right:0px;border-bottom:0px">
-            {%csrf_token%} 
-            <div class="form-group"><input type="submit" name="GeneratePDF" value="Download All Close-Out Sheet Only" class="btn btn-outline-primary"></div> <!--tie in to all studies and download the PDF sheet only-->
-            <div class="form-group"><input type="submit" name="allActions1" value="Download All Close-Out Sheet with Attachments" class="btn btn-outline-primary"></div> <!--tie in to all studies and download the PDF sheet and attachments (in zip folder) only-->           
+          
+            <br>
+            <h5>Summary</h5>
+            <br>
+            <div class="col-md-3">
+              <table class="table">
+                <thead>
+                  <tr class="filters">
+                    {%for items in tablestudiesheader%}
+                  <th>
+                    {{items}}
+                  </th>
+                  {%endfor%}
+                    
+                    
+                </tr>
+            </thead>
+            <tbody>
+              {% for items in lstbyWorkshop%}
+              
+              <tr>
+                <td>{{items.0}}</td>
+                <td>{{items.1}}</td>
+                
+                <td>{{items.2}}</td>
+                <td>{{items.3}}</td>
+                <td>{{items.4}}</td>
+              </tr> 
+              {%endfor%}
+              
+              </tbody>
+                </tbody>
+              </table>
+            </div>
             
-            <br> 
-          </div>
 
-         
+          </div>
+<!--different colour for different status-->
           {% for items in lstbyWorkshop%}
           <div id = "{{items.0}}"class="tabcontent" style="border-left:0pc; border-right:0px;border-bottom:0px">
-            {%csrf_token%} 
-            <div class="form-group"><input type="submit" name="GeneratePDF" value="Download All Close-Out Sheet Only" class="btn btn-outline-primary"></div> 
-            <div class="form-group"><input type="submit" name="allActions1" value="Download All Close-Out Sheet with Attachments" class="btn btn-outline-primary"></div> 
+            {%csrf_token%}
+            <br>
+            <h5>Summary</h5>
+            <br>
+            <div class="col-md-3">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>
+                      Status
+                    </th>
+                    <th>
+                      Total No.
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      Open Actions
+                    </td>
+                    <td>{{items.1}}</td> 
+                  </tr>
+                  <tr>
+                    <td>
+                      Yet To Respond
+                    </td>
+                    <td>{{items.2}}</td> 
+                  </tr>
+                  <tr>
+                    <td>
+                      Pending Approval
+                    </td>
+                    <td>{{items.3}}</td> 
+                  </tr>
+                  <tr>
+                    <td>
+                    Closed
+                    </td>
+                    <td>{{items.4}}</td> 
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          
+         
+          
+         
+
             <br> 
           </div>
           {%endfor%}
+
+          <div class ="card-footer">
+              
+            {%csrf_token%} 
+            
+          <button class="btn btn-outline-primary my-2 my-sm-0"  name ="GeneratePDF" type="submit" value="Click" style="float: right;">Generate </button>
+          <button class="btn btn-outline-primary my-2 my-sm-0"  name ="/main" type="submit" value="Click" style="float: right;">Cancel</button> 
+            
+          <p></p>
+
+
+
+          <br> 
+          </div>
+         
+      
+
+
+          
 
         </form>
 
@@ -71,16 +166,19 @@
 </style>  
 
 <div class="card" style="width: 100%;">
-        <div class="card-header">
-            <div>Close-Out Sheets</div>   
+        <div class="card-header h5">
+            <div>Close-Out Sheets <div class="form-group"><input type="submit" name="allActions1" value="Download All" class="btn btn-outline-primary" style="float: right;"></div> </div>   
         </div>
           <br>
-          <div class="col-md-12"> <button type="button" class="btn btn-secondary" style="width: 100%;">Download All</button><br></div><br>
+          <div class="col-md-12"> </div><br>
           <ul class="list-unstyled card-columns">
             {% for x in filename %}
               <li class="list-group-item"><a href=/{{x}}> {{x}}</a></li>
             {% endfor%}
           </ul>
+
+         
+         
 </div>
 
 {% endif %}            
