@@ -447,13 +447,15 @@ class HistoryItemsMixin(ApproveItemsMixin):
         ApproverLevel = blgetApproverLevel(discsuborg)
         
         blsetApproverLevelTarget(id,ApproverLevel)
-        
+       
         Signatories = blgetSignotories(discsuborg)
+        lstSignatoriesTimeStamp= blgettimeStampforSignatories (id, Signatories) #this line was missing so no signature time stamp was showing.
         
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(id)
         context['Approver'] = False
         context ['ApproverLevel'] = ApproverLevel
         context ['Signatories'] = Signatories
+       
         
         return context
 

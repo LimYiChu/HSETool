@@ -279,6 +279,7 @@ def blgetActionStuckAt(allactions, lstoftableattributes):
         lstActionDetails =[]
 
     return lstofindiactions
+
 def blgetSignotories (lstorgdiscsub):
     #in - list of company disc sub
     # - out Actionee & Approver approver names - basically the signatories
@@ -315,7 +316,7 @@ def blgetSignotories (lstorgdiscsub):
                 SigPair =[] 
 
     finallistoflist = [x for x in finalSigPair if x]
-    #print (finallistoflist)
+    #print (finallistoflist) 
     return finallistoflist
 def blgetSignatoryemail(lstdiscsuborg):
     
