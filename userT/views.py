@@ -32,6 +32,8 @@ import os
 #import mixins
 from django.views.generic.detail import SingleObjectMixin
 from userT.pdfgenerator import pdfgenerate
+from django.db.models import Count
+
 #from .forms import UserRegisterForm
 # Create your views here.
 
@@ -40,84 +42,28 @@ emailSender ="support@prism-ehstools.awsapps.com"
 
 def googlecharts(request):
     
-     #get all routes
-    context_allRou = getuserRoutes(request,request.user.email)
     
-    #Just get Actionee and Approver Routes, tied into model managers
-    Actionee_R =    context_allRou.get('Actionee_Routes')
-    Approver_R =    context_allRou.get('Approver_Routes') 
-    studies = blgetAllStudies()
-
-   
-    stripCount =[]
-    striplabels = []
-    QueOpen = [1,2,3,4,5,6,7,8,9]
-    QueClosed =99
-    finallist=[]
-    chartcontent =[]
-    xyz =[]
-    for eachstudy in studies:
-        
-        StudyName = eachstudy.StudyName
-
-        labels=[]
-        labelsapp =[]
-
-        countbyStudies, labels= blActionCountbyStudiesStream(Actionee_R,StudyName,0) # unlimited actionee
-        
-             
-        stripCount, striplabels ,  = stripAndmatch(countbyStudies,labels) # must do to strip all 0 and match to only items that have count
-        newStudyName = "///" + StudyName + ":::"
-
-        googlechartlist = blprepareGoogleCharts(striplabels,stripCount,newStudyName)
-
-        #print("google chart list")
-        #print (googlechartlist)  
-        
-        #newStudyName = "///" + StudyName + ":::"
-        #chartcontent.append(['By Studies :', newStudyName])
-        
-        #chartcontent.append(googlechartlist)
-        #print("CHART CONTENT")
-        #print (chartcontent)
-        #print (blprepareGoogleCharts(googlechartlist,)) 
-        #striplabels += stripCount #this way it adds as string and not appends another array
+    lstbyDueDate= blaggregatebydate(ActionItems.objects.all())
+    lstgooglecharts=  blprepareGoogleChartsfromDict(lstbyDueDate)
+    lstgooglecharts=  blprepareGoogleChartsfromDict(lstbyDueDate)
     
-        
-         #countbyStudiesClosed, labelsClosed= blActionCountbyStudiesStream(Actionee_R,StudyName,QueClosed)
-        
-       
-        #if stripCount != []:
-        
-        
-        
-        finallist.append(googlechartlist)
-        striplabels = []
-        chartcontent =[]    
-        googlechartlist =[]
-      
-           
+    subtotal =[]
+    for items in lstbyDueDate:
+       subtotal.append(items['count']) #how to access dictionary object by
+    
     content = []
-    content1 =  [['Count', 'Open/Closed'],
-          ['EHS',     11],
-          ['Mech',      2],
-          ['Drilling',  2],
-          ['Operations', 2],
-          ['Elec',    7]]
+    content1 =  [
+          ['Month', 'Sales', 'Expenses'],
+          ['1',  1000,      400],
+          ['2',  1170,      460],
+          ['3',  660,       1120],
+          ['4',  1030,      540]
+        ]
     
-    content2 =  [['Count', 'Open/Closed'],
-          ['EHS',     50],
-          ['Mech',      2],
-          ['Drilling',  2],
-          ['Operations', 2],
-          ['Elec',    7]]
-
-    content.append(content1)
-    content.append(content2)
     
     context = {
         
-        'content' : finallist,
+        'content' : content1,
         'charttitles' : "XYZ"
       
 
@@ -141,6 +87,7 @@ def mainDashboard (request):
    
     stripCount =[]
     striplabels = []
+    chartappdata=[]
     QueOpen = [1,2,3,4,5,6,7,8,9]
     QueClosed =99  #something wrong this fucntion wrote it early but needs a bit more to accept list
     #loop through each workshop and get counts
@@ -178,19 +125,21 @@ def mainDashboard (request):
             if (sumoflistCount > 0):
                 labelsApprover.append('Level'+str(QueSeries))
                 dataApprover.append(sumoflistCount)
-                chartappdata = blprepareGoogleCharts(labelsApprover,dataApprover,newStudyName)
                 
+                chartappdata = blprepareGoogleCharts(labelsApprover,dataApprover,newStudyName)
+                sumoflistCount = 0
+
         appfinalist.append(chartappdata)
         finallist.append(googlechartlist)
-    
-        googlechartlist =[]
         
+        #empties out the data for next loop otherwise it doubles the data to append on each study
+        chartappdata = []
+        googlechartlist =[]
         dataApprover = []
         labelsApprover =[]
-        
         countbyStudies = []
 
-    print (appfinalist)
+ 
     Context = {
       
         
@@ -448,8 +397,10 @@ class HistoryItemsMixin(ApproveItemsMixin):
         
         blsetApproverLevelTarget(id,ApproverLevel)
         
+        #sets the signatory directly in getting timestamp
         Signatories = blgetSignotories(discsuborg)
-        
+        lstSignatoriesTimeStamp= blgettimeStampforSignatories (id, Signatories)
+
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(id)
         context['Approver'] = False
         context ['ApproverLevel'] = ApproverLevel
@@ -476,9 +427,10 @@ class ActioneeItemsMixin(ApproveItemsMixin):
         
         Signatories = blgetSignotories(discsuborg)
         
+        #seems to set the signatories directly?
         lstSignatoriesTimeStamp= blgettimeStampforSignatories (IdAI, Signatories)
         
-        print (lstSignatoriesTimeStamp)
+    
         
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(IdAI)
         context['Approver'] = False
@@ -925,9 +877,7 @@ def repPMTExcel (request):
     discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
     
     Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
-    #YHS
-    print(Indisets)
-    #YHS
+   
     tableindiheader = ['User','Role', 'Open Actions' ,'Pending Res/Appr','Organisation Route','Closed']
     #Get all Actions
     allactions = ActionItems.objects.all()
@@ -946,13 +896,18 @@ def repPMTExcel (request):
     
     #for Disipline based view
     tabledischeader = ['Discipline','Open Actions', 'In-Progress', 'Yet to Respond' ,'Closed','Total Actions']
-    
-
     lstbyDisc= blaggregatebyDisc(discsuborg, QueOpen, ApprovalQue,YetToRespondQue,QueClosed,TotalQue)
     
     #due date based view
-
+    tableduedateheader = ['Due Date','Actions to Close by']
+    lstbyDueDate= blaggregatebydate(ActionItems.objects.all())
     
+    subtotal =[]
+    for items in lstbyDueDate:
+       subtotal.append(items['count']) #how to access dictionary object by
+    
+    totalallDueDate = sum(subtotal)
+
     if request.method == 'POST':
                 
         if (request.POST.get('allActions')):
@@ -997,6 +952,10 @@ def repPMTExcel (request):
             
 
     context = {
+        'lstbyDueDate' : lstbyDueDate,
+        'tableduedateheader' : tableduedateheader,
+        'totalallDueDate' : totalallDueDate, 
+
         'lstbyDisc' : lstbyDisc,
         'lstbyWorkshop' : lstbyWorkshop,
         'Indisets' : Indisets,
@@ -1005,6 +964,7 @@ def repPMTExcel (request):
         'tablestudiesheader' : tablestudiesheader,
         'tabledischeader' : tabledischeader ,
         'tableallheader' : tableallheader
+        
     }
     return render(request, 'userT/repPMTExcel.html', context)
 
@@ -1085,16 +1045,3 @@ def closeoutsheet(request): #new naming convention - all small letters
 #     return render(request, 'userT/closeoutsheet.html')
         
 
-def register (request):
-    if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
-        
-            #usernames =   form.cleaned_data.get('username')
-           # messages.success(request, 'account has been created')
-        if form.is_valid():
-            form.save()
-            return render(request, 'userT/home.html')
-    else:
-       #form =  UserRegisterForm()
-       #form = UserCreationForm()
-        return render(request, 'userT/register.html', {'form': form})

@@ -31,7 +31,7 @@ urlpatterns = [
         path('LoadRoutes/', login_required(UploadV.LoadRoutes), name='LoadRoutes' ),
         path('login/',auth_views.LoginView.as_view(template_name='userT/login.html'),name='login'),
         path('logout/',auth_views.LogoutView.as_view(template_name='userT/logout.html'),name='logout'),
-        path('register/', userView.register, name='register' ),
+        
         path('admin/', admin.site.urls, name='adminT'),
        # path('routes/', UserView.yourRoutes.as_view(), name='yourRoutes' ),
         #to prevent authorised view, add login_required() in front of the views, for example--> login_required(userView.mainDashboard)
