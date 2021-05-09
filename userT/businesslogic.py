@@ -3,7 +3,18 @@ from django.http import HttpResponse
 
 from UploadExcel.models import ActionItems
 from .models import *
+from django.db.models import Count
 
+def blaggregatebydate (objActions):
+
+    return objActions.values('DueDate').annotate(count=Count('id')).values('DueDate', 'count').order_by('DueDate')
+
+def blprepareGoogleChartsfromDict(QuerySet):
+    finallist=[]
+    for dictitems in QuerySet:
+        finallist.append(dictitems.values())
+    
+    return finallist
 def blprepareGoogleCharts (labels,count,newstudyname):
     initiallist =[]
     finallist =[]
@@ -66,7 +77,7 @@ def blaggregatebyDisc(discsuborg, QueOpen, YetToRespondQue,ApprovalQue,QueClosed
     lstofdiscdetails =[]
     lstcountbydisc =[]
     for disc in discsuborg:
-        lstcountbydisc.append (disc[0])
+        lstcountbydisc.append ("/".join(disc))
         lstcountbydisc.append  (blallActionCountbyDisc(disc[0],QueOpen))
         lstcountbydisc.append (blallActionCountbyDisc(disc[0],YetToRespondQue))
         lstcountbydisc.append (blallActionCountbyDisc(disc[0],ApprovalQue))
@@ -143,8 +154,7 @@ def blgettimeStampforSignatories (id, Signatories):
         #next get all history that has got to do with ID from history tables
         #thinking that if you order by decending then you are done by getting latest first
         lstdictHistory = ActionItems.history.filter(id=id).filter(QueSeries=currentQueSeries).order_by('-history_date').values()
-        #print (lstdictHistory)
-        #print (y[lstdictHistory].get('history_date'))
+        
         finallstoflst = []                                   
         for index, items in enumerate(Signatories):
             if index < currentQueSeries: 
@@ -162,7 +172,7 @@ def blgettimeStampforSignatories (id, Signatories):
                 finallstoflst.append(items)
                 items =[]
         
-        #print (finallstoflst)
+    
           #que series will decide number of people whom have signed +1 because actionee is 0- Need a matching list index
 
         return finallstoflst
@@ -315,7 +325,7 @@ def blgetSignotories (lstorgdiscsub):
                 SigPair =[] 
 
     finallistoflist = [x for x in finalSigPair if x]
-    #print (finallistoflist)
+    
     return finallistoflist
 def blgetSignatoryemail(lstdiscsuborg):
     
