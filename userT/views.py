@@ -1001,8 +1001,8 @@ def closeoutsheet(request): #new naming convention - all small letters
             del item["id"]      
             data_dict=item
             out_file = 'static/media/' + j
-            pdfgenerate('atrtemplateautofontreadonly.pdf',out_file,data_dict)
-            filename.append(out_file) #can only append str   
+            pdfgenerate('atrtemplateautofontreadonly.pdf',out_file,data_dict)#returns from pdfgenerator
+            filename.append(j) #can only append str   
             context1={
                 'filename' : filename,
                 'table': True,

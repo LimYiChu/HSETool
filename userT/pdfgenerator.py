@@ -1,5 +1,4 @@
 import pdfrw
-from UploadExcel. models import ActionItems
 
 def pdfgenerate(input_pdf_path, output_pdf_path, data_dict):
     template_pdf = pdfrw.PdfReader(input_pdf_path) # Read Input PDF
