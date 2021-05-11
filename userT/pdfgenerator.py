@@ -3,10 +3,9 @@ from UploadExcel. models import ActionItems
 
 def pdfgenerate(input_pdf_path, output_pdf_path, data_dict):
     template_pdf = pdfrw.PdfReader(input_pdf_path) # Read Input PDF
-    template_pdf.Root.AcroForm.update(pdfrw.PdfDict(NeedAppearances=pdfrw.PdfObject('true')))# Set Apparences ( Make Text field visible )
+    template_pdf.Root.AcroForm.update(pdfrw.PdfDict(NeedAppearances=pdfrw.PdfObject('true')))# Set Appearences ( Make Text field visible )
     # Loop all Annotations
     for annotation in template_pdf.pages[0]['/Annots']:#loop over all pages in pdf, and for each page, loop over all ediatble fields called annots, for each page all annotations stored in 'Annots/' 
-        print(annotation)
         if annotation['/Subtype'] == '/Widget' and annotation['/T']:  # all key names for each field stored in'/T'
             key = annotation['/T'][1:-1] # Remove parentheses
             if key in data_dict.keys():
