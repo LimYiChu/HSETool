@@ -1,5 +1,7 @@
 import pdfrw
 
+
+
 def pdfgenerate(input_pdf_path, output_pdf_path, data_dict):
     template_pdf = pdfrw.PdfReader(input_pdf_path) # Read Input PDF
     template_pdf.Root.AcroForm.update(pdfrw.PdfDict(NeedAppearances=pdfrw.PdfObject('true')))# Set Appearences ( Make Text field visible )
@@ -8,7 +10,8 @@ def pdfgenerate(input_pdf_path, output_pdf_path, data_dict):
         if annotation['/Subtype'] == '/Widget' and annotation['/T']:  # all key names for each field stored in'/T'
             key = annotation['/T'][1:-1] # Remove parentheses
             if key in data_dict.keys():
-                annotation.update( pdfrw.PdfDict(V=f'{data_dict[key]}')) #takes the data from models with [key], printing key returns all field from models 
+                annotation.update( pdfrw.PdfDict(V=f'{data_dict[key]}')) #takes the data from models with [key], printing key returns all key field from models 
+                print(annotation)
     pdfrw.PdfWriter().write(output_pdf_path, template_pdf)
 
 

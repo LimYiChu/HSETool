@@ -997,12 +997,12 @@ def closeoutsheet(request): #new naming convention - all small letters
         y= x.values()          
         for item in y :            
             i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file  
-            j = (i + '.pdf')  # easier to breakdown j           
+            j = (i + '.pdf')  # easier to breakdown j & to append further on          
             del item["id"]      
             data_dict=item
             out_file = 'static/media/' + j
             pdfgenerate('atrtemplateautofontreadonly.pdf',out_file,data_dict)#returns from pdfgenerator
-            filename.append(j) #can only append str   
+            filename.append(j) #can only append str, appending j shows the filename for userview instead of whole location 
             context1={
                 'filename' : filename,
                 'table': True,
