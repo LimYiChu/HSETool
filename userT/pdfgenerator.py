@@ -8,7 +8,7 @@ def pdfgenerate(input_pdf_path, output_pdf_path, data_dict):
         if annotation['/Subtype'] == '/Widget' and annotation['/T']:  # all key names for each field stored in'/T'
             key = annotation['/T'][1:-1] # Remove parentheses
             if key in data_dict.keys():
-                annotation.update( pdfrw.PdfDict(V=f'{data_dict[key]}')) #takes the data from models with [key], printing key returns all key field from models (along with pdf details)
+                annotation.update( pdfrw.PdfDict(V=f'{data_dict[key]}')) #takes the data from models with [key], printing key returns all key field from models (along with pdf details such as font type,etc)
     pdfrw.PdfWriter().write(output_pdf_path, template_pdf)
 
 
@@ -27,7 +27,7 @@ def pdfgenerate(input_pdf_path, output_pdf_path, data_dict):
 #     #        annotation.update(pdfrw.PdfDict(Ff=1))#locks fillable field
 #     # pdfrw.PdfWriter().write(output_pdf_path, template_pdf)
   
-    # N = 1
+    # N = 1 #N=1  can be returned directly in str(N)
     # annotations = template_pdf.pages[0]['/Annots'] # Only annotations that are Widgets Text
     # for annotation in annotations:
     #     if annotation['/Subtype'] == '/Widget':
