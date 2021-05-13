@@ -12,7 +12,7 @@ def blaggregatebydate (objActions):
 def blprepareGoogleChartsfromDict(QuerySet):
     finallist=[]
     for dictitems in QuerySet:
-        finallist.append(dictitems.values())
+        finallist.append(list(dictitems.values()))
     
     return finallist
 def blprepareGoogleCharts (labels,count,newstudyname):

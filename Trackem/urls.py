@@ -24,9 +24,14 @@ from django.contrib.auth.decorators import login_required
 from django.conf.urls.static import static
 from django.conf import settings
 from Tenant.views import our_team
+from rest_framework import routers
 
+router = routers.DefaultRouter()
+router.register ('ActionItems', UserView.anyView)
 urlpatterns = [
       # Load excel actions, routes ,
+        path ('rest',include(router.urls)),
+        
         path('upload/', login_required(UploadV.Load), name='Load' ),
         path('LoadRoutes/', login_required(UploadV.LoadRoutes), name='LoadRoutes' ),
         path('login/',auth_views.LoginView.as_view(template_name='userT/login.html'),name='login'),

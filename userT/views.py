@@ -1,3 +1,4 @@
+from django.http.response import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy, resolve
 from django.http import HttpResponse, HttpResponseRedirect
@@ -34,30 +35,42 @@ from django.views.generic.detail import SingleObjectMixin
 from userT.pdfgenerator import pdfgenerate
 from django.db.models import Count
 
+#Rest Framework
+from rest_framework import viewsets
+from .serializers import *
 #from .forms import UserRegisterForm
 # Create your views here.
 
 from UploadExcel.forms import *
 emailSender ="support@prism-ehstools.awsapps.com"
 
+class anyView(viewsets.ModelViewSet):
+
+    queryset = ActionItems.objects.all()
+    serializer_class = anySerializers
+
 def googlecharts(request):
     
     
     lstbyDueDate= blaggregatebydate(ActionItems.objects.all())
-    lstgooglecharts=  blprepareGoogleChartsfromDict(lstbyDueDate)
-    lstgooglecharts=  blprepareGoogleChartsfromDict(lstbyDueDate)
+    
+    content =  blprepareGoogleChartsfromDict(lstbyDueDate)
+    
     
     subtotal =[]
     for items in lstbyDueDate:
        subtotal.append(items['count']) #how to access dictionary object by
     
-    content = []
+   
+    
+    
     content1 =  [
-          ['Month', 'Sales', 'Expenses'],
-          ['1',  1000,      400],
-          ['2',  1170,      460],
-          ['3',  660,       1120],
-          ['4',  1030,      540]
+          ['2021-01-01', 300],
+          ['2021-02-22',  200 ],
+          ['2021-03-15',  150 ],
+          ['2021-04-15',  100 ],
+          ['2021-05-15',  30 ],
+          ['2021-06-15',  0 ],
         ]
     
     
@@ -68,6 +81,7 @@ def googlecharts(request):
       
 
     }
+    return JsonResponse()
     return render(request, 'userT/googlecharts.html',context)
 
 def mainDashboard (request):

@@ -10,43 +10,96 @@
     
     <script type="text/javascript">
         google.charts.load('current', {'packages':['corechart']});
+        google.charts.load('current', {'packages':['line']});
         google.charts.setOnLoadCallback(starter); //cant call drawchart with paarmeters, need the parameters to make the code effcient
     
         function starter(){
             
             
-                drawChart({{content|safe}} , '{{content.0}}');
-            
+                drawChart({{content|safe}} );
+                //drawChart2LineChart({{content|safe}} , '{{content.0}}');
             
         }
-      function drawChart(values,chartTitle) {
-        
-        //firstindex = chartTitle.lastIndexOf("///")+3
-        
-        //lastindex = chartTitle.lastIndexOf(":::")
-        //var newtitle = chartTitle.substring(firstindex,lastindex );
-        
-        
-        //var data = google.visualization.arrayToDataTable(values);
 
-        var data = google.visualization.arrayToDataTable(values);
+        function drawChart(values) {
+         
+          //fields= values.split(',');
+          //alert(fields[0]);
+          //
+          var chartdata = [];
+        var data = new google.visualization.DataTable();
+        data.addColumn('date', 'Date');
+        data.addColumn('number', 'Planned');
+        data.addColumn('number', 'Actual');
+        
+        for(var i = 0; i < values.length; i++){
+          for(var j = 0; j < values[i].length; j++){
+              //str1= "new Date ("
+              //Z = str1.concat( values[i][0], ")" ); //
+              first= (values[0][0])
+              //chartdata.push([Z, values[i][1]]) ;
+              //alert(values[i][j]);
+          }
+      }
+        
+        var datarows = []
+
+        data.addRows([
+        
+        [new Date (first), 200, 210],
+        [new Date ('2021-03-22'), 150, 220],
+        [new Date ('2021-04-15'), 100, 200],
+        [new Date ('2021-05-05'), 80, 230],
+        [new Date ('2021-06-06'), 0, 210]
+        
+        ]
+
+
+        );
+  
+        var options = {
+          chart: {
+            title: 'Run-Down Curve',
+            subtitle: 'Action Items'
+          },
+         hAxis:{ format: 'MMM d,y'},
+         curveType: 'function',
+          width: 900,
+          height: 500
+        };
+  
+        var chart = new google.charts.Line(document.getElementById('linechart'));
+        //chart.draw(data,options);
+        google.visualization.events.addListener(chart, 'ready', function () {
+          piechart2.innerHTML = '<img src="' + chart.getImageURI() + '">';
+          console.log(piechart2.innerHTML);
+        });
+        chart.draw(data, google.charts.Line.convertOptions(options));
+      }
+       
+
+        function drawChart2LineChart(values,chartTitle) {
+        
+          var data = google.visualization.arrayToDataTable([
+          ['Date', 'Planned', 'Expenses'],
+          ['2021-02-15',  200,      200],
+          ['2021-03-22',  150,      200],
+          ['2021-04-15',  80,       180],
+          ['2021-05-05',  0,      180]
+        ]);
 
         var options = {
           title: 'Company Performance',
           curveType: 'function',
-          hAxis: { format: 'MMMM'},
           legend: { position: 'bottom' }
         };
-        //var strpie = "linechart";
-        //  var finalpie = strpie.concat(index);
+
         var chart = new google.visualization.LineChart(document.getElementById('linechart'));
+
         chart.draw(data, options);
-        //var chart2 = new google.visualization.PieChart(document.getElementById('piechart2'));
-        
-    //chart2.draw(data, options);
-       
       }
-     
+
+      
     </script>
   </head>
   <body>
