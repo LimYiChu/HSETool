@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'Tenant',
     'simple_history',
+    'rest_framework',
     
     #'django_seed',
 
