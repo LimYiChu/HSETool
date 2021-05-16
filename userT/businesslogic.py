@@ -4,7 +4,8 @@ from django.http import HttpResponse
 from UploadExcel.models import ActionItems
 from .models import *
 from django.db.models import Count
-
+from django.utils import timezone
+from datetime import datetime
 def blaggregatebydate (objActions):
 
     return objActions.values('DueDate').annotate(count=Count('id')).values('DueDate', 'count').order_by('DueDate')
@@ -141,6 +142,34 @@ def blgetbyStdudiesCount(Studies,OpenQue,YetToRespondQue,pendingApprovalQue,clos
 #    return lstbydiscipline
 
 #end of test code
+def blconverttodictforpdf(lstofsignatories):
+    
+    for items in lstofsignatories:
+        fields = items[0]
+        if ("actionee" in fields.lower()) :
+            
+            localtimeX = timezone.localtime(items[3])
+           
+            #newdatetime = datetime.fromtimestamp(items[3])
+            #print (newdatetime)
+            dict = {'actionee':items[0], 'actioneerole':items[2],'actioneename':items[1],
+                    'actioneetimestamp':localtimeX
+            }
+        elif ("approver"in fields.lower()):
+
+            localtimeX = timezone.localtime(items[3])
+
+            strappr = str(items[0])
+            strapprrole = strappr+"role"
+            strapprname = strappr+"name"
+            strapprtimestamp = strappr+"timestamp"
+
+
+            dictapp = {strappr.lower():items[0], strapprrole.lower():items[2],strapprname.lower():items[1],
+                    strapprtimestamp.lower():localtimeX}
+            dict.update(dictapp)
+            
+    return(dict)
 
 def blgettimeStampforSignatories (id, Signatories):
         #pass in all Signatories and ID of action
@@ -157,24 +186,43 @@ def blgettimeStampforSignatories (id, Signatories):
         
         finallstoflst = []                                   
         for index, items in enumerate(Signatories):
+            
+            objuser = CustomUser.objects.filter(email=items[1]).values()
+           
+            if objuser:
+                  
+                designation =  objuser[0].get('designation')
+                items.append(designation)
+            else:
+                    
+                items.append("No Designation Defined")
+            
             if index < currentQueSeries: 
                 #get all time stamps for all que series
                 #index basically denominates Que series level. if Current que series =2 then only actionee = 0 and Approver 1 has signed
                 lstdictHistory = ActionItems.history.filter(id=id).filter(QueSeries=index).order_by('-history_date').values()
                 timestamp = lstdictHistory[0].get('history_date') # get just the first record assume decending is the way togo
+                
+               
+                
+                
+
                 items.append(timestamp)
+                
                 finallstoflst.append(items)
+                
                 items =[]
             
             else:
                 #this simply says that i will give a time stamp for rest of levels to 0- no date and time
+                
                 items.append(0)
                 finallstoflst.append(items)
                 items =[]
         
     
           #que series will decide number of people whom have signed +1 because actionee is 0- Need a matching list index
-
+        
         return finallstoflst
 
 def blgetDiscSubOrgfromID (ID):
