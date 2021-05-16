@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from .manager import *
 from django.conf import settings
-
+from django.utils.translation import gettext_lazy as _
 #user= settings.AUTH_USER_MODEL
 
 from django.contrib.auth.models import ( 
@@ -104,6 +104,8 @@ class RiskMatrix (models.Model):
     Likelihood = models.CharField(max_length=20, null=True,blank=True)
     Combined  = models.CharField(max_length=100, null=True,blank=True)
     Ranking = models.CharField(max_length=100, null=True,blank=True)
+    Colour = models.CharField(max_length=100, null=True,blank=True)
+        
     objects = models.Manager()
     class Meta:
        verbose_name_plural = "RiskMatrix" #this if not done gives a view of Studiess

@@ -1,4 +1,4 @@
-from django.http.response import JsonResponse
+from django.http.response import FileResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy, resolve
 from django.http import HttpResponse, HttpResponseRedirect
@@ -32,8 +32,11 @@ from django.utils import timezone
 import os
 #import mixins
 from django.views.generic.detail import SingleObjectMixin
-from userT.pdfgenerator import pdfgenerate
+from userT.pdfgenerator import *
 from django.db.models import Count
+
+from zipfile import ZipFile
+from io import StringIO, BytesIO
 
 #Rest Framework
 from rest_framework import viewsets
@@ -316,17 +319,19 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
         Signatories = blgetSignotories(discsub)
 
         
-       
+        #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
         lstSignatoriesTimeStamp= blgettimeStampforSignatories (idAI, Signatories) #it changes the signatories directly
-
+        
+        
 
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(idAI)
         context['Approver'] = True
-        context ['Signatories'] = Signatories
+        context ['Signatories'] = lstSignatoriesTimeStamp
+        
         return context
 
     def get_queryset(self):
-       return self.object.attachments_set.all()
+       return self.object.attachments_set.all() #-this one gets the the attachments and puts it into Object_List
 
     def get_success_url(self):
         return reverse ('ApproverConfirm', kwargs={'id': self.object.id})
@@ -443,6 +448,7 @@ class ActioneeItemsMixin(ApproveItemsMixin):
         Signatories = blgetSignotories(discsuborg)
         
         #seems to set the signatories directly?
+        
         lstSignatoriesTimeStamp= blgettimeStampforSignatories (IdAI, Signatories)
         
     
@@ -899,9 +905,8 @@ def repPMTExcel (request):
 
     tableallheader = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
     lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
-    #lstofallactions=[]
-    #lastly
     
+    tableallheadermodified = ['Study Action No','Study Name', 'Discipline' ,'Recommendations','Response','Initial Risk']
     
     #for workshop based view
     allstudies = Studies.objects.all()
@@ -978,10 +983,10 @@ def repPMTExcel (request):
         'tableindiheader' : tableindiheader,
         'tablestudiesheader' : tablestudiesheader,
         'tabledischeader' : tabledischeader ,
-        'tableallheader' : tableallheader
-        
+        'tableallheader' : tableallheader,
+        'tableallheadermodified' : tableallheadermodified,
     }
-    return render(request, 'userT/repPMTExcel.html', context)
+    return render(request, 'userT/reppmtexcel.html', context)
 
 def DisciplineBreakdown (request):
     return render(request, 'userT/DisciplineBreakdown.html')
@@ -995,6 +1000,65 @@ def StickyNote(request):
 #     return HttpResponse('TEST')
 
 #this part need to be tidied up. For time's sake i just copy from def (repPMTExcel). by YHS
+def closeoutprint(request,**kwargs):
+    
+
+    ID = (kwargs["id"])
+    
+    obj = ActionItems.objects.filter(id=ID).values() # one for passing into PDF
+    objFk =ActionItems.objects.get(id=ID) # this is for getting all attachments
+
+    ObjAttach = objFk.attachments_set.all()  #get attcahments from foreign key
+    
+    
+    studyActionNo =  objFk.StudyActionNo
+
+    Filename = studyActionNo  + ".pdf"
+    out_file = 'static/media/temp/' + Filename
+       
+    data_dict=obj[0]
+    #print (data_dict)
+    discsub = blgetDiscSubOrgfromID(ID)
+    Signatories = blgetSignotories(discsub)
+    print(discsub)
+    print (Signatories)
+    lstSignatoriesTimeStamp= blgettimeStampforSignatories (ID, Signatories)
+    signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
+    
+   
+        
+    #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
+        
+    #dont delete below as its a way to actualy read from memory
+    #response = HttpResponse(content_type='application/pdf')
+    #response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
+    #bufferfile = pdfsendtoclient ('atrtemplateautofontreadonly.pdf',data_dict)
+
+    file = pdfgenerate('closeouttemplate.pdf',out_file,data_dict,signatoriesdict)
+    
+    in_memory = BytesIO()
+    
+    zip = ZipFile(in_memory,mode="w")
+    
+    for eachfile in ObjAttach:
+        filename = os.path.basename(eachfile.Attachment.name)
+        zip.write (eachfile.Attachment.path, "Attach_"+filename)
+    
+    closeoutname = os.path.basename(out_file) 
+    zip.write (out_file, closeoutname)
+    zip.close()
+
+    response = HttpResponse(content_type="application/zip")
+    response["Content-Disposition"] = "attachment; filename=" + studyActionNo+ ".zip"
+
+    in_memory.seek(0)    
+    response.write(in_memory.read())
+    
+    return response
+   
+   #return FileResponse(bufferfile, as_attachment=True, filename=out_file)
+
+
 def closeoutsheet(request): #new naming convention - all small letters
     QueOpen = [0,1,2,3,4,5,6,7,8,9]
     QueClosed = [99]
@@ -1005,9 +1069,21 @@ def closeoutsheet(request): #new naming convention - all small letters
     allactions = ActionItems.objects.all()
     tableallheader = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
     lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
+    tableallheadermodified =  ['Study Action No','Study Name', 'Discipline' ,'Recommendations','Response','Initial Risk'] 
     filename = [] # for appending filename place before for loop
+    
+    #Guna
+
+    lstclosed = ActionItems.objects.filter(QueSeries =99)
+
+    
+
+    
     if (request.POST.get('GeneratePDF')): 
         x=ActionItems.objects.all()  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
+        
+        
+        
         y= x.values()          
         for item in y :            
             i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file  
@@ -1027,7 +1103,7 @@ def closeoutsheet(request): #new naming convention - all small letters
     
 
     context = {
-
+        'lstclosed' : lstclosed,
         'lstbyWorkshop' : lstbyWorkshop,
         'lstofallactions' : lstofallactions,
         

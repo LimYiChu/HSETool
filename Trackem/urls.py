@@ -30,7 +30,7 @@ router = routers.DefaultRouter()
 router.register ('ActionItems', UserView.anyView)
 urlpatterns = [
       # Load excel actions, routes ,
-        path ('rest',include(router.urls)),
+        path ('rest/',include(router.urls)),
         
         path('upload/', login_required(UploadV.Load), name='Load' ),
         path('LoadRoutes/', login_required(UploadV.LoadRoutes), name='LoadRoutes' ),
@@ -110,7 +110,10 @@ urlpatterns = [
         path('StickyNote/',login_required(UserView.StickyNote),name='StickyNote'),
         path('IndividualBreakdownByActions/',login_required(UserView.IndividualBreakdownByActions),name='IndividualBreakdownByActions'),
         path('IndividualBreakdownByUsers/',login_required(UserView.IndividualBreakdownByUsers),name='IndividualBreakdownByUsers'),
+        
+        #PDF close out
         path('closeoutsheet/',login_required(UserView.closeoutsheet),name='closeoutsheet'),
+        path('closeoutsheet/<int:id>/print', login_required(UserView.closeoutprint), name='closeoutprint' ),
         
         #tenant
         path('our_team/', login_required(our_team), name='our_team'),

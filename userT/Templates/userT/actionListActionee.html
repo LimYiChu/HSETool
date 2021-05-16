@@ -30,15 +30,15 @@
 					Actionee List
 				</h5>
 				<div class="card-body">
-					<p class="card-text">
+					<p class="card-text" style="font-size:60px">
             <table id="example" class="table table-striped table-hover" style="width:100%">
               <thead class="thead-dark">
                     <tr class="filters">
                       <th width="3%">
-                        StudyActionNo
+                        Study Action No
                       </th>
                       <th width="3%">
-                        StudyName
+                        Study Name
                       </th>
                       <th width="3%">
                         Discipline
@@ -50,15 +50,18 @@
                       <th width="20%">
                         Consequence
                       </th>
-                      <th width="20%">
+                      <th width="25%">
                         Recommendations
                       </th>
-                      <th>
+                      <th width="10%">
                         Due Date
                       </th>
                       
-                      <th width="20%">
-                        Response
+                      <th width="8%">
+                        Intial Risk
+                      </th>
+                      <th width="8%">
+                        Residual Risk
                       </th>
                   </tr>
               </thead>
@@ -75,7 +78,8 @@
                   <td><a class="article-title" href="{% url  'ActioneeFormMixin' x.id %}">{{ x.Recommendations }}</a></td>
                   <td>{{ x.DueDate }}</td>
                   
-                  <td>{{ x.Response }}</td>
+                  <td>{{ x.InitialRisk }}</td>
+                  <td>{{ x.ResidualRisk }}</td>
                   {%endfor%}
                 {%endfor%}
                 </tbody>
