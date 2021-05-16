@@ -19,7 +19,33 @@ $(document).ready(function() {
         orderCellsTop: true,
         fixedHeader: true,
          "lengthMenu": [[-1, 10, 25, 50, 100], ["All", 10, 25, 50, 100]],
-         "dom": '<"top"ifl>rt<"bottom"ip><"clear">',
+         //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
+        
+    } );
+} );
+
+$(document).ready(function() {
+    // Setup - add a text input to each footer cell
+    ;
+    $('#closeoutsheet thead tr:eq(1) th').each( function (i) {
+        var title = $(this).text();
+        $(this).html( '<input type="text" placeholder="Search" />' );
+ 
+        $( 'input', this ).on( 'keyup change', function () {
+            if ( table.column(i).search() !== this.value ) {
+                table
+                    .column(i)
+                    .search( this.value )
+                    .draw();
+            }
+        } );
+    } );
+    
+    var table = $('#closeoutsheet').DataTable( {
+        orderCellsTop: true,
+        fixedHeader: true,
+         "lengthMenu": [[-1, 10, 25, 50, 100], ["All", 10, 25, 50, 100]],
+         "dom": '<"wrapper"f>',
         
     } );
 } );
@@ -45,7 +71,7 @@ $(document).ready(function() {
       orderCellsTop: true,
       fixedHeader: true,
        "lengthMenu": [[-1, 10, 25, 50, 100], ["All", 10, 25, 50, 100]],
-       "dom": '<"top"ifl>rt<"bottom"ip><"clear">',
+       //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
   } );
 } );
 
@@ -70,7 +96,7 @@ $(document).ready(function() {
       orderCellsTop: true,
       fixedHeader: true,
        "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
-       "dom": '<"top"ifl>rt<"bottom"ip><"clear">',
+       //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
   } );
 } );
 
@@ -95,7 +121,7 @@ $(document).ready(function() {
         orderCellsTop: true,
         fixedHeader: true,
          "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
-         "dom": '<"top"ifl>rt<"bottom"ip><"clear">',
+         //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
     } );
   } );
   
@@ -120,7 +146,7 @@ $(document).ready(function() {
         orderCellsTop: true,
         fixedHeader: true,
          "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
-         "dom": '<"top"ifl>rt<"bottom"ip><"clear">',
+         //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
     } );
   } );
   
@@ -145,7 +171,7 @@ $(document).ready(function() {
         orderCellsTop: true,
         fixedHeader: true,
          "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
-         "dom": '<"top"ifl>rt<"bottom"ip><"clear">',
+         //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
     } );
   } );
   
