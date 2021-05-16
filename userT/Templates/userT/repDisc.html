@@ -1,5 +1,6 @@
 {% extends "userT/base3.html"%}
 {% block ClosedOut%}
+<h4><b>
 <nav>
     <ol class="breadcrumb">
       <li class="breadcrumb-item normal">
@@ -10,7 +11,7 @@
       </li>
     </ol>
 </nav>
-
+</b></h4>
 <style>
     .left {
   display: block;
@@ -32,7 +33,7 @@
   Height: 100%;
 }
 </style>
-
+<h6>
 <div class="row">
 {% if Dispcount >= 5 %} <!--if more than 5 discipline, then the bar chart will be wide and long-->
 
@@ -86,9 +87,10 @@
     </div>
 
 {% endif %}
+</h6>
 </div>
 {% if discpslice %}
-
+<!--
                 <div class="col-md-12">
 					<div class="card">
 						<h5 class="card-header">
@@ -142,7 +144,7 @@
 					</div>
 				</div>
 
-                {%endif%}
+                {%endif%}-->
                 {%if discpslice%}
                     <!--HS to add filters for Discpline-->
                 {% endif%}

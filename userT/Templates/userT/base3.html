@@ -56,12 +56,11 @@
   
   <div class="navbar-nav md-3">      
     <li class="nav-item">
-     <a class="nav-link active" aria-current="page"style="color:black"> <img src="{% static 'sapura.png' %}" alt="client" width="5%" height="30%"> Sapura Energy</a> <!--clicking on this link will bring the user to the main page-->
-    </li>
+      <h3> <a class="nav-link active" aria-current="page"style="color:black"> <img src="{% static 'sapura.png' %}" alt="client" width="5%" height="30%"> Sapura Energy</a> </h3>
   </div>
 
        <div class="nav navbar-nav md-3">
-        <li><a class="nav-link active" aria-current="page"  style=" color:black; font-family:pacifico">eHS Tools </a></li> <!--clicking here will imeediately bring the user to the user's setting such as the name, discipline etc... for him to quickly update-->
+        <h3><li><a class="nav-link active" aria-current="page"  style=" color:black; font-family:pacifico" >eHS Tools </a></li> </h3>
       </div><!--consider to have linkedin or facebook link-->
 
 </div>    
@@ -80,10 +79,14 @@
   
       <div id="card-738960" style="margin-right:5px;margin-left:20px"  >
       <br>
-        <div class="card" style="background-color: rgb(52,58,64);">
+      
+         <div class="card" style="background-color: rgb(52,58,64);">
+        <h4> 
             <div class="card-header" >
                 <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-1" style="color:white">Your Actions</a>
             </div>
+        </h4>
+        <h5>
               <div id="card-element-1" class="collapse" >
                 <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" >
                     <a href="/main" style ="color: black;">
@@ -100,12 +103,16 @@
                   History
                  </a></div>
               </div>
+        </h5>
         </div>
-                 
+            
         <div class="card" style="background-color: rgb(52,58,64);">
-            <div class="card-header">
+          <h4>  
+          <div class="card-header">
               <a class="collapsed card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-2" style="color:white">Reporting</a>
             </div>
+          </h4>
+          <h5>
                 <div id="card-element-2" class="collapse">
                     <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/actionstatus" style ="color: black;">
                     Open/Closed Actions
@@ -138,25 +145,33 @@
                       </a> </div>-->
                 
             </div>
+          </h5>
         </div>
 
             
         <div class="card" style="background-color: rgb(52,58,64);">
-              <div class="card-header">
+          <h4>    
+          <div class="card-header">
                  <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-4" style="color:white">Contact</a>
                   </div>
+          </h4>
+          <h5>        
                   <div id="card-element-4" class="collapse">
                     <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/ContactUs" style ="color: black;">
                     Contact Us
-                    </a>  </div>
-                  
+                    </a>  
+                    </div>
                   </div>
-            </div>
+           </h5> 
+        </div>
 
             <div class="card" style="background-color: rgb(52,58,64);">
+              <h4>
               <div class="card-header">
                  <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-5" style="color:white">Profile Management</a>
               </div>
+              </h4>
+              <h5>
                   <div id="card-element-5" class="collapse">
                     <!--Disabled for initial Deployment--><!--
                     <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/Profile" style ="color: black;">
@@ -172,15 +187,19 @@
                     </a>  </div> 
                 
               </div>
+            </h5>
             </div>
 
 <!--If user is admin, then he can have extra buttons to manage the users etc.-->            
   {% if request.user.is_admin %}
   <div class="card" style="background-color: rgb(52,58,64)">
+    <h4>
       <div class="card-header">
         <a class="collapsed card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-3" style="color:white"> Admin</a>
       </div>
-  <div id="card-element-3" class="collapse">
+    </h4> 
+    <h5> 
+    <div id="card-element-3" class="collapse">
     <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/upload" style ="color: black;">
      Upload File
     </a>  </div>
@@ -194,9 +213,9 @@
     <!--<div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/GeneratePDF" style ="color: black;">
       Generate Close-Out Report
     </a>  </div>-->
- 
-              </div>
-            </div>
+    </div>
+    </h5>
+  </div>
           
   {% else %}
 <!--if not admin then not going to show anything-->
@@ -219,6 +238,7 @@
     <main role="main" class="col-lg-10 pt-3 px-4" >
 
       <!--Username and Logout button including bottom border-->
+      <h5>
       <div  class="pb-2 mb-3 border-bottom text-right" >
         <div style="font-size:large"> 
           <i class="bi bi-person-bounding-box"></i>{{user.email}} <!--hold, make this clickable and link to user profile.-->
@@ -227,7 +247,7 @@
         </a>
          </div>    
      </div>
-        
+    </h5>  
     
               {%block Actionee%}
 

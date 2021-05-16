@@ -964,7 +964,17 @@ def repPMTExcel (request):
             response['Content-Disposition'] = 'attachment; filename=byDiscipline.xlsx' 
             workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
             return response
+
+        #yhs working to download    
+        elif (request.POST.get('byDueDate')):
             
+
+            workbook = excelAllActions(lstbyDueDate,tableduedateheader,"DueDates") 
+            
+            response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
+            response['Content-Disposition'] = 'attachment; filename=byDueDates.xlsx' 
+            workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
+            return response    
 
     context = {
         'lstbyDueDate' : lstbyDueDate,
