@@ -1,5 +1,6 @@
 {% extends "userT/base3.html"%}
 {% block ClosedOut%}
+<h4><b>
 <nav>
     <ol class="breadcrumb">
       <li class="breadcrumb-item normal">
@@ -10,8 +11,8 @@
       </li>
     </ol>
 </nav>
-
-
+</b></h4>
+<h6>
             {% if overall %}
 			<div class="row">
 				<div class="col-md-12">
@@ -42,9 +43,9 @@
 				</div>
             </div>
             {%endif%}
-				{% if overall %}
+			{% if overall %}
             <div class="row">
-                <div class="col-md-12">
+            <div class="col-md-12">
 					<div class="card">
 						<h5 class="card-header">
 							Select filters
@@ -96,7 +97,7 @@
                 {%endif%}
                 
 			
-
+</h6>
 <!--<div class="row">
     <div class="col-md-12">
         <div class="card">

@@ -14,11 +14,13 @@ $(document).ready(function() {
             }
         } );
     } );
- 
+    
     var table = $('#example').DataTable( {
         orderCellsTop: true,
         fixedHeader: true,
-         "lengthMenu": [[-1, 10, 25, 50, 100], ["All", 10, 25, 50, 100]]
+         "lengthMenu": [[-1, 10, 25, 50, 100], ["All", 10, 25, 50, 100]],
+         "dom": '<"top"ifl>rt<"bottom"ip><"clear">',
+        
     } );
 } );
 
@@ -42,7 +44,8 @@ $(document).ready(function() {
   var table = $('#table1').DataTable( {
       orderCellsTop: true,
       fixedHeader: true,
-       "lengthMenu": [[-1, 10, 25, 50, 100], ["All", 10, 25, 50, 100]]
+       "lengthMenu": [[-1, 10, 25, 50, 100], ["All", 10, 25, 50, 100]],
+       "dom": '<"top"ifl>rt<"bottom"ip><"clear">',
   } );
 } );
 
@@ -66,7 +69,8 @@ $(document).ready(function() {
   var table = $('#table2').DataTable( {
       orderCellsTop: true,
       fixedHeader: true,
-       "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]]
+       "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
+       "dom": '<"top"ifl>rt<"bottom"ip><"clear">',
   } );
 } );
 
@@ -90,7 +94,8 @@ $(document).ready(function() {
     var table = $('#table3').DataTable( {
         orderCellsTop: true,
         fixedHeader: true,
-         "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]]
+         "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
+         "dom": '<"top"ifl>rt<"bottom"ip><"clear">',
     } );
   } );
   
@@ -114,7 +119,8 @@ $(document).ready(function() {
     var table = $('#table4').DataTable( {
         orderCellsTop: true,
         fixedHeader: true,
-         "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]]
+         "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
+         "dom": '<"top"ifl>rt<"bottom"ip><"clear">',
     } );
   } );
   
@@ -138,7 +144,8 @@ $(document).ready(function() {
     var table = $('#table5').DataTable( {
         orderCellsTop: true,
         fixedHeader: true,
-         "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]]
+         "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
+         "dom": '<"top"ifl>rt<"bottom"ip><"clear">',
     } );
   } );
   
