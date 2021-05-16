@@ -19,7 +19,7 @@ $(document).ready(function() {
         orderCellsTop: true,
         fixedHeader: true,
          "lengthMenu": [[-1, 10, 25, 50, 100], ["All", 10, 25, 50, 100]],
-         "dom": '<"top"ifl>rt<"bottom"ip><"clear">',
+         //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
         
     } );
 } );
@@ -45,7 +45,7 @@ $(document).ready(function() {
       orderCellsTop: true,
       fixedHeader: true,
        "lengthMenu": [[-1, 10, 25, 50, 100], ["All", 10, 25, 50, 100]],
-       "dom": '<"top"ifl>rt<"bottom"ip><"clear">',
+       //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
   } );
 } );
 
@@ -70,7 +70,7 @@ $(document).ready(function() {
       orderCellsTop: true,
       fixedHeader: true,
        "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
-       "dom": '<"top"ifl>rt<"bottom"ip><"clear">',
+       //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
   } );
 } );
 
@@ -95,7 +95,7 @@ $(document).ready(function() {
         orderCellsTop: true,
         fixedHeader: true,
          "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
-         "dom": '<"top"ifl>rt<"bottom"ip><"clear">',
+         //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
     } );
   } );
   
@@ -120,7 +120,7 @@ $(document).ready(function() {
         orderCellsTop: true,
         fixedHeader: true,
          "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
-         "dom": '<"top"ifl>rt<"bottom"ip><"clear">',
+         //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
     } );
   } );
   
@@ -145,7 +145,7 @@ $(document).ready(function() {
         orderCellsTop: true,
         fixedHeader: true,
          "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
-         "dom": '<"top"ifl>rt<"bottom"ip><"clear">',
+         //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
     } );
   } );
   
