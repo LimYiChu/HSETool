@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse
 from .manager import *
 from simple_history.models import HistoricalRecords
+from datetime import datetime
 # Create your models here.
 class UploadExl(models.Model):
 
@@ -31,7 +32,7 @@ class ActionItems(models.Model):
     Subdisipline    = models.CharField(max_length=100,null=True,blank=True)
     FutureAction    =   models.TextField(null=True,blank=True)
     
-    DueDate         =   models.DateField(auto_now_add=True, null=True,blank=True)
+    DueDate         =   models.DateField(null=True,blank=True)
     QueSeries       =   models.IntegerField(blank=True,null=True,default=0) #try to make the queseries value default to 0 when not included in the templated uploaded.
     QueSeriesTarget =   models.IntegerField(blank=True,null=True,default=0)
     Guidewords      =  models.TextField(null=True,blank=True)
