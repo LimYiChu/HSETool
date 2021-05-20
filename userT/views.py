@@ -1058,8 +1058,8 @@ def closeoutprint(request,**kwargs):
     
     
     studyActionNo =  objFk.StudyActionNo
-
-    Filename = studyActionNo  + ".pdf"
+    replacestudyActionNo= studyActionNo.replace("/","_")
+    Filename = replacestudyActionNo  + ".pdf"
     out_file = 'static/media/temp/' + Filename
        
     data_dict=obj[0]
