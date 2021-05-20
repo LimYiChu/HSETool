@@ -104,7 +104,9 @@ urlpatterns = [
         path('Profile/',login_required(UserView.Profile),name='Profile'),
         path('reppmt/',login_required(UserView.repPMTExcel),name='reppmt'),
         path('DisciplineBreakdown/',login_required(UserView.DisciplineBreakdown),name='DisciplineBreakdown'),
-        path('EmailReminder/',login_required(UserView.EmailReminder),name='EmailReminder'),
+        #path('EmailReminder/',login_required(UserView.EmailReminder),name='EmailReminder'),
+
+        path('emailreminders/',login_required(UserView.emailreminders),name='emailreminders'),
         path('EmailReminderAttachment/',login_required(UserView.EmailReminderAttachment),name='EmailReminderAttachment'),
         #StickyNote
         path('StickyNote/',login_required(UserView.StickyNote),name='StickyNote'),

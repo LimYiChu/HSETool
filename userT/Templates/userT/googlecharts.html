@@ -22,46 +22,47 @@
         }
 
         function drawChart(values) {
-         
-          //fields= values.split(',');
-          //alert(fields[0]);
-          //
-          var chartdata = [];
+        
+        var chartdata = [];
         var data = new google.visualization.DataTable();
         data.addColumn('date', 'Date');
-        data.addColumn('number', 'Planned');
         data.addColumn('number', 'Actual');
+        data.addColumn('number', 'Planned');
         
+        var arrplot =[]
         for(var i = 0; i < values.length; i++){
-          for(var j = 0; j < values[i].length; j++){
-              //str1= "new Date ("
-              //Z = str1.concat( values[i][0], ")" ); //
-              first= (values[0][0])
-              //chartdata.push([Z, values[i][1]]) ;
-              //alert(values[i][j]);
-          }
+          //for(var j = 0; j < values[i].length; j++){
+              
+                first = (values[0][0]);
+                seconddate=(values[1][0]);
+                datess= (values[i][0]);
+                actual = (values[i][1]);
+                planned =(values[i][2]);
+                
+                stringdatas = '[new Date(\'' + datess + '\'),'+ actual + ','+ planned + ']';
+                
+                arrplot.push(stringdatas)
+              
+          //}
       }
+        //stringdata = '[new Date(\'' + first + '\'),200,210]';
+        var datarows = [];
+        for (var k =0;k<arrplot.length;k++)
         
-        var datarows = []
-
-        data.addRows([
+        {
         
-        [new Date (first), 200, 210],
-        [new Date ('2021-03-22'), 150, 220],
-        [new Date ('2021-04-15'), 100, 200],
-        [new Date ('2021-05-05'), 80, 230],
-        [new Date ('2021-06-06'), 0, 210]
+        data.addRow(eval(arrplot[k]));
         
-        ]
-
-
-        );
+        
+      }
+        ;
   
         var options = {
           chart: {
             title: 'Run-Down Curve',
             subtitle: 'Action Items'
           },
+          colors: ['red', 'blue'],
          hAxis:{ format: 'MMM d,y'},
          curveType: 'function',
           width: 900,
@@ -70,10 +71,7 @@
   
         var chart = new google.charts.Line(document.getElementById('linechart'));
         //chart.draw(data,options);
-        google.visualization.events.addListener(chart, 'ready', function () {
-          piechart2.innerHTML = '<img src="' + chart.getImageURI() + '">';
-          console.log(piechart2.innerHTML);
-        });
+        
         chart.draw(data, google.charts.Line.convertOptions(options));
       }
        

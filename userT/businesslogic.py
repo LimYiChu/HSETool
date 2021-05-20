@@ -1,11 +1,55 @@
 import django_filters
 from django.http import HttpResponse
-
+import pandas as pd
 from UploadExcel.models import ActionItems
 from .models import *
 from django.db.models import Count
 from django.utils import timezone
-from datetime import datetime
+import datetime
+from django.core.mail import EmailMessage
+def blemailSendindividual(sender,recipient, subject,content):
+
+    subject = subject
+    message = content
+   
+    Msg=EmailMessage(subject, message,sender, recipient)
+    Msg.content_subtype="html"
+    
+    Msg.send()
+
+def blgetActualRunDown(lstdatesandcount):
+    
+    print (lstdatesandcount)
+    closed = 99 #queseries
+    countX = 0
+    closeditems = ActionItems.objects.filter(QueSeries=closed)
+    actualclosed =[]
+    finalclosed =[]
+    for items in closeditems:
+        
+        #check in history tables when it was closed
+        dictactualhistory = ActionItems.history.filter(id=items.id).filter(QueSeries=closed).order_by('-history_date').values()
+        #this is not supposed to be the case but for testing only it could be empty
+        
+        #make sure there is an entry in the history table, this is for testing
+        if dictactualhistory: 
+            datestamp = dictactualhistory[0].get('history_date')
+            id = dictactualhistory[0].get('id')
+            
+            actualdate = datetime.datetime.date(datestamp)
+            
+            for dates in lstdatesandcount:
+
+                if actualdate < dates[0] :
+                    
+                    countX = 1
+                    actualclosed.append(dates[0])
+                    actualclosed.append(countX)
+                    finalclosed.append(actualclosed)
+                    actualclosed =[]
+                    break
+    print (finalclosed)   
+    #return actualclosed
 def blaggregatebydate (objActions):
 
     return objActions.values('DueDate').annotate(count=Count('id')).values('DueDate', 'count').order_by('DueDate')
@@ -305,7 +349,7 @@ def blgetIndiResponseCount(discsuborg,queseriesset,queseriesclosed):
     finallistoflist = [x for x in completePendingPair if x]    
     return finallistoflist
 
-def blgetActionStuckAt(allactions, lstoftableattributes):
+def blgetActionStuckAt(allactions, lstoftableattributes,email=False):
 
     lstActionDetails = []
     lstgettriplet = []

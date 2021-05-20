@@ -10,7 +10,7 @@ from UploadExcel.forms import *
 from django.contrib.auth import get_user_model
 import matplotlib as plt
 from .businesslogic import *
-from .email import *
+
 from .excelReports import *
 from .models import *
 from UploadExcel.models import *
@@ -58,8 +58,14 @@ def googlecharts(request):
     lstbyDueDate= blaggregatebydate(ActionItems.objects.all())
     
     content =  blprepareGoogleChartsfromDict(lstbyDueDate)
-    
-    
+    lstrundown     = blgetActualRunDown(content)
+    #print (lstrundown)
+   
+
+    for items in lstbyDueDate:
+
+        x=items.get('DueDate')
+
     subtotal =[]
     for items in lstbyDueDate:
        subtotal.append(items['count']) #how to access dictionary object by
@@ -68,12 +74,12 @@ def googlecharts(request):
     
     
     content1 =  [
-          ['2021-01-01', 300],
-          ['2021-02-22',  200 ],
-          ['2021-03-15',  150 ],
-          ['2021-04-15',  100 ],
-          ['2021-05-15',  30 ],
-          ['2021-06-15',  0 ],
+          ['2021-01-30', 300,300],
+          ['2021-02-22',  220,150 ],
+          ['2021-03-15',  200,120 ],
+          ['2021-04-15',  150,100 ],
+          [str(x),  100,80 ],
+          ['2021-06-15',  0,0 ],
         ]
     
     
@@ -84,7 +90,7 @@ def googlecharts(request):
       
 
     }
-    return JsonResponse()
+    #return JsonResponse()
     return render(request, 'userT/googlecharts.html',context)
 
 def mainDashboard (request):
@@ -156,7 +162,8 @@ def mainDashboard (request):
         labelsApprover =[]
         countbyStudies = []
 
- 
+    print ("APPFINALIST")
+    print (appfinalist)
     Context = {
       
         
@@ -481,18 +488,13 @@ class RejectReason (CreateView):
             form.instance.Action_id = ID
             form.instance.Username = self.request.user.email
             rejectreason =  form.instance.Reason
-            listSubjectContent = blbuildRejectionemail (ID, rejectreason)
-            
-            
-
-            
+           
             discsub = blgetDiscSubOrgfromID(ID)
-            
             
             Signatoryemails = blgetSignatoryemail(discsub)
             ContentSubject  =blbuildRejectionemail(ID,rejectreason)
 
-            success = emailSendindividual(emailSender,Signatoryemails,ContentSubject[0], ContentSubject[1]) #send email, the xyz is dummy data and not used
+            success = blemailSendindividual(emailSender,Signatoryemails,ContentSubject[0], ContentSubject[1]) #send email, the xyz is dummy data and not used
             
             return super().form_valid(form)
         if (self.request.POST.get('Cancel')):
@@ -836,9 +838,39 @@ def ReportingTable(request):
 #def EmailReminder (request):
 #    return render(request, 'userT/EmailReminder.html')
 
+def emailreminders(request):
+    
+    if request.method == 'POST':
+        allactions = ActionItems.objects.all()
+        tableallheader = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
+        lstofallactions = blgetActionStuckAt(allactions, tableallheader)
+
+        print(lstofallactions)
+
+        # tableallheader.append("Current Actionee/Approver") #appends the last column that the list spits out
+        # workbook = excelAllActions(lstofallactions,tableallheader,"All Action Items")
+            
+        # response = HttpResponse(content_type='application/ms-excel') #
+        # response['Content-Disposition'] = 'attachment; filename=byAllActions.xlsx' 
+        # workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
+            
+
+        # discsub = blgetDiscSubOrgfromID(ID)
+        # reason = "XYZ"
+        # Signatoryemails = blgetSignatoryemail(discsub)
+        # ContentSubject  =blbuildRejectionemail(ID,reason)
+
+        # success = blemailSendindividual(emailSender,Signatoryemails,ContentSubject[0], ContentSubject[1])
+
+        return render (request, 'userT/emailreminders.html')
+    return render (request, 'userT/emailreminders.html')
 def EmailReminder(request):
     sub = Subscribe()
     if request.method == 'POST':
+        
+         #send email, the xyz is dummy data and not used
+            
+        
         sub = Subscribe(request.POST)
         recepient = str (sub ['Email'].value())
         
@@ -860,7 +892,7 @@ def EmailReminder(request):
           'form':sub
         }
         return render(request, 'userT/EmailReminder.html',context)
-    return render (request, 'userT/EmailReminder.html', {'form':sub})
+    return render (request, 'userT/emailreminders.html', {'form':sub})
 
 def EmailReminderAttachment(request):
     sub = Subscribe()
