@@ -839,31 +839,35 @@ def ReportingTable(request):
 #    return render(request, 'userT/EmailReminder.html')
 
 def emailreminders(request):
-    
-    if request.method == 'POST':
-        allactions = ActionItems.objects.all()
-        tableallheader = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
-        lstofallactions = blgetActionStuckAt(allactions, tableallheader)
-
-        print(lstofallactions)
-
-        # tableallheader.append("Current Actionee/Approver") #appends the last column that the list spits out
-        # workbook = excelAllActions(lstofallactions,tableallheader,"All Action Items")
-            
-        # response = HttpResponse(content_type='application/ms-excel') #
-        # response['Content-Disposition'] = 'attachment; filename=byAllActions.xlsx' 
-        # workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
-            
-
-        # discsub = blgetDiscSubOrgfromID(ID)
-        # reason = "XYZ"
-        # Signatoryemails = blgetSignatoryemail(discsub)
-        # ContentSubject  =blbuildRejectionemail(ID,reason)
-
-        # success = blemailSendindividual(emailSender,Signatoryemails,ContentSubject[0], ContentSubject[1])
-
+    #sub = Subscribe()
+    emaillist =[]
+    #Get all Actions
+    allactions = ActionItems.objects.all()
+    if (request.POST.get('SendPending')):
+        QueOpen = [0,1,2,3,4,5,6,7,8,9]
+        QueClosed = [99]
+        discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
+        Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
+        subject = "Pending Actions"
+        content="You have Pending Actions in your Queue. Please go to https://prism.prism-ehstools.com/ to attend to the actions." 
+        for items in Indisets : 
+            if items[3]>0:
+                emaillist.append(items[0])
+        blemailSendindividual(emailSender,emaillist,subject,content)
+    elif (request.POST.get('SendOverdue')):
+        QueOpen = [0,1,2,3,4,5,6,7,8,9]
+        QueClosed = [99]
+        discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
+        Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
+        subject = "Pending Actions"
+        content="You have Pending Actions in your Queue. Please go to https://prism.prism-ehstools.com/ to attend to the actions." 
+        for items in Indisets : 
+            if items[3]>0:
+                emaillist.append(items[0])
+        blemailSendindividual(emailSender,emaillist,subject,content)
         return render (request, 'userT/emailreminders.html')
     return render (request, 'userT/emailreminders.html')
+    
 def EmailReminder(request):
     sub = Subscribe()
     if request.method == 'POST':
