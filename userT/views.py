@@ -854,13 +854,14 @@ def emailreminders(request):
             if items[3]>0:
                 emaillist.append(items[0])
         blemailSendindividual(emailSender,emaillist,subject,content)
+        #below is for the overdue, it is linked to button, just waiting for overview function
     elif (request.POST.get('SendOverdue')):
         QueOpen = [0,1,2,3,4,5,6,7,8,9]
         QueClosed = [99]
         discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
         Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
         subject = "Pending Actions"
-        content="You have Pending Actions in your Queue. Please go to https://prism.prism-ehstools.com/ to attend to the actions." 
+        content="You have Overdue Actions in your Queue. Please go to https://prism.prism-ehstools.com/ to attend to the actions." 
         for items in Indisets : 
             if items[3]>0:
                 emaillist.append(items[0])
