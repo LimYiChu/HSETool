@@ -1190,12 +1190,13 @@ def repPMTExcel (request):
     
     Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
    
-    tableindiheader = ['User','Role', 'Open Actions' ,'Pending Res/Appr','Organisation Route','Closed']
+    tableindiheader = ['User','Role','Pending Res/Appr','Organisation Route','Open Actions','Closed']
     #Get all Actions
     allactions = ActionItems.objects.all()
 
-    tableallheader = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
+    tableallheader = ['id','StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
     lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
+    
     print(lstofallactions)
     tableallheadermodified = ['Study Action No','Study Name', 'Discipline' ,'Recommendations','Response','Initial Risk']
     

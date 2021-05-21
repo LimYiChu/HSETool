@@ -55,15 +55,13 @@
                 <tbody>
                   {%for details in lstofallactions%}
                   <tr>
-                    
-                    <td>{{details.0}}</td>
-                    <td>{{details.1}}</td>
+                    <td><a class="article-title" href="{% url  'ApproveFormMixin' details.0 %}">{{details.1}}</td>
                     <td>{{details.2}}</td>
                     <td>{{details.3}}</td>
                     <td>{{details.4}}</td>
                     <td>{{details.5}}</td>
                     <td>{{details.6}}</td>
-                    
+                    <td>{{details.7}}</td>
                   </tr> 
                   {%endfor%}
                   
@@ -95,10 +93,11 @@
                   
                   <td>{{items.0}}</td>
                   <td>{{items.1}}</td>
-                  <td>{{items.2}}</td>
                   <td>{{items.3}}</td>
                   <td>{{items.4}}</td>
+                  <td>{{items.2}}</td>
                   <td>{{items.5}}</td>
+                  
                 </tr> 
                 {%endfor%}
                  
