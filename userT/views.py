@@ -1180,12 +1180,24 @@ def closeoutsheet(request): #new naming convention - all small letters
 class pmtrepviewall(UpdateView):
     template_name = "userT/pmtrepviewall.html"
     form_class = ApproverForm
-    
+
+    def get_object(self,queryset=None):
+        queryset=ActionItems.objects.all()
+      
+        return queryset.get(id=self.kwargs['id'])
+
     def get_context_data(self,**kwargs):
-        IdAI = self.kwargs.get("pk") #its actually the id and used as foreign key
+        idAI = self.kwargs.get("id")
         context = super().get_context_data(**kwargs)
+        discsub = blgetDiscSubOrgfromID(idAI)
+        Signatories = blgetSignotories(discsub)
+
+        
+        #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
+        lstSignatoriesTimeStamp= blgettimeStampforSignatories (idAI, Signatories) #it changes the signatories directly
+        
+        
+        context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(idAI)
+        context ['Signatories'] = lstSignatoriesTimeStamp
         
         return context
-
-    def get_success_url(self):
-        return reverse ('multiplefiles', kwargs={'forkeyid': self.object.id})
