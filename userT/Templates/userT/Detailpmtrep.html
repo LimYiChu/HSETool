@@ -1,0 +1,14 @@
+{% extends "userT/base3.html"%}
+
+{%load crispy_forms_tags %}
+{% crispy form form.helper%}
+{% load tz %}
+
+{% block ActioneeDetails%}
+<form>
+{% csrf_token %}  
+{%crispy form%}
+</form>
+
+<h1>This is a TEST -- {{object.StudyActionNo}}</h1>
+{%endblock%}

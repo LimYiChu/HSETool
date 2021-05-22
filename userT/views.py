@@ -252,6 +252,17 @@ class DetailActioneeItems (DetailView):
         id1 = self.kwargs.get("id")
         return get_object_or_404(ActionItems, id=id1)
 
+class Detailpmtrep(DetailView):
+    template_name = 'userT/Detailpmtrep.html'
+    form_class = ApproverForm
+
+    def get_object(self):
+        #id1 = self.kwargs.get("id")
+        id1 = 324
+        print(id1)
+        return get_object_or_404(ActionItems, id=id1)
+        
+
 
 class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
     #paginate_by = 20
@@ -1197,7 +1208,7 @@ def repPMTExcel (request):
     tableallheader = ['id','StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
     lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
     
-    print(lstofallactions)
+    #print(lstofallactions)
     tableallheadermodified = ['Study Action No','Study Name', 'Discipline' ,'Recommendations','Response','Initial Risk']
     
     #for workshop based view
@@ -1289,3 +1300,33 @@ def repPMTExcel (request):
         'tableallheadermodified' : tableallheadermodified,
     }
     return render(request, 'userT/reppmtexcel.html', context)
+
+class pmtrepviewall(UpdateView):
+    template_name = "userT/pmtrepviewall.html"
+    form_class = ApproverForm
+
+    def get_object(self,queryset=None):
+        queryset=ActionItems.objects.all()
+      
+        return queryset.get(id=self.kwargs['id'])
+
+    def get_context_data(self,**kwargs):
+        idAI = self.kwargs.get("id")
+        context = super().get_context_data(**kwargs)
+        discsub = blgetDiscSubOrgfromID(idAI)
+        Signatories = blgetSignotories(discsub)
+
+        
+        #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
+        lstSignatoriesTimeStamp= blgettimeStampforSignatories (idAI, Signatories) #it changes the signatories directly
+        
+        
+        context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(idAI)
+        context ['Signatories'] = lstSignatoriesTimeStamp
+        
+        return context
+
+    
+
+
+

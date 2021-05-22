@@ -70,7 +70,8 @@ urlpatterns = [
         #Following urls are for actionee approvers updates and approvals
         path('ActioneeList/<int:pk>/update', login_required(UserView.ActioneeItemsMixin.as_view()), name='ActioneeFormMixin' ),
         path('HistoryList/<int:pk>/update', login_required(UserView.HistoryItemsMixin.as_view()), name='HistoryFormMixin' ),
-        path('ActioneeList/<int:id>/', login_required(UserView.DetailActioneeItems.as_view()), name='DetailsForm' ),
+        #path('ActioneeList/<int:id>/', login_required(UserView.DetailActioneeItems.as_view()), name='DetailsForm' ), #commented for line 74 test
+        path('Detailpmtrep/<int:id>/', login_required(UserView.Detailpmtrep.as_view()), name='Detailpmtrep' ),
         #path('ApproverList/<int:id>/approve', UserView.ApproveItems.as_view(), name='ApproveForm' ),
         path('ApproverList/<int:pk>/approve', login_required(UserView.ApproveItemsMixin.as_view()), name='ApproveFormMixin' ),
 
@@ -121,6 +122,10 @@ urlpatterns = [
         path('our_team/', login_required(our_team), name='our_team'),
 
         #path('PDFtest/', UserView.PDFtest, name='PDFtest'),
+        
+        #detailviewtest pmt rep
+        path('pmtrepviewall/<int:id>/view', login_required(UserView.pmtrepviewall.as_view()), name='pmtrepviewall' ),
+
       ]
 
 if settings.DEBUG:

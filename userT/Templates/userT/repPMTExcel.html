@@ -55,7 +55,7 @@
                 <tbody>
                   {%for details in lstofallactions%}
                   <tr>
-                    <td><a class="article-title" href="{% url  'ApproveFormMixin' details.0 %}">{{details.1}}</td>
+                    <td><a class="article-title" href="{% url  'pmtrepviewall' details.0 %}">{{details.1}}</a> </td>
                     <td>{{details.2}}</td>
                     <td>{{details.3}}</td>
                     <td>{{details.4}}</td>
