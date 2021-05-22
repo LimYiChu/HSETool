@@ -7,6 +7,7 @@ from django.db.models import Count
 from django.utils import timezone
 import datetime
 from django.core.mail import EmailMessage
+import numpy as np
 def blemailSendindividual(sender,recipient, subject,content):
 
     subject = subject
@@ -16,10 +17,55 @@ def blemailSendindividual(sender,recipient, subject,content):
     Msg.content_subtype="html"
     
     Msg.send()
+def bldicttolist(dict):
+    for items in dict:
+        print(items)
+
+def blformulateRundown(lstplanned,lstactual):
+    
+    #took an arm and a leg to complete this logic - so needs some explnation
+    plannedlistcount=[]
+    lstnewplanned = []
+    finallstplanned =[]
+    for items in lstplanned :
+        plannedlistcount.append(items[1])
+
+    plannedtotalcount = sum(plannedlistcount) #Need to get Total count and then do the maths around it
+    plannedcounter = 0
+    actualcounter = plannedtotalcount #second attempt going to try terbalik style as its not an easy fix
+    for items in lstplanned :
+
+        lstnewplanned.append(str(items[0]))
+        
+        if plannedcounter==0: #this counter is required to do a rundown
+            plannedcounter = plannedtotalcount - (items[1])
+        else:
+            plannedcounter = plannedcounter - (items[1])
+        lstnewplanned.append (plannedcounter)
+        
+        blnsetwithdate = True
+        for dates in lstactual :
+      
+             if (dates[0] == items[0]) :
+           
+                 actualcounter = actualcounter - (dates[1])
+                 lstnewplanned.append (actualcounter)
+                 finallstplanned.append(lstnewplanned)
+                 lstnewplanned =[]
+                 blnsetwithdate = False
+                 break
+        
+        if blnsetwithdate  :
+           #actualcounter = actualcounter 
+            lstnewplanned.append (actualcounter)
+            finallstplanned.append(lstnewplanned)
+            lstnewplanned =[]
+          
+    return finallstplanned
 
 def blgetActualRunDown(lstdatesandcount):
     
-    print (lstdatesandcount)
+    
     closed = 99 #queseries
     countX = 0
     closeditems = ActionItems.objects.filter(QueSeries=closed)
@@ -48,8 +94,24 @@ def blgetActualRunDown(lstdatesandcount):
                     finalclosed.append(actualclosed)
                     actualclosed =[]
                     break
-    print (finalclosed)   
-    #return actualclosed
+    
+    df = pd.DataFrame(finalclosed, columns=["duedate","tally"])
+    dd = df.groupby(by=["duedate"]).count()
+    dictdd = dd.to_dict()
+    #print(dictdd)
+    newactual=[]
+    finalactual=[]
+    for key,value in dictdd.items():
+            
+      
+            for key in value:
+                newactual.append(key)
+                newactual.append(value[key])
+                finalactual.append(newactual)
+                newactual=[]
+                
+ 
+    return finalactual
 def blaggregatebydate (objActions):
 
     return objActions.values('DueDate').annotate(count=Count('id')).values('DueDate', 'count').order_by('DueDate')
@@ -276,17 +338,18 @@ def blgetDiscSubOrgfromID (ID):
     obj=ActionItems.objects.get(id=ID)
     
     
-    orgdiscsub.append(obj.Disipline)
-    orgdiscsub.append(obj.Subdisipline)
-    orgdiscsub.append(obj.Organisation)
+    orgdiscsub.append(obj.Disipline.rstrip().lstrip())
+    orgdiscsub.append(obj.Subdisipline.rstrip().lstrip())
+    orgdiscsub.append(obj.Organisation.rstrip().lstrip())
     
     return orgdiscsub
 
 def blgetApproverLevel (lstorgdiscsub):
     #returns the approver level from routes, if 3 approvers it returns 4 meaning 4th is blank. 
     #basiclly looks up the route table and returns the next blank where field is approver
+    print("INGETAPPROVERLEVEL", lstorgdiscsub)
     obj= ActionRoutes.mdlgetApproverLevel.mgr_getApproverLevel (lstorgdiscsub)
-        
+    print("OBJ IS",obj )   
     allfields = [f.name for f in ActionRoutes._meta.get_fields()] 
     del allfields[0:3] #- remove ID field, company and discpline - need to be carefull with this 
     
@@ -435,8 +498,8 @@ def blgetActioneeDiscSub(routes):
     listoflist =[[]]
      
     for items in routes:
-        discsub.append(items.Disipline)
-        discsub.append(items.Subdisipline)
+        discsub.append(items.Disipline.rstrip().lstrip())
+        discsub.append(items.Subdisipline.rstrip().lstrip())
          
         listoflist.append(discsub)
         discsub=[]

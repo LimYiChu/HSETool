@@ -55,13 +55,12 @@ class anyView(viewsets.ModelViewSet):
 def googlecharts(request):
     
     
-    lstbyDueDate= blaggregatebydate(ActionItems.objects.all())
+    lstbyDueDate    = blaggregatebydate(ActionItems.objects.all())
     
-    content =  blprepareGoogleChartsfromDict(lstbyDueDate)
-    lstrundown     = blgetActualRunDown(content)
-    #print (lstrundown)
-   
-
+    lstplanned         =  blprepareGoogleChartsfromDict(lstbyDueDate)
+    lstactual      = blgetActualRunDown(lstplanned)
+    newlist = blformulateRundown(lstplanned,lstactual)
+    
     for items in lstbyDueDate:
 
         x=items.get('DueDate')
@@ -73,14 +72,7 @@ def googlecharts(request):
    
     
     
-    content1 =  [
-          ['2021-01-30', 300,300],
-          ['2021-02-22',  220,150 ],
-          ['2021-03-15',  200,120 ],
-          ['2021-04-15',  150,100 ],
-          [str(x),  100,80 ],
-          ['2021-06-15',  0,0 ],
-        ]
+    content1 =  newlist
     
     
     context = {
@@ -959,6 +951,12 @@ def repPMTExcel (request):
        subtotal.append(items['count']) #how to access dictionary object by
     
     totalallDueDate = sum(subtotal)
+    
+    lstbyDueDate    = blaggregatebydate(ActionItems.objects.all())
+    
+    lstplanned         =  blprepareGoogleChartsfromDict(lstbyDueDate)
+    lstactual      = blgetActualRunDown(lstplanned)
+    newlist = blformulateRundown(lstplanned,lstactual)
 
     if request.method == 'POST':
                 
@@ -994,7 +992,7 @@ def repPMTExcel (request):
         
         elif (request.POST.get('bydiscipline')):
             
-
+            print(lstbyDisc)
             workbook = excelAllActions(lstbyDisc,tabledischeader,"Discipline Actions")
             
             response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
@@ -1005,7 +1003,7 @@ def repPMTExcel (request):
         #yhs working for testing. 
         elif (request.POST.get('byDueDate')):
             
-
+            print(lstbyDueDate)
             workbook = excelAllActions(lstbyDueDate,tableduedateheader,"DueDates") 
             
             response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
@@ -1017,7 +1015,7 @@ def repPMTExcel (request):
         'lstbyDueDate' : lstbyDueDate,
         'tableduedateheader' : tableduedateheader,
         'totalallDueDate' : totalallDueDate, 
-
+        'rundowncontent': newlist,
         'lstbyDisc' : lstbyDisc,
         'lstbyWorkshop' : lstbyWorkshop,
         'Indisets' : Indisets,
