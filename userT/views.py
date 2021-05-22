@@ -1213,7 +1213,7 @@ def repPMTExcel (request):
     
     Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
    
-    tableindiheader = ['User','Role', 'Open Actions' ,'Pending Res/Appr','Organisation Route','Closed']
+    tableindiheader = ['User','Role', 'Pending Res/Appr','Organisation Route','Open Actions' ,'Closed']
     #Get all Actions
     allactions = ActionItems.objects.all()
 
