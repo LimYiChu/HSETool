@@ -459,10 +459,6 @@ class ActioneeItemsMixin(ApproveItemsMixin):
         
         return context
 
-    #yhs start
-
-    #yhs
-
     def get_success_url(self):
         return reverse ('multiplefiles', kwargs={'forkeyid': self.object.id})
 
@@ -914,123 +910,123 @@ def EmailReminderAttachment(request):
 def Profile (request):
     return render(request, 'userT/Profile.html')
 
-# # def repPMTExcel (request):
+def repPMTExcel (request):
    
-# #     #Signatories = 
-# #     #get individual actions
-# #     QueOpen = [0,1,2,3,4,5,6,7,8,9]
-# #     QueClosed = [99]
-# #     YetToRespondQue =[0]
-# #     ApprovalQue = [1,2,3,4,5,6,7,8,9]
-# #     TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
-# #     discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
+    #Signatories = 
+    #get individual actions
+    QueOpen = [0,1,2,3,4,5,6,7,8,9]
+    QueClosed = [99]
+    YetToRespondQue =[0]
+    ApprovalQue = [1,2,3,4,5,6,7,8,9]
+    TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
+    discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
     
-# #     Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
+    Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
    
-# #     tableindiheader = ['User','Role', 'Open Actions' ,'Pending Res/Appr','Organisation Route','Closed']
-# #     #Get all Actions
-# #     allactions = ActionItems.objects.all()
+    tableindiheader = ['User','Role', 'Open Actions' ,'Pending Res/Appr','Organisation Route','Closed']
+    #Get all Actions
+    allactions = ActionItems.objects.all()
 
-# #     tableallheader = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
-# #     lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
+    tableallheader = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
+    lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
     
-# #     tableallheadermodified = ['Study Action No','Study Name', 'Discipline' ,'Recommendations','Response','Initial Risk']
+    tableallheadermodified = ['Study Action No','Study Name', 'Discipline' ,'Recommendations','Response','Initial Risk']
     
-# #     #for workshop based view
-# #     allstudies = Studies.objects.all()
-# #     tablestudiesheader = ['Studies','Open Actions', 'Yet to Respond' ,'Pending Appr','Closed']
-# #     disciplinestatusheader = ['Disipline','Open Actions', 'Yet to Respond' ,'Pending Appr','Closed']
-# #     lstbyWorkshop = blgetbyStdudiesCount(allstudies,QueOpen,YetToRespondQue,ApprovalQue,QueClosed)
+    #for workshop based view
+    allstudies = Studies.objects.all()
+    tablestudiesheader = ['Studies','Open Actions', 'Yet to Respond' ,'Pending Appr','Closed']
+    disciplinestatusheader = ['Disipline','Open Actions', 'Yet to Respond' ,'Pending Appr','Closed']
+    lstbyWorkshop = blgetbyStdudiesCount(allstudies,QueOpen,YetToRespondQue,ApprovalQue,QueClosed)
     
-# #     #for Disipline based view
-# #     tabledischeader = ['Discipline','Open Actions', 'In-Progress', 'Yet to Respond' ,'Closed','Total Actions']
-# #     lstbyDisc= blaggregatebyDisc(discsuborg, QueOpen, ApprovalQue,YetToRespondQue,QueClosed,TotalQue)
+    #for Disipline based view
+    tabledischeader = ['Discipline','Open Actions', 'In-Progress', 'Yet to Respond' ,'Closed','Total Actions']
+    lstbyDisc= blaggregatebyDisc(discsuborg, QueOpen, ApprovalQue,YetToRespondQue,QueClosed,TotalQue)
     
-# #     #due date based view
-# #     tableduedateheader = ['Due Date','Actions to Close by']
-# #     lstbyDueDate= blaggregatebydate(ActionItems.objects.all())
+    #due date based view
+    tableduedateheader = ['Due Date','Actions to Close by']
+    lstbyDueDate= blaggregatebydate(ActionItems.objects.all())
     
-# #     subtotal =[]
-# #     for items in lstbyDueDate:
-# #        subtotal.append(items['count']) #how to access dictionary object by
+    subtotal =[]
+    for items in lstbyDueDate:
+       subtotal.append(items['count']) #how to access dictionary object by
     
-#     totalallDueDate = sum(subtotal)
+    totalallDueDate = sum(subtotal)
     
-#     lstbyDueDate    = blaggregatebydate(ActionItems.objects.all())
+    lstbyDueDate    = blaggregatebydate(ActionItems.objects.all())
     
-#     lstplanned         =  blprepareGoogleChartsfromDict(lstbyDueDate)
-#     lstactual      = blgetActualRunDown(lstplanned)
-#     newlist = blformulateRundown(lstplanned,lstactual)
+    lstplanned         =  blprepareGoogleChartsfromDict(lstbyDueDate)
+    lstactual      = blgetActualRunDown(lstplanned)
+    newlist = blformulateRundown(lstplanned,lstactual)
 
-# #     if request.method == 'POST':
+    if request.method == 'POST':
                 
-# #         if (request.POST.get('allActions')):
+        if (request.POST.get('allActions')):
           
-# #             #workbook= createExcelReports(request,"\\excelDownload\\AllActions3.xlsx")
-# #             tableallheader.append("Current Actionee/Approver") #appends the last column that the list spits out
-# #             workbook = excelAllActions(lstofallactions,tableallheader,"All Action Items")
+            #workbook= createExcelReports(request,"\\excelDownload\\AllActions3.xlsx")
+            tableallheader.append("Current Actionee/Approver") #appends the last column that the list spits out
+            workbook = excelAllActions(lstofallactions,tableallheader,"All Action Items")
             
-# #             response = HttpResponse(content_type='application/ms-excel') #
-# #             response['Content-Disposition'] = 'attachment; filename=byAllActions.xlsx' 
-# #             workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
-# #             return response
-# #         elif (request.POST.get('indiActions')):
-            
-
-# #             workbook = excelAllActions(Indisets,tableindiheader,"Individual Actions")
-            
-# #             response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
-# #             response['Content-Disposition'] = 'attachment; filename=byIndividual.xlsx' 
-# #             workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
-# #             return response
-
-# #         elif (request.POST.get('allStudies')):
+            response = HttpResponse(content_type='application/ms-excel') #
+            response['Content-Disposition'] = 'attachment; filename=byAllActions.xlsx' 
+            workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
+            return response
+        elif (request.POST.get('indiActions')):
             
 
-# #             workbook = excelAllActions(lstbyWorkshop,tablestudiesheader,"Workshop Actions")
+            workbook = excelAllActions(Indisets,tableindiheader,"Individual Actions")
             
-# #             response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
-# #             response['Content-Disposition'] = 'attachment; filename=byStudies.xlsx' 
-# #             workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
-# #             return response
+            response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
+            response['Content-Disposition'] = 'attachment; filename=byIndividual.xlsx' 
+            workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
+            return response
+
+        elif (request.POST.get('allStudies')):
+            
+
+            workbook = excelAllActions(lstbyWorkshop,tablestudiesheader,"Workshop Actions")
+            
+            response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
+            response['Content-Disposition'] = 'attachment; filename=byStudies.xlsx' 
+            workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
+            return response
         
-# #         elif (request.POST.get('bydiscipline')):
+        elif (request.POST.get('bydiscipline')):
             
-#             print(lstbyDisc)
-#             workbook = excelAllActions(lstbyDisc,tabledischeader,"Discipline Actions")
+            print(lstbyDisc)
+            workbook = excelAllActions(lstbyDisc,tabledischeader,"Discipline Actions")
             
-# #             response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
-# #             response['Content-Disposition'] = 'attachment; filename=byDiscipline.xlsx' 
-# #             workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
-# #             return response
+            response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
+            response['Content-Disposition'] = 'attachment; filename=byDiscipline.xlsx' 
+            workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
+            return response
 
-# #         #yhs working for testing. 
-# #         elif (request.POST.get('byDueDate')):
+        #yhs working for testing. 
+        elif (request.POST.get('byDueDate')):
             
-#             reallstDuedate = blquerysetdicttolist(lstbyDueDate)
-#             workbook = excelAllActions(reallstDuedate,tableduedateheader,"DueDates") 
+            reallstDuedate = blquerysetdicttolist(lstbyDueDate)
+            workbook = excelAllActions(reallstDuedate,tableduedateheader,"DueDates") 
             
-#             response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
-#             response['Content-Disposition'] = 'attachment; filename=byDueDates.xlsx' 
-#             workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
-#             return response    
+            response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
+            response['Content-Disposition'] = 'attachment; filename=byDueDates.xlsx' 
+            workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
+            return response    
 
-#     context = {
-#         'lstbyDueDate' : lstbyDueDate,
-#         'tableduedateheader' : tableduedateheader,
-#         'totalallDueDate' : totalallDueDate, 
-#         'rundowncontent': newlist,
-#         'lstbyDisc' : lstbyDisc,
-#         'lstbyWorkshop' : lstbyWorkshop,
-#         'Indisets' : Indisets,
-#         'lstofallactions' : lstofallactions,
-#         'tableindiheader' : tableindiheader,
-#         'tablestudiesheader' : tablestudiesheader,
-#         'tabledischeader' : tabledischeader ,
-#         'tableallheader' : tableallheader,
-#         'tableallheadermodified' : tableallheadermodified,
-#     }
-#     return render(request, 'userT/reppmtexcel.html', context)
+    context = {
+        'lstbyDueDate' : lstbyDueDate,
+        'tableduedateheader' : tableduedateheader,
+        'totalallDueDate' : totalallDueDate, 
+        'rundowncontent': newlist,
+        'lstbyDisc' : lstbyDisc,
+        'lstbyWorkshop' : lstbyWorkshop,
+        'Indisets' : Indisets,
+        'lstofallactions' : lstofallactions,
+        'tableindiheader' : tableindiheader,
+        'tablestudiesheader' : tablestudiesheader,
+        'tabledischeader' : tabledischeader ,
+        'tableallheader' : tableallheader,
+        'tableallheadermodified' : tableallheadermodified,
+    }
+    return render(request, 'userT/reppmtexcel.html', context)
 
 def DisciplineBreakdown (request):
     return render(request, 'userT/DisciplineBreakdown.html')
@@ -1170,7 +1166,7 @@ def closeoutsheet(request): #new naming convention - all small letters
 #             pdfgenerate('atrtemplateautofontreadonly.pdf',out_file,data_dict)
 #             filename.append(out_file) #can only append str   
 #             context={
-#                 'filename' : filename,s
+#                 'filename' : filename,
 #                 'table': True
 #             }
 #             #return HttpResponse('TEST')
@@ -1180,6 +1176,7 @@ def closeoutsheet(request): #new naming convention - all small letters
 #     return render(request, 'userT/closeoutsheet.html')
         
 
+<<<<<<< HEAD
 def repPMTExcel (request):
    
     #Signatories = 
@@ -1306,3 +1303,5 @@ class pmtrepviewall(ApproveItemsMixin):
 
     def get_success_url(self):
         return reverse ('multiplefiles', kwargs={'forkeyid': self.object.id})
+=======
+>>>>>>> parent of c6c02b1 (Merge branch '21_05_19_YHS-_pdf_add_dev' into main)

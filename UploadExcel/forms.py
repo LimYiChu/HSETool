@@ -40,8 +40,6 @@ class CommonLayout (Layout):
                       
            ),
             Div (
-            Div (Field('Guidewords', rows=1 ,readonly=True), css_class='col-md-6'),
-            Div (Field('Deviation', rows=1 ,readonly=True), css_class='col-md-6'),
             Div (Field('Cause', rows=8 ,readonly=True), css_class='col-md-12'),
             Div (Field('Safeguard', rows=8, readonly=True), css_class='col-md-12'),
             Div (Field('Consequence',rows=8, readonly=True), css_class='col-md-12'),
