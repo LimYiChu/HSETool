@@ -1176,10 +1176,8 @@ def closeoutsheet(request): #new naming convention - all small letters
 #     return render(request, 'userT/closeoutsheet.html')
         
 
-
-#yhstest
-
-class pmtrepviewall(ApproveItemsMixin):
+# for  making view all actions clickable & obtain the id using update view
+class pmtrepviewall(UpdateView):
     template_name = "userT/pmtrepviewall.html"
     form_class = ApproverForm
     
