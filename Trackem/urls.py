@@ -84,8 +84,11 @@ urlpatterns = [
         path('ContactUs/',login_required(UserView.ContactUs),name='ContactUs'),
         
 <<<<<<< HEAD
+<<<<<<< HEAD
              
 =======
+=======
+>>>>>>> parent of c6c02b1 (Merge branch '21_05_19_YHS-_pdf_add_dev' into main)
         
 >>>>>>> parent of c6c02b1 (Merge branch '21_05_19_YHS-_pdf_add_dev' into main)
         #path('ContactUs/',UserView.ContactUs,name='ContactUs'),

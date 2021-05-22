@@ -1177,6 +1177,7 @@ def closeoutsheet(request): #new naming convention - all small letters
         
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 def repPMTExcel (request):
    
     #Signatories = 
@@ -1303,5 +1304,7 @@ class pmtrepviewall(ApproveItemsMixin):
 
     def get_success_url(self):
         return reverse ('multiplefiles', kwargs={'forkeyid': self.object.id})
+=======
+>>>>>>> parent of c6c02b1 (Merge branch '21_05_19_YHS-_pdf_add_dev' into main)
 =======
 >>>>>>> parent of c6c02b1 (Merge branch '21_05_19_YHS-_pdf_add_dev' into main)
