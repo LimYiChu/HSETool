@@ -1,0 +1,219 @@
+﻿No,Study Action Number,Study Name,Facility,Project Phase,Cause,Consequence,Safeguard,Initial Risk,Recommendations,Residual Risk,Organisations,Discipline,Sub-Discipline,Future Actions,Due Date,Guideword,Deviation
+1,1,Hazard Identification (HAZID) Study,DLA-TRC,DDE,"SIPROD -Wellhead and conductors:
+- Corrosion
+- Well intervention equipment failure
+- Erosion
+- Marine collision (standby boat, supply boat, passing vessels, tug boat) against conductor
+- Operator error
+- Uncontrolled / sudden surge from well 
+resulting in condition outside of design 
+envelope / overpressure 
+- Loss of annulus integrity
+- Uneven and excessive subsidence leading to mechanical failure of conductors","Uncontrolled HC release from well/ blowout leading to potential fire/ explosion causing multiple personnel fatalities (when personnel present on platform), asset damage/production loss and environment (if unignited).","1. Well design specification in accordance to reservoir and Metocean condition, in line with PPGUA.
+2. Adequate material selection based on material selection study.
+3. Corrosion management plan (cathodic protection, splash zone coating for conductors).
+4. Marine procedures.
+5. 500m safety exclusion zone and procedures to intervene errant vessels.
+6. Conductor located within jacket structure.
+7. Barge bumper.
+8. Standby vessel.
+9. Well control / intervention procedures.
+10. Trained and competent personnel.
+11. Pressure control equipment (Blowout preventer).
+12. Downhole tool monitoring system.
+13. Geotechnical survey.
+14. Subsidence allowance 0.21m.
+15. SIMOPS procedures.
+16. Blowout Preventer.
+17. F&G detection initiating alarm with relevant executive actions.
+18. ESD.
+19. Correctly rated equipment and instrumentation provided based on hazardous area classification.
+20. Safe Working Practice (SWP) for ignition control e.g. hot work permits, habitat etc.
+21. GPA system providing both audio and visual alarms.
+22. Escape routes leading to muster area (through gangway connected on Main Deck).
+23. Evacuation means:
+a. (Primary - Life boat on drilling rig)
+b. (Secondary - Liferaft on DLA / TRT) 
+c. (Tertiary - direct descent to sea).
+24. Standby Vessel provided as means of rescue.
+25. ERP.",5B,Finalise and align the SIPROD design philosophy with Drilling Team.,5B,HESS,EHS,EHS,,25/05/2021,Hydrocarbon,1.02. Hydrocarbons in formation
+2,2,Hazard Identification (HAZID) Study,DLA-TRC,DDE,"Export riser / flexible pipeline from DLA WHA / TRT WHC to subsea tie-in:
+- Overpressure due to blocked discharge (i.e. due to stuck pig) or hydrate formation
+- Corrosion 
+- Impact from dropped objects onto pipeline
+- External impact from ship / boat collision 
+onto riser
+- Anchor drop / drag on pipeline
+- Inadequate/ poor pipeline inspection
+- Fishing vessel interaction (e.g. Trawling)
+","Potential prolonged riser jet fire at DLA WHA/TRT WHC leading to asset damage and personnel injuries / fatalities. May potentially cause escalation to topsides equipment and structures. Unignited release will lead to flammable gas cloud that could engulf large portion of process topsides. In the event of subsea release, the worst case consequence could be gas sea pool fire (sea surface fires).","1. Design Specifications for pipeline.
+2. High High and Low Low Pressure Trip Function for export pipeline ( Independent transmitter for IPPPS).
+3. Material selection (CRA-stainless steel carcass)
+4. Sacrificial anodes.
+5. Marine Navigation Aids to alert incoming/ passing marine vessels.
+6. Flexible riser in J tube and located with in jacket (jacket is designed for operational and accidental - 1.0MJ).
+7. Approved anchor pattern/ marine operating procedures.
+8. Operating procedures, personnel training and competency assurance.
+9. Pipeline survey and inspection (e.g. ROVs) As part of pipeline maintenance plan.
+10. F&G detection initiating alarm with relevant executive actions.
+11. ESD (High High and Low Low Pressure trip)  and IPPPS.
+12. Correctly rated equipment and instrumentation provided based on hazardous area classification.
+13. Safe Working Practice (SWP) for ignition control e.g. hot work permits, habitat etc.
+14. GPA system providing both audio and visual alarms
+15. Escape routes leading to muster area (through gangway connected on Main Deck).
+16. Evacuation means :
+- Normal Operation 
+a. (Primary - Liferaft on DLA / TRT) 
+b. (Secondary - direct descent to sea)
+-During SIPROD 
+a. (Primary - Life boat on drilling rig)
+b. (Secondary - Liferaft on DLA / TRT) 
+c. (Tertiary - direct descent to sea).""
+17. Standby Vessel provided as means of rescue.
+18. ERP.",5B,Layout drawings to show platform crane lifting operations restrictions area (No Go Zone) including the over pipeline approach area. ,5B,HESS,EHS,EHS,,25/05/2021,Hydrocarbon,1.05. Condensate
+3,3,Hazard Identification (HAZID) Study,DLA-TRC,DDE,"Export riser / flexible pipeline from DLA WHA / TRT WHC to subsea tie-in:
+- Overpressure due to blocked discharge (i.e. due to stuck pig) or hydrate formation
+- Corrosion 
+- Impact from dropped objects onto pipeline
+- External impact from ship / boat collision 
+onto riser
+- Anchor drop / drag on pipeline
+- Inadequate/ poor pipeline inspection
+- Fishing vessel interaction (e.g. Trawling)
+","Potential prolonged riser jet fire at DLA WHA/TRT WHC leading to asset damage and personnel injuries / fatalities. May potentially cause escalation to topsides equipment and structures. Unignited release will lead to flammable gas cloud that could engulf large portion of process topsides. In the event of subsea release, the worst case consequence could be gas sea pool fire (sea surface fires).","1. Design Specifications for pipeline.
+2. High High and Low Low Pressure Trip Function for export pipeline ( Independent transmitter for IPPPS).
+3. Material selection (CRA-stainless steel carcass)
+4. Sacrificial anodes.
+5. Marine Navigation Aids to alert incoming/ passing marine vessels.
+6. Flexible riser in J tube and located with in jacket (jacket is designed for operational and accidental - 1.0MJ).
+7. Approved anchor pattern/ marine operating procedures.
+8. Operating procedures, personnel training and competency assurance.
+9. Pipeline survey and inspection (e.g. ROVs) As part of pipeline maintenance plan.
+10. F&G detection initiating alarm with relevant executive actions.
+11. ESD (High High and Low Low Pressure trip)  and IPPPS.
+12. Correctly rated equipment and instrumentation provided based on hazardous area classification.
+13. Safe Working Practice (SWP) for ignition control e.g. hot work permits, habitat etc.
+14. GPA system providing both audio and visual alarms
+15. Escape routes leading to muster area (through gangway connected on Main Deck).
+16. Evacuation means :
+- Normal Operation 
+a. (Primary - Liferaft on DLA / TRT) 
+b. (Secondary - direct descent to sea)
+-During SIPROD 
+a. (Primary - Life boat on drilling rig)
+b. (Secondary - Liferaft on DLA / TRT) 
+c. (Tertiary - direct descent to sea).""
+17. Standby Vessel provided as means of rescue.
+18. ERP.",5B,Incorporate the lesson learned (if any) regarding navigational aids issues on existing field platforms into the design of new platforms. ,5B,HESS,EHS,EHS,,25/05/2021,Hydrocarbon,1.05. Condensate
+4,4,Hazard Identification (HAZID) Study,DLA-TRC,DDE,SIPROD - Connection/disconnection of drain hose to portable drain tank resulting in possible release of HC.,Loss of containment leading to potential fire resulting in personnel injury/ fatality and minor environmental impact.,"1. Fire detector provided near Portable Drain Tote Tank
+2. Valved connection complete with dry coupling located near open drain tank is provided to prevent leakage during connection and disconnection of drain hose.
+3. SOP includes connections/reconnection of drain hose to portable drain tote tank
+4. Hazardous Area Classification",4B,Ensure SIPROD Philosophy includes requirement for drain tote tank to be brought to platform before SIPROD.,4B,HESS,EHS,EHS,,25/05/2021,Hydrocarbon,1.05. Condensate
+5,5,Hazard Identification (HAZID) Study,DLA-TRC,DDE,"Cold vent (local manual venting):
+- Personnel mishandling manual vent valve during manual venting, by throttling valve fully open","Potential high venting rate leading to large flammable cloud release and potential asphyxiation or fire hazard to personnel which could cause injury/fatality.
+Potential for flammable liquid carry over to vent pipe resulting in discharge to sea, resulting in local environmental impact.","1. R.O installed to limit maximum venting rate.
+2. Gas dispersion and ignited vent radiation studies performed to ensure that the impact on personnel or asset is within acceptable limits.
+3. Gas dispersion for toxic gas and mercury performed to ensure that the impact on personnel or asset is within acceptable limits.
+4. Design for venting includes a stand pipe to collect liquids and vented gas.
+5. ERP 
+6. Operation of the vent requires ESD permissive during normal ops.
+7. Valves on manual venting lines are normally closed.",4C,"Verify that the vent header stand pipe is sized to capture the maximum liquid knockout during normal operations or SIPROD venting.
+
+",4C,HESS,EHS,EHS,,25/05/2021,Hydrocarbon,1.06. Hydrocarbon gas
+6,6,Hazard Identification (HAZID) Study,DLA-TRC,DDE,"Portable Methanol Tank/Pumps and piping:
+- Leakage of joints / hose
+- Human error (mishandling of equipment)
+- Dropped objects
+- Vapours from Methanol Tank","Potential pool fire leading to injuries/fatality, asset damage and potential marine pollution (if unignited).","1. Visual inspection/ housekeeping
+2. Control of lifting operation (procedure)
+3. Trained and competent personnel
+4. Portable fire extinguishers (dry chemical)
+5. ERP
+6. Two (2) Alcohol Resistant Type AR - AFFF 9L foam extinguishers have been provided neat the Methanol Injection skid area on DLA WHA/TRT WHC Main Deck.
+7. Methanol is only used during well start-up otherwise it is not stored in the platform.
+8. Coaming and drains are provided around Methanol Tote tank area.
+9. HAC and Ignition Control.",4B,Review lesson learned from previous methanol tote tank incident (Operations) and any finding related to design should be considered for the new platforms.,4B,HESS,EHS,EHS,,25/05/2021,Refined Hydrocarbons,2.05. Methanol
+7,7,Hazard Identification (HAZID) Study,DLA-TRC,DDE,"In-Field Vessel:
+- Loss of control of Field Vessel i.e. supply vessel, standby vessel when approaching platform
+- Loss of station keeping leading to vessel drifting towards platform
+- Adverse weather condition or poor visibility",Potential platform structural damage. Structural failure could lead to escalation resulting in loss of hydrocarbon containment. Potential injury/ multiple fatality and asset damage / production loss.,"1. Marine operating procedure which includes field vessels do not navigate in direction of platform.
+2. Periodic certification of chartered vessels.
+3. Visual inspection
+4. Weather monitoring for transfer of personnel and supply
+5. Marine radios for communication between platform and vessel
+6. Design specification (load) for jacket structure to withstand accidental boat impact (1MJ)
+7. Rubber fenders are provided for the boat landing
+8. Barge fenders at jacket legs
+9. Boat landing designed to withstand accidental operational impact (0.175MJ)
+10. Escape routes leading to muster area (through gangway connected on Main Deck).
+11. Evacuation means :
+a. (Primary - Liferaft on DLA / TRT) 
+b. (Secondary - direct descent to sea)
+12. Standby Vessel provided as means of rescue
+13. ERP
+14. Medical Response / Medivac",5B,To verify the impact energy for accidental and operational collisions and ensure the jacket for DLA/TRT platforms are designed appropriately (refer to Structural Design Basis).,5B,HESS,EHS,EHS,,25/05/2021,Dynamic Situation Hazards,8.03. Boat Collision hazard to other vessels and offshore structures
+8,8,Hazard Identification (HAZID) Study,DLA-TRC,DDE,Low temperature during well start up due to pressure drop,Cold surfaces with potential for personnel injury,"1. Methanol injection
+2. Cage provided around piping downstream of choke valves in areas that can be reached by personnel",3B,Review the personnel protection requirement for cold surfaces on pipings during well start up.,3B,HESS,EHS,EHS,,25/05/2020,Cold Surfaces,12.01. Process piping between -25 °C and - 80°C
+9,9,Hazard Identification (HAZID) Study,DLA-TRC,DDE,Storage and venting of PPD,PPD Chemical degradation resulting in ineffective action ,1. Product shelf life is 2 years from manufacturing date.,1C,Verify the shelf life of the PPD stored on DLA / TRT (in Pedestal Crane) and ensure that Standard Operating Procedure (SOP) for the PPD system states that the PPD should be consumed within its effective life.,1C,HESS,EHS,EHS,,25/05/2020,Toxic Liquid,21.20.  Pour Point Depressant (PPD)
+10,10,Hazard and Operability (HAZOP) Study,DLA-TRC,DDE,Inadvertent opening of valves to LP Vent.,Production flow misdirected to vent leading to production loss.,"1. 2x normally closed manual valves installed in LP Vent line.
+2. Trained and competent operators.
+3. RO installed in vent line to limit flow to vent.",-, Vent valve 001-'O' to be locked close.,-,HESS,EHS,EHS,,25/05/2020,Flow,Reverse /Misdirected
+11,11,Hazard and Operability (HAZOP) Study,DLA-TRC,DDE,Trending of CITHP pressure at wellhead crown valve,Inability to trend pressure at crown valve since only PG provided.,-,-,Change the PG-'DI' at the wellhead crown valve to a pressure transmitter to allow for pressure trending and monitoring.,-,HESS,EHS,EHS,,25/05/2020,Start up/Operations / Maintenance,Other than
+12,12,Hazard and Operability (HAZOP) Study,DLA-TRC,DDE,PPD injection point located downstream of check valve 001-524,Injection point expose to pipeline pressure.,-,-,Relocate PPD injection point to upstream of check valve 001-524.,-,HESS,EHS,EHS,,25/05/2020,Others,Drawing Comments
+13,13,Hazard and Operability (HAZOP) Study,DLA-TRC,DDE,001-BDV-114 fails open.,"Inadvertent depressurization of Production Manifold, leading to large flammable cloud release and potential for flammable liquid carry over to vent pipe resulting in discharge to sea. If ignited, potential fire and explosion scenario leading to multiple fatalities.","1. RO installed to limit venting rate.
+2. Discrepancy alarm to alert operator if 001-BDV-114 is not in commanded position. 
+3. F&G detection initiating alarm with relevant executive actions.
+4. ESD.
+5. Hazardous Area Classification/ Ignition Control
+6. EER facilities",5B,Ensure that vent boom length Is designed to prevent impairing of gas concentrations or radiation levels on the platform.,5A,HESS,EHS,EHS,,25/05/2020,Flow,No / Less
+14,14,Hazard and Operability (HAZOP) Study,DLA-TRC,DDE,Reverse flow from Kangsar to Dahlia Platform during topside start up due to riser 001-SDV-112 inadvertently opened.,"Inadvertent pressurisation of Dahlia WHP during platform start up resulting in potential unsafe incident e.g. inadvertent draining of section downstream of check valve.
+
+No safety consequence as topside pressure rating is higher than pipeline pressure rating.","1. Check valve provided in ILT
+2. Check valve provided at downstream of SDV-151.",-,Review start-up procedure for Dahlia with respect to the check valve installed on the ILT. Pipeline pressure will not provide back pressure for Dahlia Riser valve and therefore there is a high pressure differential across the  riser valve.,-,HESS,EHS,EHS,,25/05/2020,Flow,Reverse /Misdirected
+15,15,Hazard and Operability (HAZOP) Study,DLA-TRC,DDE,Build up of liquid in stand pipe leading to hydraulic blockage of vent header ,"Potential overpressure of the vent system leading to loss of hydrocarbon containment during platform blowdown. If ignited, potential fire/ explosion scenario leading to multiple fatalities.","1. Stand pipe capacity is approximately 60 times the required volume of liquid dropped out during each blowdown.
+2. Level Gauge at standpipe 023-LG-100 to monitor the level
+3. F&G detection initiating alarm with relevant executive actions.
+4. ESD.
+5. Hazardous Area Classification/ Ignition Control
+6. EER facilities",5B,Standard Operating Procedure to document the requirement of checking and draining of vent header standpipe.,5B,HESS,EHS,EHS,,25/05/2020,Flow,No / Less
+16,16,Hazard and Operability (HAZOP) Study,DLA-TRC,DDE,Flow misdirected to hazardous open drain during venting ,Potential release of vented gas to hazardous open drain tote tank with potential fire and explosion leading to fatalities and asset damage,"1. Manual valve 077-507 between standpipe and drain system is normally closed.
+2. F&G detection initiating alarm with relevant executive actions.
+3. ESD.
+4. Hazardous Area Classification/ Ignition Control
+5. EER facilities",5B,Manual valve 077-507 between standpipe and drain system to be locked closed.,5A,HESS,EHS,EHS,,25/05/2020,Flow,Reverse /Misdirected
+17,17,Hazard and Operability (HAZOP) Study,DLA-TRC,DDE,High temperature of fluid drained from flow line (max temperature before depressurization = 72 °C on Dahlia) against a lower design temperature of portable drain tote tank (design temperature of 65 °C),"Potential damage to drain system piping/ tote tank due to high temperature resulting in possible loss of condensate containment within drain tank. Potential fire resulting in personnel injury/fatality and asset damage.
+
+Maximum temperature of 72DegC will note damage Tote tank.  Worst consequence it personnel injury due to handling of hot tote tank.","1. Process system is vented and allowed to cool before draining. 
+2. Drain system is designed for maximum temperature after depressurisation (32°C)",2C,"If the blowdown study shows that the temperature after depressurisation is above 65°C, the Standard Operating Procedure to document a cool down procedure before draining of the process system.",2C,HESS,EHS,EHS,,25/05/2020,Temperature,More
+18,18,Hazard and Operability (HAZOP) Study,DLA-TRC,DDE,"Potential overfilling of crane tank 
+Crane tank : 600L
+Diesel Tote Tank : 2m3",Diesel overflow and spillage on to deck with potential fire and personnel injury.,"1. Filling gun provided on diesel supply will stop flow when crane tank is full.
+2. Spillage in coam area will drain to open drain tote tank.
+3. Spill clean up kit.
+4. Portable Fire fighting Equipment
+5. High Flashpoint of Diesel makes it difficult to ignite.
+6. HAC and Control Ignition Sources
+7. Manned Operations",3B,Update the P&ID to show a local start/stop and remove the remote start/stop of the diesel transfer pump.,3B,HESS,EHS,EHS,,,Level,More
+19,19,Hazard and Operability (HAZOP) Study,DLA-TRC,DDE,017-XV-001 inadvertently opened when PPD system on Dahlia WHP is not operating (Kangsar operating),"Potential reverse flow of hydrocarbon from Production Manifold into the PPD system, leading to potential over pressurization of PPD tank. If ignited, potential flash back to PPD tank, resulting in projectile and multiple injuries/ fatalities due to tank explosion","1. Check valve at the injection quill
+2. Check valve downstream of each injection pump
+3. Venting of PPD tank routed to safe location
+4. Flame arrestor provided on PPD vent line",5B,PPD pumps need to be run during maintenance without injecting into process system. Provide required facility for running pump during maintenance without injecting into process.,5B,HESS,EHS,EHS,,,Flow,Reverse /Misdirected
+20,20,Hazard and Operability (HAZOP) Study,DLA-TRC,DDE,"1. PPD tank size smaller than typical tote tank size
+
+PPD tank : 2.1m3",Overfilling of the PPD tank causing spillage to environment / deck with potential pool fire leading to personnel injury/ fatality.,"1. 017-LIAH-101 will give audible alarm to alert personnel intervention.
+2. PPD tank overflow to deck drains.
+3. Manned operations
+4. F&G detection initiating alarm with relevant executive actions.
+5. ESD.
+6. Portable Fire Fighting Equipment
+7. Hazardous Area Classification/ Ignition Control",4B,Provide normally closed manual valve on line from coam area to hazardous drain header.,4B,HESS,EHS,EHS,,,Level,More
+21,21,Hazard and Operability (HAZOP) Study,DLA-TRC,DDE,"1. PPD tank size smaller than typical tote tank size
+
+PPD tank : 2.1m3",Overfilling of the PPD tank causing spillage to environment / deck with potential pool fire leading to personnel injury/ fatality.,"1. 017-LIAH-101 will give audible alarm to alert personnel intervention.
+2. PPD tank overflow to deck drains.
+3. Manned operations
+4. F&G detection initiating alarm with relevant executive actions.
+5. ESD.
+6. Portable Fire Fighting Equipment
+7. Hazardous Area Classification/ Ignition Control",4B,Provide dual pod drain box from coamed area for PPD tank and pump.,4B,HESS,EHS,EHS,,,Level,More
+22,22,Hazard and Operability (HAZOP) Study,DLA-TRC,DDE,Air lock in pumps suction ,"Unavailability or Inadequate provision of methanol injection leading to interruptions and delays to well start-up operations, resulting in deferred production. There will be no direct EHS consequences from this cause.",Methanol storage tank is elevated above pump and has been demonstrated to have sufficient NPSH .,-,Review the design of PSV discharge connection into the suction of the pump.,-,HESS,EHS,EHS,,,Flow,No / Less

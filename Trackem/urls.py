@@ -83,6 +83,8 @@ urlpatterns = [
         path('reset/done/',auth_views.PasswordResetCompleteView.as_view(template_name='userT/password_reset_complete.html'),name='password_reset_complete'),
         path('ContactUs/',login_required(UserView.ContactUs),name='ContactUs'),
         
+        #yhs test
+        path('pmtrepviewall/<int:pk>/view', login_required(UserView.pmtrepviewall.as_view()), name='pmtrepviewall' ),
         
         #path('ContactUs/',UserView.ContactUs,name='ContactUs'),
 
