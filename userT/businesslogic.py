@@ -17,9 +17,14 @@ def blemailSendindividual(sender,recipient, subject,content):
     Msg.content_subtype="html"
     
     Msg.send()
-def bldicttolist(dict):
-    for items in dict:
-        print(items)
+def blquerysetdicttolist(dict):
+    finallist =[]
+    for datetimepair in dict:
+        newlist = list(datetimepair.values())
+
+        finallist.append (newlist)
+
+    return finallist
 
 def blformulateRundown(lstplanned,lstactual):
     

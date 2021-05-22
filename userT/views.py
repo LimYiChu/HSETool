@@ -1003,8 +1003,8 @@ def repPMTExcel (request):
         #yhs working for testing. 
         elif (request.POST.get('byDueDate')):
             
-            print(lstbyDueDate)
-            workbook = excelAllActions(lstbyDueDate,tableduedateheader,"DueDates") 
+            reallstDuedate = blquerysetdicttolist(lstbyDueDate)
+            workbook = excelAllActions(reallstDuedate,tableduedateheader,"DueDates") 
             
             response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
             response['Content-Disposition'] = 'attachment; filename=byDueDates.xlsx' 
