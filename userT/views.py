@@ -457,7 +457,6 @@ class ActioneeItemsMixin(ApproveItemsMixin):
         IdAI = self.kwargs.get("pk") #its actually the id and used as foreign key
         context = super().get_context_data(**kwargs)
         
-
         discsuborg = blgetDiscSubOrgfromID(IdAI)
         ApproverLevel = blgetApproverLevel(discsuborg)
         
@@ -468,13 +467,13 @@ class ActioneeItemsMixin(ApproveItemsMixin):
         #seems to set the signatories directly?
         
         lstSignatoriesTimeStamp= blgettimeStampforSignatories (IdAI, Signatories)
-        
-    
+        #lst = ActionItems.objects.all()
         
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(IdAI)
         context['Approver'] = False
         context ['ApproverLevel'] = ApproverLevel
         context ['Signatories'] = Signatories
+        #context ['lst'] = lst
         
         return context
 
@@ -1327,6 +1326,47 @@ class pmtrepviewall(UpdateView):
         return context
 
     
+# def closeoutactionee(request,**kwargs):
+    
 
+#      #ID = (kwargs["id"])
+#     ID = (kwargs["id"])
+#     obj = ActionItems.objects.filter(id=ID).values() # one for passing into PDF
+#     objFk =ActionItems.objects.get(id=ID) # this is for getting all attachments
+#     ObjAttach = objFk.attachments_set.all()  #get attcahments from foreign key
+    
+    
+#     studyActionNo =  objFk.StudyActionNo
+#     replacestudyActionNo= studyActionNo.replace("/","_")
+#     Filename = replacestudyActionNo  + ".pdf"
+#     out_file = 'static/media/temp/' + Filename
+       
+#     data_dict=obj[0]
+#     #print (data_dict)
+#     discsub = blgetDiscSubOrgfromID(ID)
+#     Signatories = blgetSignotories(discsub)
+#     print(discsub)
+#     print (Signatories)
+#     lstSignatoriesTimeStamp= blgettimeStampforSignatories (ID, Signatories)
+#     signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
+    
+#     file = pdfgenerate('closeouttemplate1.pdf',out_file,data_dict,signatoriesdict)
+   
+#     in_memory = BytesIO()
+    
+#     zip = ZipFile(in_memory,mode="w")
+    
+#     for eachfile in ObjAttach:
+#         filename = os.path.basename(eachfile.Attachment.name)
+#         zip.write (eachfile.Attachment.path, "Attach_"+filename)
+  
+#     closeoutname = os.path.basename(out_file) 
+#     zip.write (out_file, closeoutname)
+#     zip.close()
+#     response = HttpResponse(content_type="application/zip")
+#     response["Content-Disposition"] = "attachment; filename=" + studyActionNo+ ".zip"
 
-
+#     in_memory.seek(0)    
+#     response.write(in_memory.read())
+   
+#     return response

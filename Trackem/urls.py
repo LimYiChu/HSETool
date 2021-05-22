@@ -117,7 +117,7 @@ urlpatterns = [
         #PDF close out
         path('closeoutsheet/',login_required(UserView.closeoutsheet),name='closeoutsheet'),
         path('closeoutsheet/<int:id>/print', login_required(UserView.closeoutprint), name='closeoutprint' ),
-        
+        #path('ActioneeList/<int:pk>/update/print', login_required(UserView.closeoutactionee), name='closeoutactionee' ),
         #tenant
         path('our_team/', login_required(our_team), name='our_team'),
 
