@@ -60,11 +60,13 @@
         var options = {
           chart: {
             title: 'Run-Down Curve',
-            subtitle: 'Action Items'
+            subtitle: 'Action Items',
+            
           },
-          colors: ['red', 'blue'],
+          colors: ['black', 'blue'],
          hAxis:{ format: 'MMM d,y'},
          curveType: 'function',
+        legend: {position: 'top', textStyle: {color: 'red', fontSize: 16}},
           width: 900,
           height: 500
         };
@@ -76,27 +78,7 @@
       }
        
 
-        function drawChart2LineChart(values,chartTitle) {
         
-          var data = google.visualization.arrayToDataTable([
-          ['Date', 'Planned', 'Expenses'],
-          ['2021-02-15',  200,      200],
-          ['2021-03-22',  150,      200],
-          ['2021-04-15',  80,       180],
-          ['2021-05-05',  0,      180]
-        ]);
-
-        var options = {
-          title: 'Company Performance',
-          curveType: 'function',
-          legend: { position: 'bottom' }
-        };
-
-        var chart = new google.visualization.LineChart(document.getElementById('linechart'));
-
-        chart.draw(data, options);
-      }
-
       
     </script>
   </head>
