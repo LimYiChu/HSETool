@@ -52,7 +52,7 @@ def Load (request):
                     DueDate=row[15],
                     Guidewords = row[16],
                     #QueSeries=row[17],
-                    
+                    Deviation = row[18],
                     )
             messages.add_message(request, messages.SUCCESS, 'File Uploaded Successfully')
     else:
