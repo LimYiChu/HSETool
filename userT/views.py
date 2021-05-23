@@ -402,7 +402,7 @@ class HistoryConfirm(UpdateView):
         return queryset.get(id=self.kwargs['id'])
 
 class HistoryItemsMixin(ApproveItemsMixin):
-    template_name = "userT/historyPullBack.html"
+    template_name = "userT/historypullback.html"
     form_class = frmApproverConfirmation
     
     def get_context_data(self,**kwargs):
