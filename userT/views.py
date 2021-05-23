@@ -413,16 +413,16 @@ class HistoryItemsMixin(ApproveItemsMixin):
         discsuborg = blgetDiscSubOrgfromID(id)
         ApproverLevel = blgetApproverLevel(discsuborg)
         
-        blsetApproverLevelTarget(id,ApproverLevel)
         
-        #sets the signatory directly in getting timestamp
+        # #sets the signatory directly in getting timestamp
         Signatories = blgetSignotories(discsuborg)
         lstSignatoriesTimeStamp= blgettimeStampforSignatories (id, Signatories)
 
+        
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(id)
         context['Approver'] = False
         context ['ApproverLevel'] = ApproverLevel
-        context ['Signatories'] = Signatories
+        context ['Signatories'] = lstSignatoriesTimeStamp
        
         
         return context

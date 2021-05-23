@@ -2,6 +2,7 @@ from django import forms
 from .models import *
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import *
+
 class UploadExlForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(UploadExlForm, self).__init__(*args, **kwargs)
@@ -24,6 +25,24 @@ class UploadExlForm(forms.ModelForm):
         model = UploadExl
         fields = '__all__'
 
+class UploadField(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(UploadField, self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_method = 'POST'
+        #self.helper.add_input(Submit('Upload', 'Upload File & Confirm', css_class='btn btn-outline-dark float-right col-md-2'))
+        #self.helper.add_input(Submit('Cancel', 'Cancel', css_class='btn btn-outline-dark float-right col-md-1'))
+        
+        
+        self.helper.layout = Layout(
+
+            Div(
+            Div (Field('Field', type="file" ,size="50", id="filename", name="filename", ), css_class='col-md-12'), 
+            Div (Field('Username', type="hidden")),
+            Div()
+            ),
+        )
+    
 class CommonLayout (Layout):
     def __init__(self, *args, **kwargs):
         super().__init__(

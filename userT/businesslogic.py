@@ -312,11 +312,11 @@ def blgettimeStampforSignatories (id, Signatories):
                 #get all time stamps for all que series
                 #index basically denominates Que series level. if Current que series =2 then only actionee = 0 and Approver 1 has signed
                 lstdictHistory = ActionItems.history.filter(id=id).filter(QueSeries=index).order_by('-history_date').values()
-                timestamp = lstdictHistory[0].get('history_date') # get just the first record assume decending is the way togo
                 
-               
-                
-                
+                if lstdictHistory: #to fix testing bug
+                    timestamp = lstdictHistory[0].get('history_date') # get just the first record assume decending is the way togo
+                else:
+                    timestamp = []
 
                 items.append(timestamp)
                 
