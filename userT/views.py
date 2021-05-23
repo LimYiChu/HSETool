@@ -922,12 +922,12 @@ def repPMTExcel (request):
     discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
     
     Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
-   
-    tableindiheader = ['User','Role', 'Open Actions' ,'Pending Res/Appr','Organisation Route','Closed']
+    #edward swapped around the headers 
+    tableindiheader = ['User','Role','Pending Res/Appr','Organisation Route','Open Actions','Closed']
     #Get all Actions
     allactions = ActionItems.objects.all()
-
-    tableallheader = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
+    #edward added id
+    tableallheader = ['id','StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
     lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
     
     tableallheadermodified = ['Study Action No','Study Name', 'Discipline' ,'Recommendations','Response','Initial Risk']
@@ -1176,18 +1176,58 @@ def closeoutsheet(request): #new naming convention - all small letters
 #     return render(request, 'userT/closeoutsheet.html')
         
 
-
-#yhstest
-
-class pmtrepviewall(ApproveItemsMixin):
+# for  making view all actions clickable & obtain the id using update view
+class pmtrepviewall(UpdateView):
     template_name = "userT/pmtrepviewall.html"
     form_class = ApproverForm
-    
+
+    def get_object(self,queryset=None):
+        queryset=ActionItems.objects.all()
+      
+        return queryset.get(id=self.kwargs['id'])
+
     def get_context_data(self,**kwargs):
-        IdAI = self.kwargs.get("pk") #its actually the id and used as foreign key
+        idAI = self.kwargs.get("id")
         context = super().get_context_data(**kwargs)
+        discsub = blgetDiscSubOrgfromID(idAI)
+        Signatories = blgetSignotories(discsub)
+
+        
+        #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
+        lstSignatoriesTimeStamp= blgettimeStampforSignatories (idAI, Signatories) #it changes the signatories directly
+        
+        
+        context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(idAI)
+        context ['Signatories'] = lstSignatoriesTimeStamp
         
         return context
 
-    def get_success_url(self):
-        return reverse ('multiplefiles', kwargs={'forkeyid': self.object.id})
+#yhs testing to print individual pdf on actionee page
+def indiprint(request,**kwargs):
+    ID = (kwargs["id"])
+    obj = ActionItems.objects.filter(id=ID).values() # one for passing into PDF
+    objFk =ActionItems.objects.get(id=ID) # this is for getting all attachments
+    ObjAttach = objFk.attachments_set.all()  #get attcahments from foreign key
+    studyActionNo =  objFk.StudyActionNo
+    replacestudyActionNo= studyActionNo.replace("/","_")
+    Filename = replacestudyActionNo  + ".pdf"
+    out_file = 'static/media/temp/' + Filename
+       
+    data_dict=obj[0]
+    #print (data_dict)
+   
+    #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
+        
+    #dont delete below as its a way to actualy read from memory
+    #response = HttpResponse(content_type='application/pdf')
+    #response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
+    #bufferfile = pdfsendtoclient ('atrtemplateautofontreadonly.pdf',data_dict)
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = "attachment; filename=" + studyActionNo+ ".pdf"
+
+    file = pdfsendtoclient('closeouttemplate.pdf', data_dict)
+    response.write(file.read())
+    return response
+   
+   #return FileResponse(bufferfile, as_attachment=True, filename=out_file)

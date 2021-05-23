@@ -49,15 +49,11 @@
         <li class="breadcrumb-item">
           <a style="color:black" href="/main">Dashboard</a>
         </li>
-        {% if block.is_ApproverDetails %}<!--doesnt work...-->      
+         
         <li class="breadcrumb-item">
-          <a href="/ApproverList">Actions</a> <!--add if to differentiate actionee and approver-->
+          View All Actions<!--add if to differentiate actionee and approver-->
       </li>
-        {% else %}
-        <li class="breadcrumb-item">
-            <a href="/ActioneeList">Actions</a> <!--add if to differentiate actionee and approver-->
-        </li>
-{% endif %}
+     
 
         <li class="breadcrumb-item active">
             <a aria-current="page">{{object.StudyActionNo}}</a>
@@ -67,19 +63,11 @@
 
    
 <!--breadcrumbs - needs to be automated.-->
-
+<!---->
 <div class="card"  >
   <div class="card-header" >
      <a style="color:black; font-size:large">Details</a>
-            <button type="button" class="btn btn-outline-primary btn-sm;" style = "float: right;">  <a class ="article-title" href="{% url 'indiprint' object.id %}" style="float: right;">Generate PDF <i class="material-icons">print</i>   </button> 
-        </a>
-             
-    
-
-
-
-    </a>
-
+     <button type="button" class="btn btn-outline-primary btn-sm;" style = "float: right;">  <a class ="article-title" href="{% url 'indiprint' object.id %}" style="float: right;">Generate PDF <i class="material-icons">print</i>   </button> 
   </div>
   <div id="card-element-10" >
     <div class="card-body" >
@@ -113,8 +101,8 @@
                                   
                                 {%else%}
                                 <div class="form-group"><input type="hidden" name="filepk" value={{ X.id }}></div>
-                                
-                                <div class="form-group"><input type="submit" name="Delete" value="Delete" class="btn btn-outline-primary float-right "  /></div>  
+                                <!--
+                                <div class="form-group"><input type="submit" name="Delete" value="Delete" class="btn btn-outline-primary float-right "  /></div>  -->
                                 {% endif%}
                               </td>
                               </tr>
@@ -161,16 +149,7 @@
 
                        
                 </div>
-              {% if Approver%}               
-                  <div class="form-group"><input type="submit" name="Approve" value="Approve" class="btn btn-outline-primary float-right col-md-1"  id="submit-id-approve"/></div> 
-                  <div class="form-group"><input type="submit" name="Reject" value="Reject..." class="btn btn-outline-primary float-right col-md-1"  id="submit-id-reject"/></div>
-                  
-               {%else %}
-                  
-                  
-                  <div class="form-group"><input type="submit" name="Next" value="Next..." class="btn btn-outline-primary float-right col-md-1"  id="submit-id-approve"/></div> 
-                  <div class="form-group"><input type="submit" name="Cancel" value="Cancel" class="btn btn-outline-primary float-right col-md-1"  id="submit-id-reject"/></div>
-                {%endif %}
+             
               </div>
         </fieldset>
       </form> 

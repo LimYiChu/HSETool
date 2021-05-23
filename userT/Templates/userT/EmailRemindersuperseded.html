@@ -1,0 +1,346 @@
+{% extends "userT/base3.html"%}
+{%load crispy_forms_tags %}
+{% crispy form form.helper%}
+{%block Actionee%}
+<nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item normal">
+          <a href="/main">Dashboard</a>
+        </li>
+        <li class="breadcrumb-item active">
+            <a aria-current="page">Email Reminder and Settings</a>
+        </li>
+      </ol>
+</nav>
+<br>    
+<!--Email Scheduler-->
+    <div class="container-fluid"> 
+      <div class="row">
+        <div class="col-md-12">
+          <h4 style="text-align:center; color:cadetblue">Default values and options are customizable upon request. </h4>
+          <h4>Email Scheduler</h4>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="card">
+                <h5 class="card-header">
+                  Individual Actions
+                </h5>
+                <div class="card-body">
+                  <p class="card-text">
+                    <input type="radio" id="IndividualFrequency" name="IndividualFrequency" value="Daily" checked>
+                    <label for="IndividualFrequency"> Daily</label><br>
+                    <input type="radio" id="IndividualFrequency" name="IndividualFrequency" value="Weekly">
+                    <label for="IndividualFrequency"> Weekly</label><br>
+                    <input type="radio" id="IndividualFrequency" name="IndividualFrequency" value="Monthly">
+                    <label for="IndividualFrequency"> Monthly</label><br>
+                  </p>
+                </div>
+                <div class="card-footer">
+                  <button type="button" class="btn btn-outline-secondary">Update Settings</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card">
+                <h5 class="card-header">
+                  When Actions Assigned
+                </h5>
+                <div class="card-body">
+                  <p class="card-text">
+                    <input type="radio" id="AssignmentNotification" name="AssignmentNotification" value="Yes" >
+                    <label for="AssignmentNotification"> Yes</label><br>
+                    <input type="radio" id="AssignmentNotification" name="AssignmentNotification" value="No"checked>
+                    <label for="AssignmentNotification"> No</label><br>
+                  </p>
+                </div>
+                <div class="card-footer">
+                  <button type="button" class="btn btn-outline-secondary">Update Settings</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card">
+                <h5 class="card-header">
+                  When Actions Approved/ Rejected
+                </h5>
+                <div class="card-body">
+                  <p class="card-text">
+                    <input type="radio" id="ActionsQuemovement" name="ActionsQuemovement" value="Yes" >
+                    <label for="ActionsQuemovement"> Yes</label><br>
+                    <input type="radio" id="ActionsQuemovement" name="ActionsQuemovement" value="No"checked>
+                    <label for="ActionsQuemovement"> No</label><br>
+                  </p>
+                </div>
+                <div class="card-footer">
+                  <button type="button" class="btn btn-outline-secondary">Update Settings</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="card">
+                <h5 class="card-header">
+                  Status Update Report
+                </h5>
+                <div class="card-body">
+                  <p class="card-text">
+                    <h6>Frequency</h6>
+                    <input type="radio" id="EmailReportFrequency" name="EmailReportFrequency" value="Daily">
+                    <label for="EmailReportFrequency"> Daily</label><br>
+                    <input type="radio" id="vehicle2" name="EmailReportFrequency" value="Weekly" checked>
+                    <label for="EmailReportFrequency"> Weekly</label><br>
+                    <input type="radio" id="vehicle3" name="EmailReportFrequency" value="Monthly">
+                    <label for="EmailReportFrequency"> Monthly</label><br>
+                    <h6>To</h6>
+                    <input type="radio" id="EmailReportGroup" name="EmailReportGroup" value="PMT" checked>
+                    <label for="EmailReportGroup"> PMT</label><br>
+                    <input type="radio" id="EmailReportGroup" name="EmailReportGroup" value="Admin">
+                    <label for="EmailReportGroup"> Admin</label><br>
+                    <input type="radio" id="EmailReportGroup" name="EmailReportGroup" value="All Users">
+                    <label for="EmailReportGroup"> All Users</label><br>
+                  </p>
+                </div>
+                <div class="card-footer">
+                  <button type="button" class="btn btn-outline-secondary">Update Settings</button>
+                </div>
+              </div>
+            </div>
+            
+
+          </div>
+        </div>
+      </div>
+      
+    </div>
+<br>
+<!--Email Reminder-->
+		<div class="col-md-12"> 
+      <h4>Generate Email Reminder</h4>
+			<div class="row">
+				<div class="col-md-4">
+					<div class="card">
+						<h5 class="card-header">
+							Pending Responses
+						</h5>
+						<div class="card-body">
+							<p class="card-text">
+                <form action="/EmailReminder/" method="POST">
+                {% csrf_token %}
+                <div class = "form-group">
+								<input type="radio" id="EmailPendingResponse" name="EmailPendingResponse" value="" checked>
+                <label for="EmailPendingResponse"> All</label><br>
+                <input type="radio" id="EmailPendingResponse" name="EmailPendingResponse" value="" >
+                <label for="EmailPendingResponse"> Overdue Only</label><br>
+                <h6>To</h6>
+                <input type="radio" id="EmailPendingResponseReceipt" name="EmailPendingResponseReceipt" value="">
+                <label for="EmailPendingResponseReceipt"> All Users</label><br>
+                <input type="radio" id="EmailPendingResponseReceipt" name="EmailPendingResponseReceipt" value="">
+                <label for="EmailPendingResponseReceipt"> Specific User</label><br>                
+                 <p> {{ form.as_p }} </p>
+                <input type="radio" id="EmailPendingResponseReceipt" name="EmailPendingResponseReceipt" value="">
+                <label for="EmailPendingResponseReceipt"> Specific Discipline</label><br>
+                <label for="fname">Discipline</label><br>
+                <input type="text" id="fname" name="fname" value=""><br>
+                </div>
+							</p>
+						</div>
+						<div class="card-footer">
+              <input type="submit" name="Subscribe" class="btn btn-outline-secondary" value="Send">
+            </form>
+						</div>
+					</div>
+				
+				</div>
+				<div class="col-md-4">
+					<div class="card">
+						<h5 class="card-header">
+							Pending Approval
+						</h5>
+						<div class="card-body">
+							<p class="card-text">
+								<input type="radio" id="EmailPendingApprover" name="EmailPendingApprover" value="">
+                <label for="EmailPendingApprover"> All</label><br>
+                <input type="radio" id="EmailPendingApprover" name="EmailPendingApprover" value="" checked>
+                <label for="EmailPendingApprover"> Overdue Only</label><br>
+                <h6>To</h6>
+                <input type="radio" id="EmailPendingApproverReceipt" name="EmailPendingApproverReceipt" value="">
+                <label for="EmailPendingApproverReceipt"> All Users</label><br>
+                <input type="radio" id="EmailPendingApproverReceipt" name="EmailPendingApproverReceipt" value="">
+                <label for="EmailPendingApproverReceipt"> Specific User</label><br>
+                <label for="fname">Username</label><br>
+                <input type="text" id="fname" name="fname" value=""><br>
+                <input type="radio" id="EEmailPendingApproverReceipt" name="EmailPendingApproverReceipt" value="">
+                <label for="EmailPendingApproverReceipt"> Specific Discipline</label><br>
+                <label for="fname">Discipline</label><br>
+                <input type="text" id="fname" name="fname" value=""><br>
+							</p>
+						</div>
+						<div class="card-footer">
+							<button type="button" class="btn btn-outline-secondary">Send</button>
+						</div>
+					</div>
+					<div class="dropdown">
+						 
+						
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="card">
+						<h5 class="card-header">
+							All Actions
+						</h5>
+						<div class="card-body">
+              <p class="card-text">
+								<input type="radio" id="EmailAllActioneeApprover" name="EmailAllActioneeApprover" value="">
+                <label for="EmailAllActioneeApprover"> All</label><br>
+                <input type="radio" id="EmailAllActioneeApprover" name="EmailAllActioneeApprover" value="" checked>
+                <label for="EmailAllActioneeApprover"> Overdue Only</label><br>
+                <h6>To</h6>
+                <input type="radio" id="EmailAllActioneeApproverReceipt" name="EmailAllActioneeApproverReceipt" value="">
+                <label for="EmailAllActioneeApproverReceipt"> All Users</label><br>
+                <input type="radio" id="EmailAllActioneeApproverReceipt" name="EmailAllActioneeApproverReceipt" value="">
+                <label for="EmailAllActioneeApproverReceipt"> Specific User</label><br>
+                <label for="fname">Username</label><br>
+                <input type="text" id="fname" name="fname" value=""><br>
+                <input type="radio" id="EmailAllActioneeApproverReceipt" name="EmailAllActioneeApproverReceipt" value="">
+                <label for="EEmailAllActioneeApproverReceipt"> Specific Discipline</label><br>
+                <label for="fname">Discipline</label><br>
+                <input type="text" id="fname" name="fname" value=""><br>
+							</p>
+						</div>
+						<div class="card-footer">
+							<button type="button" class="btn btn-outline-secondary">Send</button>
+						</div>
+					</div>					
+				</div>
+			</div>
+		</div>
+<br>
+      <div class="col-md-12"> <!--Generate Email Report-->
+        <h4>Generate Email Report</h4>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="card">
+              <h5 class="card-header">
+                Overall Action Status
+              </h5>
+              <div class="card-body">
+                <p class="card-text">
+                  <form action="/EmailReminderAttachment/" method="POST">
+                  {% csrf_token %}
+                <div class = "form-group">
+								<input type="radio" id="EmailPendingResponse" name="EmailPendingResponse" value="" checked>
+                <label for="EmailPendingResponse"> All</label><br>
+                <input type="radio" id="EmailPendingResponse" name="EmailPendingResponse" value="" >
+                <label for="EmailPendingResponse"> Overdue Only</label><br>
+                <h6>To</h6>
+                <input type="radio" id="EmailPendingResponseReceipt" name="EmailPendingResponseReceipt" value="">
+                <label for="EmailPendingResponseReceipt"> All Users</label><br>
+                <input type="radio" id="EmailPendingResponseReceipt" name="EmailPendingResponseReceipt" value="">
+                <label for="EmailPendingResponseReceipt"> Specific User</label><br>                
+                 <p> {{ form.as_p }} </p>
+                <input type="radio" id="EmailPendingResponseReceipt" name="EmailPendingResponseReceipt" value="">
+                <label for="EmailPendingResponseReceipt"> Specific Discipline</label><br>
+                <label for="fname">Discipline</label><br>
+                <input type="text" id="fname" name="fname" value=""><br>
+                </div>
+							</p>
+						</div>
+						<div class="card-footer">
+              <input type="submit" name="Subscribe" class="btn btn-outline-secondary" value="Send">
+            </form>
+						</div>
+					</div>
+				
+				</div>
+				<div class="col-md-4">
+					<div class="card">
+						<h5 class="card-header">
+							Pending Approval
+						</h5>
+						<div class="card-body">
+							<p class="card-text">
+								<input type="radio" id="EmailPendingApprover" name="EmailPendingApprover" value="">
+                <label for="EmailPendingApprover"> All</label><br>
+                <input type="radio" id="EmailPendingApprover" name="EmailPendingApprover" value="" checked>
+                <label for="EmailPendingApprover"> Overdue Only</label><br>
+                <h6>To</h6>
+                <input type="radio" id="EmailPendingApproverReceipt" name="EmailPendingApproverReceipt" value="">
+                <label for="EmailPendingApproverReceipt"> All Users</label><br>
+                <input type="radio" id="EmailPendingApproverReceipt" name="EmailPendingApproverReceipt" value="">
+                <label for="EmailPendingApproverReceipt"> Specific User</label><br>
+                <label for="fname">Username</label><br>
+                <input type="text" id="fname" name="fname" value=""><br>
+                <input type="radio" id="EEmailPendingApproverReceipt" name="EmailPendingApproverReceipt" value="">
+                <label for="EmailPendingApproverReceipt"> Specific Discipline</label><br>
+                <label for="fname">Discipline</label><br>
+                <input type="text" id="fname" name="fname" value=""><br>
+                </p>
+              </div>
+              <div class="card-footer">
+                <button type="button" class="btn btn-outline-secondary">Send</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card">
+              <h5 class="card-header">
+                Action Sheets
+              </h5>
+              <div class="card-body">
+                <p class="card-text">
+                  <input type="radio" id="vehicle1" name="vehicle1" value="Bike">
+                  <label for="vehicle1"> All Users</label><br>
+                  <input type="radio" id="vehicle2" name="vehicle2" value="Car">
+                  <label for="vehicle2"> Admin</label><br>
+                  <input type="radio" id="vehicle3" name="vehicle3" value="Boat">
+                  <label for="vehicle3"> Specific User</label><br>
+                  <label for="fname">Username</label><br>
+                  <input type="text" id="fname" name="fname" value=""><br>
+                  <input type="radio" id="vehicle3" name="vehicle3" value="Boat">
+                  <label for="vehicle3"> Specific Discipline</label><br>
+                  <label for="fname">Discipline</label><br>
+                  <input type="text" id="fname" name="fname" value=""><br>
+                </p>
+              </div>
+              <div class="card-footer">
+                <button type="button" class="btn btn-outline-secondary">Send</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card">
+              <h5 class="card-header">
+                Trending Report
+              </h5>
+              <div class="card-body">
+                <p class="card-text">
+                  <input type="radio" id="vehicle1" name="vehicle1" value="Bike">
+                  <label for="vehicle1"> All Users</label><br>
+                  <input type="radio" id="vehicle2" name="vehicle2" value="Car">
+                  <label for="vehicle2"> Admin</label><br>
+                  <input type="radio" id="vehicle3" name="vehicle3" value="Boat">
+                  <label for="vehicle3"> Specific User</label><br>
+                  <label for="fname">Username</label><br>
+                  <input type="text" id="fname" name="fname" value=""><br>
+                  <input type="radio" id="vehicle3" name="vehicle3" value="Boat">
+                  <label for="vehicle3"> Specific Discipline</label><br>
+                  <label for="fname">Discipline</label><br>
+                  <input type="text" id="fname" name="fname" value=""><br>
+                </p>
+              </div>
+              <div class="card-footer">
+                <button type="button" class="btn btn-outline-secondary">Send</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+{%endblock%}
+

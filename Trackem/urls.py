@@ -121,6 +121,13 @@ urlpatterns = [
         path('our_team/', login_required(our_team), name='our_team'),
 
         #path('PDFtest/', UserView.PDFtest, name='PDFtest'),
+        #edward added to enable clicking of all actions
+        path('pmtrepviewall/<int:id>/view', login_required(UserView.pmtrepviewall.as_view()), name='pmtrepviewall' ),
+        #addon Excel Upload
+        path('addonupload/', login_required(UploadV.AddonLoad), name='addonupload' ),
+
+        #yhs testing
+        path('AllList/<int:id>/update/print', login_required(UserView.indiprint), name='indiprint' ),
       ]
 
 if settings.DEBUG:
