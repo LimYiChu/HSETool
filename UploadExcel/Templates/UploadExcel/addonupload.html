@@ -1,0 +1,99 @@
+{% extends "userT\base3.html"%}
+{%load crispy_forms_tags %}
+
+{% crispy form form.helper%}
+
+    {% block ToolTip %}
+
+
+    <div class="postitnote sticky "  style="font-size:small; font-family:Lato; margin-right:5px;margin-left:5px "> 
+        <div class="col-md-1;margin-right:5px;margin-left:5px">
+           <table class="sticky table table-hover" > <!--set to maximum 20 rows per page-->
+            <thead class="thead">
+              <tr>
+                <th>
+                  ToolTip
+                </th>
+              
+              </tr>
+              
+          </thead>
+          <tbody>
+            
+    
+            <tr>
+            <td>This is for addon only. Please be careful</td>
+          
+            
+            </tr>
+            
+            </tbody>
+        </table>
+        
+      </div>
+      <br>
+      <br>
+    </div>
+      
+    {%endblock%}
+
+    {% block FileUpload%}
+    <div>
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item normal">
+          <a href="/main">Home</a>
+        </li>
+        <li class="breadcrumb-item active">
+         <a aria-current="page">Addon Upload</a>
+        </li>
+    </ol>
+</nav>
+
+</div>
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="card">
+				<h6 class="card-header">
+					Upload File
+				</h6>
+				<div class="card-body">
+					<p class="card-text">
+                        
+						<form method="POST" enctype = 'multipart/form-data' >  
+                            <fieldset class="form-group" > <!--Fieldset is ultimtely important and must be inside the form and encompass the buttons. 
+                                The buttons was removed from forms into direct HTml to give the btn-outline-primary class. In forms it does not work
+                            -->
+                            {% csrf_token %}  
+                            {%crispy form_upload form_upload.helper%}
+                            <div class="form-group"><input type="submit" name="Upload" value=" Upload Files " class="btn btn-outline-primary float-right "  id="submit-id-approve"/></div> 
+                            <div class="form-group"><input type="submit" name="Cancel" value="Cancel" class="btn btn-outline-primary float-right col-md-1"  id="submit-id-reject"/></div>
+                        </fieldset>
+                        </form>
+
+                        {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                            <p style="color:blue" class={{message.tags}}>{{ message }}</p>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+
+					</p>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+</div>
+    
+  
+
+
+{%endblock%}
+
+
+
+
