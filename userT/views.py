@@ -1204,7 +1204,7 @@ class pmtrepviewall(UpdateView):
 
 #yhs testing to print individual pdf on actionee page
 def indiprint(request,**kwargs):
-    ID = (kwargs["id"])
+    ID = (kwargs["pk"])
     obj = ActionItems.objects.filter(id=ID).values() # one for passing into PDF
     objFk =ActionItems.objects.get(id=ID) # this is for getting all attachments
     ObjAttach = objFk.attachments_set.all()  #get attcahments from foreign key
