@@ -925,7 +925,7 @@ def repPMTExcel (request):
     #edward swapped around the headers 
     tableindiheader = ['User','Role','Pending Res/Appr','Organisation Route','Open Actions','Closed']
     #yhs added temporary header for excel export
-    tableindiheadertemp =['User','Role', 'Pending Res/Appr', 'Open Actions', 'Organisation Route', 'Closed'] #yhs added temporary coz we used differnt header for excel export
+    tableindiheadertemp =['User','Role', 'Open Actions', 'Pending Res/Appr', 'Organisation Route', 'Closed'] #yhs added temporary coz we used differnt header for excel export
     #Get all Actions
     allactions = ActionItems.objects.all()
     #edward added id
