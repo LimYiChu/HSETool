@@ -68,3 +68,54 @@ def Load (request):
 def LoadRoutes (request):
     #to load routes from excel when required
     pass
+
+
+#YHS added
+def AddonLoad (request):
+    
+    if request.method == 'POST':
+        #UploadExl.objects.all().delete()
+       # ActionItems.objects.all().delete()
+        form_upload = UploadExlForm(request.POST ,request.FILES)
+        if form_upload.is_valid():
+            form_upload.instance.Username = request.user.email
+            form_upload.save()
+            ID = form_upload.instance.id
+            form_upload = UploadExlForm()
+            obj = UploadExl.objects.get(id=ID)
+            
+            with open (obj.Filename.path, 'r') as input_file:
+                csv_reader = csv.reader(input_file)
+                next(csv_reader)
+                for i, row in enumerate(csv_reader):
+            
+                    ActionItems.objects.create(
+                    StudyActionNo= row [1],
+                    StudyName= row[2],
+                    Facility=row[3],
+                    ProjectPhase=row[4],
+                    Cause= row [5],
+                    Consequence= row[6],
+                    Safeguard = row[7],
+                    InitialRisk = row [8],
+                    Recommendations= row[9],
+                    ResidualRisk = row[10],
+                    Organisation=row[11],
+                    Disipline=row[12],
+                    Subdisipline=row[13],
+                    FutureAction=row[14],
+                    DueDate=row[15],
+                    Guidewords = row[16],
+                    #QueSeries=row[17],
+                    Deviation = row[16],
+                    )
+            messages.add_message(request, messages.SUCCESS, 'File Uploaded Successfully')
+    else:
+        form_upload= UploadExlForm()
+    
+    context = {
+        'form_upload' : form_upload
+
+    }
+
+    return render(request, 'uploadExcel/addonupload.html', context)
