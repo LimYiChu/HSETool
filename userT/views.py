@@ -402,7 +402,7 @@ class HistoryConfirm(UpdateView):
         return queryset.get(id=self.kwargs['id'])
 
 class HistoryItemsMixin(ApproveItemsMixin):
-    template_name = "userT/historyPullBack.html"
+    template_name = "userT/historypullback.html"
     form_class = frmApproverConfirmation
     
     def get_context_data(self,**kwargs):
@@ -840,7 +840,7 @@ def emailreminders(request):
         QueClosed = [99]
         discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
         Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
-        subject = "Pending Actions"
+        subject = "Pending Activities for Phase4a Risk Assessment Workshops"
         content="You have Pending Actions in your Queue. Please go to https://sapuraphase4a.prism-ehstools.com/ to attend to the actions." 
         for items in Indisets : 
             if items[3]>0:
@@ -849,7 +849,7 @@ def emailreminders(request):
         #below is for the overdue, it is linked to button, just waiting for overdue function
     elif (request.POST.get('SendOverdue')):
           
-        subject = "Pending Actions"
+        subject = "Pending Activities for Phase4a Risk Assessment Workshops"
         content="You have Overdue Actions in your Queue. Please go to https://sapuraphase4a.prism-ehstools.com/ to attend to the actions." 
         blemailSendindividual(emailSender,emaillist,subject,content)
 
@@ -924,13 +924,17 @@ def repPMTExcel (request):
     Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
     #edward swapped around the headers 
     tableindiheader = ['User','Role','Pending Res/Appr','Organisation Route','Open Actions','Closed']
+    #yhs added temporary header for excel export
+    tableindiheadertemp =['User','Role', 'Open Actions', 'Pending Res/Appr', 'Organisation Route', 'Closed'] #yhs added temporary coz we used differnt header for excel export
     #Get all Actions
     allactions = ActionItems.objects.all()
     #edward added id
     tableallheader = ['id','StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
     lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
-    
-    tableallheadermodified = ['Study Action No','Study Name', 'Discipline' ,'Recommendations','Response','Initial Risk']
+         
+    tableallheadermodified = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] #this header orignalyy comes with some spaces which gave some error
+    #yhs added to fix id being showned in excel file when download all
+    lstofallactionstemp = blgetActionStuckAt(allactions, tableallheadermodified)
     
     #for workshop based view
     allstudies = Studies.objects.all()
@@ -963,8 +967,9 @@ def repPMTExcel (request):
         if (request.POST.get('allActions')):
           
             #workbook= createExcelReports(request,"\\excelDownload\\AllActions3.xlsx")
-            tableallheader.append("Current Actionee/Approver") #appends the last column that the list spits out
-            workbook = excelAllActions(lstofallactions,tableallheader,"All Action Items")
+            tableallheadermodified.append("Current Actionee/Approver") #appends the last column that the list spits out #yhs changed from tableallheader to tableallheadermodified
+            workbook = excelAllActions(lstofallactionstemp,tableallheadermodified,"All Action Items") #yhs temporary changed to fix the excel download part. Original code in next line
+            #workbook = excelAllActions(lstofallactions,tableallheader,"All Action Items") 
             
             response = HttpResponse(content_type='application/ms-excel') #
             response['Content-Disposition'] = 'attachment; filename=byAllActions.xlsx' 
@@ -973,7 +978,7 @@ def repPMTExcel (request):
         elif (request.POST.get('indiActions')):
             
 
-            workbook = excelAllActions(Indisets,tableindiheader,"Individual Actions")
+            workbook = excelAllActions(Indisets,tableindiheadertemp,"Individual Actions") #yhs chnaged to tableindiheadertemp
             
             response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
             response['Content-Disposition'] = 'attachment; filename=byIndividual.xlsx' 
@@ -1025,6 +1030,10 @@ def repPMTExcel (request):
         'tabledischeader' : tabledischeader ,
         'tableallheader' : tableallheader,
         'tableallheadermodified' : tableallheadermodified,
+        #yhs added to temporary fix the excel downloaded not consistent.
+        'tableindiheadertemp': tableindiheadertemp,
+        'lstofallactionstemp' : lstofallactionstemp,
+
     }
     return render(request, 'userT/reppmtexcel.html', context)
 
