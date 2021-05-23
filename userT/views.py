@@ -1204,7 +1204,7 @@ class pmtrepviewall(UpdateView):
 
 #yhs testing to print individual pdf on actionee page
 def indiprint(request,**kwargs):
-    ID = (kwargs["pk"])
+    ID = (kwargs["id"])
     obj = ActionItems.objects.filter(id=ID).values() # one for passing into PDF
     objFk =ActionItems.objects.get(id=ID) # this is for getting all attachments
     ObjAttach = objFk.attachments_set.all()  #get attcahments from foreign key
@@ -1215,15 +1215,7 @@ def indiprint(request,**kwargs):
        
     data_dict=obj[0]
     #print (data_dict)
-    discsub = blgetDiscSubOrgfromID(ID)
-    Signatories = blgetSignotories(discsub)
-    print(discsub)
-    print (Signatories)
-    lstSignatoriesTimeStamp= blgettimeStampforSignatories (ID, Signatories)
-    signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
-    
    
-        
     #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
         
     #dont delete below as its a way to actualy read from memory
@@ -1231,26 +1223,11 @@ def indiprint(request,**kwargs):
     #response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
     #bufferfile = pdfsendtoclient ('atrtemplateautofontreadonly.pdf',data_dict)
 
-    file = pdfgenerate('closeouttemplate.pdf',out_file,data_dict,signatoriesdict)
-    
-    in_memory = BytesIO()
-    
-    zip = ZipFile(in_memory,mode="w")
-    
-    for eachfile in ObjAttach:
-        filename = os.path.basename(eachfile.Attachment.name)
-        zip.write (eachfile.Attachment.path, "Attach_"+filename)
-    
-    closeoutname = os.path.basename(out_file) 
-    zip.write (out_file, closeoutname)
-    zip.close()
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = "attachment; filename=" + studyActionNo+ ".pdf"
 
-    response = HttpResponse(content_type="application/zip")
-    response["Content-Disposition"] = "attachment; filename=" + studyActionNo+ ".zip"
-
-    in_memory.seek(0)    
-    response.write(in_memory.read())
-    
+    file = pdfsendtoclient('closeouttemplate.pdf', data_dict)
+    response.write(file.read())
     return response
    
    #return FileResponse(bufferfile, as_attachment=True, filename=out_file)

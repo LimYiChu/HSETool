@@ -53,7 +53,7 @@ class CommonLayout (Layout):
             Div (
                 
             Div (Field('Facility', type="hidden")),
-            
+            Div (Field('DueDate', type="hidden")), #yhs added for testing duedate gone missing upon submission
             Div (Field('Disipline', type="hidden")),
             Div (Field('Subdisipline', type="hidden")),
             Div (Field('Organisation', type="hidden")),
@@ -153,7 +153,10 @@ class frmApproverConfirmation(forms.ModelForm):
             Div (Field('Disipline', type="hidden")),
             Div (Field('Subdisipline', type="hidden")),
             Div (Field('Organisation', type="hidden")),
-           Div (Field('QueSeries', type="hidden")),
+            Div (Field('QueSeries', type="hidden")),
+            Div (Field('DueDate', type="hidden")), #yhs added for testing disappearing duedates
+            Div (Field('Guidewords', type="hidden")), #yhs added due to additional field from client
+            Div (Field('Deviation', type="hidden")), #yhs added due to additional field from client
         )
     class Meta:
         model = ActionItems

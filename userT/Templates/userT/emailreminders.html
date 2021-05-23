@@ -27,11 +27,11 @@
 							<p class="card-text">
                 <form action="/emailreminders/" method="POST">
                 {% csrf_token %}
-              <input type="submit" name="SendPending" class="btn btn-outline-secondary " value="Send For Pending Actions" style = "float: left;" >
+              <input type="submit" name="SendPending" class="btn btn-outline-primary " value="Send For Pending Actions" style = "float: left;" >
             </form>
             <form action="/emailreminders/" method="POST">
               {% csrf_token %}
-            <input type="submit" name="SendOverdue" class="btn btn-outline-secondary " value="Send For Overdue Actions" style = "margin-left :20px;" >
+            <input type="submit" name="SendOverdue" class="btn btn-outline-primary " value="Send For Overdue Actions" style = "margin-left :20px;" >
           </form>
 				<div class="col-md-4">
 		</div>

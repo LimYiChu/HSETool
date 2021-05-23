@@ -127,7 +127,7 @@ urlpatterns = [
         path('addonupload/', login_required(UploadV.AddonLoad), name='addonupload' ),
 
         #yhs testing
-        path('AllList/<int:pk>/update/print', login_required(UserView.indiprint), name='indiprint' ),
+        path('AllList/<int:id>/update/print', login_required(UserView.indiprint), name='indiprint' ),
       ]
 
 if settings.DEBUG:

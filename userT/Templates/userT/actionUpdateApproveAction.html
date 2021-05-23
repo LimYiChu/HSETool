@@ -71,7 +71,14 @@
 <div class="card"  >
   <div class="card-header" >
      <a style="color:black; font-size:large">Details</a>
-     <a class ="article-title" href="{% url 'indiprint' object.id %}">{{object.id}}</a>
+            <button type="button" class="btn btn-outline-primary btn-sm;" style = "float: right;">  <a class ="article-title" href="{% url 'indiprint' object.id %}" style="float: right;">Generate PDF <i class="material-icons">print</i>   </button> 
+        </a>
+             
+    
+
+
+
+    </a>
 
   </div>
   <div id="card-element-10" >
