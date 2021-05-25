@@ -45,7 +45,7 @@ from .serializers import *
 # Create your views here.
 
 from UploadExcel.forms import *
-emailSender ="info@prism-ehstools.awsapps.com"
+emailSender ="ehstools@prism-ehstools.awsapps.com"
 
 class anyView(viewsets.ModelViewSet):
 
@@ -832,7 +832,7 @@ def ReportingTable(request):
 
 def emailreminders(request):
     #sub = Subscribe()
-    emaillist =['info@prism-ehstools.awsapps.com']
+    emaillist =['ehstools@prism-ehstools.awsapps.com']
     #Get all Actions
     allactions = ActionItems.objects.all()
     if (request.POST.get('SendPending')):
