@@ -153,7 +153,7 @@ def blbuildRejectionemail(ID,RejectReason):
     response = actionDetails[0].get('Response')
 
     Content.append(studyActionNo + " from " + studyName + " has been rejected ") #This is subject
-    Content.append("Rejection Reason : " + RejectReason + "...Response" + response) #this is the content of the email
+    Content.append("Rejection Reason : " + RejectReason )#+ "...Response" + response) #this is the content of the email
 
     return Content
 def blgetHistoryforUser(useremail, actioneeroutes):
