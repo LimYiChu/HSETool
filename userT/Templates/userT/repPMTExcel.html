@@ -1,5 +1,5 @@
 {% extends "userT/base3.html"%}
-{% block Actioneelist%}
+{% block reppmt%}
 
 <html>
 
@@ -65,7 +65,7 @@
           height: 500
         };
   
-        var chart = new google.charts.Line(document.getElementById('linechart'));
+        var chart = new google.charts.Line(document.getElementById('linecharted'));
         //chart.draw(data,options);
         
         chart.draw(data, google.charts.Line.convertOptions(options));
@@ -103,7 +103,8 @@
               <button class="tablinks" onclick="openReport(event, 'Individual')" >Individual</button>
               <button class="tablinks" onclick="openReport(event, 'Studies/Workshops')">Studies/Workshops</button>
               <button class="tablinks" onclick="openReport(event, 'Discipline')">Discipline</button>
-              <button class="tablinks" onclick="openReport(event, 'DueDate')">Due Date, Run-Down</button>
+              <button class="tablinks" onclick="openReport(event, 'DueDate')">Due Date</button>
+              <button class="tablinks" onclick="openReport(event, 'RunDown')">Run-Down</button>
             </div>
             
             <!--differnt divs for differnt tab and name them based on event name on top-->
@@ -297,9 +298,14 @@
                   </div>
                 
             </div>
+
+            <div id = "RunDown"class="tabcontent" style="border-left:0pc; border-right:0px;border-bottom:0px">
+              <div class="col-md-12" style="float:left" >
+                <div class="col-md-12" id="linecharted" style="float:left;"></div>
+                </div>
           </fieldset>
          
-          <div class="col-md-12" id="linechart" style="float:left;"></div>
+          
           <!--<div class="form-group"><input type="submit" name="byDueDate" value="Print Graph" class="btn btn-outline-primary float-right col-md-2 "  /></div>-->
         
         </form>
