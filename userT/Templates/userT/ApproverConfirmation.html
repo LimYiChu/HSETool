@@ -1,11 +1,39 @@
 {% extends "userT/base3.html"%}
 {%load crispy_forms_tags %}
 {% crispy form form.helper%}
+{% block ToolTip %}
+
+
+    <div class="postitnote sticky "  style="font-size:small; font-family:Lato; margin-right:5px;margin-left:5px "> 
+        <div class="col-md-1;margin-right:5px;margin-left:5px">
+           <table class="sticky table table-hover" > <!--set to maximum 20 rows per page-->
+            <thead class="thead">
+              <tr>
+                <th>
+                  e-Signatures
+                </th>
+              
+              </tr>
+              
+          </thead>
+          <tbody>
+            
+            <tr>
+            <td>Upon clicking the approve & sign button, it is accepted that you have approved and signed acceptance of the proposed resolution</td>
+          
+            </tr>
+            
+            </tbody>
+        </table>
+        
+      </div>
+      <br>
+      <br>
+    </div>
+      
+    {%endblock%}
 
 {% block RejectionComments %}
-
-
-
 
 <body>
 

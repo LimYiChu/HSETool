@@ -8,8 +8,11 @@ from django.utils import timezone
 import datetime
 from django.core.mail import EmailMessage
 import numpy as np
+from dateutil.relativedelta import *
 cclist = ["ehstools@prism-ehstools.awsapps.com"]
+
 def blemailSendindividual(sender,recipient, subject,content,ccl = cclist):
+
 
     subject = subject
     message = content
@@ -104,7 +107,7 @@ def blgetActualRunDown(lstdatesandcount):
     df = pd.DataFrame(finalclosed, columns=["duedate","tally"])
     dd = df.groupby(by=["duedate"]).count()
     dictdd = dd.to_dict()
-    #print(dictdd)
+ 
     newactual=[]
     finalactual=[]
     for key,value in dictdd.items():
@@ -120,13 +123,19 @@ def blgetActualRunDown(lstdatesandcount):
     return finalactual
 def blaggregatebydate (objActions):
 
-    return objActions.values('DueDate').annotate(count=Count('id')).values('DueDate', 'count').order_by('DueDate')
+    thedates = objActions.values('DueDate').annotate(count=Count('id')).values('DueDate', 'count').order_by('DueDate')
+    
+    return thedates
 
 def blprepareGoogleChartsfromDict(QuerySet):
     finallist=[]
     for dictitems in QuerySet:
         finallist.append(list(dictitems.values()))
     
+    firstdatefiller = [finallist[0][0] - relativedelta(months=+1),0] #just inserts a date one month before and uses dateutil
+    
+    finallist.insert(0,firstdatefiller)
+
     return finallist
 def blprepareGoogleCharts (labels,count,newstudyname):
     initiallist =[]
@@ -186,16 +195,29 @@ def blallActionsComDisSubbyList(contextRoutes,quelist):
                                                                blvarSUbdisipline,que))
     
     return streams
-def blaggregatebyDisc(discsuborg, QueOpen, YetToRespondQue,ApprovalQue,QueClosed,TotalQue):
+def blaggregatebyDisc(discsuborg,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue):
     lstofdiscdetails =[]
     lstcountbydisc =[]
+
+    
     for disc in discsuborg:
         lstcountbydisc.append ("/".join(disc))
-        lstcountbydisc.append  (blallActionCountbyDisc(disc[0],QueOpen))
-        lstcountbydisc.append (blallActionCountbyDisc(disc[0],YetToRespondQue))
-        lstcountbydisc.append (blallActionCountbyDisc(disc[0],ApprovalQue))
-        lstcountbydisc.append (blallActionCountbyDisc(disc[0],QueClosed))
-        lstcountbydisc.append (blallActionCountbyDisc(disc[0],TotalQue))
+        lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,YetToRespondQue))
+        lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,ApprovalQue))
+        lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,QueClosed))
+        lstcountbydisc.append  (blgetDiscSubOrgActionCount('X',disc,QueOpen))
+        
+        
+        
+        lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,TotalQue))
+        
+        # lstcountbydisc.append  (blallActionCountbyDisc(disc[0],QueOpen))
+        # lstcountbydisc.append (blallActionCountbyDisc(disc[0],YetToRespondQue))
+        # lstcountbydisc.append (blallActionCountbyDisc(disc[0],ApprovalQue))
+        # lstcountbydisc.append (blallActionCountbyDisc(disc[0],QueClosed))
+        # lstcountbydisc.append (blallActionCountbyDisc(disc[0],TotalQue))
+        
+        
         lstofdiscdetails.append(lstcountbydisc)
         lstcountbydisc =[]
     
@@ -209,17 +231,18 @@ def blallActionCountbyDisc(Disc,quelist):
         count += ActionItems.myActionItemsCount.mgr_allItemsCountbyDisc(Disc,que) 
    
     return count
-def blgetbyStdudiesCount(Studies,OpenQue,YetToRespondQue,pendingApprovalQue,closedActionsQueSeries):
+def blgetbyStdudiesCount(Studies,YetToRespondQue,pendingApprovalQue,closedActionsQueSeries,OpenQue,TotalQue):
    
     lstcountbyStudies = []
     lstofstudiesdetails =[]
     for Study in Studies:
         lstcountbyStudies.append (Study.StudyName)
-        lstcountbyStudies.append  (blallActionCountbyStudies(Study.StudyName,OpenQue))
+        
         lstcountbyStudies.append (blallActionCountbyStudies(Study.StudyName,YetToRespondQue))
         lstcountbyStudies.append (blallActionCountbyStudies(Study.StudyName,pendingApprovalQue))
         lstcountbyStudies.append (blallActionCountbyStudies(Study.StudyName,closedActionsQueSeries))
-        
+        lstcountbyStudies.append  (blallActionCountbyStudies(Study.StudyName,OpenQue))
+        lstcountbyStudies.append  (blallActionCountbyStudies(Study.StudyName,TotalQue))
         lstofstudiesdetails.append(lstcountbyStudies)
         lstcountbyStudies =[]
     
@@ -262,8 +285,6 @@ def blconverttodictforpdf(lstofsignatories):
             
             localtimeX = timezone.localtime(items[3])
            
-            #newdatetime = datetime.fromtimestamp(items[3])
-            #print (newdatetime)
             dict = {'actionee':items[0], 'actioneerole':items[2],'actioneename':items[1],
                     'actioneetimestamp':localtimeX
             }
@@ -353,9 +374,9 @@ def blgetDiscSubOrgfromID (ID):
 def blgetApproverLevel (lstorgdiscsub):
     #returns the approver level from routes, if 3 approvers it returns 4 meaning 4th is blank. 
     #basiclly looks up the route table and returns the next blank where field is approver
-    print("INGETAPPROVERLEVEL", lstorgdiscsub)
+   
     obj= ActionRoutes.mdlgetApproverLevel.mgr_getApproverLevel (lstorgdiscsub)
-    print("OBJ IS",obj )   
+
     allfields = [f.name for f in ActionRoutes._meta.get_fields()] 
     del allfields[0:3] #- remove ID field, company and discpline - need to be carefull with this 
     
@@ -391,8 +412,8 @@ def blgetIndiResponseCount(discsuborg,queseriesset,queseriesclosed):
     #first loop through all routes disc/sub/org
     for itemtriplet in discsuborg:
         
-        totalopencount = blgetDiscSubActionCount ('Y',itemtriplet,queseriesset)
-        totalclosedcount = blgetDiscSubActionCount ('Y',itemtriplet,queseriesclosed)
+        totalopencount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesset)
+        totalclosedcount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesclosed)
         lstofActioneeApprover = blgetSignotories(itemtriplet)
         #indiPendingPair.append(itemtriplet)
         for indique,indipair in enumerate(lstofActioneeApprover):
@@ -401,15 +422,15 @@ def blgetIndiResponseCount(discsuborg,queseriesset,queseriesclosed):
                 #indiPendingSeries.append(indique) #Append QueSeries
                 lstindique = [indique] #make que series into list otherwise doesn work
                 indiPendingSeries.append(indipair[1]) #append Name - 
-                pendingResponse = blgetDiscSubActionCount ('Y',itemtriplet,lstindique)
+                pendingResponse = blgetDiscSubOrgActionCount ('Y',itemtriplet,lstindique)
                 #for items in itemtriplet:
                 #wanted to append and not have list of list of disc sub org
                 indiPendingSeries.append(indipair[0]) #AppendRole
-                indiPendingSeries.append(totalopencount)
-                indiPendingSeries.append(pendingResponse)
                 indiPendingSeries.append('/'.join(itemtriplet))
-                indiPendingSeries.append(totalclosedcount)
+                indiPendingSeries.append(pendingResponse)
                 
+                indiPendingSeries.append(totalclosedcount)
+                indiPendingSeries.append(totalopencount) # Removing opencount since its misleading
                 
             
             completePendingPair.append (indiPendingSeries)
@@ -671,12 +692,18 @@ def blfuncgetallAction(workshop,que):
         count += ActionItems.mdlallActionItemsCount.mgr_getallItemsCount('X',eachQs)
 
     return count
-
-def blgetDiscSubActionCount(workshop,discsub,quelist):
+def blgetDiscSubActionCount(workshop,discsuborg,quelist):
     count = 0
     
     for eachQs in quelist:
-        count += ActionItems.mdlgetActionDiscSubCount.mgr_getDiscSubItemsCount('X',discsub,eachQs) 
+        count += ActionItems.mdlgetActionDiscSubCount.mgr_getDiscSubItemsCount('X',discsuborg,eachQs) 
+   
+    return count
+def blgetDiscSubOrgActionCount(workshop,discsuborg,quelist):
+    count = 0
+    
+    for eachQs in quelist:
+        count += ActionItems.mdlgetActionDiscSubCount.mgr_getDiscSubOrgItemsCount('X',discsuborg,eachQs) 
    
     return count
    

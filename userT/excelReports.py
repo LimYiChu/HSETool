@@ -6,7 +6,7 @@ from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Fo
 
 from django.conf import settings
 
-def excelAllActions(lstAttributes,lstheaders,title):
+def excelAllActions(lstAttributes,lstheaders,title,columremove=False):
     
     workbook = Workbook()       
     worksheet = workbook.active
@@ -43,7 +43,8 @@ def excelAllActions(lstAttributes,lstheaders,title):
             cell.border = bd
         
         worksheet.row_dimensions[row_num].height= 50
-
+    if columremove:
+        worksheet.delete_cols(columremove)
     return workbook
 
 def createExcelReports(request,filename,**kwargs):

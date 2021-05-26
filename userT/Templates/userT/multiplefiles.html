@@ -2,6 +2,39 @@
 
 {%load crispy_forms_tags %}
 
+{% block ToolTip %}
+
+
+    <div class="postitnote sticky "  style="font-size:small; font-family:Lato; margin-right:5px;margin-left:5px "> 
+        <div class="col-md-1;margin-right:5px;margin-left:5px">
+           <table class="sticky table table-hover" > <!--set to maximum 20 rows per page-->
+            <thead class="thead">
+              <tr>
+                <th>
+                  e-Signature
+                </th>
+              
+              </tr>
+              
+          </thead>
+          <tbody>
+            
+    
+            <tr>
+            <td>Upon clicking the upload & sign button, it is accepted that you have signed your resolution for the approval stage</td>
+          
+            
+            </tr>
+            
+            </tbody>
+        </table>
+        
+      </div>
+      <br>
+      <br>
+    </div>
+      
+    {%endblock%}
 
 {% block ApproverDetails%}
 
@@ -43,7 +76,7 @@
         -->
         {% csrf_token %}  
         {%crispy form_multi form_multi.helper%}
-        <div class="form-group"><input type="submit" name="Upload" value=" Upload Files & Submit.." class="btn btn-outline-primary float-right "  id="submit-id-approve"/></div> 
+        <div class="form-group"><input type="submit" name="Upload" value=" Upload Files & Sign" class="btn btn-outline-primary float-right "  id="submit-id-approve"/></div> 
         <div class="form-group"><input type="submit" name="Cancel" value="Cancel" class="btn btn-outline-primary float-right col-md-1"  id="submit-id-reject"/></div>
     </fieldset>
     </form> 
