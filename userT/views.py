@@ -832,7 +832,7 @@ def ReportingTable(request):
 
 def emailreminders(request):
     #sub = Subscribe()
-    emaillist =['ehstools@prism-ehstools.awsapps.com']
+    emaillist =[]
     #Get all Actions
     allactions = ActionItems.objects.all()
     if (request.POST.get('SendPending')):

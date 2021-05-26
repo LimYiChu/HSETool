@@ -12,7 +12,8 @@ def blemailSendindividual(sender,recipient, subject,content):
 
     subject = subject
     message = content
-   
+    cc = 'ehstools@prism-ehstools.awsapps.com'
+    recipient.append(cc)
     Msg=EmailMessage(subject, message,sender, recipient)
     Msg.content_subtype="html"
     
