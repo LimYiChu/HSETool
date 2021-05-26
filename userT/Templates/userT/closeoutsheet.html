@@ -48,11 +48,13 @@
               <table class="table">
                 <thead>
                   <tr class="filters">
-                    <th>Study/ Workshop</th>
-                    <th>Open Actions</th>
-                    <th>Yet To Respond</th>
-                    <th>Pending Approval</th>
-                    <th>Closed</th>
+                    {%for items in tablestudiesheader%}
+                  <th>
+                    {{items}}
+                  </th>
+                  {%endfor%}
+                    
+                    
                 </tr>
             </thead>
             <tbody>
@@ -61,9 +63,11 @@
               <tr>
                 <td>{{items.0}}</td>
                 <td>{{items.1}}</td>
+                
                 <td>{{items.2}}</td>
                 <td>{{items.3}}</td>
                 <td>{{items.4}}</td>
+                <td>{{items.5}}</td>
               </tr> 
               {%endfor%}
               
@@ -146,34 +150,36 @@
                     <td>
                       Open Actions
                     </td>
-                    <td>{{items.1}}</td> 
+                    <td>{{items.4}}</td> 
                   </tr>
                   <tr>
                     <td>
                       Yet To Respond
                     </td>
-                    <td>{{items.2}}</td> 
+                    <td>{{items.1}}</td> 
                   </tr>
                   <tr>
                     <td>
                       Pending Approval
                     </td>
-                    <td>{{items.3}}</td> 
+                    <td>{{items.2}}</td> 
                   </tr>
                   <tr>
                     <td>
                     Closed
                     </td>
-                    <td>{{items.4}}</td> 
+                    <td>{{items.3}}</td> 
+                  </tr>
+                  <tr>
+                    <td>
+                    Total
+                    </td>
+                    <td>{{items.5}}</td> 
                   </tr>
                 </tbody>
               </table>
             </div>
           
-            
-          
-         
-
             <br> 
           </div>
           </div>

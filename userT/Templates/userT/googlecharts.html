@@ -26,8 +26,8 @@
         var chartdata = [];
         var data = new google.visualization.DataTable();
         data.addColumn('date', 'Date');
-        data.addColumn('number', 'Actual');
         data.addColumn('number', 'Planned');
+        data.addColumn('number', 'Actual');
         
         var arrplot =[]
         for(var i = 0; i < values.length; i++){
@@ -63,11 +63,11 @@
             subtitle: 'Action Items',
             
           },
-          colors: ['black', 'blue'],
-         hAxis:{ format: 'MMM d,y'},
-         curveType: 'function',
-        legend: {position: 'top', textStyle: {color: 'red', fontSize: 16}},
-          width: 900,
+          colors: ['blue', 'red'],
+          hAxis:{ format: 'MMM d,y'},
+          curveType: 'function',
+          legend: {position: 'top', textStyle: {color: 'red', fontSize: 16}},
+          width: 1200,
           height: 500
         };
   

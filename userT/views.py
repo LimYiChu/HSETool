@@ -154,8 +154,6 @@ def mainDashboard (request):
         labelsApprover =[]
         countbyStudies = []
 
-    print ("APPFINALIST")
-    print (appfinalist)
     Context = {
       
         
@@ -163,7 +161,7 @@ def mainDashboard (request):
         'appfinalist' : appfinalist,
         
             }
-    return render(request, 'userT/mainDashboard.html',Context)
+    return render(request, 'userT/maindashboard.html',Context)
 
 
 def getActionDetails(request, id=None):
@@ -254,12 +252,11 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
     def get(self, request, *args, **kwargs):
         #uses pk key to automatically get objext
         self.object = self.get_object(queryset=ActionItems.objects.all())
-        
         return super().get(request, *args, **kwargs)
 
     def get_object(self,queryset=None):
-        queryset=ActionItems.objects.all()
        
+        queryset=ActionItems.objects.all()
         return queryset.get(id=self.kwargs['pk'])
        
     def form_valid(self,form):
@@ -274,8 +271,6 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
                 #makes sense since really django wants to work with views coming from URL paths- simply a structured way of doing stuff
             context = {
                         'StudyActionNo' : form.instance.StudyActionNo
-
-
                 }
             return HttpResponseRedirect(reverse ('RejectReason', kwargs={'forkeyid': form.instance.id})) #this is key as wanted another screen on the first reject
 
@@ -317,12 +312,9 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
         discsub = blgetDiscSubOrgfromID(idAI)
         Signatories = blgetSignotories(discsub)
 
-        
         #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
         lstSignatoriesTimeStamp= blgettimeStampforSignatories (idAI, Signatories) #it changes the signatories directly
         
-        
-
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(idAI)
         context['Approver'] = True
         context ['Signatories'] = lstSignatoriesTimeStamp
@@ -413,18 +405,15 @@ class HistoryItemsMixin(ApproveItemsMixin):
         discsuborg = blgetDiscSubOrgfromID(id)
         ApproverLevel = blgetApproverLevel(discsuborg)
         
-        
         # #sets the signatory directly in getting timestamp
         Signatories = blgetSignotories(discsuborg)
         lstSignatoriesTimeStamp= blgettimeStampforSignatories (id, Signatories)
 
-        
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(id)
         context['Approver'] = False
         context ['ApproverLevel'] = ApproverLevel
         context ['Signatories'] = lstSignatoriesTimeStamp
        
-        
         return context
 
     def get_success_url(self):
@@ -438,26 +427,36 @@ class ActioneeItemsMixin(ApproveItemsMixin):
         IdAI = self.kwargs.get("pk") #its actually the id and used as foreign key
         context = super().get_context_data(**kwargs)
         
-
         discsuborg = blgetDiscSubOrgfromID(IdAI)
         ApproverLevel = blgetApproverLevel(discsuborg)
         
-        blsetApproverLevelTarget(IdAI,ApproverLevel)
         
         Signatories = blgetSignotories(discsuborg)
-        
-        #seems to set the signatories directly?
-        
+        blsetApproverLevelTarget(IdAI,ApproverLevel)
         lstSignatoriesTimeStamp= blgettimeStampforSignatories (IdAI, Signatories)
-        
-    
         
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(IdAI)
         context['Approver'] = False
         context ['ApproverLevel'] = ApproverLevel
-        context ['Signatories'] = Signatories
+        context ['Signatories'] = lstSignatoriesTimeStamp
         
         return context
+
+    def form_valid(self,form):
+
+        if (self.request.POST.get('Cancel')):   
+           return HttpResponseRedirect('/ActioneeList/')
+
+        if (self.request.POST.get('Next')): 
+            return super().form_valid(form)
+
+        if (self.request.POST.get('Delete')): 
+                #  need another intermediate screen for approval no comments
+            AttachmentID = self.request.POST.get ('filepk') # hidden file that holds ID of the attachment
+            ActionItemID = form.instance.id
+            Status = Attachments.mdlDeleteAttachment.mgrDeleteAttachmentbyID(AttachmentID)
+            
+            return redirect('ActioneeFormMixin' , pk=ActionItemID)
 
     def get_success_url(self):
         return reverse ('multiplefiles', kwargs={'forkeyid': self.object.id})
@@ -555,13 +554,11 @@ def multiplefiles (request, **kwargs):
             )
 
         ActionItems.mdlQueSeries.mgrsetQueSeries(ID,1)
-        
         return HttpResponseRedirect('/ActioneeList/')
             
     if (request.POST.get('Cancel')):
             #cant use success url, its got associattion with dict object, so have to use below
-
-             return HttpResponseRedirect('/ApproverList/')
+            return HttpResponseRedirect('/ActioneeList/')
 
         
     context = {
@@ -921,30 +918,25 @@ def repPMTExcel (request):
     TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
     discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
     
+    #get Individual action
     Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
-    #edward swapped around the headers 
-    tableindiheader = ['User','Role','Pending Res/Appr','Organisation Route','Open Actions','Closed']
-    #yhs added temporary header for excel export
-    tableindiheadertemp =['User','Role', 'Open Actions', 'Pending Res/Appr', 'Organisation Route', 'Closed'] #yhs added temporary coz we used differnt header for excel export
-    #Get all Actions
+    tableindiheader = ['User','Role','Organisation Route','In-Progress','Closed', 'Open Actions']
+    
     allactions = ActionItems.objects.all()
     #edward added id
     tableallheader = ['id','StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
     lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
-         
-    tableallheadermodified = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] #this header orignalyy comes with some spaces which gave some error
-    #yhs added to fix id being showned in excel file when download all
-    lstofallactionstemp = blgetActionStuckAt(allactions, tableallheadermodified)
-    
-    #for workshop based view
-    allstudies = Studies.objects.all()
-    tablestudiesheader = ['Studies','Open Actions', 'Yet to Respond' ,'Pending Appr','Closed']
-    disciplinestatusheader = ['Disipline','Open Actions', 'Yet to Respond' ,'Pending Appr','Closed']
-    lstbyWorkshop = blgetbyStdudiesCount(allstudies,QueOpen,YetToRespondQue,ApprovalQue,QueClosed)
     
     #for Disipline based view
-    tabledischeader = ['Discipline','Open Actions', 'In-Progress', 'Yet to Respond' ,'Closed','Total Actions']
-    lstbyDisc= blaggregatebyDisc(discsuborg, QueOpen, ApprovalQue,YetToRespondQue,QueClosed,TotalQue)
+    tabledischeader = ['Discipline', 'Yet to Respond' ,'Approval Stage', 'Closed','Open Actions','Total Actions']
+    lstbyDisc= blaggregatebyDisc(discsuborg,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue)
+
+    #for workshop based view
+    allstudies = Studies.objects.all()
+    tablestudiesheader = ['Studies', 'Yet to Respond' ,'Approval Stage','Closed','Open Actions', 'Total Actions']
+   
+    lstbyWorkshop = blgetbyStdudiesCount(allstudies,YetToRespondQue,ApprovalQue,QueClosed,QueOpen,TotalQue)
+    
     
     #due date based view
     tableduedateheader = ['Due Date','Actions to Close by']
@@ -966,23 +958,22 @@ def repPMTExcel (request):
                 
         if (request.POST.get('allActions')):
           
-            #workbook= createExcelReports(request,"\\excelDownload\\AllActions3.xlsx")
-            tableallheadermodified.append("Current Actionee/Approver") #appends the last column that the list spits out #yhs changed from tableallheader to tableallheadermodified
-            workbook = excelAllActions(lstofallactionstemp,tableallheadermodified,"All Action Items") #yhs temporary changed to fix the excel download part. Original code in next line
-            #workbook = excelAllActions(lstofallactions,tableallheader,"All Action Items") 
             
+            tableallheader.append("Current Actionee/Approver") #appends the last column that the list spits out #yhs changed from tableallheader to tableallheadermodified
+            workbook = excelAllActions(lstofallactions,tableallheader,"All Action Items",1) #optional parameter passed to remove excel columns if required
             response = HttpResponse(content_type='application/ms-excel') #
             response['Content-Disposition'] = 'attachment; filename=byAllActions.xlsx' 
-            workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
+            workbook.save(response) # odd  way but it works - took too long to figure out as no resource on the web
             return response
+
         elif (request.POST.get('indiActions')):
             
 
-            workbook = excelAllActions(Indisets,tableindiheadertemp,"Individual Actions") #yhs chnaged to tableindiheadertemp
+            workbook = excelAllActions(Indisets,tableindiheader,"Individual Actions") 
             
             response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
             response['Content-Disposition'] = 'attachment; filename=byIndividual.xlsx' 
-            workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
+            workbook.save(response) 
             return response
 
         elif (request.POST.get('allStudies')):
@@ -992,28 +983,27 @@ def repPMTExcel (request):
             
             response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
             response['Content-Disposition'] = 'attachment; filename=byStudies.xlsx' 
-            workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
+            workbook.save(response) 
             return response
         
         elif (request.POST.get('bydiscipline')):
             
-            print(lstbyDisc)
+           
             workbook = excelAllActions(lstbyDisc,tabledischeader,"Discipline Actions")
             
             response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
             response['Content-Disposition'] = 'attachment; filename=byDiscipline.xlsx' 
-            workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
+            workbook.save(response) 
             return response
 
-        #yhs working for testing. 
         elif (request.POST.get('byDueDate')):
             
-            reallstDuedate = blquerysetdicttolist(lstbyDueDate)
+            reallstDuedate = blquerysetdicttolist(lstbyDueDate) #need a list
             workbook = excelAllActions(reallstDuedate,tableduedateheader,"DueDates") 
             
             response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
             response['Content-Disposition'] = 'attachment; filename=byDueDates.xlsx' 
-            workbook.save(response) # odd fucking way but it works - took too long to figure out as no resource on the web
+            workbook.save(response) # odd way but it works - took too long to figure out as no resource on the web
             return response    
 
     context = {
@@ -1029,11 +1019,7 @@ def repPMTExcel (request):
         'tablestudiesheader' : tablestudiesheader,
         'tabledischeader' : tabledischeader ,
         'tableallheader' : tableallheader,
-        'tableallheadermodified' : tableallheadermodified,
-        #yhs added to temporary fix the excel downloaded not consistent.
-        'tableindiheadertemp': tableindiheadertemp,
-        'lstofallactionstemp' : lstofallactionstemp,
-
+        
     }
     return render(request, 'userT/reppmtexcel.html', context)
 
@@ -1066,11 +1052,10 @@ def closeoutprint(request,**kwargs):
     out_file = 'static/media/temp/' + Filename
        
     data_dict=obj[0]
-    #print (data_dict)
+    
     discsub = blgetDiscSubOrgfromID(ID)
     Signatories = blgetSignotories(discsub)
-    print(discsub)
-    print (Signatories)
+  
     lstSignatoriesTimeStamp= blgettimeStampforSignatories (ID, Signatories)
     signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
     
@@ -1113,8 +1098,15 @@ def closeoutsheet(request): #new naming convention - all small letters
     QueClosed = [99]
     YetToRespondQue =[0]
     ApprovalQue = [1,2,3,4,5,6,7,8,9]
+    TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
     allstudies = Studies.objects.all()
-    lstbyWorkshop = blgetbyStdudiesCount(allstudies,QueOpen,YetToRespondQue,ApprovalQue,QueClosed)
+
+    tablestudiesheader = ['Studies', 'Yet to Respond' ,'Approval Stage','Closed','Open Actions', 'Total Actions']
+   
+
+    
+    lstbyWorkshop = blgetbyStdudiesCount(allstudies,YetToRespondQue,ApprovalQue,QueClosed,QueOpen,TotalQue)
+
     allactions = ActionItems.objects.all()
     tableallheader = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
     lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
@@ -1155,7 +1147,7 @@ def closeoutsheet(request): #new naming convention - all small letters
         'lstclosed' : lstclosed,
         'lstbyWorkshop' : lstbyWorkshop,
         'lstofallactions' : lstofallactions,
-        
+        'tablestudiesheader' : tablestudiesheader,
         
     }
 
@@ -1223,7 +1215,7 @@ def indiprint(request,**kwargs):
     out_file = 'static/media/temp/' + Filename
        
     data_dict=obj[0]
-    #print (data_dict)
+ 
    
     #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
         
