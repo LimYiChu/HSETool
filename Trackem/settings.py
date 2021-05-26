@@ -171,10 +171,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.mail.eu-west-1.awsapps.com'
 EMAIL_USE_TLS = False
 EMAIL_PORT = 465
-EMAIL_HOST_USER = 'support@prism-ehstools.awsapps.com'
+EMAIL_HOST_USER = 'ehstools@prism-ehstools.awsapps.com'
 EMAIL_HOST_PASSWORD = 'Nice10day'
 EMAIL_USE_SSL = True
-DEFAULT_FROM_EMAIL = 'support@prism-ehstools.awsapps.com'
+#DEFAULT_FROM_EMAIL = 'support@prism-ehstools.awsapps.com'
 
 #gmail email settings
 #EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

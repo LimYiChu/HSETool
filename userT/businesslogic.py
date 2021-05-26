@@ -8,12 +8,13 @@ from django.utils import timezone
 import datetime
 from django.core.mail import EmailMessage
 import numpy as np
-def blemailSendindividual(sender,recipient, subject,content):
+cclist = ["ehstools@prism-ehstools.awsapps.com"]
+def blemailSendindividual(sender,recipient, subject,content,ccl = cclist):
 
     subject = subject
     message = content
-   
-    Msg=EmailMessage(subject, message,sender, recipient)
+    cc = ccl
+    Msg=EmailMessage(subject, message,sender, recipient,cc)
     Msg.content_subtype="html"
     
     Msg.send()
