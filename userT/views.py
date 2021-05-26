@@ -416,6 +416,15 @@ class HistoryItemsMixin(ApproveItemsMixin):
         context ['Signatories'] = lstSignatoriesTimeStamp
        
         return context
+    def form_valid(self,form):
+
+        if (self.request.POST.get('Pullback')):
+
+            return super().form_valid(form)
+        
+        if (self.request.POST.get('Cancel')):
+#             
+           return HttpResponseRedirect('/HistoryList/')
 
     def get_success_url(self):
         return reverse ('HistoryConfirm', kwargs={'id': self.object.id })
@@ -925,7 +934,7 @@ def repPMTExcel (request):
     
     allactions = ActionItems.objects.all()
     #edward added id
-    tableallheader = ['id','StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
+    tableallheader = ['id','StudyActionNo','StudyName', 'Disipline' ,'Recommendations','DueDate','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
     lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
     
     #for Disipline based view
