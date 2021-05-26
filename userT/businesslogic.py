@@ -13,7 +13,6 @@ cclist = ["ehstools@prism-ehstools.awsapps.com"]
 
 def blemailSendindividual(sender,recipient, subject,content,ccl = cclist):
 
-
     subject = subject
     message = content
     cc = ccl
