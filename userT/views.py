@@ -92,52 +92,54 @@ def mainDashboard (request):
     studies = blgetAllStudies()
 
     #get all routes
-    context_allRou = getuserRoutes(request,request.user.email)
+    dict_allRou = blgetuserRoutes(request,request.user.email)
     
     #Just get Actionee and Approver Routes, tied into model managers
-    Actionee_R =    context_allRou.get('Actionee_Routes')
-    Approver_R =    context_allRou.get('Approver_Routes') 
+    Actionee_R =    dict_allRou.get('Actionee_Routes')
+    Approver_R =    dict_allRou.get('Approver_Routes') 
 
+    ActionCount = blfuncActionCount(Actionee_R,0)
+    totalactioneeaction=sum(ActionCount)
+    
+   #****chart parameters to pass in 
    
-   #charts=[]
-   
+    QueOpen = [1,2,3,4,5,6,7,8,9]
+    QueClosed =99  
+    # **** End Chart Parameters
+
+    #***Initilise list count
     stripCount =[]
     striplabels = []
     chartappdata=[]
-    QueOpen = [1,2,3,4,5,6,7,8,9]
-    QueClosed =99  #something wrong this fucntion wrote it early but needs a bit more to accept list
-    #loop through each workshop and get counts
-    #This function just does a count using model managers , calling from businesslogic.py
-    
-    #Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)
-    #blgetDiscSubOrgfromID(idAI)
-    finallist =[]
-    appfinalist =[]
+    actioneefinallist =[]
+    apprfinalist =[]
     labelsApprover =[]
     dataApprover =[]
+    appractioncount =[]
+    #****end list count
+
     for eachstudy in studies:
         StudyName = eachstudy.StudyName
         
         labels=[]
         
-        
-        countbyStudies, labels= blActionCountbyStudiesStream(Actionee_R,StudyName,0) # unlimited actionee
+        countbyStudies, labels= blActionCountbyStudiesStream(Actionee_R,StudyName,0) 
         countbyStudiesClosed, labelsClosed= blActionCountbyStudiesStream(Actionee_R,StudyName,QueClosed)
              
         stripCount, striplabels ,  = stripAndmatch(countbyStudies,labels)
-        
         newStudyName = "///" + StudyName + ":::"
+        
+        if stripCount != [] : # Just to get a better view in HTML instead of rendering spaces for empty charts
+            googlechartlist = blprepareGoogleCharts(striplabels,stripCount,newStudyName)
+            actioneefinallist.append(googlechartlist)
+            googlechartlist =[] 
 
-        googlechartlist = blprepareGoogleCharts(striplabels,stripCount,newStudyName)
-
-        #stripCountClosed, striplabelsClosed ,  = stripAndmatch(countbyStudiesClosed,labelsClosed)
-      
+        #complete sub routine for actionee and then go to approver
         for QueSeries, Routes in Approver_R.items():
             
-            listofCountManyApprovers,labelsapp =blActionCountbyStudiesStream(Routes,StudyName,QueSeries) #improved version multiple approvers
-           
+            listofCountManyApprovers,labelsapp =blActionCountbyStudiesStream(Routes,StudyName,QueSeries) 
             sumoflistCount = sum(listofCountManyApprovers)
-            
+            appractioncount.append(sumoflistCount)
             if (sumoflistCount > 0):
                 labelsApprover.append('Level'+str(QueSeries))
                 dataApprover.append(sumoflistCount)
@@ -145,21 +147,22 @@ def mainDashboard (request):
                 chartappdata = blprepareGoogleCharts(labelsApprover,dataApprover,newStudyName)
                 sumoflistCount = 0
 
-        appfinalist.append(chartappdata)
-        finallist.append(googlechartlist)
         
+        apprfinalist.append(chartappdata)
+        
+        totalapproveraction = sum (appractioncount)
         #empties out the data for next loop otherwise it doubles the data to append on each study
         chartappdata = []
-        googlechartlist =[]
+        
         dataApprover = []
         labelsApprover =[]
         countbyStudies = []
 
     Context = {
-      
-        
-        'content' : finallist,
-        'appfinalist' : appfinalist,
+        'totalapproveraction' : totalapproveraction,
+        'totalactioneeaction' : totalactioneeaction,
+        'actioneefinallist' : actioneefinallist,
+        'apprfinalist' : apprfinalist,
         
             }
     return render(request, 'userT/maindashboard.html',Context)
@@ -173,24 +176,7 @@ def getActionDetails(request, id=None):
     }
     return render(request, "userT/detailactions.html", context)
 
-def getuserRoutes(request,useremail):
-    ApproverLevel = 8
-    userZemail = useremail
-    Approver_Routes = {}
 
-    #Actionee routes is straight forward
-    Actionee_Routes   =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
-    
-    #Optimised to get all approver levels; readjust the key to 1 instead of 0
-    for ApproverLevel in range(1 , ApproverLevel+1):
-       Approver_Routes [ApproverLevel]  =  ActionRoutes.ApproverRo.get_myroutes(userZemail,ApproverLevel)
-    #context just another form of return
-    contextRoutes = {
-       'Actionee_Routes' : Actionee_Routes,
-       'Approver_Routes': Approver_Routes,
-    }
-    
-    return contextRoutes
 
 #below view is for list of actions under actionee , 
 # it returns a list of actions under object_list
@@ -224,8 +210,8 @@ class ApproverList (ListView):
     def get_queryset(self):
         userZemail = self.request.user.email
         ApproverActions = []
-        context_allRou = getuserRoutes(self.request,userZemail)
-        Approver_R =    context_allRou.get('Approver_Routes')
+        dict_allRou = blgetuserRoutes(self.request,userZemail)
+        Approver_R =    dict_allRou.get('Approver_Routes')
         
         for key, value in Approver_R.items():
             #x = blfuncActioneeComDisSub(value,key)
@@ -476,7 +462,7 @@ def ContactUs (request):
 
 class RejectReason (CreateView):
     model = Comments
-    template_name = 'userT/rejectReason.html'
+    template_name = 'userT/rejectreason.html'
     form_class = frmAddRejectReason
     success_url = '/ApproverList/'
 
@@ -484,7 +470,7 @@ class RejectReason (CreateView):
         if (self.request.POST.get('Reject')):
             ID = self.kwargs['forkeyid']
             #set using model manager since we want it back to actionee it has to be set at QueSeries=0
-            ActionItems.mdlQueSeries.mgrsetQueSeries(ID,0)
+            blsetrejectionActionItems(ID,0)# This is key and should go into bltoset this and revision
             
             form.instance.Action_id = ID
             form.instance.Username = self.request.user.email
@@ -783,8 +769,8 @@ def rptdiscSlice(request, **kwargs):
     return render (request, 'userT/repDisc.html', context)
 
 def rptbyUser(request, **kwargs):
-    context_allRou = getuserRoutes(request,request.user.email)
-    Actionee_R =    context_allRou.get('Actionee_Routes')
+    dict_allRou = blgetuserRoutes(request,request.user.email)
+    Actionee_R =    dict_allRou.get('Actionee_Routes')
     
     #This function just does a count using model managers , calling from businesslogic.py
     ActioneeCount = blfuncActionCount(Actionee_R,0)
@@ -873,12 +859,12 @@ def EmailReminder(request):
         sub = Subscribe(request.POST)
         recepient = str (sub ['Email'].value())
         
-        context_allRou = getuserRoutes(request,recepient)
-        Actionee_R =    context_allRou.get('Actionee_Routes')  
+        dict_allRou = blgetuserRoutes(request,recepient)
+        Actionee_R =    dict_allRou.get('Actionee_Routes')  
         ActionCount = blfuncActionCount(Actionee_R,0)
         
         totalaction=sum(ActionCount)
-        
+       
         #Msg=EmailMessage()
         sub = Subscribe(request.POST)
         subject = 'Template for Action Pending Responses'
@@ -917,6 +903,16 @@ def EmailReminderAttachment(request):
 def Profile (request):
     return render(request, 'userT/Profile.html')
 
+def repoverallexcel (request):
+
+    workbook = createExcelReports(request)
+
+     
+    response = HttpResponse(content_type='application/ms-excel') #
+    response['Content-Disposition'] = 'attachment; filename=AllActionDetails.xlsx' 
+    workbook.save(response) # odd  way but it works - took too long to figure out as no resource on the web
+    return response
+    
 def repPMTExcel (request):
    
     #Signatories = 
@@ -1188,6 +1184,8 @@ def closeoutsheet(request): #new naming convention - all small letters
         
 
 # for  making view all actions clickable & obtain the id using update view
+
+
 class pmtrepviewall(UpdateView):
     template_name = "userT/pmtrepviewall.html"
     form_class = ApproverForm

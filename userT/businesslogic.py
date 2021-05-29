@@ -11,6 +11,28 @@ import numpy as np
 from dateutil.relativedelta import *
 cclist = ["ehstools@prism-ehstools.awsapps.com"]
 
+
+
+
+def blgetuserRoutes(request,useremail):
+    ApproverLevel = 8
+    userZemail = useremail
+    Approver_Routes = {}
+
+    #Actionee routes is straight forward
+    Actionee_Routes   =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
+    
+    #Optimised to get all approver levels; readjust the key to 1 instead of 0
+    for ApproverLevel in range(1 , ApproverLevel+1):
+       Approver_Routes [ApproverLevel]  =  ActionRoutes.ApproverRo.get_myroutes(userZemail,ApproverLevel)
+    #context just another form of return
+    dictRoutes = {
+       'Actionee_Routes' : Actionee_Routes,
+       'Approver_Routes': Approver_Routes,
+    }
+    
+    return dictRoutes #basically returning a dictionary object
+
 def blemailSendindividual(sender,recipient, subject,content,ccl = cclist):
 
     subject = subject
@@ -152,6 +174,11 @@ def blprepareGoogleCharts (labels,count,newstudyname):
     finallist.insert(0,Startlist)
 
     return finallist
+
+def blsetrejectionActionItems(ID,queseries):
+
+    ActionItems.mdlQueSeries.mgrsetQueSeries(ID,queseries) 
+    ActionItems.mdlQueSeries.mgrincrementRevision(ID)
 
 def blbuildRejectionemail(ID,RejectReason):
     Content=[]
@@ -599,39 +626,13 @@ def blActioneeComDisSubManyStr(contextRoutes,que):
     return firststream, secondstream, thirdstream
     #(Organisation__icontains=blvarorganisation).filter(Disipline__icontains=blvardisipline).filter(Subdisipline__icontains=blvarSUbdisipline)
 
-def blActionCountbyStudies(contextRoutes,studies,que):
 
-    firststream = 0
-    secondstream = 0
-    thirdstream = 0
-    
-    for x, item in enumerate(contextRoutes):
-        blvarorganisation   = item.Organisation
-        blvardisipline  = item.Disipline
-        blvarSUbdisipline  = item.Subdisipline
-        blque               =   que
-        if x==0:
-            firststream = ActionItems.myActionItemsCount.mgr_myItemsCountbyStudies(studies,blvarorganisation,
-                                                                blvardisipline,
-                                                                blvarSUbdisipline,blque)
-        if x==1:
-            secondstream = ActionItems.myActionItemsCount.mgr_myItemsCountbyStudies(studies,blvarorganisation,
-                                                                blvardisipline,
-                                                                blvarSUbdisipline,blque)
-        if x==2:
-            thirdstream =  ActionItems.myActionItemsCount.mgr_myItemsCountbyStudies(studies,blvarorganisation,
-                                                                blvardisipline,
-                                                                blvarSUbdisipline,blque)
-    #return ActionItems.ActioneeItems.get_myItemsbyCompDisSub(blvarorganisation,blvardisipline,blvarSUbdisipline)
-    return [ firststream,  secondstream,  thirdstream]
 
 def blActionCountbyStudiesStream(contextRoutes,studies,que):
 
     streamscount = []
     streamdisc  = []
-    finalstreams = []
-    secondstream = 0
-    thirdstream = 0
+    
     
     for x, item in enumerate(contextRoutes):
         blvarorganisation   = item.Organisation
@@ -644,8 +645,7 @@ def blActionCountbyStudiesStream(contextRoutes,studies,que):
                                                                 blvardisipline,
                                                                 blvarSUbdisipline,blque))
         streamdisc.append (blvardisipline)
-    #finalstreams.append (streams)
-    #return ActionItems.ActioneeItems.get_myItemsbyCompDisSub(blvarorganisation,blvardisipline,blvarSUbdisipline)
+    
     return streamscount, streamdisc
 def blallActionCountbyStudies(studies,quelist):
 
@@ -658,31 +658,20 @@ def blallActionCountbyStudies(studies,quelist):
 #def blgetActionsResponded 
 
 def blfuncActionCount(contextRoutes,que):
-   #This functionality already works
-   #Initilises count in case 
-    firststream = 0
-    secondstream = 0
-    thirdstream = 0
+   #just pass your routes it counts everything in your routes
     
+    allstreams = []
     for x, item in enumerate(contextRoutes):
         blvarorganisation   = item.Organisation
         blvardisipline  = item.Disipline
         blvarSUbdisipline  = item.Subdisipline
         blque               =   que
-        if x==0:
-            firststream = ActionItems.myActionItemsCount.get_myItemsCount(blvarorganisation,
+        
+        allstreams.append(ActionItems.myActionItemsCount.get_myItemsCount(blvarorganisation,
                                                                 blvardisipline,
-                                                                blvarSUbdisipline,blque)
-        if x==1:
-            secondstream = ActionItems.myActionItemsCount.get_myItemsCount(blvarorganisation,
-                                                                blvardisipline,
-                                                                blvarSUbdisipline,blque)
-        if x==2:
-            thirdstream =  ActionItems.myActionItemsCount.get_myItemsCount(blvarorganisation,
-                                                                blvardisipline,
-                                                                blvarSUbdisipline,blque)
-    #return ActionItems.ActioneeItems.get_myItemsbyCompDisSub(blvarorganisation,blvardisipline,blvarSUbdisipline)
-    return [ firststream,  secondstream,  thirdstream]
+                                                                blvarSUbdisipline,blque))
+
+    return allstreams
 
 def blfuncgetallAction(workshop,que):
     count = 0

@@ -3,7 +3,7 @@ from UploadExcel.models import *
 import openpyxl
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font
-
+from .businesslogic import *
 from django.conf import settings
 
 def excelAllActions(lstAttributes,lstheaders,title,columremove=False):
@@ -47,24 +47,49 @@ def excelAllActions(lstAttributes,lstheaders,title,columremove=False):
         worksheet.delete_cols(columremove)
     return workbook
 
-def createExcelReports(request,filename,**kwargs):
+def createExcelReports(request):
     
     allfields = [f.name for f in ActionItems._meta.get_fields()] 
-    del allfields[0:2] # pop the first 2 in the list since it returns the foreign key
+    del allfields[0:2] # pop the first 3 in the list since it returns the foreign key and ID which we dont want
     
+    #remove Queseries - secrets of the trade dont want it in the Excel
+    #allfields = [e for e in allfields if e not in ('QueSeriesTarget')]
+    allfields.remove("QueSeriesTarget") # left que series because i want to state open or close
+    allfieldwithActionee = allfields.copy() # Need to copy otherwise it mutates the list
+    allfieldwithActionee.insert(0,"Actionee")
     allWorkshops = ActionItems.objects.all()
     
     #excel part - using from openpyxl import Workbook
     workbook = Workbook()       
     worksheet = workbook.active
-    worksheet.title = 'Action Items'
+    worksheet.title = 'All Action Items'
             
-    columns = allfields
+    columns = allfieldwithActionee
     row_num = 1
+
+    ft = Font(bold=True)
+    al = Alignment( wrap_text=True)
+    bd = Border (bottom=Side(border_style="double", color='FF000000'),right=Side(border_style="thin", color='FF000000'))
+    #bdr = Border (right=Side(border_style="thin", color='FF000000'))
+    fillcell = PatternFill(start_color='BAB2B5',
+                   end_color='BAB2B5',
+                   fill_type='solid')
 
     for col_num, column_title in enumerate(columns, 1): #just skips ID field in meta field , print allfields to see why
                 cell = worksheet.cell(row=row_num, column=col_num)
+                if (column_title.lower().find("queseries") != -1): # Remove Queseries from column header
+                    column_title = "Status"
                 cell.value = column_title
+    
+                cell.font = ft
+                cell.alignment = al
+                cell.border = bd
+               
+                cell.fill = fillcell
+                columnAlphapet = chr(ord('@')+col_num) #just convert numbers to alphabet dont bother trying to figure it out
+                worksheet.column_dimensions[columnAlphapet].width= 30
+    
+    worksheet.row_dimensions[row_num].height= 30
     row=[]
 
     for actions in allWorkshops:
@@ -73,13 +98,28 @@ def createExcelReports(request,filename,**kwargs):
             row=[]
             for field in allfields:
                     param = 'actions.'+ str(field)
-                    row.append (eval(param))
-                   
+                    actionitemvalue = eval(param)
+                    
+                    if (str(field).lower() == 'id'):
+                        discsuborg = blgetDiscSubOrgfromID(actionitemvalue)
+                        Actionee = ActionRoutes.mdlgetActioneeAppr.mgr_getactioneefromtriplet(discsuborg)
+                        for items in Actionee:
+                            row.append(items.get('Actionee'))
+
+                    if (str(field).lower() == 'queseries'):
+
+                            if actionitemvalue == 99:
+                                actionitemvalue = "Closed"
+                            else:
+                                actionitemvalue = "Open"
+
+                    row.append (actionitemvalue)
+
             for col_num, cell_value in enumerate(row, 1):
                     cell = worksheet.cell(row=row_num, column=col_num)
                     cell.value = cell_value
-
     
-    #path = settings.MEDIA_ROOT     
-    #workbook.save(path + filename)
+    worksheet.delete_cols(2)
+    
+   
     return workbook

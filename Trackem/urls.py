@@ -47,7 +47,7 @@ urlpatterns = [
                 #path('UA/', UserView.yourActions.as_view(), name='UserActions' ),
         re_path(r'^(?P<id>\d+)/$', login_required(userView.getActionDetails),name='getActionsDetails'),
        # path('password_reset/', auth_views.PasswordResetView.as_view(template_name='userT/reset.html') ,name='password_reset'),
-        path('routesX/', login_required(userView.getuserRoutes), name='routesX' ),
+        
         path('main/', login_required(UserView.mainDashboard), name='main' ),
         path('', login_required(UserView.mainDashboard), name='main' ),
        
@@ -61,12 +61,6 @@ urlpatterns = [
        
         re_path(r'^(?P<id>\d+)/$', login_required(userView.getActionDetails),name='getActionsDetails'),
        
-        path('routesX/', login_required(userView.getuserRoutes), name='routesX' ),
-        #path('ActioneeList/<int:pk>/', userView.ActionDetails(),name='ActionsDetails'),
-       
-        
-        #path('count/', userView.mainDashCount, name='count' ),
-        #path('UA/', UserView.UserActions, name='UserActions' ),
 
         #Following urls are for actionee approvers updates and approvals
         path('ActioneeList/<int:pk>/update', login_required(UserView.ActioneeItemsMixin.as_view()), name='ActioneeFormMixin' ),
@@ -96,6 +90,7 @@ urlpatterns = [
         
         #following url for reporting
         path('actionstatus/', login_required(UserView.rptoverallStatus), name='actionstatus' ),
+        path('repoverallexcel/', login_required(UserView.repoverallexcel), name='repoverallexcel' ),
         path('discslice/', login_required(UserView.rptdiscSlice), name='discslice' ),
         path('rptbyuser/', login_required(UserView.rptbyUser), name='rptbyuser' ),
         #pdf path
