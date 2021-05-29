@@ -10,6 +10,8 @@ from django.core.mail import EmailMessage
 import numpy as np
 from dateutil.relativedelta import *
 cclist = ["ehstools@prism-ehstools.awsapps.com"]
+#edward add-on for rejection url
+appurl = "https://sapuraphase4a.prism-ehstools.com" #for now, please change appurl for different clients
 
 
 
@@ -181,6 +183,7 @@ def blsetrejectionActionItems(ID,queseries):
     ActionItems.mdlQueSeries.mgrincrementRevision(ID)
 
 def blbuildRejectionemail(ID,RejectReason):
+    
     Content=[]
     actionDetails = ActionItems.objects.filter(id=ID).values() # Since off the bat i did not pass any other information besides ID to rejection form i now have to information back for emails
     studyActionNo =  actionDetails[0].get('StudyActionNo')
@@ -188,8 +191,9 @@ def blbuildRejectionemail(ID,RejectReason):
     response = actionDetails[0].get('Response')
 
     Content.append(studyActionNo + " from " + studyName + " has been rejected ") #This is subject
-    Content.append("Rejection Reason : " + RejectReason )#+ "...Response" + response) #this is the content of the email
-
+    #edward add-on for rejection url
+    Content.append("Rejection Reason : " + RejectReason + ". To attend to this, please go to " + appurl)#+ "...Response" + response) #this is the content of the email #passed the url here in the content
+    
     return Content
 def blgetHistoryforUser(useremail, actioneeroutes):
     
