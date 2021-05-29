@@ -10,7 +10,7 @@ from django.core.mail import EmailMessage
 import numpy as np
 from dateutil.relativedelta import *
 cclist = ["ehstools@prism-ehstools.awsapps.com"]
-#edward
+#edward add-on for rejection url
 rejecturl = "https://sapuraphase4a.prism-ehstools.com"
 
 def blemailSendindividual(sender,recipient, subject,content,ccl = cclist):
@@ -164,7 +164,7 @@ def blbuildRejectionemail(ID,RejectReason):
     response = actionDetails[0].get('Response')
 
     Content.append(studyActionNo + " from " + studyName + " has been rejected ") #This is subject
-    #edward
+    #edward add-on for rejection url
     Content.append("Rejection Reason : " + RejectReason + ". To attend to this, please go to " + rejecturl)#+ "...Response" + response) #this is the content of the email #passed the url here in the content
     
     return Content
