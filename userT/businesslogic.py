@@ -11,7 +11,7 @@ import numpy as np
 from dateutil.relativedelta import *
 cclist = ["ehstools@prism-ehstools.awsapps.com"]
 #edward add-on for rejection url
-appurl = "https://sapuraphase4a.prism-ehstools.com"
+appurl = "https://sapuraphase4a.prism-ehstools.com" #for now, please change appurl for different clients
 
 def blemailSendindividual(sender,recipient, subject,content,ccl = cclist):
 
