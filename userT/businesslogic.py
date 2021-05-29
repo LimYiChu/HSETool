@@ -11,7 +11,7 @@ import numpy as np
 from dateutil.relativedelta import *
 cclist = ["ehstools@prism-ehstools.awsapps.com"]
 #edward add-on for rejection url
-rejecturl = "https://sapuraphase4a.prism-ehstools.com"
+appurl = "https://sapuraphase4a.prism-ehstools.com"
 
 def blemailSendindividual(sender,recipient, subject,content,ccl = cclist):
 
@@ -165,7 +165,7 @@ def blbuildRejectionemail(ID,RejectReason):
 
     Content.append(studyActionNo + " from " + studyName + " has been rejected ") #This is subject
     #edward add-on for rejection url
-    Content.append("Rejection Reason : " + RejectReason + ". To attend to this, please go to " + rejecturl)#+ "...Response" + response) #this is the content of the email #passed the url here in the content
+    Content.append("Rejection Reason : " + RejectReason + ". To attend to this, please go to " + appurl)#+ "...Response" + response) #this is the content of the email #passed the url here in the content
     
     return Content
 def blgetHistoryforUser(useremail, actioneeroutes):
