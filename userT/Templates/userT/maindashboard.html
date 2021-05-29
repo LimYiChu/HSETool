@@ -15,13 +15,13 @@
         function starter(){
             
             
-            {% for chart in content%}
+            {% for chart in actioneefinallist%}
             {%if chart %}
                 drawChart({{chart|safe}} , {{ forloop.counter }},'{{chart.0}}',false);
                 {%endif%}
             {%endfor%}
 
-            {% for appchart in appfinalist%}
+            {% for appchart in apprfinalist%}
              {%if appchart %} //cant work with !=[] just wants to state that it has data then trigger draw chart otherwise its just ugly red errors on screen
             drawChart({{appchart|safe}} , {{ forloop.counter }},'{{appchart.0}}',true);
             {%endif%}
@@ -101,7 +101,7 @@
                     <div class="card-header"  >
 
                     <a href="/ActioneeList" >
-                        Actionee Action           
+                        Actionee Action   - You have a total of {{totalactioneeaction}} actions in your que.       
                        </a>
                     
                     </div>
@@ -125,13 +125,13 @@
             </div>                      
             </div>
         </div> 
-
+        
         <div class="row">         
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header" style="font-size: large;">
                             <a href="/ApproverList">
-                        Approver Actions
+                        Approver Actions - You have a total of {{totalapproveraction}} actions in your que. 
                             </a>
                     </div>
                     <div class="card-body " > 

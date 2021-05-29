@@ -104,12 +104,17 @@ class mdlCommentsManager(models.Manager):
         return self.get_queryset().get_mgrComments(Fkey)
 
 #for setting queseries, really needs improvement because we can set any attibute for it
-class mdlSetQueSeries(models.Manager):
+class mdlGetSetQueRevision(models.Manager):
     
     def mgrsetQueSeries(self,ID, Que):
         obj = get_object_or_404(self.model, id=ID)
         obj.QueSeries = Que
         obj.save(update_fields=["QueSeries"],using=self.db)
+
+    def mgrincrementRevision(self,ID):
+        obj = get_object_or_404(self.model, id=ID)
+        obj.Revision += 1
+        obj.save(update_fields=["Revision"],using=self.db)
 
 class mgrSetfields(models.Manager):
     def get_queryset (self):

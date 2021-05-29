@@ -59,8 +59,9 @@ class CommonLayout (Layout):
                       
            ),
             Div (
-            Div (Field('Guidewords', rows=1 ,readonly=True), css_class='col-md-6'),
-            Div (Field('Deviation', rows=1 ,readonly=True), css_class='col-md-6'),
+            Div (Field('Guidewords', rows=1 ,readonly=True), css_class='col-md-5'),
+            Div (Field('Deviation', rows=1 ,readonly=True), css_class='col-md-5'),
+            Div (Field('Revision', rows=1 ,readonly=True), css_class='col-md-2'),
             Div (Field('Cause', rows=8 ,readonly=True), css_class='col-md-12'),
             Div (Field('Safeguard', rows=8, readonly=True), css_class='col-md-12'),
             Div (Field('Consequence',rows=8, readonly=True), css_class='col-md-12'),
@@ -161,7 +162,7 @@ class frmApproverConfirmation(forms.ModelForm):
           
            ),
         Div (Field('Cause', type="hidden")),
-         Div (Field('Guidewords', type="hidden")), 
+         
          #Div (Field('DueDate', type="hidden")),
             Div (Field('Safeguard', type="hidden")),
             Div (Field('Consequence', type="hidden")),
@@ -175,7 +176,8 @@ class frmApproverConfirmation(forms.ModelForm):
             Div (Field('QueSeries', type="hidden")),
             Div (Field('DueDate', type="hidden")), #yhs added for testing disappearing duedates
             Div (Field('Guidewords', type="hidden")), #yhs added due to additional field from client
-            Div (Field('Deviation', type="hidden")), #yhs added due to additional field from client
+            Div (Field('Deviation', type="hidden")),
+            Div (Field('Revision', type="hidden")), 
         )
     class Meta:
         model = ActionItems

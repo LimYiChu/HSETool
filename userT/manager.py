@@ -47,8 +47,8 @@ class RoutesQuerySet(models.QuerySet):
         return self.filter (Disipline__icontains=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1])
     def mgrgetApprLevel(self,CompDiscSub):
         return self.filter (Disipline__icontains=CompDiscSub[0]).filter(Subdisipline__icontains=CompDiscSub[1]).filter(Organisation__icontains=CompDiscSub[2])
-
-        
+    def mgrgetactioneefromtriplet(self,DiscSubOrg):
+        return self.filter (Disipline__icontains=DiscSubOrg[0]).filter(Subdisipline__icontains=DiscSubOrg[1]).filter(Organisation__icontains=DiscSubOrg[2]).values('Actionee')
 class ActioneeManager(models.Manager):
     def get_queryset (self):
         return RoutesQuerySet(self.model, using=self._db)
@@ -81,7 +81,8 @@ class mgrActioneeApprover (models.Manager):
         return RoutesQuerySet(self.model, using=self._db)
     def mgr_getActApp(self,DiscSub):
         return self.get_queryset().mgrgetActApp(DiscSub)
-
+    def mgr_getactioneefromtriplet(self,DiscSubOrg):
+        return self.get_queryset().mgrgetactioneefromtriplet(DiscSubOrg)
 class mmgrgetApproverLevel (models.Manager):
     def get_queryset (self):
         return RoutesQuerySet(self.model, using=self._db)
