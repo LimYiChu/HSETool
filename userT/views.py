@@ -84,7 +84,7 @@ def googlecharts(request):
 
     }
     #return JsonResponse()
-    return render(request, 'userT/googlecharts.html',context)
+    return render(request, 'userT/googlecharts.html',context) #ok checked by yhs
 
 def mainDashboard (request):
    
@@ -165,7 +165,7 @@ def mainDashboard (request):
         'apprfinalist' : apprfinalist,
         
             }
-    return render(request, 'userT/maindashboard.html',Context)
+    return render(request, 'userT/maindashboard.html',Context) #ok checked by yhs in terms of capital letters.
 
 
 def getActionDetails(request, id=None):
@@ -174,14 +174,14 @@ def getActionDetails(request, id=None):
             "Items":Items
 
     }
-    return render(request, "userT/detailactions.html", context)
+    return render(request, "userT/detailactions.html", context) #ok checked by yhs in terms of capital letters.
 
 
 
 #below view is for list of actions under actionee , 
 # it returns a list of actions under object_list
 class ActioneeList (ListView):
-    template_name   =   'userT/actionListActionee.html'
+    template_name   =   'userT/actionlistactionee.html' #yhs changed to all small letters
     
     def get_queryset(self):
         userZemail = self.request.user.email
@@ -193,7 +193,7 @@ class ActioneeList (ListView):
         return ActioneeActions
 
 class HistoryList (ListView):
-    template_name   =   'userT/historylist.html'
+    template_name   =   'userT/historylist.html' #ok checked by yhs in terms of capital letters.
     
     def get_queryset(self):
         #historically only get queue for all approver levels that he person is the actionee instead of everything else
@@ -205,7 +205,7 @@ class HistoryList (ListView):
         return lstgetHistoryforUser    
     
 class ApproverList (ListView):
-    template_name   =   'userT/actionListApprover.html'
+    template_name   =   'userT/actionlistapprover.html' #yhs changed to all small letters
     
     def get_queryset(self):
         userZemail = self.request.user.email
@@ -222,7 +222,7 @@ class ApproverList (ListView):
         return ApproverActions
 
 class DetailActioneeItems (DetailView):
-    template_name   =   'userT/actionDetailActionee.html'
+    template_name   =   'userT/actiondetailactionee.html' #yhs changed to all small letters
     #queryset = ActionItems.objects.all()
 
     def get_object(self):
@@ -232,7 +232,7 @@ class DetailActioneeItems (DetailView):
 
 class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
     #paginate_by = 20
-    template_name = "userT/actionUpdateApproveAction.html"
+    template_name = "userT/actionupdateapproveaction.html" #yhs changed to all small letters 
     form_class = ApproverForm
     success_url = '/ApproverList/'
 
@@ -316,7 +316,7 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
 
 class ApproverConfirm(UpdateView):
     
-    template_name = "userT/ApproverConfirmation.html"
+    template_name = "userT/approverconfirmation.html" #yhs changed to all small letters
     form_class = frmApproverConfirmation
     success_url = '/ApproverList/'
     
@@ -348,7 +348,7 @@ class ApproverConfirm(UpdateView):
 
 class HistoryConfirm(UpdateView):
     
-    template_name = "userT/historyconfirmpull.html"
+    template_name = "userT/historyconfirmpull.html" #yhs checked capital
     form_class = frmApproverConfirmation
     success_url = '/HistoryList/'
     
@@ -381,7 +381,7 @@ class HistoryConfirm(UpdateView):
         return queryset.get(id=self.kwargs['id'])
 
 class HistoryItemsMixin(ApproveItemsMixin):
-    template_name = "userT/historypullback.html"
+    template_name = "userT/historypullback.html" #yhs changed to all small letters
     form_class = frmApproverConfirmation
     
     def get_context_data(self,**kwargs):
@@ -416,7 +416,7 @@ class HistoryItemsMixin(ApproveItemsMixin):
         return reverse ('HistoryConfirm', kwargs={'id': self.object.id })
 
 class ActioneeItemsMixin(ApproveItemsMixin):
-    template_name = "userT/actionUpdateApproveAction.html"
+    template_name = "userT/actionupdateapproveaction.html" #yhs changed to all small letters
     form_class = frmUpdateActioneeForm
     
     def get_context_data(self,**kwargs):
@@ -458,11 +458,11 @@ class ActioneeItemsMixin(ApproveItemsMixin):
         return reverse ('multiplefiles', kwargs={'forkeyid': self.object.id})
 
 def ContactUs (request):
-    return render(request, 'userT/ContactUs.html')
+    return render(request, 'userT/contactus.html') #yhs changed to all small letters
 
 class RejectReason (CreateView):
     model = Comments
-    template_name = 'userT/rejectreason.html'
+    template_name = 'userT/rejectreason.html' #yhs changed to all small letters
     form_class = frmAddRejectReason
     success_url = '/ApproverList/'
 
@@ -511,7 +511,7 @@ def IndividualBreakdownByUsers(request):
         
     }
             
-    return render(request, 'userT/Indibreakbyuser.html',context)
+    return render(request, 'userT/indibreakbyuser.html',context) #yhs changed to all small letters
 
 def IndividualBreakdownByActions(request):
     
@@ -527,10 +527,10 @@ def IndividualBreakdownByActions(request):
 
     }
 
-    return render(request, 'userT/Indibreakdownbyactions.html', context)
+    return render(request, 'userT/indibreakdownbyactions.html', context)#yhs changed to all small letters
 
-def ContactUs (request):
-    return render(request, 'userT/ContactUs.html')
+# def ContactUs (request):
+#     return render(request, 'userT/ContactUs.html')
 
 def multiplefiles (request, **kwargs):
   
@@ -562,8 +562,7 @@ def multiplefiles (request, **kwargs):
 
     }
 
-    return render(request, 'userT/multiplefiles.html',context)
-
+    return render(request, 'userT/multiplefiles.html',context) #yhs checked small letters
 
 
 def rptoverallStatus(request, **kwargs):
@@ -696,7 +695,7 @@ def rptoverallStatus(request, **kwargs):
             "overall":True
 
     }
-    return render (request, 'userT/reports.html',context )
+    return render (request, 'userT/reports.html',context ) #yhs checked
 
 def rptdiscSlice(request, **kwargs):
     
@@ -766,7 +765,7 @@ def rptdiscSlice(request, **kwargs):
             "Company" : Company, 
             "Dispcount": Dispcount
             }
-    return render (request, 'userT/repDisc.html', context)
+    return render (request, 'userT/repdisc.html', context) #yhs changed all to smal lletters
 
 def rptbyUser(request, **kwargs):
     dict_allRou = blgetuserRoutes(request,request.user.email)
@@ -774,7 +773,7 @@ def rptbyUser(request, **kwargs):
     
     #This function just does a count using model managers , calling from businesslogic.py
     ActioneeCount = blfuncActionCount(Actionee_R,0)
-    return render (request, 'userT/reports.html')
+    return render (request, 'userT/reports.html') #yhs checked
     
 # def GeneratePDF (request):
 #     filename = [] # for appending filename place before for loop
@@ -817,8 +816,8 @@ def ReportingTable(request):
         context ={
           'form':sub
         }
-        return render(request, 'userT/ReportingTable.html',context)
-    return render (request, 'userT/ReportingTable.html', {'form':sub})
+        return render(request, 'userT/reportingtable.html',context) #yhs changed to small letters
+    return render (request, 'userT/reportingtable.html', {'form':sub}) #yhs changed to small letters
 
 #def EmailReminder (request):
 #    return render(request, 'userT/EmailReminder.html')
@@ -876,7 +875,7 @@ def EmailReminder(request):
         context ={
           'form':sub
         }
-        return render(request, 'userT/EmailReminder.html',context)
+        return render(request, 'userT/EmailReminder.html',context)  #edward to check this.....
     return render (request, 'userT/emailreminders.html', {'form':sub})
 
 def EmailReminderAttachment(request):
@@ -895,13 +894,13 @@ def EmailReminderAttachment(request):
           'form':sub
         }
         return render(request, 'userT/EmailReminder.html',context)
-    return render (request, 'userT/EmailReminder.html', {'form':sub})
+    return render (request, 'userT/EmailReminder.html', {'form':sub}) #edward to check this
 
 
     
 
 def Profile (request):
-    return render(request, 'userT/Profile.html')
+    return render(request, 'userT/profile.html') #yhs changed to small letters
 
 def repoverallexcel (request):
 
@@ -1030,10 +1029,10 @@ def repPMTExcel (request):
     return render(request, 'userT/reppmtexcel.html', context)
 
 def DisciplineBreakdown (request):
-    return render(request, 'userT/DisciplineBreakdown.html')
-
+    return render(request, 'userT/disciplinebreakdown.html')#yhs changed to small letters
+ 
 def StickyNote(request):
-    return render(request, 'userT/StickyNote.html')
+    return render(request, 'userT/stickynote.html') #yhs changed to small letters
 
 
 # def PDFtest(request):
@@ -1240,3 +1239,8 @@ def indiprint(request,**kwargs):
     return response
    
    #return FileResponse(bufferfile, as_attachment=True, filename=out_file)
+
+#yhs added
+def delegatedadmin (request):
+    return render(request, 'userT/delegatedadmin.html')#yhs changed to small letters
+

@@ -99,9 +99,13 @@
     <div class="row">
       <div class="col-md-12">
             <div class="card">
-            <div><h5 class="card-header">
-                PMT Reporting <a class="article-title" href="{% url  'repoverallexcel' %}">Download Entire Data</a>
-            </h5></div>
+            <div><h4 class="card-header">
+
+             
+
+               <a> PMT Reporting <!--<a class="article-title" href="{% url  'repoverallexcel' %}">Download Entire Data</a>-->
+                <a><button type="button" class="btn btn-outline-primary btn-sm;" style = "float: right; padding-bottom:1pt; padding-top: 1pt">  <a class ="article-title" href="{% url  'repoverallexcel' %}" style="float: right;">Download Complete Excel <i class="bi bi-file-earmark-spreadsheet"></i> </button> </a></a>
+            </h4></div>
 
             <div class="tab h5" style="background-color: rgb(231, 234, 235);">
               
@@ -268,41 +272,50 @@
                 </div>
 
                 <div id = "DueDate"class="tabcontent" style="border-left:0pc; border-right:0px;border-bottom:0px">
-                  <div  style="float:left" >
-                    <table id="duedaterundown" class="table table-striped table-hover " style="width:100%">
-                    <thead class>
-                          <tr class="filters">
-                            {%for items in tableduedateheader%}
-                          <th>
-                            {{items}}
-                          </th>
-                          {%endfor%}
+                  <div class="col-md-12">
+                    <div class="row">
+                      <div class="col-md-3">
+                        <table id="duedaterundown" class="table table-striped table-hover " style="width:100%; ">
+                          <thead class>
+                                <tr class="filters">
+                                  {%for items in tableduedateheader%}
+                                <th>
+                                  {{items}}
+                                </th>
+                                {%endfor%}
+                                  
+                              </tr>
+                          </thead>
+                          <tbody>
+                            {% for items in lstbyDueDate%}
                             
-                        </tr>
-                    </thead>
-                    <tbody>
-                      {% for items in lstbyDueDate%}
-                      
-                      <tr>
-                        <td>{{items.DueDate}}</td>
-                        <td>{{items.count}}</td>
-                        
-                      </tr> 
-                      {%endfor%}
-                      <tr>
-                        <td>Total</td>
-                        <td>{{totalallDueDate}}</td>
-                      </tr>
-                      </tbody>
-                    </table>
-                  
-                  </div>
-                  <div  id="linecharted" style="float:left;"></div>
-                  
-                   <div class="form-group"><input type="submit" name="byDueDate" value="Download Excel" class="btn btn-outline-primary float-right col-md-2 "  /></div>              
+                            <tr>
+                              <td>{{items.DueDate}}</td>
+                              <td>{{items.count}}</td>
+                              
+                            </tr> 
+                            {%endfor%}
+                            <tr>
+                              <td>Total</td>
+                              <td>{{totalallDueDate}}</td>
+                            </tr>
+                            </tbody>
+                          </table>
+                      </div>
+                      <div class="col-md-1"></div>
+                      <div class="col-md-8">
+                        <div  id="linecharted" ></div>
+                      </div>
                     </div>
-                    <br>
+                    <div class="form-group"><input type="submit" name="byDueDate" value="Download Excel" class="btn btn-outline-primary float-right col-md-2 "  /></div> 
+
                   </div>
+
+
+
+
+
+
                   
               
           </fieldset>
