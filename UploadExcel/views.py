@@ -63,7 +63,7 @@ def Load (request):
 
     }
 
-    return render(request, 'uploadExcel/upload.html', context)
+    return render(request, 'uploadexcel/upload.html', context)
 def uploadfield (request):
     
     if request.method == 'POST':
@@ -111,7 +111,7 @@ def uploadfield (request):
 
     }
 
-    return render(request, 'uploadExcel/upload.html', context)    
+    return render(request, 'uploadexcel/upload.html', context)    
 def LoadRoutes (request):
     #to load routes from excel when required
     pass
@@ -165,4 +165,4 @@ def AddonLoad (request):
 
     }
 
-    return render(request, 'uploadExcel/addonupload.html', context)
+    return render(request, 'uploadexcel/addonupload.html', context)
