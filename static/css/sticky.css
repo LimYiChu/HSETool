@@ -59,3 +59,15 @@
   border-top: none;
 }
 
+
+div.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 50px;
+  padding: 30px;
+  font-size: 20px;
+  width: 100%;
+}
+.card-columns {
+column-count: 2;
+}

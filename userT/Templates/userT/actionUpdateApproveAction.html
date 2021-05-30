@@ -9,7 +9,7 @@
 {% if Rejectcomments %} <!--Just to check if it has been rejected before otherwise print comments at the side nav bar in sticky format-->
 
 
-  <div class="postitnote sticky "  style="font-size:small; font-family:Lato; margin-right:5px;margin-left:5px "> 
+  <div class="postitnote sticky"  style="font-size:small; font-family:Lato; margin-right:5px;margin-left:5px "> 
       <div class="col-md-1;margin-right:5px;margin-left:5px">
          <table class="sticky table table-hover" > <!--set to maximum 20 rows per page-->
           <thead class="thead">
@@ -71,9 +71,10 @@
 <div class="card"  >
   <div class="card-header" >
      <a style="color:black; font-size:large">Details</a>
-            <button type="button" class="btn btn-outline-primary btn-sm;" style = "float: right;">  <a class ="article-title" href="{% url 'indiprint' object.id %}" style="float: right;">Generate PDF <i class="material-icons">print</i>   </button> 
+            <button type="button" class="btn btn-outline-primary btn-sm;" style = "float: right;">  <a class ="article-title" href="{% url 'indiprint' object.id %}" style="float: right;">Generate PDF <i class="bi bi-printer"></i>  </button> 
+             <!-- <button type="button" class="btn btn-outline-primary btn-sm;" style = "float: right;">  <a class ="article-title" href="{% url 'indiprint' object.id %}" style="float: right;">Delegate Actions <i class="bi bi-shuffle"></i>   </button> -->
         </a>
-             
+        
     
 
 

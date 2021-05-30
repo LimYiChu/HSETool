@@ -124,6 +124,7 @@ urlpatterns = [
 
         #yhs testing
         path('AllList/<int:id>/update/print', login_required(UserView.indiprint), name='indiprint' ),
+        path('delegatedadmin/',login_required(UserView.delegatedadmin),name='delegatedadmin'),
       ]
 
 if settings.DEBUG:
