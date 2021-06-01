@@ -1073,7 +1073,7 @@ def closeoutprint(request,**kwargs):
     #response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
     #bufferfile = pdfsendtoclient ('atrtemplateautofontreadonly.pdf',data_dict)
 
-    file = pdfgenerate('closeouttemplatenew.pdf',out_file,data_dict,signatoriesdict)
+    file = pdfgenerate('closeouttemplate.pdf',out_file,data_dict,signatoriesdict)
     
     in_memory = BytesIO()
     
@@ -1234,7 +1234,7 @@ def indiprint(request,**kwargs):
     response = HttpResponse(content_type="application/pdf")
     response["Content-Disposition"] = "attachment; filename=" + studyActionNo+ ".pdf"
 
-    file = pdfsendtoclient('closeouttemplatenew.pdf', data_dict)
+    file = pdfsendtoclient('closeouttemplate.pdf', data_dict)
     response.write(file.read())
     return response
    
