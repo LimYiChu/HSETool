@@ -45,7 +45,7 @@ from .serializers import *
 # Create your views here.
 
 from UploadExcel.forms import *
-emailSender ="ehstools@prism-ehstools.awsapps.com"
+from userT.parameters import *
 
 
 class anyView(viewsets.ModelViewSet):
