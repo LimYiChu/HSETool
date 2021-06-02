@@ -968,12 +968,12 @@ def repPMTExcel (request):
     googlechartlistdiscipline = blprepGoogChartsbyStudies(labelsDisc,countdiscsub,pietitledisc)
 
     forpie.append(googlechartlistdiscipline) 
-    #By workshops
+    #By workshops - Overall OPen actions by Studies
     labelsworkshop = Studies.objects.all()
                 
     countstudies = []
     labelsstudies = []
-    pietitlestudies = "Open Actions by Discipline"
+    pietitlestudies = "Open Actions by Studies"
 
     for study in labelsworkshop:
 
