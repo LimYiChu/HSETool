@@ -45,7 +45,7 @@ from .serializers import *
 # Create your views here.
 
 from UploadExcel.forms import *
-emailSender ="ehstools@prism-ehstools.awsapps.com"
+from userT.parameters import *
 
 
 class anyView(viewsets.ModelViewSet):
@@ -1054,7 +1054,8 @@ def closeoutprint(request,**kwargs):
     studyActionNo =  objFk.StudyActionNo
     replacestudyActionNo= studyActionNo.replace("/","_")
     Filename = replacestudyActionNo  + ".pdf"
-    out_file = 'static/media/temp/' + Filename
+    #edward new tempfolder from parameters
+    out_file = tempfolder + Filename
        
     data_dict=obj[0]
     
@@ -1072,8 +1073,8 @@ def closeoutprint(request,**kwargs):
     #response = HttpResponse(content_type='application/pdf')
     #response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
     #bufferfile = pdfsendtoclient ('atrtemplateautofontreadonly.pdf',data_dict)
-
-    file = pdfgenerate('closeouttemplate.pdf',out_file,data_dict,signatoriesdict)
+    #edward changed file location to parameters
+    file = pdfgenerate(closeouttemplate,out_file,data_dict,signatoriesdict)
     
     in_memory = BytesIO()
     
@@ -1136,8 +1137,8 @@ def closeoutsheet(request): #new naming convention - all small letters
             j = (i + '.pdf')  # easier to breakdown j & to append further on          
             del item["id"]      
             data_dict=item
-            out_file = 'static/media/' + j
-            pdfgenerate('atrtemplateautofontreadonly.pdf',out_file,data_dict)#returns from pdfgenerator
+            out_file = staticmedia + j
+            pdfgenerate(atrtemplate,out_file,data_dict)#returns from pdfgenerator #edward added atrtemplate location in parameters
             filename.append(j) #can only append str, appending j shows the filename for userview instead of whole location 
             context1={
                 'filename' : filename,
@@ -1219,7 +1220,8 @@ def indiprint(request,**kwargs):
     studyActionNo =  objFk.StudyActionNo
     replacestudyActionNo= studyActionNo.replace("/","_")
     Filename = replacestudyActionNo  + ".pdf"
-    out_file = 'static/media/temp/' + Filename
+    #edward new tempfolder from parameters
+    out_file = tempfolder + Filename
        
     data_dict=obj[0]
  
@@ -1233,8 +1235,8 @@ def indiprint(request,**kwargs):
 
     response = HttpResponse(content_type="application/pdf")
     response["Content-Disposition"] = "attachment; filename=" + studyActionNo+ ".pdf"
-
-    file = pdfsendtoclient('closeouttemplate.pdf', data_dict)
+    #edward changed file location to parameters
+    file = pdfsendtoclient(closeouttemplate, data_dict)
     response.write(file.read())
     return response
    

@@ -9,9 +9,8 @@ import datetime
 from django.core.mail import EmailMessage
 import numpy as np
 from dateutil.relativedelta import *
-cclist = ["ehstools@prism-ehstools.awsapps.com"]
-#edward add-on for rejection url
-appurl = "https://sapuraphase4a.prism-ehstools.com" #for now, please change appurl for different clients
+from userT.parameters import *
+
 
 
 
