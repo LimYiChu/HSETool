@@ -4,7 +4,7 @@ import io
 def pdfgenerate(input_pdf_path, output_pdf_path, data_dict,signatories):
     template_pdf = pdfrw.PdfReader(input_pdf_path) # Read Input PDF
     template_pdf.Root.AcroForm.update(pdfrw.PdfDict(NeedAppearances=pdfrw.PdfObject('true')))# Set Appearences ( Make Text field visible )
-    # Loop all Annotations
+    # Loop all Annotations (edward added another for loop to print on all pages)
     for page in template_pdf.pages: #[0]['/Annots']:#loop over all pages in pdf, and for each page, loop over all ediatble fields called annots, for each page all annotations stored in 'Annots/' 
         annotations=page['/Annots']
         for annotation in annotations:
@@ -23,7 +23,7 @@ def pdfsendtoclient(input_pdf_path, data_dict):
     
     template_pdf = pdfrw.PdfReader(input_pdf_path) # Read Input PDF
     template_pdf.Root.AcroForm.update(pdfrw.PdfDict(NeedAppearances=pdfrw.PdfObject('true')))# Set Appearences ( Make Text field visible )
-    # Loop all Annotations
+    # Loop all Annotations (edward added another for loop to print on all pages)
     for page in template_pdf.pages: #[0]['/Annots']:#loop over all pages in pdf, and for each page, loop over all ediatble fields called annots, for each page all annotations stored in 'Annots/' 
         annotations=page['/Annots']
         for annotation in annotations:
