@@ -47,16 +47,16 @@ def excelAllActions(lstAttributes,lstheaders,title,columremove=False):
         worksheet.delete_cols(columremove)
     return workbook
 
-def createExcelReports(request):
+def excelCompleteReport(request):
     
     allfields = [f.name for f in ActionItems._meta.get_fields()] 
     del allfields[0:2] # pop the first 3 in the list since it returns the foreign key and ID which we dont want
     
     #remove Queseries - secrets of the trade dont want it in the Excel
     #allfields = [e for e in allfields if e not in ('QueSeriesTarget')]
-    allfields.remove("QueSeriesTarget") # left que series because i want to state open or close
+    allfields.remove("QueSeriesTarget") # Removed target but left QueSeries because i want to state open or close
     allfieldwithActionee = allfields.copy() # Need to copy otherwise it mutates the list
-    allfieldwithActionee.insert(0,"Actionee")
+    allfieldwithActionee.insert(0,"Actionee") # has to be at the start since the loop starts with ID
     allWorkshops = ActionItems.objects.all()
     
     #excel part - using from openpyxl import Workbook
@@ -69,10 +69,13 @@ def createExcelReports(request):
 
     ft = Font(bold=True)
     al = Alignment( wrap_text=True)
-    bd = Border (bottom=Side(border_style="double", color='FF000000'),right=Side(border_style="thin", color='FF000000'))
+    bdHead = Border (bottom=Side(border_style="double", color='FF000000'),right=Side(border_style="thin", 
+                color='FF000000'))
+    bdNormal = Border (bottom=Side(border_style="thin", color='FF000000'),right=Side(border_style="thin", 
+                color='FF000000'))
     #bdr = Border (right=Side(border_style="thin", color='FF000000'))
-    fillcell = PatternFill(start_color='BAB2B5',
-                   end_color='BAB2B5',
+    fillcell = PatternFill(start_color='69616F',
+                   end_color='69616F',
                    fill_type='solid')
 
     for col_num, column_title in enumerate(columns, 1): #just skips ID field in meta field , print allfields to see why
@@ -83,7 +86,7 @@ def createExcelReports(request):
     
                 cell.font = ft
                 cell.alignment = al
-                cell.border = bd
+                cell.border = bdHead
                
                 cell.fill = fillcell
                 columnAlphapet = chr(ord('@')+col_num) #just convert numbers to alphabet dont bother trying to figure it out
@@ -118,7 +121,10 @@ def createExcelReports(request):
             for col_num, cell_value in enumerate(row, 1):
                     cell = worksheet.cell(row=row_num, column=col_num)
                     cell.value = cell_value
-    
+                    cell.alignment = al
+                    cell.border = bdNormal
+                    
+            worksheet.row_dimensions[row_num].height= 30
     worksheet.delete_cols(2)
     
    

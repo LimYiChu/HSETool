@@ -73,7 +73,7 @@ class mgrgetDiscSub (models.Manager):
 class mgrgetCompany (models.Manager):
     def get_queryset (self):
         return RoutesQuerySet(self.model, using=self._db)
-    def mgr_getCompanyCount(self):
+    def mgr_getOrgnames(self):
         return self.get_queryset().get_mgrgetCompany()
 
 class mgrActioneeApprover (models.Manager):

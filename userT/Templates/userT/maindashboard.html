@@ -29,7 +29,7 @@
         }
       function drawChart(values,index,chartTitle,approver) {
         
-        firstindex = chartTitle.lastIndexOf("///")+3
+        firstindex = chartTitle.lastIndexOf("///")+3 //Doing this because it passes soem wird HTML together with the string &#27 or some other stuff
         
         lastindex = chartTitle.lastIndexOf(":::")
         var newtitle = chartTitle.substring(firstindex,lastindex );
@@ -49,6 +49,7 @@
             height: 500,
             width: 700,
             chartArea:{left:20,top:100,width:'80%',height:'80%'},
+         
             legend : {position: 'side', textStyle: {color: 'black', fontSize: 20}} //have to add this in otherwise charts seem small...like your dick
         };
         
@@ -107,7 +108,7 @@
                     </div>
                 <div >
                 
-                    <div class="card-body " > <!--the float could be the cuase of the image changing position-->
+                    <div class="card-body " > 
                         <a href="/ActioneeList"> 
                         <div style="float:left;" id="piechart1" ></div> <!--DONT ADD WIDTH TO ELEMENT, resize from google chart-->
                         <div style="float:left;" id="piechart2" ></div>

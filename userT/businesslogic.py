@@ -159,10 +159,12 @@ def blprepareGoogleChartsfromDict(QuerySet):
     finallist.insert(0,firstdatefiller)
 
     return finallist
-def blprepareGoogleCharts (labels,count,newstudyname):
+def blprepGoogChartsbyStudies (labels,count,newstudyname):
+
+    studyname = "///" + newstudyname + ":::" # gotta do this since its passes all weird charaters to the jave script, with this i can then get the in between string in javascript
     initiallist =[]
     finallist =[]
-    Startlist = ['By Studies',newstudyname ]
+    Startlist = ['By Studies',studyname ]
     for index , disc in  enumerate(labels):
 
         initiallist.append(disc)

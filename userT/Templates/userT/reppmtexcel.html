@@ -9,10 +9,78 @@
         
         //google.charts.load('current', {'packages':['line']});
         //google.charts.setOnLoadCallback(starter); //cant call drawchart with paarmeters, need the parameters to make the code effcient
+        function initiateGooPieChart(){
+         
+          google.charts.load('current', {'packages':['corechart']});
+          google.charts.setOnLoadCallback(starterPie); 
+
+        }
+        function starterPie ()
+        {
+          {% for chart in forpie%}
+          {%if chart %}
+            
+                    drawPieChart({{chart|safe}} ,  {{ forloop.counter }},'{{chart.0}}');
+            {%endif%}
+          {%endfor%}
+                    
+
+                
+        }
+
+        function drawPieChart(values,index,chartTitle) 
+        {
+          
+          firstindex = chartTitle.lastIndexOf("///")+3
+          
+          lastindex = chartTitle.lastIndexOf(":::")
+          var newtitle = chartTitle.substring(firstindex,lastindex );
+         
+          var data = google.visualization.arrayToDataTable(values);
+  
+          var options = {
+            title: newtitle,
+            is3D : true,
+            
+            pieSliceText : 'value',
+            pieSliceTextStyle: {
+              bold: true,
+              fontSize: 25,
+              color: 'black'
+          },
+            titleTextStyle: {
+              color: 'Black',    // any HTML string color ('red', '#cc00cc')
+              fontName: 'Helvetica', // i.e. 'Times New Roman'
+              fontSize: 25, // 12, 18 whatever you want (don't specify px)
+              bold: true,    // true or false
+              italic: false   // true of false
+                          },
+              height: 500,
+              width: 900,
+              
+              chartArea:{left:20,top:100,width:'100%',height:'100%'},
+              legend : {position: 'labeled', textStyle: {color: 'black', fontSize: 20}} //have to add this in otherwise charts seem small...like your dick
+          };
+          
+         
+          //var strpie = "piechart";
+          //var finalpie = strpie.concat(index);
         
+        var strpie = "piechart";
+        var finalpie = strpie.concat(index);
+      
+        var chart = new google.visualization.PieChart(document.getElementById(finalpie));
+        chart.draw(data, options);
+
+          //var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+          //chart.draw(data, options);
+          }
+  
+        
+       
+
         function initiateGoogleChart(){
 
-       
           google.charts.load('current', {'packages':['line']});
           google.charts.setOnLoadCallback(starter);
 
@@ -114,7 +182,7 @@
               <button class="tablinks" onclick="openReport(event, 'Studies/Workshops')">Studies/Workshops</button>
               <button class="tablinks" onclick="openReport(event, 'Discipline')">Discipline</button>
               <button class="tablinks" onclick="openReport(event, 'DueDate');initiateGoogleChart()">Due Date & Run-Down</button>
-              
+              <button class="tablinks" onclick="openReport(event, 'PieChart');initiateGooPieChart()">Pie Charts</button>
             </div>
             
             <!--differnt divs for differnt tab and name them based on event name on top-->
@@ -310,13 +378,17 @@
                     <div class="form-group"><input type="submit" name="byDueDate" value="Download Excel" class="btn btn-outline-primary float-right col-md-2 "  /></div> 
 
                   </div>
-
-
-
-
-
-
-                  
+                
+                <!--For Pie Charts-->
+                  <div id = "PieChart" class="tabcontent" style="border-left:0pc; border-right:0px;border-bottom:0px">
+                    <div  style="float:left" >
+                      
+                    <div  id="piechart1" style="float:left;"></div>
+                    <div  id="piechart2" style="float:left;"></div>
+                    <div  id="piechart3" style="float:left;"></div>
+                    <div  id="piechart4" style="float:left;"></div>
+                    </div>
+                    
               
           </fieldset>
          
