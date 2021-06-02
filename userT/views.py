@@ -58,9 +58,9 @@ def googlecharts(request):
     
     lstbyDueDate    = blaggregatebydate(ActionItems.objects.all())
     
-    lstplanned         =  blprepareGoogleChartsfromDict(lstbyDueDate)
-    lstactual      = blgetActualRunDown(lstplanned)
-    newlist = blformulateRundown(lstplanned,lstactual)
+    lstplanned          = blprepareGoogleChartsfromDict(lstbyDueDate)
+    lstactual           = blgetActualRunDown(lstplanned)
+    newlist             = blformulateRundown(lstplanned,lstactual)
     
     for items in lstbyDueDate:
 
@@ -70,11 +70,7 @@ def googlecharts(request):
     for items in lstbyDueDate:
        subtotal.append(items['count']) #how to access dictionary object by
     
-   
-    
-    
     content1 =  newlist
-    
     
     context = {
         
@@ -127,10 +123,9 @@ def mainDashboard (request):
         countbyStudiesClosed, labelsClosed= blActionCountbyStudiesStream(Actionee_R,StudyName,QueClosed)
              
         stripCount, striplabels ,  = stripAndmatch(countbyStudies,labels)
-        newStudyName = "///" + StudyName + ":::"
-        
+       
         if stripCount != [] : # Just to get a better view in HTML instead of rendering spaces for empty charts
-            googlechartlist = blprepareGoogleCharts(striplabels,stripCount,newStudyName)
+            googlechartlist = blprepGoogChartsbyStudies(striplabels,stripCount,StudyName)
             actioneefinallist.append(googlechartlist)
             googlechartlist =[] 
 
@@ -144,7 +139,7 @@ def mainDashboard (request):
                 labelsApprover.append('Level'+str(QueSeries))
                 dataApprover.append(sumoflistCount)
                 
-                chartappdata = blprepareGoogleCharts(labelsApprover,dataApprover,newStudyName)
+                chartappdata = blprepGoogChartsbyStudies(labelsApprover,dataApprover,StudyName)
                 sumoflistCount = 0
 
         
@@ -157,7 +152,7 @@ def mainDashboard (request):
         dataApprover = []
         labelsApprover =[]
         countbyStudies = []
-
+   
     Context = {
         'totalapproveraction' : totalapproveraction,
         'totalactioneeaction' : totalactioneeaction,
@@ -608,16 +603,18 @@ def rptoverallStatus(request, **kwargs):
        
         if (ViewExcel):
           
-            createExcelReports(request)
+            excelCompleteReport(request)
             
         if ActionStatus =='Open':
             chartChanges = []
             if ActionsSorton == 'Company':
                 
-                Company = ActionRoutes.mdlAllCompany.mgr_getCompanyCount()
+                Company = ActionRoutes.mdlAllCompany.mgr_getOrgnames()
+                
                 for items in Company:
                         listcountbyCompany.append(blgetCompanyActionCount (items,openActionsQueSeries))
                             #dont need to append list as its already in the list above
+               
                 chartChanges.append(showPie(listcountbyCompany,Company, "Open Actions by Company"))
             if ActionsSorton == 'Discipline':
                 
@@ -655,7 +652,7 @@ def rptoverallStatus(request, **kwargs):
         else: #This is for closed actions if selected
             chartChanges = []
             if ActionsSorton == 'Company':
-                Company = ActionRoutes.mdlAllCompany.mgr_getCompanyCount()
+                Company = ActionRoutes.mdlAllCompany.mgr_getOrgnames()
                 
                 for items in Company:
                         listcountbyCompany.append(blgetCompanyActionCount (items,closedActionsQueSeries))
@@ -706,7 +703,7 @@ def rptdiscSlice(request, **kwargs):
     OpenAccount = [0,1,2,3,4,5,6,7,8,9]
     ApproverQList = [1,2,3,4,5,6,7,8,9]
     ActioneeQlist = [0]
-    Company = ActionRoutes.mdlAllCompany.mgr_getCompanyCount()
+    Company = ActionRoutes.mdlAllCompany.mgr_getOrgnames()
     discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg()
 
     
@@ -905,7 +902,7 @@ def Profile (request):
 
 def repoverallexcel (request):
 
-    workbook = createExcelReports(request)
+    workbook = excelCompleteReport(request)
 
      
     response = HttpResponse(content_type='application/ms-excel') #
@@ -914,7 +911,10 @@ def repoverallexcel (request):
     return response
     
 def repPMTExcel (request):
-   
+    
+
+    #latest first
+    
     #Signatories = 
     #get individual actions
     QueOpen = [0,1,2,3,4,5,6,7,8,9]
@@ -924,6 +924,70 @@ def repPMTExcel (request):
     TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
     discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
     
+    #***Start Pie Chart Guna
+    allOpenActions= blfuncgetallAction('Y', QueOpen)
+    allClosedActions = blfuncgetallAction('Y', QueClosed)
+    
+    # forpie2 = [
+    #       ['OpenClosed', 'Open Closed'],
+    #       ['Open',     allOpenActions],
+    #       ['Closed',      allClosedActions],
+          
+    #     ]
+    forpie=[]
+    #this is for overall charts
+    #listofOpenClosed = [allOpenActions,allClosedActions]
+    labels = ['Open', 'Closed']
+    values = [allOpenActions,allClosedActions]
+    
+    pienameoverall = "Open/Closed Actions"
+    googlechartlistoverall = blprepGoogChartsbyStudies(labels,values,pienameoverall)
+    forpie.append(googlechartlistoverall)
+    
+    #Open action by organisation
+    labelsorg = ActionRoutes.mdlAllCompany.mgr_getOrgnames()
+    countorg =[] 
+    pienameorg = "Open Actions by Organisation"          
+    for items in labelsorg:
+            countorg.append(blgetCompanyActionCount (items,QueOpen))
+                    
+    
+    
+    googlechartlistorganisation = blprepGoogChartsbyStudies(labelsorg,countorg,pienameorg)
+    forpie.append(googlechartlistorganisation)
+
+    # Open Actionsfor discipline
+    discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
+    countdiscsub= []
+    labelsDisc =[]
+    pietitledisc = "Open Actions by Discipline"
+    for itemPair in discsub:
+        
+        countdiscsub.append(blgetDiscSubActionCount ('Y',itemPair,QueOpen))
+        labelsDisc.append(str(itemPair[0]))#+"/"+str(itemPair[1]))
+    
+    googlechartlistdiscipline = blprepGoogChartsbyStudies(labelsDisc,countdiscsub,pietitledisc)
+
+    forpie.append(googlechartlistdiscipline) 
+    #By workshops
+    labelsworkshop = Studies.objects.all()
+                
+    countstudies = []
+    labelsstudies = []
+    pietitlestudies = "Open Actions by Discipline"
+
+    for study in labelsworkshop:
+
+        countstudies.append(blallActionCountbyStudies(study.StudyName,QueOpen))
+        labelsstudies.append(study.StudyName)
+    googlechartliststudies = blprepGoogChartsbyStudies(labelsstudies,countstudies,pietitlestudies)
+   
+    forpie.append(googlechartliststudies)
+
+
+    # Open Actions by Workshop   
+    # print (googlechartlistdiscipline)
+    #***End Pie Guna
     #get Individual action
     Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
     tableindiheader = ['User','Role','Organisation Route','In-Progress','Closed', 'Open Actions']
@@ -1013,6 +1077,8 @@ def repPMTExcel (request):
             return response    
 
     context = {
+        
+        'forpie' : forpie,
         'lstbyDueDate' : lstbyDueDate,
         'tableduedateheader' : tableduedateheader,
         'totalallDueDate' : totalallDueDate, 
