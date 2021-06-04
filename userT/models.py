@@ -43,9 +43,9 @@ class UserManager(BaseUserManager):
 class CustomUser(AbstractBaseUser):
     email       =   models.EmailField(max_length=254, unique=True)
     fullname   =   models.CharField(max_length=254, null=True)
-    disipline   =   models.CharField(max_length=254, blank=True, null=True)
-    subdisipline    =  models.CharField(max_length=254, blank=True, null=True) 
-    organisation   =   models.CharField(max_length=254, blank=True, null=True)
+    disipline   =   models.CharField(max_length=254, blank=False, null=True)
+    subdisipline    =  models.CharField(max_length=254, blank=False, null=True) 
+    organisation   =   models.CharField(max_length=254, blank=False, null=True)
     designation     =    models.CharField(max_length=254, blank=True, null=True)
     expiration     =  models.DateTimeField(null=True) 
     is_active = models.BooleanField(default=True) #according to django contrib doc, is_active returned here
