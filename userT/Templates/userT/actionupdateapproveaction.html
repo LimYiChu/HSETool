@@ -30,7 +30,9 @@
           <td>{{ items.DateAdded }}</td>
           <td>{{ items.Reason }}<br>{{ items.Username}}</td>
           
+          
           </tr>
+          <tr><td><a href={{ items.Attachment.url }}> Rejection Attachment</a></td></tr>
           {%endfor%}
           </tbody>
       </table>

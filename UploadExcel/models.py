@@ -64,6 +64,7 @@ class Comments (models.Model):
     Action = models.ForeignKey(ActionItems, on_delete=models.SET_NULL,related_name="comments",null=True)
     Username = models.CharField(max_length=255,null=True,blank=True)
     Reason = models.TextField(null=True,blank=True)
+    Attachment      =   models.FileField(upload_to='excelUpload',null=True,blank=True)
     DateAdded = models.DateTimeField(auto_now_add=True)
     objects = models.Manager()
     mdlComments = mdlCommentsManager()

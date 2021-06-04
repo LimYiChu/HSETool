@@ -187,14 +187,15 @@ class frmAddRejectReason(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(frmAddRejectReason, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
-        self.fields['Reason'].required = True        #yhs added. 
+        #self.fields['Reason'].required = True        #yhs added. 
         self.helper.form_method = 'POST'
         #self.helper.add_input(Submit('Reject', 'Reject with Comments', css_class='btn-primary float-right'))
         #self.helper.add_input(Submit('Cancel', 'Cancel', css_class='btn-primary float-right'))
         self.helper.layout = Layout(
 
             Div(
-            Div (Field('Reason'), required=True, css_class='col-md-12'),    #yhs added requierd =true
+            Div (Field('Reason'), required=True, css_class='col-md-12'),  
+            Div (Field('Attachment'), required=True, css_class='col-md-12'),   #yhs added requierd =true
             Div (Field('Username', type="hidden")),
             
             ),
@@ -202,7 +203,7 @@ class frmAddRejectReason(forms.ModelForm):
     
     class Meta:
         model = Comments
-        fields = ('Reason','Username')
+        fields = ('Reason','Attachment','Username')
 
 class frmMultipleFiles(forms.ModelForm):
     def __init__(self, *args, **kwargs):
