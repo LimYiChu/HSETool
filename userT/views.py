@@ -295,7 +295,7 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
         Signatories = blgetSignotories(discsub)
 
         #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
-        lstSignatoriesTimeStamp= blgettimeStampforSignatories (idAI, Signatories) #it changes the signatories directly
+        lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories) #it changes the signatories directly
         
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(idAI)
         context['Approver'] = True
@@ -389,7 +389,7 @@ class HistoryItemsMixin(ApproveItemsMixin):
         
         # #sets the signatory directly in getting timestamp
         Signatories = blgetSignotories(discsuborg)
-        lstSignatoriesTimeStamp= blgettimeStampforSignatories (id, Signatories)
+        lstSignatoriesTimeStamp= blgettimestampuserdetails (id, Signatories)
 
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(id)
         context['Approver'] = False
@@ -424,7 +424,7 @@ class ActioneeItemsMixin(ApproveItemsMixin):
         
         Signatories = blgetSignotories(discsuborg)
         blsetApproverLevelTarget(IdAI,ApproverLevel)
-        lstSignatoriesTimeStamp= blgettimeStampforSignatories (IdAI, Signatories)
+        lstSignatoriesTimeStamp= blgettimestampuserdetails (IdAI, Signatories)
         
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(IdAI)
         context['Approver'] = False
@@ -917,6 +917,7 @@ def repPMTExcel (request):
     #Signatories = 
     #get individual actions
     QueOpen = [0,1,2,3,4,5,6,7,8,9]
+    
     QueClosed = [99]
     YetToRespondQue =[0]
     ApprovalQue = [1,2,3,4,5,6,7,8,9]
@@ -949,11 +950,18 @@ def repPMTExcel (request):
     pienameorg = "Open Actions by Organisation"          
     for items in labelsorg:
             countorg.append(blgetCompanyActionCount (items,QueOpen))
-                    
-    
-    
     googlechartlistorganisation = blprepGoogChartsbyStudies(labelsorg,countorg,pienameorg)
     forpie.append(googlechartlistorganisation)
+
+    #Submitted actions by organisation
+    pienamesubmitted = "Submitted Actions by Organisation" 
+    countsubmitted =[]         
+    for items in labelsorg:
+            countsubmitted.append(blgetCompanyActionCount (items,ApprovalQue))
+    
+    googlechartlistsubmitted = blprepGoogChartsbyStudies(labelsorg,countsubmitted,pienamesubmitted)
+ 
+    forpie.append(googlechartlistsubmitted)
 
     # Open Actionsfor discipline
     discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
@@ -1107,8 +1115,7 @@ def StickyNote(request):
 
 #this part need to be tidied up. For time's sake i just copy from def (repPMTExcel). by YHS
 def closeoutprint(request,**kwargs):
-    
-
+   
     ID = (kwargs["id"])
     
     obj = ActionItems.objects.filter(id=ID).values() # one for passing into PDF
@@ -1128,19 +1135,12 @@ def closeoutprint(request,**kwargs):
     discsub = blgetDiscSubOrgfromID(ID)
     Signatories = blgetSignotories(discsub)
   
-    lstSignatoriesTimeStamp= blgettimeStampforSignatories (ID, Signatories)
+    lstSignatoriesTimeStamp= blgettimestampuserdetails (ID, Signatories)
     signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
     
-   
-        
-    #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
-        
-    #dont delete below as its a way to actualy read from memory
-    #response = HttpResponse(content_type='application/pdf')
-    #response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
-    #bufferfile = pdfsendtoclient ('atrtemplateautofontreadonly.pdf',data_dict)
-    #edward changed file location to parameters
-    file = pdfgenerate(closeouttemplate,out_file,data_dict,signatoriesdict)
+    newcloseouttemplate = blsetcloseouttemplate (ID)
+
+    file = pdfgenerate(newcloseouttemplate,out_file,data_dict,signatoriesdict)
     
     in_memory = BytesIO()
     
@@ -1160,11 +1160,17 @@ def closeoutprint(request,**kwargs):
     in_memory.seek(0)    
     response.write(in_memory.read())
     
-    return response
-   
+    
+    #dont delete below as its a way to actualy read from memory can be used elsewhere
+    #response = HttpResponse(content_type='application/pdf')
+    #response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
+    #bufferfile = pdfsendtoclient ('atrtemplateautofontreadonly.pdf',data_dict)
+    #edward changed file location to parameters
+ 
    #return FileResponse(bufferfile, as_attachment=True, filename=out_file)
-
-
+    
+    return response
+  
 def closeoutsheet(request): #new naming convention - all small letters
     QueOpen = [0,1,2,3,4,5,6,7,8,9]
     QueClosed = [99]
@@ -1188,15 +1194,10 @@ def closeoutsheet(request): #new naming convention - all small letters
     #Guna
 
     lstclosed = ActionItems.objects.filter(QueSeries =99)
-
-    
-
-    
+ 
     if (request.POST.get('GeneratePDF')): 
         x=ActionItems.objects.all()  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
-        
-        
-        
+       
         y= x.values()          
         for item in y :            
             i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file  
@@ -1253,7 +1254,7 @@ def closeoutsheet(request): #new naming convention - all small letters
 
 
 class pmtrepviewall(UpdateView):
-    template_name = "userT/pmtrepviewall.html"
+    template_name = "userT/reppmtviewall.html"
     form_class = ApproverForm
 
     def get_object(self,queryset=None):
@@ -1269,7 +1270,7 @@ class pmtrepviewall(UpdateView):
 
         
         #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
-        lstSignatoriesTimeStamp= blgettimeStampforSignatories (idAI, Signatories) #it changes the signatories directly
+        lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories) #it changes the signatories directly
         
         
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(idAI)
@@ -1299,10 +1300,12 @@ def indiprint(request,**kwargs):
     #response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
     #bufferfile = pdfsendtoclient ('atrtemplateautofontreadonly.pdf',data_dict)
 
+    newcloseouttemplate = blsetcloseouttemplate (ID)
+
     response = HttpResponse(content_type="application/pdf")
     response["Content-Disposition"] = "attachment; filename=" + studyActionNo+ ".pdf"
     #edward changed file location to parameters
-    file = pdfsendtoclient(closeouttemplate, data_dict)
+    file = pdfsendtoclient(newcloseouttemplate, data_dict)
     response.write(file.read())
     return response
    
