@@ -1,0 +1,33 @@
+{% load tz %}
+<table class="table table-striped table-hover table table-bordered table table-sm" style="width:100%" > <!--set to maximum 20 rows per page-->
+    <thead class="thead">
+      <tr>
+        <th>
+          Role
+        </th>
+        <th width="40%">
+          eMail / Name
+        </th>
+        <th width="30%">
+          Designation
+        </th>
+        <th>
+          Signed
+        </th>
+      </tr>
+  </thead>
+  <tbody>
+    {%for items in Signatories %}
+    <tr height="15  px">
+      
+    
+    <td>{{ items.0}}</td>
+    <td>{{ items.1}} / {{ items.2}}</td>
+    <td>{{ items.3}}</td>
+    <td>{{ items.4|localtime}}</td>
+   
+    </tr>
+   
+    {%endfor%}
+    </tbody>
+</table>

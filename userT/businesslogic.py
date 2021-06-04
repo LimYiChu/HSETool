@@ -314,14 +314,14 @@ def blconverttodictforpdf(lstofsignatories):
         fields = items[0]
         if ("actionee" in fields.lower()) :
             
-            localtimeX = timezone.localtime(items[3])
+            localtimeX = timezone.localtime(items[4])
            
-            dict = {'actionee':items[0], 'actioneerole':items[2],'actioneename':items[1],
+            dict = {'actionee':items[0], 'actioneerole':items[3],'actioneename':items[2],
                     'actioneetimestamp':localtimeX
             }
         elif ("approver"in fields.lower()):
 
-            localtimeX = timezone.localtime(items[3])
+            localtimeX = timezone.localtime(items[4])
 
             strappr = str(items[0])
             strapprrole = strappr+"role"
@@ -329,13 +329,14 @@ def blconverttodictforpdf(lstofsignatories):
             strapprtimestamp = strappr+"timestamp"
 
 
-            dictapp = {strappr.lower():items[0], strapprrole.lower():items[2],strapprname.lower():items[1],
+            dictapp = {strappr.lower():items[0], strapprrole.lower():items[3],strapprname.lower():items[2],
                     strapprtimestamp.lower():localtimeX}
             dict.update(dictapp)
             
     return(dict)
 
-def blgettimeStampforSignatories (id, Signatories):
+
+def blgettimestampuserdetails (id, Signatories):
         #pass in all Signatories and ID of action
         #return Signatories with Time Stamp
         
@@ -351,15 +352,18 @@ def blgettimeStampforSignatories (id, Signatories):
         finallstoflst = []                                   
         for index, items in enumerate(Signatories):
             
+            #get each user detail first
             objuser = CustomUser.objects.filter(email=items[1]).values()
            
             if objuser:
-                  
+                fullname =   objuser[0].get('fullname')
+                items.append(fullname)
                 designation =  objuser[0].get('designation')
                 items.append(designation)
+
             else:
                     
-                items.append("No Designation Defined")
+                items.append("No User Defined")
             
             if index < currentQueSeries: 
                 #get all time stamps for all que series
@@ -422,6 +426,20 @@ def blgetApproverLevel (lstorgdiscsub):
                 ApproverLevel = fields[-1]# only 9 Approvers allowed for now 
     
     return ApproverLevel
+def blsetcloseouttemplate (ID):
+    
+    discsuborg = blgetDiscSubOrgfromID(ID)
+    ApproverLevel = int(blgetApproverLevel(discsuborg)) -1# its not really a mistake as it was used now everywhere in que serires target
+    
+    
+    #Particularly for SFSB in production and to get it to work of test
+    #this needs to change and supposed to be based on some modular parameters 
+    if ApproverLevel==5 or ApproverLevel == 7:
+        newcloseouttemplate = f'{closeouttemplate}{ApproverLevel}{".pdf"}'
+    else:
+        newcloseouttemplate = f'{closeouttemplate}{".pdf"}'
+
+    return newcloseouttemplate
 
 def blsetApproverLevelTarget(ID,ApproverLevel):
     
@@ -517,6 +535,7 @@ def blgetSignotories (lstorgdiscsub):
         
     allfields = [f.name for f in ActionRoutes._meta.get_fields()] 
     del allfields[0:3] #- remove ID field, company and discpline , can remove others- need to be carefull with this 
+    
     
     blnOverride = False # sets the override to true when you hit the first Approver being none
     SigPair = []
