@@ -193,7 +193,7 @@ def blbuildRejectionemail(ID,RejectReason):
 
     Content.append(studyActionNo + " from " + studyName + " has been rejected ") #This is subject
     #edward add-on for rejection url
-    Content.append("Rejection Reason : " + RejectReason + ". To attend to this, please go to " + appurl)#+ "...Response" + response) #this is the content of the email #passed the url here in the content
+    Content.append("Rejection Reason : " + RejectReason + ". To attend to this, please go to " + paremailurl)#+ "...Response" + response) #this is the content of the email #passed the url here in the content
     
     return Content
 def blgetHistoryforUser(useremail, actioneeroutes):
