@@ -171,8 +171,6 @@ def getActionDetails(request, id=None):
     }
     return render(request, "userT/detailactions.html", context) #ok checked by yhs in terms of capital letters.
 
-
-
 #below view is for list of actions under actionee , 
 # it returns a list of actions under object_list
 class ActioneeList (ListView):
@@ -1001,7 +999,7 @@ def repPMTExcel (request):
     
     allactions = ActionItems.objects.all()
     #edward added id
-    tableallheader = ['id','StudyActionNo','StudyName', 'Disipline' ,'Recommendations','DueDate','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
+    tableallheader = ['id','StudyActionNo','StudyName', 'Disipline' ,'Recommendations', 'Response','DueDate','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
     lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
     
     #for Disipline based view
