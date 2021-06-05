@@ -1,0 +1,35 @@
+{% if Rejectcomments %} 
+<div class="postitnote sticky"  style="font-size:small; font-family:Lato; margin-right:5px;margin-left:5px "> 
+    <div class="col-md-1;margin-right:5px;margin-left:5px">
+       <table class="sticky table table-hover" > <!--set to maximum 20 rows per page-->
+        <thead class="thead">
+          <tr>
+            <th>
+              Date
+            </th>
+            <th>
+              Rejection Reason & User
+            </th>
+            
+          </tr>
+      </thead>
+      <tbody>
+        {%for items in Rejectcomments%}
+
+        <tr>
+        <td>{{ items.DateAdded }}</td>
+        <td>{{ items.Reason }}<br>{{ items.Username}}</td>
+        
+        
+        </tr>
+            {%if items.Attachment %} <!--Need this otherwise its an error-->
+                <tr><td colspan="2"><a href={{ items.Attachment.url }}> Click for Attachment...</a></td></tr>
+                
+            {%endif%}
+        {%endfor%}
+        </tbody>
+    </table>
+  </div>
+</div>
+{%endif%}
+

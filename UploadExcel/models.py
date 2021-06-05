@@ -6,7 +6,7 @@ from datetime import datetime
 # Create your models here.
 class UploadExl(models.Model):
 
-    Filename            =   models.FileField(upload_to='excelUpload')
+    Filename            =   models.FileField(upload_to='excelUpload',max_length=500)
     DateAdded            =   models.DateTimeField(auto_now_add=True)
     Username = models.CharField(max_length=255,null=True,blank=True)
     objects = models.Manager()
@@ -64,7 +64,7 @@ class Comments (models.Model):
     Action = models.ForeignKey(ActionItems, on_delete=models.SET_NULL,related_name="comments",null=True)
     Username = models.CharField(max_length=255,null=True,blank=True)
     Reason = models.TextField(null=True,blank=True)
-    Attachment      =   models.FileField(upload_to='excelUpload',null=True,blank=True)
+    Attachment      =   models.FileField(upload_to='comments',null=True,blank=True,max_length=500)
     DateAdded = models.DateTimeField(auto_now_add=True)
     objects = models.Manager()
     mdlComments = mdlCommentsManager()
@@ -78,7 +78,7 @@ class Comments (models.Model):
 class Attachments (models.Model):
     Action = models.ForeignKey(ActionItems, on_delete=models.SET_NULL,null=True) #cant have related name as it throws a spanner in the works
     Username = models.CharField(max_length=255,null=True,blank=True)
-    Attachment      =   models.FileField(upload_to='excelUpload',null=True,blank=True)
+    Attachment      =   models.FileField(upload_to='attachments',null=True,blank=True,max_length=500)
     DateAdded = models.DateTimeField(auto_now_add=True)
     objects = models.Manager()
     
