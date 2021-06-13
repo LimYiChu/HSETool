@@ -47,6 +47,35 @@ from .serializers import *
 from UploadExcel.forms import *
 from userT.parameters import *
 
+def loadsignature (request):
+    
+    form1 = frmMultipleFiles()
+    obj = CustomUser.objects.get(id=11)
+    form2 = CustomUserSignature(instance=obj)
+
+  
+    if (request.POST.get('Upload')):
+        #ID= form2.instance.id
+        FORM2=CustomUserSignature(request.POST)
+       
+
+        #CustomUser.mdlSetField.mgrSetField(ID,"signature",Signature)
+   
+
+        #Signature=request.POST.get('signature')
+        #print(Signature)
+        #x=CustomUser.objects.get(id=form2.instance.id)
+        #formuser = CustomUserSignature(request.POST, instance=x)
+        #formuser.save()
+    
+    context = {
+        'form1' : form1,
+        'form2': form2
+
+    }
+
+    return render(request, 'userT/loadsignatures.html',context) #yhs checked small letters
+
 
 class anyView(viewsets.ModelViewSet):
 
@@ -181,9 +210,21 @@ class ActioneeList (ListView):
         ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
         #actioneeItems = blfuncActioneeComDisSub(ActioneeRoutes,0) - To be deleted - this was limited to 3 streams
         ActioneeActions = blallActionsComDisSub(ActioneeRoutes,0)
+        return ActioneeActions
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['riskmatrix'] = blgetRiskMatrixColour()
+       
+        return context
+        # context = super().get_context_data(**kwargs)
+        # # Add in a QuerySet of all the books
+        # context['book_list'] = Book.objects.all()
+        
+        #res = next((sub for sub in riskmatrices if sub['Combined'] == "5A"),None)
+        #print (ActioneeActions)
 
         
-        return ActioneeActions
 
 class HistoryList (ListView):
     template_name   =   'userT/historylist.html' #ok checked by yhs in terms of capital letters.
@@ -213,7 +254,10 @@ class ApproverList (ListView):
             
         
         return ApproverActions
-
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['riskmatrix'] = blgetRiskMatrixColour()
+        return context
 class DetailActioneeItems (DetailView):
     template_name   =   'userT/actiondetailactionee.html' #yhs changed to all small letters
     #queryset = ActionItems.objects.all()
@@ -528,12 +572,20 @@ def IndividualBreakdownByActions(request):
 def multiplefiles (request, **kwargs):
   
     form_multi = frmMultipleFiles()
-        
+    emailid = request.user.email
+    strsignature = blgetfieldCustomUser(emailid,"signature")
+ 
     if (request.POST.get('Upload')):
         
         ID = kwargs['forkeyid']
         #set using model manager since we want it back to actionee it has to be set at QueSeries=0
         files = request.FILES.getlist('Attachment')
+        if (request.POST.get('signature')):
+            strsignature = request.POST.get('signature')
+            blsetfieldCustomUser(emailid,"signature",strsignature)
+        else :
+            blsetfieldCustomUser(emailid,"signature",str(emailid))
+            
         for file in files:
             #should be doing via model manager , the problem is its justa line of code
             x = Attachments.objects.create(
@@ -551,10 +603,13 @@ def multiplefiles (request, **kwargs):
 
         
     context = {
-        'form_multi' : form_multi
+        'form_multi' : form_multi,
+        'signature' : strsignature,
 
     }
+    ID = kwargs['forkeyid']
 
+  
     return render(request, 'userT/multiplefiles.html',context) #yhs checked small letters
 
 
@@ -991,7 +1046,7 @@ def repPMTExcel (request):
 
 
     # Open Actions by Workshop   
-    # print (googlechartlistdiscipline)
+  
     #***End Pie Guna
     #get Individual action
     Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
@@ -1001,7 +1056,7 @@ def repPMTExcel (request):
     #edward added id
     tableallheader = ['id','StudyActionNo','StudyName', 'Disipline' ,'Recommendations', 'Response','DueDate','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
     lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
-    
+    tableallheadermodified = ['Study Action No','Study Name', 'Discipline' ,'Recommendations', 'Response','Due Date','Initial Risk']
     #for Disipline based view
     tabledischeader = ['Discipline', 'Yet to Respond' ,'Approval Stage', 'Closed','Open Actions','Total Actions']
     lstbyDisc= blaggregatebyDisc(discsuborg,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue)
@@ -1080,9 +1135,12 @@ def repPMTExcel (request):
             response['Content-Disposition'] = 'attachment; filename=byDueDates.xlsx' 
             workbook.save(response) # odd way but it works - took too long to figure out as no resource on the web
             return response    
-
+     
+    riskmatrix = blgetRiskMatrixColour()
+        
     context = {
         
+        'riskmatrix' : riskmatrix,
         'forpie' : forpie,
         'lstbyDueDate' : lstbyDueDate,
         'tableduedateheader' : tableduedateheader,
@@ -1095,7 +1153,7 @@ def repPMTExcel (request):
         'tableindiheader' : tableindiheader,
         'tablestudiesheader' : tablestudiesheader,
         'tabledischeader' : tabledischeader ,
-        'tableallheader' : tableallheader,
+        'tableallheader' : tableallheadermodified,
         
     }
     return render(request, 'userT/reppmtexcel.html', context)

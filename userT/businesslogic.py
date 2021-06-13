@@ -11,9 +11,28 @@ import numpy as np
 from dateutil.relativedelta import *
 from userT.parameters import *
 
+def blgetfieldCustomUser(emailid,field):
 
+    
+    fieldval = CustomUser.mdlSetGetField.mgrGetField(emailid,field)
+    strfieldval = fieldval[0].get(field)
 
+    return strfieldval
 
+def blsetfieldCustomUser(emailid,field,strvalue):
+     CustomUser.mdlSetGetField.mgrSetField(emailid,field,strvalue)
+
+def blgetRiskMatrixColour():
+    dictRiskMatrix = RiskMatrix.objects.all().values()
+    datadict =[]
+    
+    for details in dictRiskMatrix:
+        keynames ={'Combined', 'RiskColour'}
+        newdict = ({key:value for key,value in details.items() if key in keynames})
+        datadict.append(newdict)
+    
+    return datadict
+    
 
 def blgetuserRoutes(request,useremail):
     ApproverLevel = 8
