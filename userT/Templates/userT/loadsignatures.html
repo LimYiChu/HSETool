@@ -1,0 +1,29 @@
+{% extends "userT/base3.html"%}
+
+{%load crispy_forms_tags %}
+
+
+
+{% block ApproverDetails%}
+
+
+
+
+    <form method="POST" enctype = 'multipart/form-data' >  
+        <fieldset class="form-group" > <!--Fieldset is ultimtely important and must be inside the form and encompass the buttons. 
+            The buttons was removed from forms into direct HTml to give the btn-outline-primary class. In forms it does not work
+        -->
+        {% csrf_token %}  
+        {%crispy form1 form1.helper%}
+        {%crispy form2 form2.helper%}
+        
+        <div class="form-group"><input type="submit" name="Upload" value=" Upload Files & Sign" class="btn btn-outline-primary float-right "  id="submit-id-approve"/></div> 
+        <div class="form-group"><input type="submit" name="Cancel" value="Cancel" class="btn btn-outline-primary float-right col-md-1"  id="submit-id-reject"/></div>
+      
+      </fieldset>
+    </form> 
+
+<div id="fileList"></div>
+
+</div>
+{%endblock%}

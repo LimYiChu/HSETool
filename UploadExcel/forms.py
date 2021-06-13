@@ -48,7 +48,7 @@ class CommonLayout (Layout):
         super().__init__(
             
             Div(
-            Div(Field('StudyActionNo',readonly=True),   css_class='col-md-2'), 
+            Div(Field('StudyActionNo',readonly=True),  style="font-family: Dancing Script", css_class='col-md-2'), 
             Div (Field('StudyName',readonly=True),  css_class='col-md-3'),
             Div (Field('ProjectPhase', readonly=True), css_class='col-md-3'),
             Div (Field('InitialRisk', readonly=True), css_class='col-md-2'),
@@ -64,6 +64,7 @@ class CommonLayout (Layout):
             Div (Field('Revision', rows=1 ,readonly=True), css_class='col-md-2'),
             Div (Field('Cause', rows=8 ,readonly=True), css_class='col-md-12'),
             Div (Field('Safeguard', rows=8, readonly=True), css_class='col-md-12'),
+            #Div (Field('Consequence',rows=8, readonly=True,style="font-family: Great Vibes;font-size: 60px"), css_class='col-md-12'), - Left this commented as it shows how to add style to text box directly
             Div (Field('Consequence',rows=8, readonly=True), css_class='col-md-12'),
             Div (Field('Recommendations',rows=8, readonly=True), css_class='col-md-12'),
             css_class='row',#-dont know why i have to put this in so it aligns to left
@@ -196,7 +197,7 @@ class frmAddRejectReason(forms.ModelForm):
             Div(
             Div (Field('Reason'), required=True, css_class='col-md-12'),  
             Div (Field('Attachment'), required=True, css_class='col-md-12'),   #yhs added requierd =true
-            Div (Field('Username', type="hidden")),
+            Div (Field('fullname', type="hidden")),
             
             ),
         )

@@ -49,6 +49,15 @@ class RoutesQuerySet(models.QuerySet):
         return self.filter (Disipline__icontains=CompDiscSub[0]).filter(Subdisipline__icontains=CompDiscSub[1]).filter(Organisation__icontains=CompDiscSub[2])
     def mgrgetactioneefromtriplet(self,DiscSubOrg):
         return self.filter (Disipline__icontains=DiscSubOrg[0]).filter(Subdisipline__icontains=DiscSubOrg[1]).filter(Organisation__icontains=DiscSubOrg[2]).values('Actionee')
+
+class UserQuerySet(models.QuerySet):
+    
+    def set_field(self,EMAILID, fields, value):
+        
+        return self.filter (email=EMAILID).update (**{fields: value})
+    def get_field(self,EMAIL, fields):
+                
+        return self.filter (email=EMAIL).values(fields)
 class ActioneeManager(models.Manager):
     def get_queryset (self):
         return RoutesQuerySet(self.model, using=self._db)
@@ -88,6 +97,17 @@ class mmgrgetApproverLevel (models.Manager):
         return RoutesQuerySet(self.model, using=self._db)
     def mgr_getApproverLevel(self,CompDiscSub):
         return self.get_queryset().mgrgetApprLevel(CompDiscSub)
+
+
+class mgrSetGetfields(models.Manager):
+    def get_queryset (self):
+         return UserQuerySet(self.model, using=self._db)
+    def mgrSetField(self,email, fields, value):
+         #lookup = str(fields)+'__icontains' - This is how you search dynamically but since we are setting it
+         return self.get_queryset().set_field(email, fields, value)
+    def mgrGetField(self,email, fields):
+         #lookup = str(fields)+'__icontains' - This is how you search dynamically but since we are setting it
+         return self.get_queryset().get_field(email, fields)
 # class Approver2Manager(models.Manager):
 #     def get_queryset (self):
 #         return RoutesQuerySet(self.model, using=self._db)

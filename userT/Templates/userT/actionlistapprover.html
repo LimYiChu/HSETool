@@ -71,7 +71,20 @@
                         <td>{{ x.Cause }}</td>
                         <td>{{ x.Consequence }}</td>
                         <td><a class="article-title" href="{% url  'ApproveFormMixin' x.id %}">{{ x.Recommendations }}</a></td>
-                        <td>{{ x.InitialRisk }}</td>
+                        
+                        
+                        {%block incInitialRiskColour%}
+
+                          {%if riskmatrix%}
+                            {% with initialrisk=x.InitialRisk%}
+                              {%include "userT/incinitialriskcolour.html"%}
+                              {%endwith%}
+                            {%else%}
+                              <td>{{ x.InitialRisk }}</td> <!--Original Code-->
+                            {%endif%}
+
+                        {%endblock%}
+                       
                         <td>{{ x.Response }}</td>
                         {%endfor%}
                         {%endfor%}

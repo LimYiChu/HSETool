@@ -47,11 +47,13 @@ class CustomUser(AbstractBaseUser):
     subdisipline    =  models.CharField(max_length=254, blank=False, null=True) 
     organisation   =   models.CharField(max_length=254, blank=False, null=True)
     designation     =    models.CharField(max_length=254, blank=True, null=True)
+    signature = models.CharField(max_length=100, blank=True, null=True)
     expiration     =  models.DateTimeField(null=True) 
     is_active = models.BooleanField(default=True) #according to django contrib doc, is_active returned here
     admin = models.BooleanField(default=False)
     staff = models.BooleanField(default=True)
     objects =   UserManager()
+    mdlSetGetField = mgrSetGetfields()
     USERNAME_FIELD =   'email'
     REQUIRED_FIELDS =   ['fullname','disipline']
 
@@ -101,14 +103,17 @@ class Studies (models.Model):
 
 class RiskMatrix (models.Model):
     Consequence = models.CharField(max_length=20, null=True,blank=True)
+    ConsequenceCategory = models.CharField(max_length=100, null=True,blank=True)
     Likelihood = models.CharField(max_length=20, null=True,blank=True)
+    LikelihoodCategory = models.CharField(max_length=100, null=True,blank=True)
     Combined  = models.CharField(max_length=100, null=True,blank=True)
     Ranking = models.CharField(max_length=100, null=True,blank=True)
-    Colour = models.CharField(max_length=100, null=True,blank=True)
-        
+    RiskColour = models.CharField(max_length=100, null=True,blank=True)
+    
+   
     objects = models.Manager()
     class Meta:
-       verbose_name_plural = "RiskMatrix" #this if not done gives a view of Studiess
+       verbose_name_plural = "RiskMatrix" #this if not done gives a view of ss
 
     def __str__(self): 
        return '%s ---%s' %(self.Combined, self.Ranking)

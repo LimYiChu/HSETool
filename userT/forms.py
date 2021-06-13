@@ -3,9 +3,31 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import *
 CustomUser = get_user_model()
 
+class CustomUserSignature(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(CustomUserSignature, self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_method = 'POST'
+        #self.helper.add_input(Submit('Upload', 'Upload File & Confirm', css_class='btn btn-outline-dark float-right col-md-2'))
+        #self.helper.add_input(Submit('Cancel', 'Cancel', css_class='btn btn-outline-dark float-right col-md-1'))
+        
+        
+        self.helper.layout = Layout(
+
+            Div(
+            Div (Field('signature' ), css_class='col-md-12'), 
+            Div (Field('email',id="email")),
+            Div()
+            ),
+        )
+    
+    class Meta:
+        model = CustomUser
+        fields = '__all__'
 
 class UserAdminCreationForm(forms.ModelForm):
     """

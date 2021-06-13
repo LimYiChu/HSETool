@@ -33,6 +33,7 @@ urlpatterns = [
         path ('rest/',include(router.urls)),
         
         path('upload/', login_required(UploadV.Load), name='Load' ),
+        path('loadriskmatrix/', login_required(UploadV.loadriskmatrix), name='loadriskmatrix' ),
         path('uploadfield/', login_required(UploadV.uploadfield), name='uploadfield' ),
         path('LoadRoutes/', login_required(UploadV.LoadRoutes), name='LoadRoutes' ),
         path('login/',auth_views.LoginView.as_view(template_name='userT/login.html'),name='login'),
@@ -88,6 +89,7 @@ urlpatterns = [
         re_path(r'Comments/(?P<forkeyid>\d+)$', login_required(UserView.RejectReason.as_view()), name='RejectReason' ),
         re_path(r'multiplefiles/(?P<forkeyid>\d+)$', login_required(UserView.multiplefiles), name='multiplefiles' ),
         
+        path('loadsignature/', login_required(UserView.loadsignature), name='loadsignature' ),
         #following url for reporting
         path('actionstatus/', login_required(UserView.rptoverallStatus), name='actionstatus' ),
         path('repoverallexcel/', login_required(UserView.repoverallexcel), name='repoverallexcel' ),
