@@ -1,4 +1,4 @@
-from userT.models import RiskMatrix
+from userT.models import *
 from django.shortcuts import render
 
 # Create your views here.
