@@ -34,7 +34,7 @@ class QuerySet(models.QuerySet):
         return self.filter (QueSeries__iexact=que).count ()
     def get_DiscSubActionsCount(self,workshop,DiscSub,que):
         return self.filter (Disipline__icontains=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1]).filter (QueSeries__iexact=que).count ()
-    def get_DiscSubOrgActionsCount(self,workshop,DiscSub,que):
+    def get_DiscSubOrgActionsCount(self,workshop,DiscSub,que): #get discipline, sub-disc, get the filter
         return self.filter (Disipline__icontains=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1]).filter (Organisation__icontains=DiscSub[2]).filter (
             QueSeries__iexact=que).count ()
     def get_mgrComments(self,fkey):
@@ -81,7 +81,7 @@ class mgrgetActionDiscSubCount(models.Manager):
         return QuerySet(self.model, using=self._db)
     def mgr_getDiscSubItemsCount(self,workshop,DiscSub,que):
         return self.get_queryset().get_DiscSubActionsCount(workshop,DiscSub,que)
-    def mgr_getDiscSubOrgItemsCount(self,workshop,DiscSub,que):
+    def mgr_getDiscSubOrgItemsCount(self,workshop,DiscSub,que): 
         return self.get_queryset().get_DiscSubOrgActionsCount(workshop,DiscSub,que)
 
 class mgrgetActionCompanyCount(models.Manager):

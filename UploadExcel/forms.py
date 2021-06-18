@@ -48,7 +48,7 @@ class CommonLayout (Layout):
         super().__init__(
             
             Div(
-            Div(Field('StudyActionNo',readonly=True),  style="font-family: Dancing Script", css_class='col-md-2'), 
+            Div(Field('StudyActionNo',readonly=True),   css_class='col-md-2'), #style="font-family: Dancing Script",
             Div (Field('StudyName',readonly=True),  css_class='col-md-3'),
             Div (Field('ProjectPhase', readonly=True), css_class='col-md-3'),
             Div (Field('InitialRisk', readonly=True), css_class='col-md-2'),
