@@ -11,6 +11,25 @@ import numpy as np
 from dateutil.relativedelta import *
 from userT.parameters import *
 
+
+
+def blgroupbyaggsum(databody,dataheader,groupby,sumby):
+    
+    dfindisets = pd.DataFrame(databody,columns=dataheader)
+    #create dictionary comprehension from below commented codes to gives readers ease of read
+    # aggsum = {}
+    # for items in sumby:
+    #     aggsum.update({items:['sum']})
+    
+    aggsum = {el:['sum'] for el in sumby }# this is the defined format for frames 
+   
+    dfindisetssummary=dfindisets.groupby('User').agg(aggsum)
+    dfindisetssummary.columns = sumby #ineeficient way but original adds 'sum' to header name
+    listaggregatedindi = dfindisetssummary.reset_index().values.tolist() # cheating the system by just adding a sequential index at the start
+    listaggregatedindiheader = dfindisetssummary.reset_index().columns.values.tolist()
+
+    return listaggregatedindi,listaggregatedindiheader
+
 def blgetfieldCustomUser(emailid,field):
 
     
