@@ -23,7 +23,7 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.conf.urls.static import static
 from django.conf import settings
-from Tenant.views import our_team
+# from Tenant.views import our_team
 from rest_framework import routers
 
 router = routers.DefaultRouter()
@@ -33,7 +33,7 @@ urlpatterns = [
         path ('rest/',include(router.urls)),
         
         path('upload/', login_required(UploadV.Load), name='Load' ),
-        path('loadriskmatrix/', login_required(UploadV.loadriskmatrix), name='loadriskmatrix' ),
+        # path('loadriskmatrix/', login_required(UploadV.loadriskmatrix), name='loadriskmatrix' ),
         path('uploadfield/', login_required(UploadV.uploadfield), name='uploadfield' ),
         path('LoadRoutes/', login_required(UploadV.LoadRoutes), name='LoadRoutes' ),
         path('login/',auth_views.LoginView.as_view(template_name='userT/login.html'),name='login'),
@@ -116,7 +116,7 @@ urlpatterns = [
         path('closeoutsheet/<int:id>/print', login_required(UserView.closeoutprint), name='closeoutprint' ),
         
         #tenant
-        path('our_team/', login_required(our_team), name='our_team'),
+        # path('our_team/', login_required(our_team), name='our_team'),
 
         #path('PDFtest/', UserView.PDFtest, name='PDFtest'),
         #edward added to enable clicking of all actions
@@ -127,6 +127,8 @@ urlpatterns = [
         #yhs testing
         path('AllList/<int:id>/update/print', login_required(UserView.indiprint), name='indiprint' ),
         path('delegatedadmin/',login_required(UserView.delegatedadmin),name='delegatedadmin'),
+        #edward scheduler url
+        # path('scheduler/',login_required(UserView.scheduler),name='scheduler'),
       ]
 
 if settings.DEBUG:

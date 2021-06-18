@@ -46,6 +46,8 @@ from .serializers import *
 
 from UploadExcel.forms import *
 from userT.parameters import *
+#edward scheduler
+# from .scheduler import *
 
 def loadsignature (request):
     
@@ -1370,4 +1372,7 @@ def indiprint(request,**kwargs):
 #yhs added
 def delegatedadmin (request):
     return render(request, 'userT/delegatedadmin.html')#yhs changed to small letters
-
+#edward scheduler
+# def scheduler (request):
+#     Command()
+#     return HttpResponse('TEST')
