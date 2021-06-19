@@ -1311,13 +1311,12 @@ def closeoutsheet(request): #new naming convention - all small letters
 # for  making view all actions clickable & obtain the id using update view
 
 
-class pmtrepviewall(UpdateView):
-    template_name = "userT/reppmtviewall.html"
+class pmtrepviewall(UpdateView): 
+    template_name = "userT/reppmtviewall.html" #the html is missing object_list
     form_class = ApproverForm
 
     def get_object(self,queryset=None):
         queryset=ActionItems.objects.all()
-      
         return queryset.get(id=self.kwargs['id'])
 
     def get_context_data(self,**kwargs):
@@ -1329,12 +1328,16 @@ class pmtrepviewall(UpdateView):
         
         #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
         lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories) #it changes the signatories directly
-        
-        
-        context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(idAI)
+        attachments = self.object.attachments_set.all() #-this one gets the the attachments and puts it into Object_List, edward added attachments
+        rejectcomments = self.object.comments_set.all() #edward added new way of getting rejectcomments 
+        #edward added attachments
+        context['attachments'] = attachments #attachments are foreign key
+        # context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(idAI) #edward-> its another way of getting ForeignKey elements using filters
+        context['Rejectcomments'] = rejectcomments
         context ['Signatories'] = lstSignatoriesTimeStamp
         
         return context
+ 
 
 #yhs testing to print individual pdf on actionee page
 def indiprint(request,**kwargs):
