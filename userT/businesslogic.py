@@ -491,7 +491,7 @@ def blgetApproverLevelTarget(ID,field):
     
     return ActionItems.mdlSetField.mgrgetField(ID,field)
 
-def blgetIndiResponseCount(discsuborg,queseriesset,queseriesclosed):
+def blgetIndiResponseCount(discsuborg,queseriesopen,queseriesclosed):# changed by edward to queseriesopen
 
     indiPendingSeries =[]
     completePendingPair = []
@@ -499,7 +499,7 @@ def blgetIndiResponseCount(discsuborg,queseriesset,queseriesclosed):
     #first loop through all routes disc/sub/org
     for itemtriplet in discsuborg:
         
-        totalopencount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesset)
+        totalopencount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesopen) # changed by edward to queseriesopen shows how many action open in each routes
         totalclosedcount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesclosed)
         lstofActioneeApprover = blgetSignotories(itemtriplet)
         #indiPendingPair.append(itemtriplet)
@@ -507,9 +507,9 @@ def blgetIndiResponseCount(discsuborg,queseriesset,queseriesclosed):
             if (indipair != []):
                 
                 #indiPendingSeries.append(indique) #Append QueSeries
-                lstindique = [indique] #make que series into list otherwise doesn work
-                indiPendingSeries.append(indipair[1]) #append Name - 
-                pendingResponse = blgetDiscSubOrgActionCount ('Y',itemtriplet,lstindique)
+                lstindique = [indique] #make que series into list otherwise doesn work, indique is 0 for Actionee-start of loop                
+                indiPendingSeries.append(indipair[1]) #append Name - #indipair gives all users in routes print indipair,indipendingseries
+                pendingResponse = blgetDiscSubOrgActionCount ('Y',itemtriplet,lstindique) #print itemtriplet comes to triplet looks for 0 then goes to lstindique and maps to name->lstindique is all the users 0-9 in routes   
                 #for items in itemtriplet:
                 #wanted to append and not have list of list of disc sub org
                 indiPendingSeries.append(indipair[0]) #AppendRole
@@ -752,7 +752,7 @@ def blgetDiscSubActionCount(workshop,discsuborg,quelist):
 def blgetDiscSubOrgActionCount(workshop,discsuborg,quelist):
     count = 0
     
-    for eachQs in quelist:
+    for eachQs in quelist: #eachqs is 0 to 9
         count += ActionItems.mdlgetActionDiscSubCount.mgr_getDiscSubOrgItemsCount('X',discsuborg,eachQs) 
    
     return count

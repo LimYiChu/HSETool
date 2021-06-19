@@ -52,7 +52,7 @@
                 {% csrf_token %}  
                 {%crispy form%}
                 <div class="form-group"><input type="hidden" name="ApproverLevel" value={{ ApproverLevel }}></div>
-                {% if object_list%}
+                {% if attachments%}
                 <div>
                  <h3>Evidence </h3>
                   <table  class="table table-striped table-hover " id="myTable"> <!--set to maximum 20 rows per page-->
@@ -65,7 +65,7 @@
                           <th></th>
                           <tbody>
                           </tr>
-                            {% for X  in object_list %}
+                            {% for X  in attachments %}
                               
                             <tr>
                               <td><a class="article-title" href={{ X.Attachment.url }}>{{ X.Attachment }}</a></td>

@@ -61,7 +61,7 @@ class ActionItems(models.Model):
         return self.StudyActionNo   
 
 class Comments (models.Model):
-    Action = models.ForeignKey(ActionItems, on_delete=models.SET_NULL,related_name="comments",null=True)
+    Action = models.ForeignKey(ActionItems, on_delete=models.SET_NULL,null=True) #edward-> removed related name 
     Username = models.CharField(max_length=255,null=True,blank=True)
     Reason = models.TextField(null=True,blank=True)
     Attachment      =   models.FileField(upload_to='comments',null=True,blank=True,max_length=500)
@@ -76,7 +76,7 @@ class Comments (models.Model):
        return '%s ---%s' %(self.Action.StudyActionNo, self.Username) #if someone delete all Actions before Attachments, come here to fix
 
 class Attachments (models.Model):
-    Action = models.ForeignKey(ActionItems, on_delete=models.SET_NULL,null=True) #cant have related name as it throws a spanner in the works
+    Action = models.ForeignKey(ActionItems, on_delete=models.SET_NULL,null=True) #cant have related name as it throws a spanner in the works, edward-anything that has foreignkey here comes up in tables with _id, 
     Username = models.CharField(max_length=255,null=True,blank=True)
     Attachment      =   models.FileField(upload_to='attachments',null=True,blank=True,max_length=500)
     DateAdded = models.DateTimeField(auto_now_add=True)
