@@ -1054,6 +1054,10 @@ def repPMTExcel (request):
     Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
     tableindiheader = ['User','Role','Organisation Route','In-Progress','Closed', 'Open Actions']
     
+
+    listaggregatedindi,listaggregatedindiheader=blgroupbyaggsum(Indisets,tableindiheader,'User', ['In-Progress','Closed','Open Actions'])
+    
+
     allactions = ActionItems.objects.all()
     #edward added id
     tableallheader = ['id','StudyActionNo','StudyName', 'Disipline' ,'Recommendations', 'Response','DueDate','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
@@ -1156,6 +1160,9 @@ def repPMTExcel (request):
         'tablestudiesheader' : tablestudiesheader,
         'tabledischeader' : tabledischeader ,
         'tableallheader' : tableallheadermodified,
+        'listaggregatedindi':listaggregatedindi,
+        'listaggregatedindiheader':listaggregatedindiheader
+    
         
     }
     return render(request, 'userT/reppmtexcel.html', context)
