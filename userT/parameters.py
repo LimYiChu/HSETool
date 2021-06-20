@@ -17,6 +17,9 @@ for items in ALLOWED_HOSTS:
     elif items.find('sapuraphase4a')>=0 :
         paremailurl = "https://sapuraphase4a.prism-ehstools.com"
         paremailphase ="Phase 4a"
+    elif items.find('127.0.0.1')>=0:
+        paremailurl = "127.0.0.1:8000"
+        paremailphase ="localhost"
     else:
         paremailurl = "https://prism.prism-ehstools.com"
         paremailphase ="Prism"
