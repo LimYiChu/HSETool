@@ -2,9 +2,17 @@
 {%load crispy_forms_tags %}
 {% crispy form form.helper%}
 {% block ToolTip %}
+<!-- edward & hs added on 19/6/21 -->
+{% block RejectReason %}
 
 
-    <div class="postitnote sticky "  style="font-size:small; font-family:Lato; margin-right:5px;margin-left:5px "> 
+
+{%include "userT/increjectcomments.html"%}
+
+
+{%endblock%}
+
+    <div class="postitnote sticky "  style="font-size:small; font-family:Lato; margin-right:5px;margin-left:5px "> <!-- to be discussed with guna -->
         <div class="col-md-1;margin-right:5px;margin-left:5px">
            <table class="sticky table table-hover" > <!--set to maximum 20 rows per page-->
             <thead class="thead">
