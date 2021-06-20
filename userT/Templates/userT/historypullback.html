@@ -55,34 +55,12 @@
                 {% csrf_token %}  
                 {%crispy form%}
                 <div class="form-group"><input type="hidden" name="ApproverLevel" value={{ ApproverLevel }}></div>
-                {% if object_list%}
+                <!-- edward added include file for attachments -->
                 <div>
-                 <h3>Evidence </h3>
-                  <table  class="table table-striped table-hover " id="myTable"> <!--set to maximum 20 rows per page-->
-      
-                    <thead class="thead-light">
-                        <tr class="filters">
-                          <th onclick="sortTable(0)">
-                            Submitted
-                          </th>
-                          <th></th>
-                          <tbody>
-                          </tr>
-                            {% for X  in object_list %}
-                              
-                            <tr>
-                              <td><a class="article-title" href={{ X.Attachment.url }}>{{ X.Attachment }}</a></td>
-                              <td>
-                                
-                                <div class="form-group"><input type="hidden" name="filepk" value={{ X.id }}></div>
-                                
-                              </td>
-                              </tr>
-                            </tbody>
-                            {% endfor %}
-                          </table>
-              </div>
-              {%endif %}
+                  
+                  {%include "userT/inclattachments.html"%}
+                 
+                </div>
               <div>
                 <div>
                 

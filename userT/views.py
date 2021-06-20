@@ -1,7 +1,7 @@
 from django.http.response import FileResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy, resolve
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, request
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
@@ -360,15 +360,19 @@ class ApproverConfirm(UpdateView):
     success_url = '/ApproverList/'
     
     def form_valid(self,form):
+        #edward added for showing email as deafult signature
+        emailid=self.request.user.email
+        strsignature = blgetfieldCustomUser(emailid,"signature")
+
         if (self.request.POST.get('Cancel')):
-#             
+             
            return HttpResponseRedirect('/ApproverList/')
 
         if (self.request.POST.get('ApproveConfirm')): 
                 #  need another intermediate screen for approval no comments
             
             ID =self.kwargs["id"]
-           
+            
             field = "QueSeriesTarget"
             
             ApproverLevel =  blgetFieldValue(ID,field)
@@ -378,7 +382,24 @@ class ApproverConfirm(UpdateView):
             else:
                 form.instance.QueSeries += 1
 
+                #edward added for showing email as deafult signature
+            if (self.request.POST.get('signature')):
+                strsignature = self.request.POST.get('signature')
+                blsetfieldCustomUser(emailid,"signature",strsignature)
+            else :
+                blsetfieldCustomUser(emailid,"signature",str(emailid))
+            #     #end
+                    
             return super().form_valid(form)
+
+    #edward added for showing email as deafult signature
+    def get_context_data(self, **kwargs): 
+        emailid=self.request.user.email
+        sign=self.request.user.signature
+        print(sign)
+        context = super().get_context_data(**kwargs)
+        context['signature'] = blgetfieldCustomUser(emailid,"signature")
+        return context
 
     def get_object(self,queryset=None):
         queryset=ActionItems.objects.all()
@@ -1335,10 +1356,10 @@ class pmtrepviewall(UpdateView):
         
         #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
         lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories) #it changes the signatories directly
-        attachments = self.object.attachments_set.all() #-this one gets the the attachments and puts it into Object_List, edward added attachments
+        object_list = self.object.attachments_set.all() #-this one gets the the attachments and puts it into Object_List, edward added attachments
         rejectcomments = self.object.comments_set.all() #edward added new way of getting rejectcomments 
         #edward added attachments
-        context['attachments'] = attachments #attachments are foreign key
+        context['object_list'] = object_list #attachments are foreign key
         # context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(idAI) #edward-> its another way of getting ForeignKey elements using filters
         context['Rejectcomments'] = rejectcomments
         context ['Signatories'] = lstSignatoriesTimeStamp

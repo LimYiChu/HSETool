@@ -2,9 +2,17 @@
 {%load crispy_forms_tags %}
 {% crispy form form.helper%}
 {% block ToolTip %}
+<!-- edward & hs added on 19/6/21 -->
+{% block RejectReason %}
 
 
-    <div class="postitnote sticky "  style="font-size:small; font-family:Lato; margin-right:5px;margin-left:5px "> 
+
+{%include "userT/increjectcomments.html"%}
+
+
+{%endblock%}
+
+    <div class="postitnote sticky "  style="font-size:small; font-family:Lato; margin-right:5px;margin-left:5px "> <!-- to be discussed with guna -->
         <div class="col-md-1;margin-right:5px;margin-left:5px">
            <table class="sticky table table-hover" > <!--set to maximum 20 rows per page-->
             <thead class="thead">
@@ -42,9 +50,15 @@
             <fieldset class="form-group" >
             {% csrf_token %}  
             {%crispy form%}
+            <div class="float-right col-md-3 ">
+              <div>
+                <label for="signature" class=" requiredField">
+                Type Your Signature (will use your email if not signed) <span class="asteriskField">*</span> </label>
+                <textarea class="textarea form-control" style="font-family: Great Vibes;font-size: 50px"  name="signature" >{{signature}}</textarea>
+              </div>
             <div>
-            <div class="form-group"><input type="submit" name="ApproveConfirm" value="Approve & Sign." class="btn btn-outline-primary float-right "  id="submit-id-approve"/></div> 
-            <div class="form-group"><input type="submit" name="Cancel" value="Cancel" class="btn btn-outline-primary float-right col-md-1"  id="submit-id-reject"/></div>
+            <div class="form-group"><input type="submit" name="ApproveConfirm" value="Approve & Sign." class="btn btn-outline-primary float-right col-md-6 "  id="submit-id-approve"/></div> 
+            <div class="form-group"><input type="submit" name="Cancel" value="Cancel" class="btn btn-outline-primary float-right col-md-6"  id="submit-id-reject"/></div>
         </div>
         </fieldset>
         </form> 
