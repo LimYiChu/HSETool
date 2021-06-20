@@ -222,7 +222,7 @@ def blsetrejectionActionItems(ID,queseries):
     ActionItems.mdlQueSeries.mgrincrementRevision(ID)
 
 def blbuildRejectionemail(ID,RejectReason):
-    
+    urlview = f"/pmtrepviewall/{ID}/view"
     Content=[]
     actionDetails = ActionItems.objects.filter(id=ID).values() # Since off the bat i did not pass any other information besides ID to rejection form i now have to information back for emails
     studyActionNo =  actionDetails[0].get('StudyActionNo')
@@ -231,7 +231,7 @@ def blbuildRejectionemail(ID,RejectReason):
 
     Content.append(studyActionNo + " from " + studyName + " has been rejected ") #This is subject
     #edward add-on for rejection url
-    Content.append("Rejection Reason : " + RejectReason + ". To attend to this, please go to " + paremailurl)#+ "...Response" + response) #this is the content of the email #passed the url here in the content
+    Content.append("Rejection Reason : " + RejectReason + ". To attend to this, please go to " + paremailurl +urlview)#+ "...Response" + response) #this is the content of the email #passed the url here in the content
     
     return Content
 def blgetHistoryforUser(useremail, actioneeroutes):
@@ -264,6 +264,22 @@ def blallActionsComDisSubbyList(contextRoutes,quelist):
                                                                blvarSUbdisipline,que))
     
     return streams
+def blgetrejectedcount(discsuborg,revision):
+
+    lstrejectcountbydisc =[]
+    lstfinallistcount = []
+    for items in discsuborg:
+        
+        lstrejectcountbydisc.append("/".join(items))
+        lstrejectcountbydisc.append(ActionItems.mdlgetActionDiscSubCount.
+                                        mgr_getDiscSubOrgRejectedItemsCount(items,revision)) 
+        
+        
+        lstfinallistcount.append(lstrejectcountbydisc)
+        lstrejectcountbydisc = []
+
+    return lstfinallistcount
+
 def blaggregatebyDisc(discsuborg,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue):
     lstofdiscdetails =[]
     lstcountbydisc =[]
@@ -485,7 +501,11 @@ def blsetApproverLevelTarget(ID,ApproverLevel):
 
 def blgetFieldValue(ID,field):
     
-    return ActionItems.mdlgetField.mgrGetField(ID,field)
+    qs = ActionItems.mdlgetField.mgrGetField(ID,field)
+    strintvalue = qs[0].get(field)
+    
+    return strintvalue
+     
 
 def blgetApproverLevelTarget(ID,field):
     
@@ -598,15 +618,21 @@ def blgetSignotories (lstorgdiscsub):
     finallistoflist = [x for x in finalSigPair if x]
     
     return finallistoflist
-def blgetSignatoryemail(lstdiscsuborg):
+def blgetSignatoryemailbyque(lstdiscsuborg,queseries):
     
     pairSignatories = blgetSignotories(lstdiscsuborg) #just reusing what is already done 
 
     for items in pairSignatories:
-        items.pop(0)
+        items.pop(0) # basically removes the Actionee, Approver from pair and maintains name
+        
     
-    lstfinal = [''.join(ele) for ele in pairSignatories] #this is just list comprehensioin to return a list and not list of list
+    abbrevatedemail=pairSignatories[:queseries] # returns only before queseries
+
+    lstfinal = [''.join(ele) for ele in abbrevatedemail] #this is just list comprehensioin to return a list and not list of list
+    
+    
     return lstfinal 
+
 
 def blgetActioneeDiscSub(routes):
     discsub=[]

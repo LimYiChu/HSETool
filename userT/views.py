@@ -18,7 +18,7 @@ from django.views.generic import ListView, DetailView, UpdateView,TemplateView, 
 #test for login required
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-import pypdftk
+
 from django.views.generic.base import ContextMixin
 from django.views.generic.edit import FormMixin
 from django.core.mail import send_mail
@@ -306,16 +306,7 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
 
         if (self.request.POST.get('Approve')): 
                 #  need another intermediate screen for approval no comments
-            
-            # ID =self.kwargs["pk"]
-            # field = "QueSeriesTarget"
-            
-            # ApproverLevel =  blgetFieldValue(ID,field)
-            
-            # if (form.instance.QueSeries == (ApproverLevel[0].get(field)-1)): 
-            #     form.instance.QueSeries = 99 # Random far end number to show all closed
-            # else:
-            #     form.instance.QueSeries += 1
+           
 
             return super().form_valid(form)
         if (self.request.POST.get('Pullback')):
@@ -377,7 +368,7 @@ class ApproverConfirm(UpdateView):
             
             ApproverLevel =  blgetFieldValue(ID,field)
             
-            if (form.instance.QueSeries == (ApproverLevel[0].get(field)-1)): 
+            if (form.instance.QueSeries == (ApproverLevel-1)): 
                 form.instance.QueSeries = 99 # Random far end number to show all closed
             else:
                 form.instance.QueSeries += 1
@@ -423,15 +414,6 @@ class HistoryConfirm(UpdateView):
             #ID =self.kwargs["id"]
             form.instance.QueSeries = 0 # Return back to Actionee
             
-
-            # field = "QueSeriesTarget"
-            
-            # ApproverLevel =  blgetFieldValue(ID,field)
-            
-            # if (form.instance.QueSeries == (ApproverLevel[0].get(field)-1)): 
-            #     form.instance.QueSeries = 99 # Random far end number to show all closed
-            # else:
-            #     form.instance.QueSeries += 1
 
             return super().form_valid(form)
 
@@ -529,6 +511,8 @@ class RejectReason (CreateView):
     def form_valid (self,form):
         if (self.request.POST.get('Reject')):
             ID = self.kwargs['forkeyid']
+            intqueseries = blgetFieldValue(ID,"QueSeries")
+            
             #set using model manager since we want it back to actionee it has to be set at QueSeries=0
             blsetrejectionActionItems(ID,0)# This is key and should go into bltoset this and revision
             
@@ -538,7 +522,9 @@ class RejectReason (CreateView):
            
             discsub = blgetDiscSubOrgfromID(ID)
             
-            Signatoryemails = blgetSignatoryemail(discsub)
+            Signatoryemails = blgetSignatoryemailbyque(discsub,intqueseries)
+
+            
             ContentSubject  =blbuildRejectionemail(ID,rejectreason)
 
             success = blemailSendindividual(emailSender,Signatoryemails,ContentSubject[0], ContentSubject[1]) #send email, the xyz is dummy data and not used
@@ -1075,8 +1061,9 @@ def repPMTExcel (request):
     Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
     tableindiheader = ['User','Role','Organisation Route','In-Progress','Closed', 'Open Actions']
     
-
+    #getsummaryactions
     listaggregatedindi,listaggregatedindiheader=blgroupbyaggsum(Indisets,tableindiheader,'User', ['In-Progress','Closed','Open Actions'])
+    
     
 
     allactions = ActionItems.objects.all()
@@ -1087,6 +1074,12 @@ def repPMTExcel (request):
     #for Disipline based view
     tabledischeader = ['Discipline', 'Yet to Respond' ,'Approval Stage', 'Closed','Open Actions','Total Actions']
     lstbyDisc= blaggregatebyDisc(discsuborg,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue)
+    
+
+    #get rejected actions get Reject Table
+    tablerheaderejected = ['Discipline', 'Rejected Count']
+    listofrejecteditems = blgetrejectedcount(discsuborg,1) #Pass revision number => than whats required
+    
 
     #for workshop based view
     allstudies = Studies.objects.all()
@@ -1111,6 +1104,7 @@ def repPMTExcel (request):
     lstactual      = blgetActualRunDown(lstplanned)
     newlist = blformulateRundown(lstplanned,lstactual)
 
+    
     if request.method == 'POST':
                 
         if (request.POST.get('allActions')):
@@ -1182,7 +1176,9 @@ def repPMTExcel (request):
         'tabledischeader' : tabledischeader ,
         'tableallheader' : tableallheadermodified,
         'listaggregatedindi':listaggregatedindi,
-        'listaggregatedindiheader':listaggregatedindiheader
+        'listaggregatedindiheader':listaggregatedindiheader,
+        'listofrejectedheader': tablerheaderejected,
+        'listofrejecteditems': listofrejecteditems,
     
         
     }
