@@ -33,7 +33,7 @@ urlpatterns = [
         path ('rest/',include(router.urls)),
         
         path('upload/', login_required(UploadV.Load), name='Load' ),
-        # path('loadriskmatrix/', login_required(UploadV.loadriskmatrix), name='loadriskmatrix' ),
+        path('loadriskmatrix/', login_required(UploadV.loadriskmatrix), name='loadriskmatrix' ),
         path('uploadfield/', login_required(UploadV.uploadfield), name='uploadfield' ),
         path('LoadRoutes/', login_required(UploadV.LoadRoutes), name='LoadRoutes' ),
         path('login/',auth_views.LoginView.as_view(template_name='userT/login.html'),name='login'),
