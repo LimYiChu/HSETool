@@ -21,7 +21,7 @@ jobs:
         password: ${{ secrets.LIGHTSAIL_KEY }}
         server-dir: /opt/bitnami/projects/HSETool/
         exclude: 
-          - /opt/bitnami/projects/HSETool/js/**
+          - /js/**
           - /opt/bitnami/projects/HSETool/media/**
           - /opt/bitnami/projects/HSETool/PDF/**
           - /opt/bitnami/projects/HSETool/static/**
