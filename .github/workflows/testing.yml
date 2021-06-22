@@ -4,20 +4,22 @@ on: #this line specifies on pull or push
   pull_request:
   push:
     branches: [ Branch-from-main(deployment-test) ]
-      
+
 jobs:
-  deploy:
-    name: Deploy
+  web-deploy:
+    name: 🎉 Deploy
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     steps:
-    - name: testing executing remote ssh commands using password
-      uses: appleboy/ssh-action@master #github marketplace app 
+    - name: test Get latest code
+      uses: actions/checkout@v2
+
+    - name: test Sync files
+      uses: SamKirkland/FTP-Deploy-Action@4.0.0
       with:
-        host: 54.255.201.56
+        server: 54.255.201.56
         username: bitnami
-        key: ${{ secrets.LIGHTSAIL_KEY }}
+        password: ${{ secrets.LIGHTSAIL_KEY }}
         port: 22
-        script: |
-          cd /opt/bitnami/projects/HSETool/userT
+        server-dir: /opt/bitnami/projects/HSETool/userT/
+        
           
