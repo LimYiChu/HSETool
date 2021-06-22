@@ -20,9 +20,19 @@ jobs:
         username: bitnami
         password: ${{ secrets.LIGHTSAIL_KEY }}
         server-dir: /opt/bitnami/projects/HSETool/
-        exclude: 
-
-          - Trackem/settings.py
+        exclude: .git*
+          - **.git*
+          - .git*/**
+          -  **/.git*/**
+          - node_modules/**
+          - node_modules/**/*
+          - js/**
+          - /opt/bitnami/projects/HSETool/media/**
+          - /opt/bitnami/projects/HSETool/PDF/**
+          - /opt/bitnami/projects/HSETool/static/**
+          - /opt/bitnami/projects/HSETool/staticfiles/**
+          - /opt/bitnami/projects/HSETool/Tenant/**
+          - /opt/bitnami/projects/HSETool/Trackem/settings.py
 
         
           
