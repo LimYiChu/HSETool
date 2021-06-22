@@ -20,5 +20,4 @@ jobs:
         port: 22
         script: |
           cd /opt/bitnami/projects/HSETool/userT
-
-          git status
+          
