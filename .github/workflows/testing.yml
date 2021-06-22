@@ -19,7 +19,6 @@ jobs:
         server: 54.255.201.56
         username: bitnami
         password: ${{ secrets.LIGHTSAIL_KEY }}
-        port: 22
         server-dir: /opt/bitnami/projects/HSETool/userT/
         
           
