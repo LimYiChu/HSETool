@@ -16,7 +16,7 @@ jobs:
     - name: test Sync files
       uses: SamKirkland/FTP-Deploy-Action@4.0.0
       with:
-        server: 54.255.201.56
+        server: test.prism-ehstools.com
         username: bitnami
         password: ${{ secrets.LIGHTSAIL_KEY }}
         server-dir: /opt/bitnami/projects/HSETool/
