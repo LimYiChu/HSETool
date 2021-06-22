@@ -14,7 +14,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: test Sync files
-      uses: SamKirkland/FTP-Deploy-Action@4.0.0
+      uses: SamKirkland/FTP-Deploy-Action@3.1.1
       with:
         server: 54.255.201.56
         username: bitnami
