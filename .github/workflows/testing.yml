@@ -20,7 +20,7 @@ jobs:
         username: bitnami
         password: ${{ secrets.LIGHTSAIL_KEY }}
         server-dir: /opt/bitnami/projects/HSETool/
-        exclude: /excelUpload/
+        exclude: excelUpload/
         - /opt/bitnami/projects/HSETool/js/
         - /opt/bitnami/projects/HSETool/media/
         - /opt/bitnami/projects/HSETool/PDF/
