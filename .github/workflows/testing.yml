@@ -20,5 +20,5 @@ jobs:
         port: 22
         script: |
           cd /opt/bitnami/projects/HSETool/userT
-          git pull origin Branch-from-main(deployment-test) 
+
           git status
