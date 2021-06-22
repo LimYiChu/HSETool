@@ -16,7 +16,7 @@ jobs:
     - name: test Sync files
       uses: SamKirkland/FTP-Deploy-Action@3.1.1
       with:
-        server: 54.255.201.56
+        ftp-server: 54.255.201.56
         username: bitnami
         password: ${{ secrets.LIGHTSAIL_KEY }}
         port: 22
