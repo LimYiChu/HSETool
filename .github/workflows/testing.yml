@@ -7,7 +7,7 @@ on: #this line specifies on pull or push test
 
 jobs:
   web-deploy:
-    name: 🎉 Deploy
+    name: Deploy
     runs-on: ubuntu-latest
     steps:
     - name: test Get latest code
