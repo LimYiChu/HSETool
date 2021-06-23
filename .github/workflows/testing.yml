@@ -17,7 +17,6 @@ jobs:
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="" --include="" --filter=""
-        path: /HSETool-2/userT/
         remote_path: /opt/bitnami/projects/HSETool/userT
         remote_host: 54.255.201.56
         remote_port: 22
