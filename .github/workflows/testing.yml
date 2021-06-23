@@ -13,12 +13,23 @@ jobs:
     - name: test Get latest code
       uses: actions/checkout@v2
 
-    - name: test Sync files
+    - name: test Sync files usert
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="" --include="" --filter=""
         path: /userT/
         remote_path: /opt/bitnami/projects/HSETool/userT
+        remote_host: 54.255.201.56
+        remote_port: 22
+        remote_user: bitnami
+        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
+
+    - name: test Sync files uploadexcel
+      uses: burnett01/rsync-deployments@4.1
+      with:
+        switches: -avzr --delete --exclude="" --include="" --filter=""
+        path: /UploadExcel/
+        remote_path: /opt/bitnami/projects/HSETool/UploadExcel/
         remote_host: 54.255.201.56
         remote_port: 22
         remote_user: bitnami
