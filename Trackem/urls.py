@@ -25,7 +25,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 # from Tenant.views import our_team
 from rest_framework import routers
-
+# TESTING THAT ONLY THIS GOES THROUGH
 router = routers.DefaultRouter()
 router.register ('ActionItems', UserView.anyView)
 urlpatterns = [
