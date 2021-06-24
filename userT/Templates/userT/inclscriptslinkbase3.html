@@ -3,44 +3,42 @@
       type="image/png" 
       href="{% static 'sapura2.png' %}" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script><!--dropdown function of the side bar button-->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script><!--dropdown function of the side bar button-->
-    
-    <!-- To uncomment this is for the Bootstrap 5
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>Bootstrap 5 base-->   
-    <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">Bootstrap 5 base-->
     
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"> <!--bootstrap icon pack-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"> <!--styling for the side bar button spacing-->
+    
     <link rel="preconnect" href="https://fonts.gstatic.com"> <!--google font-->
-    <!-- <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet"> google font-->
+    
     <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet'> <!--google font-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> <!--icon pack-->
     <link rel="stylesheet" href="{% static 'css/sticky.css' %}"> <!--sticky note CSS-->
-    <!--Chartjs link and not sure of version-->
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>-->
+    <link href='https://fonts.googleapis.com/css?family=Great+Vibes' rel='stylesheet'> <!--Guna Used for Signature Signing-->
     
     
-    <!--Guna Start use js in app easier to keep track-->
-    <!--<script src="{% static 'Javascript/js1.js' %}"></script>-->
+    <!--Guna compiled all BOOSTRAP  CSS and JS CODES to this . Need another effoert for datatables-->
+ 
     
+      <script src="{% static 'userT/datatable.js' %}" ></script>
+      <link rel="stylesheet" type="text/css" href="{% static 'userT/bootstrap46/css/bootstrap.css' %}" >  
+      <script src="{% static 'userT/bootstrap46/js/bootstrap.min.js' %}"></script> 
+
+      
     
-    <script src="{% static 'userT/datatable.js' %}" ></script> 
-      <!--GUNA END-->
+    <!--Changed to above using 4.6 as we cant use 5.0 as it seems to underline the fonts for url-->
+
+    <!--GUNA END of MESSY BOOTSTRAP CODES-->
+
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script> <!--Datatable for filtering-->
     <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script> <!--Datatable for filtering-->
     <!--<script src="https://cdn.datatables.net/fixedheader/3.1.8/js/dataTables.fixedHeader.min.js"></script>-->
     <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap5.min.js"></script> <!--Datatable for filtering-->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css'"> <!--bootstrap for pagination-->
+    
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap5.min.css"> <!--bootstrap for pagination-->
     <script  src="https://www.gstatic.com/charts/loader.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link href='https://fonts.googleapis.com/css?family=Great+Vibes' rel='stylesheet'>
+    
 
-   
-
-<!--think this is not required. Commented out for testing. If no errors, then delete before releasing 1.8-->
+<!--Not sure what this is-->
 <style>
       div.sticky {
         position: -webkit-sticky;
