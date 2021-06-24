@@ -41,7 +41,7 @@ jobs:
       with:
         switches: -avzr --delete --exclude="__pycache__/" --exclude="Templates/" --exclude="settings.py" --exclude="wsgi.py" --exclude="asgi.py" --exclude="__init__.py" --exclude="tasks.py" --include="" --filter=""
         path: /Trackem/
-        remote_path: /opt/bitnami/projects/HSETool/UploadExcel/
+        remote_path: /opt/bitnami/projects/HSETool/Trackem/
         remote_host: 54.255.201.56
         remote_port: 22
         remote_user: bitnami
