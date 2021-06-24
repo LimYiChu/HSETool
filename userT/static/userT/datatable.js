@@ -103,6 +103,7 @@ $(document).ready(function() {
 } );
 
 $(document).ready(function() {
+   
     // Setup - add a text input to each footer cell
     $('#table3 thead tr').clone(true).appendTo( '#table3 thead' );
     $('#table3 thead tr:eq(1) th').each( function (i) {
