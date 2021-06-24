@@ -16,7 +16,7 @@ jobs:
     - name: test Sync files usert
       uses: burnett01/rsync-deployments@4.1
       with:
-        switches: -avzr --delete --exclude=["migrations/,__pycache__/"] --include="" --filter=""
+        switches: -avzr --delete --exclude="migrations/" --exclude="__pycache__/" --include="" --filter=""
         path: /userT/
         remote_path: /opt/bitnami/projects/HSETool/userT
         remote_host: 54.255.201.56
