@@ -39,7 +39,7 @@ jobs:
     - name: test Sync files uploadexcel
       uses: burnett01/rsync-deployments@4.1
       with:
-        switches: -avzr --delete --include="Templates/" --filter=""
+        switches: -avzr --delete --exclude="all" --include="Templates/" --filter=""
         path: /UploadExcel/
         remote_path: /opt/bitnami/projects/HSETool/UploadExcel/
         remote_host: 54.255.201.56
