@@ -25,16 +25,26 @@ jobs:
         remote_key: ${{ secrets.LIGHTSAIL_KEY }}
 
 
+    # - name: test Sync files uploadexcel
+    #   uses: burnett01/rsync-deployments@4.1
+    #   with:
+    #     switches: -avzr --delete --exclude="migrations/" --exclude="__pycache__/" --include="" --filter=""
+    #     path: /UploadExcel/
+    #     remote_path: /opt/bitnami/projects/HSETool/UploadExcel/
+    #     remote_host: 54.255.201.56
+    #     remote_port: 22
+    #     remote_user: bitnami
+    #     remote_key: ${{ secrets.LIGHTSAIL_KEY }}
+      
     - name: test Sync files uploadexcel
       uses: burnett01/rsync-deployments@4.1
       with:
-        switches: -avzr --delete --exclude="migrations/" --exclude="__pycache__/" --include="" --filter=""
+        switches: -avzr --delete --include="Templates/" --filter=""
         path: /UploadExcel/
         remote_path: /opt/bitnami/projects/HSETool/UploadExcel/
         remote_host: 54.255.201.56
         remote_port: 22
         remote_user: bitnami
         remote_key: ${{ secrets.LIGHTSAIL_KEY }}
-      
         
           
