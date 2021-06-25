@@ -1,8 +1,6 @@
 name : Deployment workflow
 
 on: #this line specifies on pull or push test
-  pull_request:
-  push:
   workflow_dispatch:
       inputs:
         logLevel:
