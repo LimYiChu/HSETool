@@ -46,5 +46,29 @@ jobs:
         remote_port: 22
         remote_user: bitnami
         remote_key: ${{ secrets.LIGHTSAIL_KEY }}
-        
+
+    - name: test Sync files static
+      uses: burnett01/rsync-deployments@4.1
+      with:
+        switches: -avzr --delete --exclude="media/" --include="" --filter=""
+        path: /static/
+        remote_path: /opt/bitnami/projects/HSETool/static/
+        remote_host: 54.255.201.56
+        remote_port: 22
+        remote_user: bitnami
+        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
+
+    
+    - name: testing changing user group for SFTP transferred files 
+      uses: appleboy/ssh-action@master #github marketplace app 
+      with:
+        host: 54.255.201.56
+        username: bitnami
+        key: ${{ secrets.LIGHTSAIL_KEY }}
+        port: 22
+        script: |
+          sudo mkdir /opt/bitnami/projects/HSETool/dummy
+          sudo chgrp -R varwwwusers /opt/bitnami/projects/HSETool/ 
+          sudo chmod -R 770 /opt/bitnami/projects/HSETool/
+
           
