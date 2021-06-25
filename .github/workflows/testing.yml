@@ -1,16 +1,9 @@
 name : Deployment workflow
 
 on: #this line specifies on pull or push test
-   workflow_dispatch:
-   
-    inputs:
-      logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning'
-      tags:
-        description: 'Test scenario tags'  
-    
+  pull_request:
+  workflow_dispatch:
+    branches: [ Branch-from-main(deployment-test) ]
 
 jobs:
   web-deploy:
