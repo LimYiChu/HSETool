@@ -1,4 +1,0 @@
-function workme (){
-alert ("TEXTME");
-}
-
