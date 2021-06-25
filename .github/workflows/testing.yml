@@ -3,7 +3,7 @@ name : Deployment workflow
 on: #this line specifies on pull or push test
   pull_request:
   workflow_dispatch:
-    branches: [ Branch-from-main(deployment-test) ]
+    
 
 jobs:
   web-deploy:
