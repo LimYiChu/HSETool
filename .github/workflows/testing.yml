@@ -1,0 +1,159 @@
+name : Deployment workflow
+
+on: #this line specifies on pull or push test
+    workflow_dispatch:
+      inputs:
+        logLevel:
+          description: 'Log level'     
+          required: true
+          default: 'warning'
+        tags:
+          description: 'Test scenario tags'
+  
+jobs:
+  web-deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: test Get latest code
+      uses: actions/checkout@v2
+# test instancte server
+    - name: testing changing user group for SFTP transferred files 
+      uses: appleboy/ssh-action@master #github marketplace app 
+      with:
+        host: 54.255.201.56
+        username: bitnami
+        key: ${{ secrets.LIGHTSAIL_KEY }}
+        port: 22
+        script: |
+          sudo /opt/bitnami/ctlscript.sh stop apache
+
+    - name: test Sync files usert
+      uses: burnett01/rsync-deployments@4.1
+      with:
+        switches: -avzr --delete --exclude="migrations/" --exclude="__pycache__/" --include="" --filter=""
+        path: /userT/
+        remote_path: /opt/bitnami/projects/HSETool/userT
+        remote_host: 54.255.201.56
+        remote_port: 22
+        remote_user: bitnami
+        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
+
+
+    - name: test Sync files uploadexcel
+      uses: burnett01/rsync-deployments@4.1
+      with:
+        switches: -avzr --delete --exclude="migrations/" --exclude="__pycache__/" --include="" --filter=""
+        path: /UploadExcel/
+        remote_path: /opt/bitnami/projects/HSETool/UploadExcel/
+        remote_host: 54.255.201.56
+        remote_port: 22
+        remote_user: bitnami
+        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
+      
+    - name: test Sync files trackem
+      uses: burnett01/rsync-deployments@4.1
+      with:
+        switches: -avzr --delete --exclude="__pycache__/" --exclude="Templates/" --exclude="settings.py" --exclude="wsgi.py" --exclude="asgi.py" --exclude="__init__.py" --exclude="tasks.py" --include="" --filter=""
+        path: /Trackem/
+        remote_path: /opt/bitnami/projects/HSETool/Trackem/
+        remote_host: 54.255.201.56
+        remote_port: 22
+        remote_user: bitnami
+        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
+
+    - name: test Sync files static
+      uses: burnett01/rsync-deployments@4.1
+      with:
+        switches: -avzr --delete --exclude="media/" --include="" --filter=""
+        path: /static/
+        remote_path: /opt/bitnami/projects/HSETool/static/
+        remote_host: 54.255.201.56
+        remote_port: 22
+        remote_user: bitnami
+        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
+
+    
+    - name: testing changing user group for SFTP transferred files 
+      uses: appleboy/ssh-action@master #github marketplace app 
+      with:
+        host: 54.255.201.56
+        username: bitnami
+        key: ${{ secrets.LIGHTSAIL_KEY }}
+        port: 22
+        script: |
+          sudo chgrp -R varwwwusers /opt/bitnami/projects/HSETool/ 
+          sudo chmod -R 770 /opt/bitnami/projects/HSETool/
+          sudo /opt/bitnami/ctlscript.sh start apache
+
+#prism demo server
+
+    - name: testing changing user group for SFTP transferred files on PRISM
+      uses: appleboy/ssh-action@master #github marketplace app 
+      with:
+        host: 52.77.81.191
+        username: bitnami
+        key: ${{ secrets.LIGHTSAIL_KEY }}
+        port: 22
+        script: |
+          sudo /opt/bitnami/ctlscript.sh stop apache
+
+    - name: test Sync files usert
+      uses: burnett01/rsync-deployments@4.1
+      with:
+        switches: -avzr --delete --exclude="migrations/" --exclude="__pycache__/" --include="" --filter=""
+        path: /userT/
+        remote_path: /opt/bitnami/projects/HSETool/userT
+        remote_host: 52.77.81.191
+        remote_port: 22
+        remote_user: bitnami
+        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
+
+
+    - name: test Sync files uploadexcel
+      uses: burnett01/rsync-deployments@4.1
+      with:
+        switches: -avzr --delete --exclude="migrations/" --exclude="__pycache__/" --include="" --filter=""
+        path: /UploadExcel/
+        remote_path: /opt/bitnami/projects/HSETool/UploadExcel/
+        remote_host: 52.77.81.191
+        remote_port: 22
+        remote_user: bitnami
+        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
+      
+    - name: test Sync files trackem
+      uses: burnett01/rsync-deployments@4.1
+      with:
+        switches: -avzr --delete --exclude="__pycache__/" --exclude="Templates/" --exclude="settings.py" --exclude="wsgi.py" --exclude="asgi.py" --exclude="__init__.py" --exclude="tasks.py" --include="" --filter=""
+        path: /Trackem/
+        remote_path: /opt/bitnami/projects/HSETool/Trackem/
+        remote_host: 52.77.81.191
+        remote_port: 22
+        remote_user: bitnami
+        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
+
+    - name: test Sync files static
+      uses: burnett01/rsync-deployments@4.1
+      with:
+        switches: -avzr --delete --exclude="media/" --include="" --filter=""
+        path: /static/
+        remote_path: /opt/bitnami/projects/HSETool/static/
+        remote_host: 52.77.81.191
+        remote_port: 22
+        remote_user: bitnami
+        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
+
+    
+    - name: testing changing user group for SFTP transferred files 
+      uses: appleboy/ssh-action@master #github marketplace app 
+      with:
+        host: 52.77.81.191
+        username: bitnami
+        key: ${{ secrets.LIGHTSAIL_KEY }}
+        port: 22
+        script: |
+          sudo chgrp -R varwwwusers /opt/bitnami/projects/HSETool/ 
+          sudo chmod -R 770 /opt/bitnami/projects/HSETool/
+          sudo /opt/bitnami/ctlscript.sh start apache
+
+          
