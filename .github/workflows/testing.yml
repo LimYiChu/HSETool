@@ -9,7 +9,6 @@ on: #this line specifies on pull or push test
           description: 'Log level'     
           required: true
           default: 'warning'
-        
             branches: [ Branch-from-main(deployment-test) ]
 
 jobs:
