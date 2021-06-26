@@ -1,4 +1,4 @@
-name : Deploy to Test & Prism Instance
+name : TEST & PRISM Instance
 
 on: #this line specifies on pull or push test
     workflow_dispatch:
