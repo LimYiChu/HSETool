@@ -1,20 +1,21 @@
   
       
       {%if initialrisk %}
-                    {%for items in riskmatrix %}
+                   
         
-                      {%if items.Combined == initialrisk %}
-                         {% if items.RiskColour|lower == 'red' %}
+                      
+                         {% if riskcolour|lower == 'red' %}
 
                             <td width="5%" class="table-danger">{{initialrisk}}</td>
-                         {%elif items.RiskColour|lower == 'yellow' %}
+                         {%elif riskcolour|lower == 'yellow' %}
                             <td width="5%" class="table-warning">{{initialrisk}}</td>
-                          {%elif  items.RiskColour|lower == 'green' %}
+                          {%elif  riskcolour|lower == 'green' %}
                           <td width="5%" class="table-success">{{initialrisk}}</td>
+                          {%else%}
+                          <td width="5%" >{{initialrisk}}</td>
                           {%endif%}
-                      {%endif%}
 
-                    {%endfor%}
-                  {%else%}
+    
+      {%else%}
                   <td width="5%"> {{initialrisk}}</td> <!--Eventhough its empty just for cleaner code-->
-                  {%endif%}
+      {%endif%}

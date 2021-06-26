@@ -213,14 +213,15 @@
 
                     {%block incInitialRiskColour%}
 
-                      {%if riskmatrix%}
-                          {% with initialrisk=details.7%} <!--Template Tag cannot have space around "="-->
-                              {%include "userT/incinitialriskcolour.html"%}
-                          {%endwith%}
-
-                      {%else%}
-                              <td>{{details.7}}</td> <!--Original Code-->
-                      {%endif%}
+                    {%if riskmatrix%}
+                    {% with initialrisk=x.InitialRisk%}
+                    {% with riskcolour=x.RiskColour%}
+                      {%include "userT/incinitialriskcolour.html"%}
+                      {%endwith%}
+                    {%endwith%}
+                {%else%}
+                  <td>{{ x.InitialRisk }}</td><!--Original Code-->
+                {%endif%}
                   {%endblock%}
                    
                     <td width = "10%">{{details.8}}</td>

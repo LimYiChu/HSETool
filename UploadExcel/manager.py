@@ -4,7 +4,10 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 class QuerySet(models.QuerySet):
     def get_myActions(self,userorganisation,userdisipline,usersubdisipline,que):
-        return self.filter(Organisation__icontains=userorganisation).filter(Disipline__icontains=userdisipline).filter(Subdisipline__icontains=usersubdisipline).filter(QueSeries__iexact=que)
+        return self.filter(Organisation__icontains=userorganisation).filter(Disipline__icontains=userdisipline).filter(
+                Subdisipline__icontains=usersubdisipline).filter(QueSeries__iexact=que).values()
+
+
     def get_myActionsCount(self,userorganisation,userdisipline,usersubdisipline,que):
         return self.filter(Organisation__icontains=userorganisation).filter(Disipline__icontains=userdisipline).filter(Subdisipline__icontains=usersubdisipline).filter(QueSeries__iexact=que).count ()
     

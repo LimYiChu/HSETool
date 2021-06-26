@@ -12,6 +12,24 @@ from dateutil.relativedelta import *
 from userT.parameters import *
 
 
+def bladdriskcolourandoptimise (actionitems,removelist):
+    
+    dfRiskMatrix = pd.DataFrame(list(RiskMatrix.objects.all().values()))
+        #print (dfRiskMatrix[['Combined','RiskColour']])
+        
+    for dictitems in actionitems:
+        
+        for items in dictitems:
+                [items.pop(key) for key in removelist] # Reducing the data going to html
+                #
+                RiskColour = dfRiskMatrix.loc[dfRiskMatrix['Combined'].isin([items.get('InitialRisk')]),'RiskColour'].tolist() #cant use .item() as its causing an error when not matching
+                
+                if RiskColour:
+                    items['RiskColour'] = RiskColour[0]
+                else: 
+                    items['RiskColour'] = False
+    
+    return actionitems
 
 def blgroupbyaggsum(databody,dataheader,groupby,sumby):
     

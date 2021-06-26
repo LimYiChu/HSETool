@@ -65,7 +65,7 @@ def loadsignature (request):
    
 
         #Signature=request.POST.get('signature')
-        #print(Signature)
+       
         #x=CustomUser.objects.get(id=form2.instance.id)
         #formuser = CustomUserSignature(request.POST, instance=x)
         #formuser.save()
@@ -211,8 +211,15 @@ class ActioneeList (ListView):
         userZemail = self.request.user.email
         ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
         #actioneeItems = blfuncActioneeComDisSub(ActioneeRoutes,0) - To be deleted - this was limited to 3 streams
+        
         ActioneeActions = blallActionsComDisSub(ActioneeRoutes,0)
-        return ActioneeActions
+        rem_list = ['Consequence','FutureAction','Deviation','QueSeries','QueSeriesTarget','DateCreated']
+
+        finalactionitems = bladdriskcolourandoptimise(ActioneeActions,rem_list)
+       
+                
+                
+        return finalactionitems
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -224,7 +231,7 @@ class ActioneeList (ListView):
         # context['book_list'] = Book.objects.all()
         
         #res = next((sub for sub in riskmatrices if sub['Combined'] == "5A"),None)
-        #print (ActioneeActions)
+       
 
         
 
@@ -249,12 +256,18 @@ class ApproverList (ListView):
         dict_allRou = blgetuserRoutes(self.request,userZemail)
         Approver_R =    dict_allRou.get('Approver_Routes')
         
+        
         for key, value in Approver_R.items():
             #x = blfuncActioneeComDisSub(value,key)
             allactionItems= blallActionsComDisSub(value,key)
             ApproverActions.insert(key,allactionItems)
             
+        rem_list = ['Consequence','FutureAction','Deviation','QueSeries','QueSeriesTarget','DateCreated']
         
+        for items in ApproverActions:
+            #have to do a loop as its adding another level compared to actionee
+            finalactionitems= bladdriskcolourandoptimise(items,rem_list) #The way python works its not using this finally but editing ApproverActions directly
+
         return ApproverActions
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -387,7 +400,7 @@ class ApproverConfirm(UpdateView):
     def get_context_data(self, **kwargs): 
         emailid=self.request.user.email
         sign=self.request.user.signature
-        print(sign)
+       
         context = super().get_context_data(**kwargs)
         context['signature'] = blgetfieldCustomUser(emailid,"signature")
         return context
@@ -1067,7 +1080,28 @@ def repPMTExcel (request):
     
 
     allactions = ActionItems.objects.all()
-    #edward added id
+    
+    rem_list = []
+
+    
+    # dfRiskMatrix = pd.DataFrame(list(RiskMatrix.objects.all().values()))
+    #     #print (dfRiskMatrix[['Combined','RiskColour']])
+        
+   
+        
+    # for items in allactions:
+    #             [items.pop(key) for key in rem_list] # Reducing the data going to html
+    #             #
+    #             RiskColour = dfRiskMatrix.loc[dfRiskMatrix['Combined'].isin([items.get('InitialRisk')]),'RiskColour'].tolist() #cant use .item() as its causing an error when not matching
+                
+    #             if RiskColour:
+    #                 items['RiskColour'] = RiskColour[0]
+    #             else: 
+    #                 items['RiskColour'] = False
+    
+    
+
+
     tableallheader = ['id','StudyActionNo','StudyName', 'Disipline' ,'Recommendations', 'Response','DueDate','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
     lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
     tableallheadermodified = ['Study Action No','Study Name', 'Discipline' ,'Recommendations', 'Response','Due Date','Initial Risk']
