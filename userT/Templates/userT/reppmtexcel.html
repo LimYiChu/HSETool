@@ -211,19 +211,8 @@
                     <td>{{details.4}}</td>
                     <td width="20%">{{details.5}}</td>
                     <td>{{details.6}}</td>
-
-                    {%block incInitialRiskColour%}
-
-                    {%if riskmatrix%}
-                    {% with initialrisk=x.InitialRisk%}
-                    {% with riskcolour=x.RiskColour%}
-                      {%include "userT/incinitialriskcolour.html"%}
-                      {%endwith%}
-                    {%endwith%}
-                {%else%}
-                  <td>{{ x.InitialRisk }}</td><!--Original Code-->
-                {%endif%}
-                  {%endblock%}
+                    <td>{{details.7}}</td>
+                    
                    
                     <td width = "10%">{{details.8}}</td>
                   </tr> 
