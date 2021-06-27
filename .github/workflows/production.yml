@@ -18,7 +18,7 @@ jobs:
     - name: test Get latest code
       uses: actions/checkout@v2
 # phase3 instancte server
-    - name: testing changing user group for SFTP transferred files 
+    - name: changing user group for SFTP transferred files 
       uses: appleboy/ssh-action@master #github marketplace app 
       with:
         host: 52.74.252.12
@@ -28,7 +28,7 @@ jobs:
         script: |
           sudo /opt/bitnami/ctlscript.sh stop apache
 
-    - name: test Sync files usert
+    - name: Sync files usert
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="migrations/" --exclude="__pycache__/" --include="" --filter=""
@@ -40,7 +40,7 @@ jobs:
         remote_key: ${{ secrets.LIGHTSAIL_KEY }}
 
 
-    - name: test Sync files uploadexcel
+    - name: Sync files uploadexcel
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="migrations/" --exclude="__pycache__/" --include="" --filter=""
@@ -51,7 +51,7 @@ jobs:
         remote_user: bitnami
         remote_key: ${{ secrets.LIGHTSAIL_KEY }}
       
-    - name: test Sync files trackem
+    - name: Sync files trackem
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="__pycache__/" --exclude="Templates/" --exclude="settings.py" --exclude="wsgi.py" --exclude="asgi.py" --exclude="__init__.py" --exclude="tasks.py" --include="" --filter=""
@@ -62,7 +62,7 @@ jobs:
         remote_user: bitnami
         remote_key: ${{ secrets.LIGHTSAIL_KEY }}
 
-    - name: test Sync files static
+    - name: Sync files static
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="media/" --include="" --filter=""
@@ -74,7 +74,7 @@ jobs:
         remote_key: ${{ secrets.LIGHTSAIL_KEY }}
 
     
-    - name: testing changing user group for SFTP transferred files 
+    - name: changing user group for SFTP transferred files 
       uses: appleboy/ssh-action@master #github marketplace app 
       with:
         host: 52.74.252.12
@@ -82,14 +82,13 @@ jobs:
         key: ${{ secrets.LIGHTSAIL_KEY }}
         port: 22
         script: |
-          yes | python /opt/bitnami/projects/HSETool/manage.py collectstatic
           sudo chgrp -R varwwwusers /opt/bitnami/projects/HSETool/ 
           sudo chmod -R 770 /opt/bitnami/projects/HSETool/
           sudo /opt/bitnami/ctlscript.sh start apache
 
 #phase4a server
 
-    - name: testing changing user group for SFTP transferred files on PRISM
+    - name: changing user group for SFTP transferred files on PRISM
       uses: appleboy/ssh-action@master #github marketplace app 
       with:
         host: 52.220.156.38
@@ -99,7 +98,7 @@ jobs:
         script: |
           sudo /opt/bitnami/ctlscript.sh stop apache
 
-    - name: test Sync files usert
+    - name: Sync files usert
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="migrations/" --exclude="__pycache__/" --include="" --filter=""
@@ -111,7 +110,7 @@ jobs:
         remote_key: ${{ secrets.LIGHTSAIL_KEY }}
 
 
-    - name: test Sync files uploadexcel
+    - name: Sync files uploadexcel
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="migrations/" --exclude="__pycache__/" --include="" --filter=""
@@ -122,7 +121,7 @@ jobs:
         remote_user: bitnami
         remote_key: ${{ secrets.LIGHTSAIL_KEY }}
       
-    - name: test Sync files trackem
+    - name: Sync files trackem
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="__pycache__/" --exclude="Templates/" --exclude="settings.py" --exclude="wsgi.py" --exclude="asgi.py" --exclude="__init__.py" --exclude="tasks.py" --include="" --filter=""
@@ -133,7 +132,7 @@ jobs:
         remote_user: bitnami
         remote_key: ${{ secrets.LIGHTSAIL_KEY }}
 
-    - name: test Sync files static
+    - name: Sync files static
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="media/" --include="" --filter=""
@@ -145,7 +144,7 @@ jobs:
         remote_key: ${{ secrets.LIGHTSAIL_KEY }}
 
     
-    - name: testing changing user group for SFTP transferred files 
+    - name: changing user group for SFTP transferred files 
       uses: appleboy/ssh-action@master #github marketplace app 
       with:
         host: 52.220.156.38
@@ -153,7 +152,6 @@ jobs:
         key: ${{ secrets.LIGHTSAIL_KEY }}
         port: 22
         script: |
-          yes | python /opt/bitnami/projects/HSETool/manage.py collectstatic
           sudo chgrp -R varwwwusers /opt/bitnami/projects/HSETool/ 
           sudo chmod -R 770 /opt/bitnami/projects/HSETool/
           sudo /opt/bitnami/ctlscript.sh start apache

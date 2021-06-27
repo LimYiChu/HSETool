@@ -82,7 +82,6 @@ jobs:
         key: ${{ secrets.LIGHTSAIL_KEY }}
         port: 22
         script: |
-          yes | python /opt/bitnami/projects/HSETool/manage.py collectstatic
           sudo chgrp -R varwwwusers /opt/bitnami/projects/HSETool/ 
           sudo chmod -R 770 /opt/bitnami/projects/HSETool/
           sudo /opt/bitnami/ctlscript.sh start apache
@@ -153,7 +152,6 @@ jobs:
         key: ${{ secrets.LIGHTSAIL_KEY }}
         port: 22
         script: |
-          yes | python /opt/bitnami/projects/HSETool/manage.py collectstatic
           sudo chgrp -R varwwwusers /opt/bitnami/projects/HSETool/ 
           sudo chmod -R 770 /opt/bitnami/projects/HSETool/
           sudo /opt/bitnami/ctlscript.sh start apache
