@@ -24,41 +24,16 @@
               <h4 class="card-header">
                 Approver List
               </h4>
-              <div class="card-body">
+              <div class="card-body" style="float:left col-md-12">
                 <p class="card-text">
-                  <table style="font-size:30" class="table table-striped table-hover" id="example"> <!--set to maximum 20 rows per page-->
-                    <thead class="thead-dark">
-                      <tr>
-                        <th>
-                          Study Action No
-                        </th>
-                        <th>
-                          Study Name
-                        </th>
-                        <th> 
-                          Discipline
-                        </th>
-                        <th>
-                          Sub-discipline
-                        </th>
-                        <th>
-                          Cause
-                        </th>
-                        <th>
-                          Consequence
-                        </th>
-                        <th>
-                          Recommendations
-                        </th>
-                        <th >
-                          Initial Risk
-                        </th>
-                        <th >
-                          Response
-                        </th>
-                        
-                       </tr>
-                    </thead>
+                  <table style="font-size:30" class="table table-striped table-hover" id="example" style = "width:100%"> <!--set to maximum 20 rows per page-->
+                    
+                    {%include "userT/inclactioneeapprtableheader.html"%}
+                    <th>Responses</th>
+                    </tr>
+                  </thead>
+
+
                     <tbody>
                       {%for approverL in object_list%}
                       {% for routes  in approverL %}
@@ -66,22 +41,25 @@
                       <tr>
                         <td><a class="article-title" href="{% url  'ApproveFormMixin' x.id %}">{{ x.StudyActionNo }}</a></td>
                         <td>{{ x.StudyName }}</td>
-                        <td>{{ x.Disipline }}</td>
-                        <td>{{ x.Subdisipline }}</td>
+                        <td>{{ x.Disipline }} / {{ x.Subdisipline }} </td>
+                       
                         <td>{{ x.Cause }}</td>
-                        <td>{{ x.Consequence }}</td>
+                        
                         <td><a class="article-title" href="{% url  'ApproveFormMixin' x.id %}">{{ x.Recommendations }}</a></td>
                         
-                        
+                        <td>{{ x.DueDate }}</td>
                         {%block incInitialRiskColour%}
 
-                          {%if riskmatrix%}
-                            {% with initialrisk=x.InitialRisk%}
-                              {%include "userT/incinitialriskcolour.html"%}
-                              {%endwith%}
-                            {%else%}
-                              <td>{{ x.InitialRisk }}</td> <!--Original Code-->
-                            {%endif%}
+                        {%if riskmatrix%}
+                        {% with initialrisk=x.InitialRisk%}
+                        {% with riskcolour=x.RiskColour%}
+                          {%include "userT/incinitialriskcolour.html"%}
+                          {%endwith%}
+                        {%endwith%}
+                    {%else%}
+                      <td>{{ x.InitialRisk }}</td><!--Original Code-->
+                    {%endif%}
+
 
                         {%endblock%}
                        

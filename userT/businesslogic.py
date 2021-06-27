@@ -11,7 +11,43 @@ import numpy as np
 from dateutil.relativedelta import *
 from userT.parameters import *
 
+def bladdriskcolourandoptiforflater (actionitems,removelist):
+    
+    dfRiskMatrix = pd.DataFrame(list(RiskMatrix.objects.all().values()))
+        #print (dfRiskMatrix[['Combined','RiskColour']])
+        
+    #for dictitems in actionitems:
+        
+    for items in actionitems:
+                [items.pop(key) for key in removelist] # Reducing the data going to html
+                #
+                RiskColour = dfRiskMatrix.loc[dfRiskMatrix['Combined'].isin([items.get('InitialRisk')]),'RiskColour'].tolist() #cant use .item() as its causing an error when not matching
+                
+                if RiskColour:
+                    items['RiskColour'] = RiskColour[0]
+                else: 
+                    items['RiskColour'] = False
+    
+    return actionitems
 
+def bladdriskcolourandoptimise (actionitems,removelist):
+    
+    dfRiskMatrix = pd.DataFrame(list(RiskMatrix.objects.all().values()))
+        #print (dfRiskMatrix[['Combined','RiskColour']])
+        
+    for dictitems in actionitems:
+        
+        for items in dictitems:
+                [items.pop(key) for key in removelist] # Reducing the data going to html
+                #
+                RiskColour = dfRiskMatrix.loc[dfRiskMatrix['Combined'].isin([items.get('InitialRisk')]),'RiskColour'].tolist() #cant use .item() as its causing an error when not matching
+                
+                if RiskColour:
+                    items['RiskColour'] = RiskColour[0]
+                else: 
+                    items['RiskColour'] = False
+    
+    return actionitems
 
 def blgroupbyaggsum(databody,dataheader,groupby,sumby):
     
@@ -53,7 +89,7 @@ def blgetRiskMatrixColour():
     return datadict
     
 
-def blgetuserRoutes(request,useremail):
+def blgetuserRoutes(useremail):
     ApproverLevel = 8
     userZemail = useremail
     Approver_Routes = {}
@@ -221,6 +257,19 @@ def blsetrejectionActionItems(ID,queseries):
     ActionItems.mdlQueSeries.mgrsetQueSeries(ID,queseries) 
     ActionItems.mdlQueSeries.mgrincrementRevision(ID)
 
+def blbuildSubmittedemail(ID):
+    urlview = f"/pmtrepviewall/{ID}/view"
+    Content=[]
+    actionDetails = ActionItems.objects.filter(id=ID).values() # Since off the bat i did not pass any other information besides ID to rejection form i now have to information back for emails
+    studyActionNo =  actionDetails[0].get('StudyActionNo')
+    studyName = actionDetails[0].get('StudyName')
+    response = actionDetails[0].get('Response')
+
+    Content.append(studyActionNo + " from " + studyName + " has been submitted ") #This is subject
+    
+    Content.append("To view this, please go to " + paremailurl +urlview + " . To approve go to your dashboard/approver que, to approve this and other actions")#+ "...Response" + response) #this is the content of the email #passed the url here in the content
+    
+    return Content
 def blbuildRejectionemail(ID,RejectReason):
     urlview = f"/pmtrepviewall/{ID}/view"
     Content=[]
@@ -246,7 +295,19 @@ def blgetHistoryforUser(useremail, actioneeroutes):
     actionsintheQue = blallActionsComDisSubbyList(actioneeroutes,ApproverQue)
 
     return actionsintheQue
+
+def blgetApproverHistoryforUser(useremail, actioneeroutes):
     
+    #first get user ID from CustomUser as only user id is used in history tables
+    ApproverQue = [1,2,3,4,5,6,7,8,9,99]
+    lstUserSeries =  CustomUser.objects.filter(email=useremail).values()
+    currentUserID = lstUserSeries[0].get('id')
+
+    #get all history values from history tables first
+    userHistoric = ActionItems.history.filter(history_user_id=currentUserID).order_by('-history_date')
+    actionsintheQue = blallActionsComDisSubbyList(actioneeroutes,ApproverQue)
+
+    return actionsintheQue
 
 def blallActionsComDisSubbyList(contextRoutes,quelist):
     

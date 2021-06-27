@@ -10,7 +10,7 @@ from UploadExcel.forms import *
 from django.contrib.auth import get_user_model
 import matplotlib as plt
 from .businesslogic import *
-
+from .tableheader import *
 from .excelReports import *
 from .models import *
 from UploadExcel.models import *
@@ -65,7 +65,7 @@ def loadsignature (request):
    
 
         #Signature=request.POST.get('signature')
-        #print(Signature)
+       
         #x=CustomUser.objects.get(id=form2.instance.id)
         #formuser = CustomUserSignature(request.POST, instance=x)
         #formuser.save()
@@ -119,7 +119,7 @@ def mainDashboard (request):
     studies = blgetAllStudies()
 
     #get all routes
-    dict_allRou = blgetuserRoutes(request,request.user.email)
+    dict_allRou = blgetuserRoutes(request.user.email)
     
     #Just get Actionee and Approver Routes, tied into model managers
     Actionee_R =    dict_allRou.get('Actionee_Routes')
@@ -211,8 +211,15 @@ class ActioneeList (ListView):
         userZemail = self.request.user.email
         ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
         #actioneeItems = blfuncActioneeComDisSub(ActioneeRoutes,0) - To be deleted - this was limited to 3 streams
+        
         ActioneeActions = blallActionsComDisSub(ActioneeRoutes,0)
-        return ActioneeActions
+        rem_list = ['Consequence','FutureAction','Deviation','QueSeries','QueSeriesTarget','DateCreated']
+
+        finalactionitems = bladdriskcolourandoptimise(ActioneeActions,rem_list)
+       
+                
+                
+        return finalactionitems
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -224,37 +231,66 @@ class ActioneeList (ListView):
         # context['book_list'] = Book.objects.all()
         
         #res = next((sub for sub in riskmatrices if sub['Combined'] == "5A"),None)
-        #print (ActioneeActions)
-
-        
-
+       
 class HistoryList (ListView):
     template_name   =   'userT/historylist.html' #ok checked by yhs in terms of capital letters.
     
     def get_queryset(self):
         #historically only get queue for all approver levels that he person is the actionee instead of everything else
         userZemail = self.request.user.email
-        ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
-
-        lstgetHistoryforUser             = blgetHistoryforUser(userZemail,ActioneeRoutes)
         
-        return lstgetHistoryforUser    
+        dict_allRou = blgetuserRoutes(userZemail)
     
+        #Just get Actionee and Approver Routes, tied into model managers
+        Actionee_R =    dict_allRou.get('Actionee_Routes')
+        Approver_R =    dict_allRou.get('Approver_Routes') 
+       
+        #ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
+
+        lstgetHistoryforUser             = blgetHistoryforUser(userZemail,Actionee_R)
+        # ApproverActions = []
+        # for key, value in Approver_R.items():
+        #     #x = blfuncActioneeComDisSub(value,key)
+        #     allactionItems= blallActionsComDisSub(value,key)
+           
+        #     ApproverActions.insert(key,allactionItems)
+
+        # flater_list = [item for sublist in ApproverActions for item in sublist]
+        # print (flater_list)
+        # finalitems =[]
+        
+        rem_list = ['Consequence','FutureAction','Deviation','QueSeries','QueSeriesTarget','DateCreated']
+
+        finalactionitems = bladdriskcolourandoptimise(lstgetHistoryforUser,rem_list)
+        
+        return lstgetHistoryforUser
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['riskmatrix'] = blgetRiskMatrixColour()
+        return context
+
 class ApproverList (ListView):
     template_name   =   'userT/actionlistapprover.html' #yhs changed to all small letters
     
     def get_queryset(self):
         userZemail = self.request.user.email
         ApproverActions = []
-        dict_allRou = blgetuserRoutes(self.request,userZemail)
+        dict_allRou = blgetuserRoutes(userZemail)
         Approver_R =    dict_allRou.get('Approver_Routes')
+        
         
         for key, value in Approver_R.items():
             #x = blfuncActioneeComDisSub(value,key)
             allactionItems= blallActionsComDisSub(value,key)
             ApproverActions.insert(key,allactionItems)
             
+        rem_list = ['Consequence','FutureAction','Deviation','QueSeries','QueSeriesTarget','DateCreated']
         
+        for items in ApproverActions:
+            #have to do a loop as its adding another level compared to actionee
+            finalactionitems= bladdriskcolourandoptimise(items,rem_list) #The way python works its not using this finally but editing ApproverActions directly
+
         return ApproverActions
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -387,7 +423,7 @@ class ApproverConfirm(UpdateView):
     def get_context_data(self, **kwargs): 
         emailid=self.request.user.email
         sign=self.request.user.signature
-        print(sign)
+       
         context = super().get_context_data(**kwargs)
         context['signature'] = blgetfieldCustomUser(emailid,"signature")
         return context
@@ -602,8 +638,21 @@ def multiplefiles (request, **kwargs):
                 Action_id=ID,
                 Username=request.user.email
             )
+        newQueSeries = 1
+        ActionItems.mdlQueSeries.mgrsetQueSeries(ID,newQueSeries)
+        
+        discsub = blgetDiscSubOrgfromID(ID)
+            
+        Signatoryemails = blgetSignatoryemailbyque(discsub,newQueSeries+1)
 
-        ActionItems.mdlQueSeries.mgrsetQueSeries(ID,1)
+            
+        ContentSubject  =blbuildSubmittedemail(ID)
+        
+        print ("SIGNATORY",Signatoryemails)
+        print ("CONTENTS",ContentSubject)
+        success = blemailSendindividual(emailSender,Signatoryemails,ContentSubject[0], ContentSubject[1])
+        
+        
         return HttpResponseRedirect('/ActioneeList/')
             
     if (request.POST.get('Cancel')):
@@ -827,7 +876,7 @@ def rptdiscSlice(request, **kwargs):
     return render (request, 'userT/repdisc.html', context) #yhs changed all to smal lletters
 
 def rptbyUser(request, **kwargs):
-    dict_allRou = blgetuserRoutes(request,request.user.email)
+    dict_allRou = blgetuserRoutes(request.user.email)
     Actionee_R =    dict_allRou.get('Actionee_Routes')
     
     #This function just does a count using model managers , calling from businesslogic.py
@@ -917,7 +966,7 @@ def EmailReminder(request):
         sub = Subscribe(request.POST)
         recepient = str (sub ['Email'].value())
         
-        dict_allRou = blgetuserRoutes(request,recepient)
+        dict_allRou = blgetuserRoutes(recepient)
         Actionee_R =    dict_allRou.get('Actionee_Routes')  
         ActionCount = blfuncActionCount(Actionee_R,0)
         
@@ -1067,16 +1116,48 @@ def repPMTExcel (request):
     
 
     allactions = ActionItems.objects.all()
-    #edward added id
+    
+    rem_list = []
+
+    
+    # dfRiskMatrix = pd.DataFrame(list(RiskMatrix.objects.all().values()))
+    #     #print (dfRiskMatrix[['Combined','RiskColour']])
+        
+   
+        
+    # for items in allactions:
+    #             [items.pop(key) for key in rem_list] # Reducing the data going to html
+    #             #
+    #             RiskColour = dfRiskMatrix.loc[dfRiskMatrix['Combined'].isin([items.get('InitialRisk')]),'RiskColour'].tolist() #cant use .item() as its causing an error when not matching
+                
+    #             if RiskColour:
+    #                 items['RiskColour'] = RiskColour[0]
+    #             else: 
+    #                 items['RiskColour'] = False
+    
+    
+
+
     tableallheader = ['id','StudyActionNo','StudyName', 'Disipline' ,'Recommendations', 'Response','DueDate','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
     lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
     tableallheadermodified = ['Study Action No','Study Name', 'Discipline' ,'Recommendations', 'Response','Due Date','Initial Risk']
+    
+    #RejectDetails - gonna use a different way same way as actionne list
+    #just using revision way to get all rejected actions
+    
+    rejectedactions = ActionItems.mdlgetActionDiscSubCount.mgr_getAllRejectedItems(1)
+    rem_list = ['Consequence','FutureAction','Deviation','QueSeries','QueSeriesTarget','DateCreated'] #OPtimising data to be removed
+    finalactionitems = bladdriskcolourandoptiforflater(rejectedactions,rem_list)
+    dfrejection = pd.DataFrame.from_dict(finalactionitems)
+
+
+    #lstofrejectedforexcel = blgetActionStuckAt(rejectedactions, tableallheader)
     #for Disipline based view
     tabledischeader = ['Discipline', 'Yet to Respond' ,'Approval Stage', 'Closed','Open Actions','Total Actions']
     lstbyDisc= blaggregatebyDisc(discsuborg,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue)
     
 
-    #get rejected actions get Reject Table
+    #get rejected summary actions get Reject Table
     tablerheaderejected = ['Discipline', 'Rejected Count']
     listofrejecteditems = blgetrejectedcount(discsuborg,1) #Pass revision number => than whats required
     
@@ -1115,6 +1196,17 @@ def repPMTExcel (request):
             response = HttpResponse(content_type='application/ms-excel') #
             response['Content-Disposition'] = 'attachment; filename=byAllActions.xlsx' 
             workbook.save(response) # odd  way but it works - took too long to figure out as no resource on the web
+            return response
+        elif (request.POST.get('rejectedactions')):
+            
+            in_memory = BytesIO()
+            workbook = dfrejection.to_excel(in_memory)
+            #just use memory and workbook is redundant
+            response = HttpResponse(content_type='application/ms-excel') #
+            response['Content-Disposition'] = 'attachment; filename=byRejectedActions.xlsx' 
+            in_memory.seek(0)    
+            response.write(in_memory.read())
+            
             return response
 
         elif (request.POST.get('indiActions')):
@@ -1179,6 +1271,7 @@ def repPMTExcel (request):
         'listaggregatedindiheader':listaggregatedindiheader,
         'listofrejectedheader': tablerheaderejected,
         'listofrejecteditems': listofrejecteditems,
+        "rejectedactions": finalactionitems,
     
         
     }
