@@ -204,7 +204,30 @@ $(document).ready(function() {
     } );
   } );
   
-
+  $(document).ready(function() {
+    // Setup - add a text input to each footer cell
+    $('#table7 thead tr').clone(true).appendTo( '#table7 thead' );
+    $('#table7 thead tr:eq(1) th').each( function (i) {
+        var title = $(this).text();
+        $(this).html( '<input type="text" placeholder="Search" />' );
+  
+        $( 'input', this ).on( 'keyup change', function () {
+            if ( table.column(i).search() !== this.value ) {
+                table
+                    .column(i)
+                    .search( this.value )
+                    .draw();
+            }
+        } );
+    } );
+  
+    var table = $('#table7').DataTable( {
+        orderCellsTop: true,
+        fixedHeader: true,
+         "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
+         //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
+    } );
+  } );
 function openReport(evt, ReportName) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");

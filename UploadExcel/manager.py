@@ -43,6 +43,11 @@ class QuerySet(models.QuerySet):
     def get_DiscSubOrgRejectedActionsCount(self,DiscSub,Revvalue): #get discipline, sub-disc, get the filter
         return self.filter (Disipline__icontains=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1]).filter (
                         Organisation__icontains=DiscSub[2]).filter (Revision__gte=Revvalue).count ()
+    def get_DiscSubOrgRejectedActions(self,DiscSub,Revvalue): #get discipline, sub-disc, get the filter
+        return self.filter (Disipline__icontains=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1]).filter (
+                        Organisation__icontains=DiscSub[2]).filter (Revision__gte=Revvalue).values()
+    def get_AllRejectedActions(self,Revvalue): #get discipline, sub-disc, get the filter
+        return self.filter (Revision__gte=Revvalue).values()
 
     def get_mgrComments(self,fkey):
         return self.filter(Action__pk=fkey)
@@ -92,6 +97,10 @@ class mgrgetActionDiscSubCount(models.Manager):
         return self.get_queryset().get_DiscSubOrgActionsCount(workshop,DiscSub,que)
     def mgr_getDiscSubOrgRejectedItemsCount(self,DiscSub,Revision):
         return self.get_queryset().get_DiscSubOrgRejectedActionsCount(DiscSub,Revision)
+    def mgr_getDiscSubOrgRejectedItems(self,DiscSub,Revision):
+        return self.get_queryset().get_DiscSubOrgRejectedActions(DiscSub,Revision)
+    def mgr_getAllRejectedItems(self,Revision):
+        return self.get_queryset(). get_AllRejectedActions(Revision)   
 
 class mgrgetActionCompanyCount(models.Manager):
     def get_queryset (self):

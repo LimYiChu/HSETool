@@ -178,6 +178,7 @@
               <button class="tablinks" onclick="openReport(event, 'Discipline')">Discipline</button>
               <button class="tablinks" onclick="openReport(event, 'DueDate');initiateGoogleChart()">Due Date & Run-Down</button>
               <button class="tablinks" onclick="openReport(event, 'Rejected')">Rejected (Summary)</button>
+              <button class="tablinks" onclick="openReport(event, 'RejectedDetails')">Rejected (Details)</button>
               <button class="tablinks" onclick="openReport(event, 'PieChart');initiateGooPieChart()">Pie Charts</button>
               
             </div>
@@ -480,6 +481,56 @@
                           </table>
                       </div>
                     </div>
+
+
+                    <div id = "RejectedDetails" class="tabcontent" style="border-left:0pc; border-right:0px;border-bottom:0px">
+                      <div  style="float:left col-md-12" >
+                        <table id="table7" class="table table-striped table-hover display" style="width:100%">
+                          {%include "userT/inclactioneeapprtableheader.html"%}
+                          <th width ="20%">Responses</th>
+                          <th width = "5%">Revision</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                         
+                        {% for x  in rejectedactions %}
+                  
+                                  <tr>
+                                    <td><a class="article-title" href="{% url  'pmtrepviewall' x.id %}">{{ x.StudyActionNo }}</a></td>
+                                    <td>{{ x.StudyName }}</td>
+                                    <td>{{ x.Disipline }} / {{ x.Subdisipline }}</td>
+                                    
+                                    <td>{{ x.Cause }}</td>
+                                    
+                                    <td><a class="article-title" href="{% url  'pmtrepviewall' x.id %}">{{ x.Recommendations }}</a></td>
+                                    <td>{{ x.DueDate }}</td>
+                                    
+                                  
+
+                                      {%if riskmatrix%}
+                                          {% with initialrisk=x.InitialRisk%}
+                                          {% with riskcolour=x.RiskColour%}
+                                            {%include "userT/incinitialriskcolour.html"%}
+                                            {%endwith%}
+                                          {%endwith%}
+                                      {%else%}
+                                        <td>{{ x.InitialRisk }}</td><!--Original Code-->
+                                      {%endif%}
+
+                                      <td>{{ x.Response }}</td>
+                                      <td>{{ x.Revision }}</td>
+                                  {%endfor%}
+                </tbody>
+                           
+                          </tbody>
+                          </table>
+                          <div>
+                            <br>
+                            <div class="form-group"><input type="submit" name="rejectedactions" value="Download Excel" class="btn btn-outline-primary float-right col-md-2"  /></div>              
+                            </div> 
+                            <br> 
+                      </div>
 
           </fieldset>
          

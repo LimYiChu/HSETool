@@ -2,7 +2,8 @@ from django import forms
 from .models import *
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import *
-strFutActApprNotes = "Future Actions (Actionee) / Approver Notes (Approver To Include Name...)"
+strFutActApprNotes = "Future Actions (Actionee))"
+
 class UploadExlForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(UploadExlForm, self).__init__(*args, **kwargs)
@@ -98,7 +99,7 @@ class frmUpdateActioneeForm(forms.ModelForm):
         
         Div (
                 
-            Div ('Response', required=True, css_class='col-md-12'),#YHS Testing
+            Div ('Response', required=True, css_class='col-md-12'),
             #Div ('Attachment', css_class='col-md-12'),
             Div ('FutureAction', css_class='col-md-12'), # - Leave it in here for now need to add to common layout if they agree
             css_class='row',
@@ -124,8 +125,8 @@ class ApproverForm(forms.ModelForm):
         Div(
             Div (Field('Response',readonly=True) ,css_class='col-md-12'), 
             #Div (Field('Attachment',disable=True),  css_class='col-md-12'),
-            #Div (Field('FutureAction', readonly=True), css_class='col-md-12'),
-            Div (Field('FutureAction'), css_class='col-md-12'),
+            Div (Field('FutureAction', readonly=True), css_class='col-md-12'),
+            #Div (Field('FutureAction'), css_class='col-md-12'),
             #Div (Field('QueSeries', readonly=True), css_class='col-md-3'),
            #-somehow not working Div (Field('DueDate', readonly=True), css_class='col-md-2'),
             css_class='row',
