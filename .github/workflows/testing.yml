@@ -18,7 +18,7 @@ jobs:
     - name: test Get latest code
       uses: actions/checkout@v2
 # test instancte server
-    - name: testing changing user group for SFTP transferred files 
+    - name: stop server for test
       uses: appleboy/ssh-action@master #github marketplace app 
       with:
         host: 54.255.201.56
@@ -88,7 +88,7 @@ jobs:
 
 #prism demo server
 
-    - name: testing changing user group for SFTP transferred files on PRISM
+    - name: stop server for prism
       uses: appleboy/ssh-action@master #github marketplace app 
       with:
         host: 52.77.81.191

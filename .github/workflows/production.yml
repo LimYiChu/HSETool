@@ -1,4 +1,4 @@
-name : PRODUCTION Servers(Using TEST & Prism IP's for now)
+name : PRODUCTION Servers(phase 3 & 4a)
 
 on: #this line specifies on pull or push test
     workflow_dispatch:
@@ -18,7 +18,7 @@ jobs:
     - name: test Get latest code
       uses: actions/checkout@v2
 # phase3 instancte server
-    - name: changing user group for SFTP transferred files 
+    - name: stop server phase3 
       uses: appleboy/ssh-action@master #github marketplace app 
       with:
         host: 52.74.252.12
@@ -88,7 +88,7 @@ jobs:
 
 #phase4a server
 
-    - name: changing user group for SFTP transferred files on PRISM
+    - name: stop server phase4a
       uses: appleboy/ssh-action@master #github marketplace app 
       with:
         host: 52.220.156.38
