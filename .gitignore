@@ -1,15 +1,6 @@
-*.pyc
-*/*/*/__pycache__/
-*/*/__pycache__/
-*/__pycache__/
-*.pyc
- __pycache__/
-/userT/migrations
-/userT/__pycache__
-/Tenant/__pycache__
-/Tenant/migrations
-/Trackem/__pycache__
-/UploadExcel/__pycache__
-/UploadExcel/migrations
-/userT/__pycache__/admin.cpython-39.pyc
-userT/__pycache__/forms.cpython-39.pyc
+/userT/migrations/
+/userT/__pycache__/
+/Tenant/__pycache__/
+/Tenant/migrations/
+/UploadExcel/__pycache__/
+/UploadExcel/migrations/
