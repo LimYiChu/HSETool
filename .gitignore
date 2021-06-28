@@ -1,6 +1,3 @@
 /userT/migrations/
-/userT/__pycache__/
-/Tenant/__pycache__/
 /Tenant/migrations/
-/UploadExcel/__pycache__/
 /UploadExcel/migrations/
