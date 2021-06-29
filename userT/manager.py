@@ -45,8 +45,9 @@ class RoutesQuerySet(models.QuerySet):
     
     def mgrgetActApp(self,DiscSub):
         return self.filter (Disipline__icontains=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1])
+        #edward change icontains to iexact to test 
     def mgrgetApprLevel(self,CompDiscSub):
-        return self.filter (Disipline__icontains=CompDiscSub[0]).filter(Subdisipline__icontains=CompDiscSub[1]).filter(Organisation__icontains=CompDiscSub[2])
+        return self.filter (Disipline__iexact=CompDiscSub[0]).filter(Subdisipline__icontains=CompDiscSub[1]).filter(Organisation__icontains=CompDiscSub[2])
     def mgrgetactioneefromtriplet(self,DiscSubOrg):
         return self.filter (Disipline__icontains=DiscSubOrg[0]).filter(Subdisipline__icontains=DiscSubOrg[1]).filter(Organisation__icontains=DiscSubOrg[2]).values('Actionee')
 
