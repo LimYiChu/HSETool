@@ -506,8 +506,8 @@ class ActioneeItemsMixin(ApproveItemsMixin):
         
         
         Signatories = blgetSignotories(discsuborg)
-        blsetApproverLevelTarget(IdAI,ApproverLevel)
-        lstSignatoriesTimeStamp= blgettimestampuserdetails (IdAI, Signatories)
+        blsetApproverLevelTarget(IdAI,ApproverLevel) #sets approver level target
+        lstSignatoriesTimeStamp= blgettimestampuserdetails (IdAI, Signatories) 
         
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(IdAI)
         context['Approver'] = False
