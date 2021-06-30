@@ -651,7 +651,6 @@ def blgetSignotories (lstorgdiscsub):
     
     stripedDiscSubOrg = [stripedDisc,stripedSub,stripedOrg]
     obj= ActionRoutes.mdlgetApproverLevel.mgr_getApproverLevel (lstorgdiscsub)
-        
     allfields = [f.name for f in ActionRoutes._meta.get_fields()] 
     del allfields[0:3] #- remove ID field, company and discpline , can remove others- need to be carefull with this 
     

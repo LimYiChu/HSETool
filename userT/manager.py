@@ -42,13 +42,14 @@ class RoutesQuerySet(models.QuerySet):
             Company.append(items.Organisation)
 
         return list(set(Company)) #- Returns non Duplicate values
-    
+
+    #edward changed icontains for Disipline to iexact on 20210630
     def mgrgetActApp(self,DiscSub):
-        return self.filter (Disipline__icontains=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1])
+        return self.filter (Disipline__iexact=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1])
     def mgrgetApprLevel(self,CompDiscSub):
-        return self.filter (Disipline__icontains=CompDiscSub[0]).filter(Subdisipline__icontains=CompDiscSub[1]).filter(Organisation__icontains=CompDiscSub[2])
+        return self.filter (Disipline__iexact=CompDiscSub[0]).filter(Subdisipline__icontains=CompDiscSub[1]).filter(Organisation__icontains=CompDiscSub[2])
     def mgrgetactioneefromtriplet(self,DiscSubOrg):
-        return self.filter (Disipline__icontains=DiscSubOrg[0]).filter(Subdisipline__icontains=DiscSubOrg[1]).filter(Organisation__icontains=DiscSubOrg[2]).values('Actionee')
+        return self.filter (Disipline__iexact=DiscSubOrg[0]).filter(Subdisipline__icontains=DiscSubOrg[1]).filter(Organisation__icontains=DiscSubOrg[2]).values('Actionee')
 
 class UserQuerySet(models.QuerySet):
     
