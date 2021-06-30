@@ -18,7 +18,7 @@ jobs:
     - name: test Get latest code
       uses: actions/checkout@v2
 # Phase3 instance server
-    - name: stop server for test
+    - name: stop server for Phase3
       uses: appleboy/ssh-action@master #github marketplace app 
       with:
         host: 52.74.252.12
@@ -67,7 +67,7 @@ jobs:
 
 #Phase4a
 
-    - name: stop server for prism
+    - name: stop server for Phase4a
       uses: appleboy/ssh-action@master #github marketplace app 
       with:
         host: 52.220.156.38
