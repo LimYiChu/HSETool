@@ -32,24 +32,24 @@ jobs:
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="" --include="" --filter=""
-        path: /userT/manager.py
-        remote_path: /opt/bitnami/projects/HSETool/userT/manager.py
+        path: /userT/views.py
+        remote_path: /opt/bitnami/projects/HSETool/userT/views.py
         remote_host: 52.74.252.12
         remote_port: 22
         remote_user: bitnami
         remote_key: ${{ secrets.LIGHTSAIL_KEY }}
 
 
-    - name: Sync files uploadexcel
-      uses: burnett01/rsync-deployments@4.1
-      with:
-        switches: -avzr --delete --exclude="" --include="" --filter=""
-        path: /UploadExcel/manager.py
-        remote_path: /opt/bitnami/projects/HSETool/UploadExcel/manager.py
-        remote_host: 52.74.252.12
-        remote_port: 22
-        remote_user: bitnami
-        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
+    # - name: Sync files uploadexcel
+    #   uses: burnett01/rsync-deployments@4.1
+    #   with:
+    #     switches: -avzr --delete --exclude="" --include="" --filter=""
+    #     path: /UploadExcel/manager.py
+    #     remote_path: /opt/bitnami/projects/HSETool/UploadExcel/manager.py
+    #     remote_host: 52.74.252.12
+    #     remote_port: 22
+    #     remote_user: bitnami
+    #     remote_key: ${{ secrets.LIGHTSAIL_KEY }}
 
 
     
@@ -81,24 +81,24 @@ jobs:
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="" --include="" --filter=""
-        path: /userT/manager.py
-        remote_path: /opt/bitnami/projects/HSETool/userT/manager.py
+        path: /userT/views.py
+        remote_path: /opt/bitnami/projects/HSETool/userT/views.py
         remote_host: 52.220.156.38
         remote_port: 22
         remote_user: bitnami
         remote_key: ${{ secrets.LIGHTSAIL_KEY }}
 
 
-    - name: Sync files uploadexcel
-      uses: burnett01/rsync-deployments@4.1
-      with:
-        switches: -avzr --delete --exclude="" --include="" --filter=""
-        path: /UploadExcel/manager.py
-        remote_path: /opt/bitnami/projects/HSETool/UploadExcel/manager.py
-        remote_host: 52.220.156.38
-        remote_port: 22
-        remote_user: bitnami
-        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
+    # - name: Sync files uploadexcel
+    #   uses: burnett01/rsync-deployments@4.1
+    #   with:
+    #     switches: -avzr --delete --exclude="" --include="" --filter=""
+    #     path: /UploadExcel/manager.py
+    #     remote_path: /opt/bitnami/projects/HSETool/UploadExcel/manager.py
+    #     remote_host: 52.220.156.38
+    #     remote_port: 22
+    #     remote_user: bitnami
+    #     remote_key: ${{ secrets.LIGHTSAIL_KEY }}
  
     - name: Changing user group for SFTP transferred files 
       uses: appleboy/ssh-action@master #github marketplace app 
