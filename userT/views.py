@@ -473,12 +473,21 @@ class HistoryItemsMixin(ApproveItemsMixin):
         # #sets the signatory directly in getting timestamp
         Signatories = blgetSignotories(discsuborg)
         lstSignatoriesTimeStamp= blgettimestampuserdetails (id, Signatories)
-
+          
+        #edward history container 20210701
+        print(id)  
+        #get the ord disc subdisc routes
+        print(discsuborg)
+        #get the Signatories -- there is a datetime problem here preventing from extra   
+        for items in Signatories:
+            for objects in items :
+                print(objects)
+        
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(id)
         context['Approver'] = False
         context ['ApproverLevel'] = ApproverLevel
         context ['Signatories'] = lstSignatoriesTimeStamp
-       
+             
         return context
     def form_valid(self,form):
 
