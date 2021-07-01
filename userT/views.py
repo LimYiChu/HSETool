@@ -364,6 +364,10 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
         context = super().get_context_data(**kwargs)
         discsub = blgetDiscSubOrgfromID(idAI)
         Signatories = blgetSignotories(discsub)
+        # edward added set approver target for approver 20210701 patch 2.5b
+        ApproverLevel = blgetApproverLevel(discsub)
+        blsetApproverLevelTarget(idAI,ApproverLevel) #sets approver level target
+        # end of edward added set approver target for approver 20210701 patch 2.5b
 
         #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
         lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories) #it changes the signatories directly
