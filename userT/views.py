@@ -491,7 +491,7 @@ class HistoryItemsMixin(ApproveItemsMixin):
             actionlocation.append('Closed')
         print(actionlocation)
 
-        context['actionlocation'] = actionlocation
+        context['actionlocation'] = actionlocation[0]
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(id)
         context['Approver'] = False
         context ['ApproverLevel'] = ApproverLevel
