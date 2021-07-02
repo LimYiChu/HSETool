@@ -475,14 +475,23 @@ class HistoryItemsMixin(ApproveItemsMixin):
         lstSignatoriesTimeStamp= blgettimestampuserdetails (id, Signatories)
           
         #edward history container 20210701
-        print(id)  
-        #get the ord disc subdisc routes
-        print(discsuborg)
-        #get the Signatories -- there is a datetime problem here preventing from extra   
-        for items in Signatories:
-            for objects in items :
-                print(objects)
-        
+        #print the item id(complete)
+        # print(id)
+        #get the org disc subdisc routes from this item id (complete)
+        # print(discsuborg)
+        #get the Signatories (complete)
+        # print(Signatories)
+        #get user for where action has moved to their basket (complete)
+        actionlocation = []
+        obj = ActionItems.objects.get(pk=id)
+        if obj.QueSeries != 99 and (Signatories !=[]): # looks at que series and then matches it against the list of signatories for an action, != means not equal
+            lststuckAt = Signatories[obj.QueSeries]#uses QueSeries to indicate where action currently is
+            actionlocation.append(lststuckAt[1])
+        else: 
+            actionlocation.append('Closed')
+        print(actionlocation)
+
+        context['actionlocation'] = actionlocation
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(id)
         context['Approver'] = False
         context ['ApproverLevel'] = ApproverLevel
