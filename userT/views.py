@@ -473,25 +473,20 @@ class HistoryItemsMixin(ApproveItemsMixin):
         # #sets the signatory directly in getting timestamp
         Signatories = blgetSignotories(discsuborg)
         lstSignatoriesTimeStamp= blgettimestampuserdetails (id, Signatories)
-          
-        #edward history container 20210701
-        #print the item id(complete)
-        # print(id)
-        #get the org disc subdisc routes from this item id (complete)
-        # print(discsuborg)
-        #get the Signatories (complete)
-        # print(Signatories)
+        
+        #edward history container 20210701 to be moved into bl version 2.7
         #get user for where action has moved to their basket (complete)
         actionlocation = []
-        obj = ActionItems.objects.get(pk=id)
-        if obj.QueSeries != 99 and (Signatories !=[]): # looks at que series and then matches it against the list of signatories for an action, != means not equal
-            lststuckAt = Signatories[obj.QueSeries]#uses QueSeries to indicate where action currently is
+        integerqueseries = blgetFieldValue(id,"QueSeries") #change to use bl function
+        if integerqueseries != 99 and (Signatories !=[]): # looks at que series and then matches it against the list of signatories for an action, != means not equal
+            lststuckAt = Signatories[integerqueseries]#uses QueSeries to indicate where action currently is
             actionlocation.append(lststuckAt[1])
         else: 
             actionlocation.append('Closed')
-        print(actionlocation)
 
         context['actionlocation'] = actionlocation[0]
+        #edward end history container 20210701
+
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(id)
         context['Approver'] = False
         context ['ApproverLevel'] = ApproverLevel
@@ -1125,12 +1120,12 @@ def repPMTExcel (request):
   
     #***End Pie Guna
     #get Individual action
+
     Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
     tableindiheader = ['User','Role','Organisation Route','In-Progress','Closed', 'Open Actions']
     
     #getsummaryactions
     listaggregatedindi,listaggregatedindiheader=blgroupbyaggsum(Indisets,tableindiheader,'User', ['In-Progress','Closed','Open Actions'])
-    
     
 
     allactions = ActionItems.objects.all()
