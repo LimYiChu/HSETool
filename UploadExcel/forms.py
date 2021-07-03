@@ -175,8 +175,6 @@ class frmApproverConfirmation(forms.ModelForm):
             Div (Field('Consequence', type="hidden")),
            #Div (Field('FutureAction', type="hidden")),
            Div (Field('Facility', type="hidden")),
-            Div (Field('InitialRisk', type="hidden")),
-            Div (Field('ResidualRisk', type="hidden")),
             Div (Field('Disipline', type="hidden")),
             Div (Field('Subdisipline', type="hidden")),
             Div (Field('Organisation', type="hidden")),

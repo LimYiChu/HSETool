@@ -243,31 +243,50 @@ class HistoryList (ListView):
     
         #Just get Actionee and Approver Routes, tied into model managers
         Actionee_R =    dict_allRou.get('Actionee_Routes')
-        Approver_R =    dict_allRou.get('Approver_Routes') 
-       
-        #ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
-
         lstgetHistoryforUser             = blgetHistoryforUser(userZemail,Actionee_R)
-        # ApproverActions = []
-        # for key, value in Approver_R.items():
-        #     #x = blfuncActioneeComDisSub(value,key)
-        #     allactionItems= blallActionsComDisSub(value,key)
-           
-        #     ApproverActions.insert(key,allactionItems)
-
-        # flater_list = [item for sublist in ApproverActions for item in sublist]
-        # print (flater_list)
-        # finalitems =[]
         
+        #the sequence just appends risk matrix colours
         rem_list = ['Consequence','FutureAction','Deviation','QueSeries','QueSeriesTarget','DateCreated']
-
         finalactionitems = bladdriskcolourandoptimise(lstgetHistoryforUser,rem_list)
         
         return lstgetHistoryforUser
 
     def get_context_data(self, **kwargs):
+
+        userZemail = self.request.user.email
+
         context = super().get_context_data(**kwargs)
         context['riskmatrix'] = blgetRiskMatrixColour()
+
+        dict_allRou = blgetuserRoutes(userZemail)
+        Approver_R =    dict_allRou.get('Approver_Routes')
+
+        ApproverActions = []
+
+        for key, value in Approver_R.items():
+            #x = blfuncActioneeComDisSub(value,key)
+            #starts with key 1 - it shows if your name is in approver 1
+            #The key reresents que series
+            allactionItems= blApproverHistoryActions(value,key)
+            ApproverActions.insert(key,allactionItems)
+
+        approverflatdict = [item for sublist in ApproverActions for item in sublist] # Just merging all approvers levels into a flatter list
+
+        rem_list = ['Consequence','FutureAction','Deviation','QueSeries','QueSeriesTarget','DateCreated']
+       
+        #addriskcolour to approver list
+        finalappractionitems= bladdriskcolourandoptimise(approverflatdict,rem_list) 
+        
+        rejecteditemsid = blRejectedHistortyActionsbyId(userZemail,0,1)
+
+        # Need to make a list to feed into bladdriskcolourandoptimise as that function is expecting a list of dictionaries
+        rejecteditemsbyhistory = [blgetActionItemsbyid(rejecteditemsid)]
+        newrejecteditemsbyhist                        = bladdriskcolourandoptimise(rejecteditemsbyhistory,rem_list)
+        #Last part , pass back to HTML and render in tab
+        #print (rejecteditemsbyhistory)
+        context['rejectedhistory'] = rejecteditemsbyhistory
+        context['approveractions'] = finalappractionitems
+         
         return context
 
 class ApproverList (ListView):
@@ -433,6 +452,43 @@ class ApproverConfirm(UpdateView):
       
         return queryset.get(id=self.kwargs['id'])
 
+class HistoryFormApprover(ApproveItemsMixin):
+    
+    template_name = "userT/historyformapprover.html" 
+    form_class = frmApproverConfirmation
+    success_url = '/HistoryList/'
+    
+    def get_context_data(self,**kwargs):
+        id = self.object.id #its actually the id and used as foreign key
+        
+        context = super().get_context_data(**kwargs)
+        
+        discsuborg = blgetDiscSubOrgfromID(id)
+        ApproverLevel = blgetApproverLevel(discsuborg)
+        
+        # #sets the signatory directly in getting timestamp
+        Signatories = blgetSignotories(discsuborg)
+        lstSignatoriesTimeStamp= blgettimestampuserdetails (id, Signatories)
+
+        context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(id)
+        context['Approver'] = False
+        context ['ApproverLevel'] = ApproverLevel
+        context ['Signatories'] = lstSignatoriesTimeStamp
+       
+        return context
+    def form_valid(self,form):
+
+        if (self.request.POST.get('Pullback')):
+
+            return super().form_valid(form)
+        
+        if (self.request.POST.get('Cancel')):
+#             
+           return HttpResponseRedirect('/HistoryList/')
+
+    def get_success_url(self):
+        return reverse ('HistoryConfirm', kwargs={'id': self.object.id })
+
 class HistoryConfirm(UpdateView):
     
     template_name = "userT/historyconfirmpull.html" #yhs checked capital
@@ -458,15 +514,19 @@ class HistoryConfirm(UpdateView):
       
         return queryset.get(id=self.kwargs['id'])
 
-class HistoryItemsMixin(ApproveItemsMixin):
+class HistoryFormMixin(ApproveItemsMixin):
     template_name = "userT/historypullback.html" #yhs changed to all small letters
     form_class = frmApproverConfirmation
     
-    def get_context_data(self,**kwargs):
-        id = self.object.id #its actually the id and used as foreign key
+    def get_context_data(self, **kwargs,):
+        #id = self.object.id  # old code just leave it as its a good example
         
+        id = self.kwargs['pk'] 
+        isactionee= eval(self.kwargs['actionee']) #convert string to boolean values so can use direct in HTML
+       
         context = super().get_context_data(**kwargs)
         
+        #print ("KWARGS",context)
         discsuborg = blgetDiscSubOrgfromID(id)
         ApproverLevel = blgetApproverLevel(discsuborg)
         
@@ -478,7 +538,7 @@ class HistoryItemsMixin(ApproveItemsMixin):
         context['Approver'] = False
         context ['ApproverLevel'] = ApproverLevel
         context ['Signatories'] = lstSignatoriesTimeStamp
-       
+        context ['isactionee'] = isactionee
         return context
     def form_valid(self,form):
 
@@ -576,24 +636,25 @@ class RejectReason (CreateView):
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(fk)
         return context
 
-def IndividualBreakdownByUsers(request):
-    #Need to do some maths here  most of the functions have been charted out just need to remap back to individual
-    # 2 functions need to merge
-    discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
+#-commented below to remove
+# def IndividualBreakdownByUsers(request):
+#     #Need to do some maths here  most of the functions have been charted out just need to remap back to individual
+#     # 2 functions need to merge
+#     discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
    
-    #Signatories = 
+#     #Signatories = 
     
-    QueOpen = [0,1,2,3,4,5,6,7,8,9]
-    QueClosed = [99]
-    Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)          
+#     QueOpen = [0,1,2,3,4,5,6,7,8,9]
+#     QueClosed = [99]
+#     Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)          
    
-    context = {
+#     context = {
         
-        'Indisets' : Indisets,
+#         'Indisets' : Indisets,
         
-    }
+#     }
             
-    return render(request, 'userT/indibreakbyuser.html',context) #yhs changed to all small letters
+#     return render(request, 'userT/indibreakbyuser.html',context) #yhs changed to all small letters
 
 def IndividualBreakdownByActions(request):
     
@@ -648,8 +709,6 @@ def multiplefiles (request, **kwargs):
             
         ContentSubject  =blbuildSubmittedemail(ID)
         
-        print ("SIGNATORY",Signatoryemails)
-        print ("CONTENTS",ContentSubject)
         success = blemailSendindividual(emailSender,Signatoryemails,ContentSubject[0], ContentSubject[1])
         
         
@@ -1107,14 +1166,16 @@ def repPMTExcel (request):
   
     #***End Pie Guna
     #get Individual action
-    Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
-    tableindiheader = ['User','Role','Organisation Route','In-Progress','Closed', 'Open Actions']
+
+    # Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
+    # tableindiheader = ['User','Role','Organisation Route','In-Progress','Closed', 'Open Actions']
+
+    Indisets = blgetIndiResponseCount2(discsuborg,QueOpen,QueClosed)   
+    tableindiheader = ['User','Role','Organisation Route','Yet-to-Respond','Yet-to-Approve','Closed', 'Open Actions']
     
     #getsummaryactions
-    listaggregatedindi,listaggregatedindiheader=blgroupbyaggsum(Indisets,tableindiheader,'User', ['In-Progress','Closed','Open Actions'])
+    listaggregatedindi,listaggregatedindiheader=blgroupbyaggsum(Indisets,tableindiheader,'User', ['Yet-to-Respond','Yet-to-Approve','Closed','Open Actions'])
     
-    
-
     allactions = ActionItems.objects.all()
     
     rem_list = []
@@ -1144,11 +1205,12 @@ def repPMTExcel (request):
     
     #RejectDetails - gonna use a different way same way as actionne list
     #just using revision way to get all rejected actions
-    
-    rejectedactions = ActionItems.mdlgetActionDiscSubCount.mgr_getAllRejectedItems(1)
+    revisiononwards = 1
+    queseries = 0
+    rejectedactions = ActionItems.mdlgetActionDiscSubCount.mgr_getAllRejectedItems(revisiononwards,queseries)
     rem_list = ['Consequence','FutureAction','Deviation','QueSeries','QueSeriesTarget','DateCreated'] #OPtimising data to be removed
-    finalactionitems = bladdriskcolourandoptiforflater(rejectedactions,rem_list)
-    dfrejection = pd.DataFrame.from_dict(finalactionitems)
+    rejectedallactionitems = bladdriskcolourandoptiforflater(rejectedactions,rem_list)
+    dfrejection = pd.DataFrame.from_dict(rejectedallactionitems)
 
 
     #lstofrejectedforexcel = blgetActionStuckAt(rejectedactions, tableallheader)
@@ -1209,6 +1271,16 @@ def repPMTExcel (request):
             
             return response
 
+        elif (request.POST.get('indisummary')):
+            
+
+            workbook = excelAllActions(listaggregatedindi,listaggregatedindiheader,"Individual Summary") 
+            
+            response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
+            response['Content-Disposition'] = 'attachment; filename=byIndividualSummary.xlsx' 
+            workbook.save(response) 
+            return response
+
         elif (request.POST.get('indiActions')):
             
 
@@ -1221,7 +1293,6 @@ def repPMTExcel (request):
 
         elif (request.POST.get('allStudies')):
             
-
             workbook = excelAllActions(lstbyWorkshop,tablestudiesheader,"Workshop Actions")
             
             response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
@@ -1271,7 +1342,7 @@ def repPMTExcel (request):
         'listaggregatedindiheader':listaggregatedindiheader,
         'listofrejectedheader': tablerheaderejected,
         'listofrejecteditems': listofrejecteditems,
-        "rejectedactions": finalactionitems,
+        "rejectedactions": rejectedallactionitems,
     
         
     }

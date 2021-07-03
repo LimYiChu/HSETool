@@ -14,10 +14,7 @@ from userT.parameters import *
 def bladdriskcolourandoptiforflater (actionitems,removelist):
     
     dfRiskMatrix = pd.DataFrame(list(RiskMatrix.objects.all().values()))
-        #print (dfRiskMatrix[['Combined','RiskColour']])
-        
-    #for dictitems in actionitems:
-        
+            
     for items in actionitems:
                 [items.pop(key) for key in removelist] # Reducing the data going to html
                 #
@@ -33,8 +30,7 @@ def bladdriskcolourandoptiforflater (actionitems,removelist):
 def bladdriskcolourandoptimise (actionitems,removelist):
     
     dfRiskMatrix = pd.DataFrame(list(RiskMatrix.objects.all().values()))
-        #print (dfRiskMatrix[['Combined','RiskColour']])
-        
+                
     for dictitems in actionitems:
         
         for items in dictitems:
@@ -286,12 +282,12 @@ def blbuildRejectionemail(ID,RejectReason):
 def blgetHistoryforUser(useremail, actioneeroutes):
     
     #first get user ID from CustomUser as only user id is used in history tables
-    ApproverQue = [1,2,3,4,5,6,7,8,9,99]
+    ApproverQue = [1,2,3,4,5,6,7,8,9] #Once its closed its done is it so 99 is taken out
     lstUserSeries =  CustomUser.objects.filter(email=useremail).values()
     currentUserID = lstUserSeries[0].get('id')
 
     #get all history values from history tables first
-    userHistoric = ActionItems.history.filter(history_user_id=currentUserID).order_by('-history_date')
+   # userHistoric = ActionItems.history.filter(history_user_id=currentUserID).order_by('-history_date') #finally not using this
     actionsintheQue = blallActionsComDisSubbyList(actioneeroutes,ApproverQue)
 
     return actionsintheQue
@@ -572,7 +568,7 @@ def blgetApproverLevelTarget(ID,field):
     
     return ActionItems.mdlSetField.mgrgetField(ID,field)
 
-def blgetIndiResponseCount(discsuborg,queseriesopen,queseriesclosed):# changed by edward to queseriesopen
+def blgetIndiResponseCount(discsuborg,queseriesopen,queseriesclosed):
 
     indiPendingSeries =[]
     completePendingPair = []
@@ -606,7 +602,48 @@ def blgetIndiResponseCount(discsuborg,queseriesopen,queseriesclosed):# changed b
 
     finallistoflist = [x for x in completePendingPair if x]    
     return finallistoflist
+def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed):
 
+    indiPendingSeries =[]
+    completePendingPair = []
+    filler = 0
+    #first loop through all routes disc/sub/org
+    for itemtriplet in discsuborg:
+        
+        totalopencount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesopen) 
+        totalclosedcount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesclosed)
+        lstofActioneeApprover = blgetSignotories(itemtriplet)
+
+       
+        #indiPendingPair.append(itemtriplet)
+        for indique,indipair in enumerate(lstofActioneeApprover):
+            if (indipair != []):
+                
+                #indiPendingSeries.append(indique) #Append QueSeries
+                lstindique = [indique] #make que series into list otherwise doesn work, indique is 0 for Actionee-start of loop                
+                indiPendingSeries.append(indipair[1]) #append Name - #indipair gives all users in routes print indipair,indipendingseries
+                pendingResponse = blgetDiscSubOrgActionCount ('Y',itemtriplet,lstindique) #just uses queseries and maps back to the 
+                #for items in itemtriplet:
+                #wanted to append and not have list of list of disc sub org
+                indiPendingSeries.append(indipair[0]) #AppendRole
+                indiPendingSeries.append('/'.join(itemtriplet))
+                if indique == 0:
+                    indiPendingSeries.append(pendingResponse)
+                    indiPendingSeries.append(filler)
+                else:
+                    indiPendingSeries.append(filler)
+                    indiPendingSeries.append(pendingResponse)
+                    
+                indiPendingSeries.append(totalclosedcount)
+                indiPendingSeries.append(totalopencount) # Removing opencount since its misleading
+                
+            
+            completePendingPair.append (indiPendingSeries)
+            print (indiPendingSeries)
+            indiPendingSeries = []
+
+    finallistoflist = [x for x in completePendingPair if x]    
+    return finallistoflist
 def blgetActionStuckAt(allactions, lstoftableattributes,email=False):
 
     lstActionDetails = []
@@ -710,6 +747,48 @@ def blgetActioneeDiscSub(routes):
 
     return finallistoflist
 
+def blRejectedHistortyActionsbyId (useremail,queseriesat, Revision):
+    
+    #get user from email id since history tables use user ID
+    lstUserSeries =  CustomUser.objects.filter(email=useremail).values()
+    currentUserID = lstUserSeries[0].get('id')
+
+    #get all history values from history tables first
+    userrejectedhistory = ActionItems.history.filter(history_user_id=currentUserID).filter(
+                            
+                                Revision__gte=Revision).filter(QueSeries=queseriesat).order_by('-history_date').values('id')
+    
+           
+    return userrejectedhistory
+def blgetActionItemsbyid(dictofids):
+
+    #Convert list of dictionaries into list
+    listofids =[x['id']for x in dictofids]
+    
+    
+    actionitemsbyid = ActionItems.objects.filter(id__in=dictofids).values()
+
+    return actionitemsbyid
+
+def blApproverHistoryActions(contextRoutes,que):
+    streams = []
+
+    for x, item in enumerate(contextRoutes):
+        blvarorganisation   = item.Organisation
+        blvardisipline  = item.Disipline
+        blvarsubbdisipline  = item.Subdisipline
+
+
+        approverlevel=int(blgetApproverLevel([blvardisipline,blvarsubbdisipline,blvarorganisation])) #normally gives you one extra
+        #This is different slice added 1 since items are past that approver meaning Queseries +1 but in that route
+        for queseries in range (que+1,approverlevel):
+
+            streams.append (ActionItems.myActionItems.get_myItemsbyCompDisSub(blvarorganisation,
+                                                                blvardisipline,
+                                                               blvarsubbdisipline,queseries))
+    
+    
+    return streams
 def blallActionsComDisSub(contextRoutes,que):
     
     streams = []
