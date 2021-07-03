@@ -533,6 +533,19 @@ class HistoryFormMixin(ApproveItemsMixin):
         # #sets the signatory directly in getting timestamp
         Signatories = blgetSignotories(discsuborg)
         lstSignatoriesTimeStamp= blgettimestampuserdetails (id, Signatories)
+        
+        #edward history container 20210701 to be moved into bl version 2.7
+        #get user for where action has moved to their basket (complete)
+        actionlocation = []
+        integerqueseries = blgetFieldValue(id,"QueSeries") #change to use bl function
+        if integerqueseries != 99 and (Signatories !=[]): # looks at que series and then matches it against the list of signatories for an action, != means not equal
+            lststuckAt = Signatories[integerqueseries]#uses QueSeries to indicate where action currently is
+            actionlocation.append(lststuckAt[1])
+        else: 
+            actionlocation.append('Closed')
+
+        context['actionlocation'] = actionlocation[0]
+        #edward end history container 20210701
 
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(id)
         context['Approver'] = False
