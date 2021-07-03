@@ -60,12 +60,14 @@ urlpatterns = [
         path('HistoryList/', login_required(UserView.HistoryList.as_view()), name='HistoryList' ),
         re_path(r'HistoryConfirm/(?P<id>\d+)$', login_required(UserView.HistoryConfirm.as_view()), name='HistoryConfirm' ),
        
-        re_path(r'^(?P<id>\d+)/$', login_required(userView.getActionDetails),name='getActionsDetails'),
+       #historyapprovepath
        
+        path('HistoryList/<int:pk>/<slug:slug>/view', login_required(UserView.HistoryFormApprover.as_view()), name='HistoryFormApprover' ),
+        path('HistoryList/<int:pk>/update/<actionee>', login_required(UserView.HistoryFormMixin.as_view()), name='HistoryFormMixin' ),
 
         #Following urls are for actionee approvers updates and approvals
         path('ActioneeList/<int:pk>/update', login_required(UserView.ActioneeItemsMixin.as_view()), name='ActioneeFormMixin' ),
-        path('HistoryList/<int:pk>/update', login_required(UserView.HistoryItemsMixin.as_view()), name='HistoryFormMixin' ),
+       
         path('ActioneeList/<int:id>/', login_required(UserView.DetailActioneeItems.as_view()), name='DetailsForm' ),
         #path('ApproverList/<int:id>/approve', UserView.ApproveItems.as_view(), name='ApproveForm' ),
         path('ApproverList/<int:pk>/approve', login_required(UserView.ApproveItemsMixin.as_view()), name='ApproveFormMixin' ),
@@ -109,7 +111,9 @@ urlpatterns = [
         #StickyNote
         path('StickyNote/',login_required(UserView.StickyNote),name='StickyNote'),
         path('IndividualBreakdownByActions/',login_required(UserView.IndividualBreakdownByActions),name='IndividualBreakdownByActions'),
-        path('IndividualBreakdownByUsers/',login_required(UserView.IndividualBreakdownByUsers),name='IndividualBreakdownByUsers'),
+        
+        #Guna Commented below to remove at some point
+        #path('IndividualBreakdownByUsers/',login_required(UserView.IndividualBreakdownByUsers),name='IndividualBreakdownByUsers'),
         
         #PDF close out
         path('closeoutsheet/',login_required(UserView.closeoutsheet),name='closeoutsheet'),

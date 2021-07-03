@@ -3,25 +3,24 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 class QuerySet(models.QuerySet):
-    #edward changed icontains for Disipline to iexact on 20210630
     def get_myActions(self,userorganisation,userdisipline,usersubdisipline,que):
-        return self.filter(Organisation__icontains=userorganisation).filter(Disipline__iexact=userdisipline).filter(
+        return self.filter(Organisation__icontains=userorganisation).filter(Disipline__icontains=userdisipline).filter(
                 Subdisipline__icontains=usersubdisipline).filter(QueSeries__iexact=que).values()
 
-    #edward changed icontains for Disipline to iexact on 20210630
+
     def get_myActionsCount(self,userorganisation,userdisipline,usersubdisipline,que):
-        return self.filter(Organisation__icontains=userorganisation).filter(Disipline__iexact=userdisipline).filter(Subdisipline__icontains=usersubdisipline).filter(QueSeries__iexact=que).count ()
-    #edward changed icontains for Disipline to iexact on 20210630
+        return self.filter(Organisation__icontains=userorganisation).filter(Disipline__icontains=userdisipline).filter(Subdisipline__icontains=usersubdisipline).filter(QueSeries__iexact=que).count ()
+    
     def get_myActionsCountbyStudies(self,studies, organisation,disipline,subdisipline,que):
-        return self.filter(StudyName__icontains=studies).filter(Organisation__icontains=organisation).filter(Disipline__iexact=disipline).filter(
+        return self.filter(StudyName__icontains=studies).filter(Organisation__icontains=organisation).filter(Disipline__icontains=disipline).filter(
             
                             Subdisipline__icontains=subdisipline).filter(QueSeries__iexact=que).count ()
 
     def get_allActionsCountbyStudies(self,studies, que):
         return self.filter(StudyName__icontains=studies).filter(QueSeries__iexact=que).count ()
-    #edward changed icontains for Disipline to iexact on 20210630
+    
     def get_allActionsCountbyDisc(self,Disc, que):
-        return self.filter(Disipline__iexact=Disc).filter(QueSeries__iexact=que).count ()
+        return self.filter(Disipline__icontains=Disc).filter(QueSeries__iexact=que).count ()
 
     def set_field(self,ID, fields, value):
         
@@ -36,23 +35,19 @@ class QuerySet(models.QuerySet):
 
     def get_allActionsCount(self,workshop,que):
         return self.filter (QueSeries__iexact=que).count ()
-    #edward changed icontains for Disipline to iexact on 20210630
     def get_DiscSubActionsCount(self,workshop,DiscSub,que):
-        return self.filter (Disipline__iexact=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1]).filter (QueSeries__iexact=que).count ()
-    #edward changed icontains for Disipline to iexact on 20210630
+        return self.filter (Disipline__icontains=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1]).filter (QueSeries__iexact=que).count ()
     def get_DiscSubOrgActionsCount(self,workshop,DiscSub,que): #get discipline, sub-disc, get the filter
-        return self.filter (Disipline__iexact=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1]).filter (Organisation__icontains=DiscSub[2]).filter (
+        return self.filter (Disipline__icontains=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1]).filter (Organisation__icontains=DiscSub[2]).filter (
             QueSeries__iexact=que).count ()
-    #edward changed icontains for Disipline to iexact on 20210630
     def get_DiscSubOrgRejectedActionsCount(self,DiscSub,Revvalue): #get discipline, sub-disc, get the filter
-        return self.filter (Disipline__iexact=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1]).filter (
+        return self.filter (Disipline__icontains=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1]).filter (
                         Organisation__icontains=DiscSub[2]).filter (Revision__gte=Revvalue).count ()
-    #edward changed icontains for Disipline to iexact on 20210630
     def get_DiscSubOrgRejectedActions(self,DiscSub,Revvalue): #get discipline, sub-disc, get the filter
-        return self.filter (Disipline__iexact=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1]).filter (
+        return self.filter (Disipline__icontains=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1]).filter (
                         Organisation__icontains=DiscSub[2]).filter (Revision__gte=Revvalue).values()
-    def get_AllRejectedActions(self,Revvalue): #get discipline, sub-disc, get the filter
-        return self.filter (Revision__gte=Revvalue).values()
+    def get_AllRejectedActions(self,Revvalue,queseriesrejected): #get discipline, sub-disc, get the filter
+        return self.filter (Revision__gte=Revvalue).filter(QueSeries=queseriesrejected).values() # if que series moves from 0 it has been resubmitted and not considered rejected
 
     def get_mgrComments(self,fkey):
         return self.filter(Action__pk=fkey)
@@ -104,8 +99,8 @@ class mgrgetActionDiscSubCount(models.Manager):
         return self.get_queryset().get_DiscSubOrgRejectedActionsCount(DiscSub,Revision)
     def mgr_getDiscSubOrgRejectedItems(self,DiscSub,Revision):
         return self.get_queryset().get_DiscSubOrgRejectedActions(DiscSub,Revision)
-    def mgr_getAllRejectedItems(self,Revision):
-        return self.get_queryset(). get_AllRejectedActions(Revision)   
+    def mgr_getAllRejectedItems(self,Revision,queseries):
+        return self.get_queryset(). get_AllRejectedActions(Revision,queseries)   
 
 class mgrgetActionCompanyCount(models.Manager):
     def get_queryset (self):
