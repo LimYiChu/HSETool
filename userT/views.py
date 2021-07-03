@@ -386,7 +386,12 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
 
         #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
         lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories) #it changes the signatories directly
-        
+        # edward added set approver target for approver 20210701 patch 2.5b
+        # edward 20210703 pushing approver set queue target to main
+        ApproverLevel = blgetApproverLevel(discsub)
+        blsetApproverLevelTarget(idAI,ApproverLevel) #sets approver level target
+        # end of edward added set approver target for approver 20210701 patch 2.5b
+
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(idAI)
         context['Approver'] = True
         context ['Signatories'] = lstSignatoriesTimeStamp
