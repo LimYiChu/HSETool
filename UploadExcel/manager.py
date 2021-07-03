@@ -4,15 +4,15 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 class QuerySet(models.QuerySet):
     def get_myActions(self,userorganisation,userdisipline,usersubdisipline,que):
-        return self.filter(Organisation__icontains=userorganisation).filter(Disipline__icontains=userdisipline).filter(
+        return self.filter(Organisation__icontains=userorganisation).filter(Disipline__iexact=userdisipline).filter(
                 Subdisipline__icontains=usersubdisipline).filter(QueSeries__iexact=que).values()
 
 
     def get_myActionsCount(self,userorganisation,userdisipline,usersubdisipline,que):
-        return self.filter(Organisation__icontains=userorganisation).filter(Disipline__icontains=userdisipline).filter(Subdisipline__icontains=usersubdisipline).filter(QueSeries__iexact=que).count ()
+        return self.filter(Organisation__icontains=userorganisation).filter(Disipline__iexact=userdisipline).filter(Subdisipline__icontains=usersubdisipline).filter(QueSeries__iexact=que).count ()
     
     def get_myActionsCountbyStudies(self,studies, organisation,disipline,subdisipline,que):
-        return self.filter(StudyName__icontains=studies).filter(Organisation__icontains=organisation).filter(Disipline__icontains=disipline).filter(
+        return self.filter(StudyName__icontains=studies).filter(Organisation__icontains=organisation).filter(Disipline__iexact=disipline).filter(
             
                             Subdisipline__icontains=subdisipline).filter(QueSeries__iexact=que).count ()
 
@@ -20,7 +20,7 @@ class QuerySet(models.QuerySet):
         return self.filter(StudyName__icontains=studies).filter(QueSeries__iexact=que).count ()
     
     def get_allActionsCountbyDisc(self,Disc, que):
-        return self.filter(Disipline__icontains=Disc).filter(QueSeries__iexact=que).count ()
+        return self.filter(Disipline__iexact=Disc).filter(QueSeries__iexact=que).count ()
 
     def set_field(self,ID, fields, value):
         
@@ -36,15 +36,15 @@ class QuerySet(models.QuerySet):
     def get_allActionsCount(self,workshop,que):
         return self.filter (QueSeries__iexact=que).count ()
     def get_DiscSubActionsCount(self,workshop,DiscSub,que):
-        return self.filter (Disipline__icontains=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1]).filter (QueSeries__iexact=que).count ()
+        return self.filter (Disipline__iexact=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1]).filter (QueSeries__iexact=que).count ()
     def get_DiscSubOrgActionsCount(self,workshop,DiscSub,que): #get discipline, sub-disc, get the filter
-        return self.filter (Disipline__icontains=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1]).filter (Organisation__icontains=DiscSub[2]).filter (
+        return self.filter (Disipline__iexact=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1]).filter (Organisation__icontains=DiscSub[2]).filter (
             QueSeries__iexact=que).count ()
     def get_DiscSubOrgRejectedActionsCount(self,DiscSub,Revvalue): #get discipline, sub-disc, get the filter
-        return self.filter (Disipline__icontains=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1]).filter (
+        return self.filter (Disipline__iexact=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1]).filter (
                         Organisation__icontains=DiscSub[2]).filter (Revision__gte=Revvalue).count ()
     def get_DiscSubOrgRejectedActions(self,DiscSub,Revvalue): #get discipline, sub-disc, get the filter
-        return self.filter (Disipline__icontains=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1]).filter (
+        return self.filter (Disipline__iexact=DiscSub[0]).filter(Subdisipline__icontains=DiscSub[1]).filter (
                         Organisation__icontains=DiscSub[2]).filter (Revision__gte=Revvalue).values()
     def get_AllRejectedActions(self,Revvalue,queseriesrejected): #get discipline, sub-disc, get the filter
         return self.filter (Revision__gte=Revvalue).filter(QueSeries=queseriesrejected).values() # if que series moves from 0 it has been resubmitted and not considered rejected
