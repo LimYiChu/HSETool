@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from crispy_forms.helper import FormHelper
@@ -29,7 +29,21 @@ class CustomUserSignature(forms.ModelForm):
         model = CustomUser
         fields = '__all__'
 
-class UserAdminCreationForm(forms.ModelForm):
+class CustomUserCreationForm(UserCreationForm):
+
+    class Meta(UserCreationForm):
+        model = CustomUser
+        fields = ('email',)
+
+
+class CustomUserChangeForm(UserChangeForm):
+
+    class Meta:
+        model = CustomUser
+        fields = ('email',)
+
+
+class UserAdminCreationForm(UserCreationForm):
     """
     A form for creating new users. Includes all the required
     fields, plus a repeated password.
@@ -60,7 +74,7 @@ class UserAdminCreationForm(forms.ModelForm):
             user.save()
         return user
 
-class UserAdminChangeForm(forms.ModelForm):
+class UserAdminChangeForm(UserChangeForm):
     """A form for updating users. Includes all the fields on
     the user, but replaces the password field with admin's
     password hash display field.
@@ -69,7 +83,7 @@ class UserAdminChangeForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ['email', 'password', 'is_active', 'admin'] # third change
+        fields = ['email', 'password', 'is_active', ] # third change
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
