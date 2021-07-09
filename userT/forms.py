@@ -53,7 +53,7 @@ class UserAdminCreationForm(UserCreationForm):
 
     class Meta:
         model = CustomUser
-        fields = ['email']
+        fields = ('email', 'fullname','disipline', 'password','password_2')
 
     def clean(self):
         '''
@@ -66,13 +66,7 @@ class UserAdminCreationForm(UserCreationForm):
             self.add_error("password_2", "Your passwords must match")
         return cleaned_data
 
-    def save(self, commit=True):
-        # Save the provided password in hashed format
-        user = super().save(commit=False)
-        user.set_password(self.cleaned_data["password"])
-        if commit:
-            user.save()
-        return user
+   
 
 class UserAdminChangeForm(UserChangeForm):
     """A form for updating users. Includes all the fields on
@@ -83,7 +77,7 @@ class UserAdminChangeForm(UserChangeForm):
 
     class Meta:
         model = CustomUser
-        fields = ['email', 'password', 'is_active', ] # third change
+        fields = ['email', 'fullname','disipline','password', 'is_active', ] # third change
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.

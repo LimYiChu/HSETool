@@ -36,32 +36,52 @@ class UserManager(BaseUserManager):
         #Superuser.fullname  =   fullname
         #Superuser.disipline =   disipline
         #Superuser.set_password (password)
-        Superuser.is_admin  = True
-        #Superuser.is_staff  =   True
+        Superuser.admin  = True
+        Superuser.staff  = True
+        Superuser.is_superuser  =   True
         Superuser.save(using=self._db)
         return Superuser
 
 class CustomUser(AbstractBaseUser,PermissionsMixin):
     email       =   models.EmailField(max_length=254, unique=True)
-    fullname   =   models.CharField(max_length=254, null=True)
-    disipline   =   models.CharField(max_length=254, blank=False, null=True)
-    subdisipline    =  models.CharField(max_length=254, blank=False, null=True) 
-    organisation   =   models.CharField(max_length=254, blank=False, null=True)
+    fullname   =   models.CharField(max_length=254, blank=True,null=True)
+    disipline   =   models.CharField(max_length=254, blank=True, null=True)
+    subdisipline    =  models.CharField(max_length=254, blank=True, null=True) 
+    organisation   =   models.CharField(max_length=254, blank=True, null=True)
     designation     =    models.CharField(max_length=254, blank=True, null=True)
     signature = models.CharField(max_length=100, blank=True, null=True)
     expiration     =  models.DateTimeField(null=True) 
     is_active = models.BooleanField(default=True) #according to django contrib doc, is_active returned here
     admin = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
     staff = models.BooleanField(default=True)
     objects =   UserManager()
     mdlSetGetField = mgrSetGetfields()
     USERNAME_FIELD =   'email'
-    REQUIRED_FIELDS =   ['fullname','disipline']
+    REQUIRED_FIELDS =   []
 
     #objects = CustomUserManager()
 
     def __str__(self):
         return self.email
+
+    def has_perm(self, perm, obj=None):
+    #     "Does the user have a specific permission?"
+    #     # Simplest possible answer: Yes, always
+        #return self.is_admin
+        return True
+
+    def has_module_perms(self, app_label):
+    #     #"Does the user have permissions to view the app `app_label`?"
+    #     # Simplest possible answer: Yes, always
+        return True
+    # def save(self, *args, **kwargs):
+    #     if not self.id:
+    #         #self.type = self.default_type
+    #         self.type.append(self.default_type)
+    #     return super().save(*args, **kwargs)
+
+    
 
     def get_full_name(self):
         return self.fullname

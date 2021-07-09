@@ -21,15 +21,18 @@ class UserAdmin2(BaseUserAdmin):
 
     # add_form = CustomUserCreationForm
     # form = CustomUserChangeForm
-    model = CustomUser
+    
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ['email', 'organisation','disipline']
+    #the below is the first display page
+    list_display = ('email', 'admin', 'fullname','designation', 'signature','organisation','disipline')
+    search_fields = ('email','fullname','disipline','organisation','designation')
     list_filter = ['admin']
+
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('fullname','organisation','disipline','subdisipline','designation','expiration')}),
+        ('XXX', {'fields': ('email', 'fullname','password')}),
+        ('Personal info', {'fields': ('organisation','disipline','subdisipline','designation','expiration')}),
         ('Permissions', {'fields': ('is_active','admin','staff','is_superuser','groups','user_permissions',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -37,7 +40,7 @@ class UserAdmin2(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password', 'password_2')}
+            'fields': ('email', 'fullname','disipline', 'password','password_2')}
         ),
     )
    
