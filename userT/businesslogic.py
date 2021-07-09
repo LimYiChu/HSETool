@@ -130,6 +130,7 @@ def blformulateRundown(lstplanned,lstactual):
     finallstplanned =[]
     for items in lstplanned :
         plannedlistcount.append(items[1])
+        
 
     plannedtotalcount = sum(plannedlistcount) #Need to get Total count and then do the maths around it
     plannedcounter = 0
@@ -140,10 +141,12 @@ def blformulateRundown(lstplanned,lstactual):
         
         if plannedcounter==0: #this counter is required to do a rundown
             plannedcounter = plannedtotalcount - (items[1])
+            
         else:
             plannedcounter = plannedcounter - (items[1])
+            
         lstnewplanned.append (plannedcounter)
-        
+        print(lstnewplanned)
         blnsetwithdate = True
         for dates in lstactual :
       
@@ -266,6 +269,22 @@ def blbuildSubmittedemail(ID):
     Content.append("To view this, please go to " + paremailurl +urlview + " . To approve go to your dashboard/approver que, to approve this and other actions")#+ "...Response" + response) #this is the content of the email #passed the url here in the content
     
     return Content
+
+# edward 20210708 building approved email since  content is slightly different
+def blbuildApprovedemail(ID):
+    urlview = f"/pmtrepviewall/{ID}/view"
+    Content=[]
+    actionDetails = ActionItems.objects.filter(id=ID).values() # Since off the bat i did not pass any other information besides ID to rejection form i now have to information back for emails
+    studyActionNo =  actionDetails[0].get('StudyActionNo')
+    studyName = actionDetails[0].get('StudyName')
+    response = actionDetails[0].get('Response')
+
+    Content.append(studyActionNo + " from " + studyName + " has been approved ") #This is subject
+    
+    Content.append("To view this, please go to " + paremailurl +urlview + " . To approve go to your dashboard/approver que, to approve this and other actions")#+ "...Response" + response) #this is the content of the email #passed the url here in the content
+    
+    return Content
+# edward end 20210708 building approved email since  content is slightly different
 def blbuildRejectionemail(ID,RejectReason):
     urlview = f"/pmtrepviewall/{ID}/view"
     Content=[]
@@ -419,34 +438,94 @@ def blgetbyStdudiesCount(Studies,YetToRespondQue,pendingApprovalQue,closedAction
 #    return lstbydiscipline
 
 #end of test code
-def blconverttodictforpdf(lstofsignatories):
+def blconverttodictforpdf(lstofsignatories): #edward altered this instead of creating new bl because it is only used for closedoutsheet 20210706
     
     for items in lstofsignatories:
+        print(items)
         fields = items[0]
         if ("actionee" in fields.lower()) :
             
-            localtimeX = timezone.localtime(items[4])
-           
-            dict = {'actionee':items[0], 'actioneerole':items[3],'actioneename':items[2],
+            localtimeX = timezone.localtime(items[5]) #edward changed this according to new bl function for signatures 20210706
+            #edward changed this to add actioneesignature according to new bl function for signatures 20210706
+            dict = {'actionee':items[0], 'actioneerole':items[3],'actioneename':items[2],'actioneesignature':items[4],
                     'actioneetimestamp':localtimeX
             }
         elif ("approver"in fields.lower()):
 
-            localtimeX = timezone.localtime(items[4])
+            localtimeX = timezone.localtime(items[5]) #edward changed this according to new bl function for signatures 20210706
 
             strappr = str(items[0])
             strapprrole = strappr+"role"
             strapprname = strappr+"name"
+            strapprsignature = strappr+"signature" #edward added strapprsignature according to new bl function for signatures 20210706
             strapprtimestamp = strappr+"timestamp"
 
-
-            dictapp = {strappr.lower():items[0], strapprrole.lower():items[3],strapprname.lower():items[2],
+            #edward added strapprsignature according to new bl function for signatures 20210706
+            dictapp = {strappr.lower():items[0], strapprrole.lower():items[3],strapprname.lower():items[2],strapprsignature.lower():items[4],
                     strapprtimestamp.lower():localtimeX}
             dict.update(dictapp)
             
     return(dict)
 
 
+# def blgettimestampuserdetails (id, Signatories): obsolete code commented by edward on 20210707 after adding signature field & creating new bl function, to be deleted in one month
+#         #pass in all Signatories and ID of action
+#         #return Signatories with Time Stamp
+        
+#         #firstgetcurrentqueseries
+        
+#         lstDictQueSeries = ActionItems.objects.filter(id=id).values('QueSeries')
+#         currentQueSeries = lstDictQueSeries[0].get('QueSeries')
+        
+#         #next get all history that has got to do with ID from history tables
+#         #thinking that if you order by decending then you are done by getting latest first
+#         lstdictHistory = ActionItems.history.filter(id=id).filter(QueSeries=currentQueSeries).order_by('-history_date').values()
+        
+#         finallstoflst = []                                   
+#         for index, items in enumerate(Signatories):
+            
+#             #get each user detail first
+#             objuser = CustomUser.objects.filter(email=items[1]).values()
+           
+#             if objuser:
+#                 fullname =   objuser[0].get('fullname')
+#                 items.append(fullname)
+#                 designation =  objuser[0].get('designation')
+#                 items.append(designation)
+
+#             else:
+                    
+#                 items.append("No User Defined")
+            
+#             if index < currentQueSeries: 
+#                 #get all time stamps for all que series
+#                 #index basically denominates Que series level. if Current que series =2 then only actionee = 0 and Approver 1 has signed
+#                 lstdictHistory = ActionItems.history.filter(id=id).filter(QueSeries=index).order_by('-history_date').values()
+                
+#                 if lstdictHistory: #to fix testing bug
+#                     timestamp = lstdictHistory[0].get('history_date') # get just the first record assume decending is the way togo
+#                 else:
+#                     timestamp = []
+
+#                 items.append(timestamp)
+                
+#                 finallstoflst.append(items)
+                
+#                 items =[]
+            
+#             else:
+#                 #this simply says that i will give a time stamp for rest of levels to 0- no date and time
+                
+#                 items.append(0)
+#                 finallstoflst.append(items)
+#                 items =[]
+        
+    
+#           #que series will decide number of people whom have signed +1 because actionee is 0- Need a matching list index
+        
+#         return finallstoflst
+
+#edward new signatories for closeoutpreint 20210706
 def blgettimestampuserdetails (id, Signatories):
         #pass in all Signatories and ID of action
         #return Signatories with Time Stamp
@@ -459,18 +538,21 @@ def blgettimestampuserdetails (id, Signatories):
         #next get all history that has got to do with ID from history tables
         #thinking that if you order by decending then you are done by getting latest first
         lstdictHistory = ActionItems.history.filter(id=id).filter(QueSeries=currentQueSeries).order_by('-history_date').values()
-        
+        # edward appending blacnk string as filler 20210707   
+        filler= ''
         finallstoflst = []                                   
         for index, items in enumerate(Signatories):
             
             #get each user detail first
             objuser = CustomUser.objects.filter(email=items[1]).values()
-           
+                      
             if objuser:
                 fullname =   objuser[0].get('fullname')
                 items.append(fullname)
                 designation =  objuser[0].get('designation')
                 items.append(designation)
+                # signature =  objuser[0].get('signature')
+                # items.append(signature)
 
             else:
                     
@@ -482,10 +564,19 @@ def blgettimestampuserdetails (id, Signatories):
                 lstdictHistory = ActionItems.history.filter(id=id).filter(QueSeries=index).order_by('-history_date').values()
                 
                 if lstdictHistory: #to fix testing bug
-                    timestamp = lstdictHistory[0].get('history_date') # get just the first record assume decending is the way togo
-                else:
-                    timestamp = []
 
+                #edward trying to pass signature only if signed 20210707
+                    signature = objuser[0].get('signature') 
+                    
+                    timestamp = lstdictHistory[0].get('history_date') # get just the first record assume decending is the way togo
+                    
+                else:
+                #edward trying to pass signature only if signed 20210707
+                    signature = [] # there is a bug here or i am making a mistake, not recognizing empty list after else but can print empty list
+                    timestamp = []
+                   
+                #edward trying to pass signature only if signed 20210707   
+                items.append(signature) 
                 items.append(timestamp)
                 
                 finallstoflst.append(items)
@@ -494,15 +585,20 @@ def blgettimestampuserdetails (id, Signatories):
             
             else:
                 #this simply says that i will give a time stamp for rest of levels to 0- no date and time
-                
-                items.append(0)
+                # edward 20210707 commented items.append(0) below
+                # items.append(0) #appending zero here seems to substitute the signature field with zero when no one has signed, works for datefield but shows zero on page for signature
+                # edward appending blacnk string as filler 20210707               
+                items.append(filler)
+                items.append(filler)
                 finallstoflst.append(items)
+                
                 items =[]
         
     
           #que series will decide number of people whom have signed +1 because actionee is 0- Need a matching list index
         
         return finallstoflst
+        #end of edward closeoutprint
 
 def blgetDiscSubOrgfromID (ID):
     # just returns the company, disipline and sub from one object
@@ -602,7 +698,8 @@ def blgetIndiResponseCount(discsuborg,queseriesopen,queseriesclosed):
 
     finallistoflist = [x for x in completePendingPair if x]    
     return finallistoflist
-def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed):
+    
+def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed): #Guna 20210703 to be consolidated
 
     indiPendingSeries =[]
     completePendingPair = []
@@ -639,7 +736,7 @@ def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed):
                 
             
             completePendingPair.append (indiPendingSeries)
-            print (indiPendingSeries)
+            # print (indiPendingSeries)
             indiPendingSeries = []
 
     finallistoflist = [x for x in completePendingPair if x]    
@@ -716,6 +813,7 @@ def blgetSignotories (lstorgdiscsub):
     finallistoflist = [x for x in finalSigPair if x]
     
     return finallistoflist
+
 def blgetSignatoryemailbyque(lstdiscsuborg,queseries):
     
     pairSignatories = blgetSignotories(lstdiscsuborg) #just reusing what is already done 
@@ -728,6 +826,20 @@ def blgetSignatoryemailbyque(lstdiscsuborg,queseries):
 
     lstfinal = [''.join(ele) for ele in abbrevatedemail] #this is just list comprehensioin to return a list and not list of list
     
+    
+    return lstfinal
+
+# edward 20210708 created new bl for signatory by queue 
+def blgetSignatoryemailbyque2(lstdiscsuborg,queseries):
+    
+    pairSignatories = blgetSignotories(lstdiscsuborg) #just reusing what is already done 
+
+    for items in pairSignatories:
+        items.pop(0) # basically removes the Actionee, Approver from pair and maintains name
+    
+    abbrevatedemail=pairSignatories[queseries-1:queseries+1] # sends to current person who submits and the next person, dont know why this is -1 should be just queseries
+    
+    lstfinal = [''.join(ele) for ele in abbrevatedemail] #this is just list comprehensioin to return a list and not list of list
     
     return lstfinal 
 

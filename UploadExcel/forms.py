@@ -2,7 +2,7 @@ from django import forms
 from .models import *
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import *
-strFutActApprNotes = "Future Actions (Actionee))"
+strFutActApprNotes = "Future Actions (Actionee)"
 
 class UploadExlForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
