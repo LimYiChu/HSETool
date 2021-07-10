@@ -12,19 +12,25 @@ from django.contrib.auth.models import (
      )
 # Create your models here.(
 class UserManager(BaseUserManager):
-    def create_user(self, email,fullname,disipline,password=None):
+    def create_user(self, email,password,**extra_fields):
         if not email:
             raise ValueError("users must have an email account")
-        normalUser   = self.model (
-                    email= self.normalize_email(email),
-                    fullname = fullname,
-                    disipline = disipline,
+        # normalUser   = self.model (
+        #             email= self.normalize_email(email),
+        #             fullname = fullname,
+        #             disipline = disipline,
 
-        )
+        # )
         
-        normalUser.set_password(password)
-        normalUser.save(using=self._db)
-        return normalUser
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save()
+        
+
+        # normalUser.set_password(password)
+        # normalUser.save(using=self._db)
+        # return normalUser
     
     def create_superuser(self, email,fullname,disipline,password=None):
         Superuser=self.create_user(
@@ -55,6 +61,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
     admin = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     staff = models.BooleanField(default=True)
+    
     objects =   UserManager()
     mdlSetGetField = mgrSetGetfields()
     USERNAME_FIELD =   'email'
@@ -65,16 +72,16 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
     def __str__(self):
         return self.email
 
-    def has_perm(self, perm, obj=None):
-    #     "Does the user have a specific permission?"
-    #     # Simplest possible answer: Yes, always
-        #return self.is_admin
-        return True
+    # def has_perm(self, perm, obj=None):
+    # #     "Does the user have a specific permission?"
+    # #     # Simplest possible answer: Yes, always
+    #     #return self.is_admin
+    #     return True
 
-    def has_module_perms(self, app_label):
-    #     #"Does the user have permissions to view the app `app_label`?"
-    #     # Simplest possible answer: Yes, always
-        return True
+    # def has_module_perms(self, app_label):
+    # #     #"Does the user have permissions to view the app `app_label`?"
+    # #     # Simplest possible answer: Yes, always
+    #     return True
     # def save(self, *args, **kwargs):
     #     if not self.id:
     #         #self.type = self.default_type

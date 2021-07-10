@@ -446,6 +446,15 @@ def blconverttodictforpdf(lstofsignatories):
             
     return(dict)
 
+def blgetvaliduserinroute (idAI,emailid):
+    
+    discsuborg = blgetDiscSubOrgfromID(idAI)
+    queseries = blgetFieldValue()#stopped here 
+    #starting to work with dictinary objects so the below just converts the signatories in the route to dictinary
+    Signatories = dict(blgetSignotories(discsuborg))
+    isvaliduser = emailid in Signatories.values()
+
+    return isvaliduser
 
 def blgettimestampuserdetails (id, Signatories):
         #pass in all Signatories and ID of action

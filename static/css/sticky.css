@@ -1,6 +1,6 @@
 .postitnote  {
     width:250px; /*original value width 250px, height240px*/
-  height: 500px;
+  height: auto;
   position:relative;
   background:beige;
   overflow:hidden;

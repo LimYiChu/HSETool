@@ -9,29 +9,27 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 # Register your models here.
 
-class UserAdmin(admin.ModelAdmin):
-    search_fields = ['email']
-    form = UserAdminChangeForm
-    add_form = UserAdminCreationForm
+# class UserAdmin(admin.ModelAdmin):
+#     search_fields = ['email']
+#     form = UserAdminChangeForm
+#     add_form = UserAdminCreationForm
 
 class UserAdmin2(BaseUserAdmin):
     # The forms to add and change user instances
-    form = UserAdminChangeForm
-    add_form = UserAdminCreationForm
+    # form = UserAdminChangeForm
+    # add_form = UserAdminCreationForm
 
-    # add_form = CustomUserCreationForm
-    # form = CustomUserChangeForm
+    add_form = CustomUserCreationForm
+    form = CustomUserChangeForm
     
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
     #the below is the first display page
-    list_display = ('email', 'admin', 'fullname','designation', 'signature','organisation','disipline')
-    search_fields = ('email','fullname','disipline','organisation','designation')
-    list_filter = ['admin']
+    
 
     fieldsets = (
-        ('XXX', {'fields': ('email', 'fullname','password')}),
+        (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('organisation','disipline','subdisipline','designation','expiration')}),
         ('Permissions', {'fields': ('is_active','admin','staff','is_superuser','groups','user_permissions',)}),
     )
@@ -40,10 +38,12 @@ class UserAdmin2(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'fullname','disipline', 'password','password_2')}
+            'fields': ('email', 'fullname','password1','password2')}#this is an automated password field, dont need to code , silly took like 2 days
         ),
     )
-   
+    list_display = ('email','id','fullname','signature','designation', 'organisation','last_login')
+    search_fields = ('email','designation', 'organisation')
+    list_filter = ['admin']
     ordering = ('email',)
 
 admin.site.register(CustomUser,UserAdmin2)
