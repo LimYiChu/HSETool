@@ -385,6 +385,7 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
         Signatories = blgetSignotories(discsub)
 
         #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
+        #edward 20210707 trying to use consolidated version blgettimestampuserdetails
         lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories) #it changes the signatories directly
         # edward added set approver target for approver 20210701 patch 2.5b
         # edward 20210703 pushing approver set queue target to main
@@ -440,7 +441,15 @@ class ApproverConfirm(UpdateView):
             else :
                 blsetfieldCustomUser(emailid,"signature",str(emailid))
             #     #end
-                    
+
+            #edward next approver sent email when approved 20210708 manage to send but trying to figure out how to send just to approver who submit and the next approver
+            integerqueseries = blgetFieldValue(ID,"QueSeries") # using this to find Approver QueSeries
+            discsub = blgetDiscSubOrgfromID(ID)
+            Signatoryemails = blgetSignatoryemailbyque2(discsub,integerqueseries+1)
+            ContentSubject  =blbuildApprovedemail(ID) # using new bl since approver email should be this has been approved instead of submitted
+            success = blemailSendindividual(emailSender,Signatoryemails,ContentSubject[0], ContentSubject[1])  
+            #edward end next approver sent email when approved 20210708  
+              
             return super().form_valid(form)
 
     #edward added for showing email as deafult signature
@@ -473,6 +482,7 @@ class HistoryFormApprover(ApproveItemsMixin):
         
         # #sets the signatory directly in getting timestamp
         Signatories = blgetSignotories(discsuborg)
+        #edward 20210707 trying to use consolidated version blgettimestampuserdetails
         lstSignatoriesTimeStamp= blgettimestampuserdetails (id, Signatories)
 
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(id)
@@ -537,6 +547,8 @@ class HistoryFormMixin(ApproveItemsMixin):
         
         # #sets the signatory directly in getting timestamp
         Signatories = blgetSignotories(discsuborg)
+        
+        #edward 20210707 trying to use consolidated version blgettimestampuserdetails
         lstSignatoriesTimeStamp= blgettimestampuserdetails (id, Signatories)
         
         #edward history container 20210701 to be moved into bl version 2.7
@@ -585,6 +597,7 @@ class ActioneeItemsMixin(ApproveItemsMixin):
         
         Signatories = blgetSignotories(discsuborg)
         blsetApproverLevelTarget(IdAI,ApproverLevel)
+        #edward 20210707 trying to use consolidated version blgettimestampuserdetails
         lstSignatoriesTimeStamp= blgettimestampuserdetails (IdAI, Signatories)
         
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(IdAI)
@@ -717,13 +730,16 @@ def multiplefiles (request, **kwargs):
                 Action_id=ID,
                 Username=request.user.email
             )
+        #edward 20210709 testing around here before consolidating
         newQueSeries = 1
+        
         ActionItems.mdlQueSeries.mgrsetQueSeries(ID,newQueSeries)
         
         discsub = blgetDiscSubOrgfromID(ID)
-            
-        Signatoryemails = blgetSignatoryemailbyque(discsub,newQueSeries+1)
 
+        # Signatoryemails = blgetSignatoryemailbyque(discsub,newQueSeries+1)    
+        Signatoryemails = blgetSignatoryemailbyque2(discsub,newQueSeries) # edward 20210709 altered this to use with new bl
+        
             
         ContentSubject  =blbuildSubmittedemail(ID)
         
@@ -1188,11 +1204,14 @@ def repPMTExcel (request):
     # Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
     # tableindiheader = ['User','Role','Organisation Route','In-Progress','Closed', 'Open Actions']
 
-    Indisets = blgetIndiResponseCount2(discsuborg,QueOpen,QueClosed)   
-    tableindiheader = ['User','Role','Organisation Route','Yet-to-Respond','Yet-to-Approve','Closed', 'Open Actions']
+    Indisets = blgetIndiResponseCount2(discsuborg,QueOpen,QueClosed) 
+    # tableindiheader = ['User','Role','Organisation Route','Yet-to-Respond','Yet-to-Approve','Closed', 'Open Actions']  
+    tableindiheader = ['User','Role','Organisation Route','Pending Submission','Pending Approval','Closed', 'Open Actions'] #this has been changed by edward 20210706, used to be Yet-to-Respond & Yet-to-Approve
     
     #getsummaryactions
-    listaggregatedindi,listaggregatedindiheader=blgroupbyaggsum(Indisets,tableindiheader,'User', ['Yet-to-Respond','Yet-to-Approve','Closed','Open Actions'])
+    #edited by edward 20210706 to only show yet to approve & yet to respond
+    # listaggregatedindi,listaggregatedindiheader=blgroupbyaggsum(Indisets,tableindiheader,'User', ['Yet-to-Respond','Yet-to-Approve','Closed','Open Actions])
+    listaggregatedindi,listaggregatedindiheader=blgroupbyaggsum(Indisets,tableindiheader,'User', ['Pending Submission','Pending Approval']) #this has been changed by edward 20210706, used to be Yet-to-Respond & Yet-to-Approve
     
     allactions = ActionItems.objects.all()
     
@@ -1248,7 +1267,7 @@ def repPMTExcel (request):
    
     lstbyWorkshop = blgetbyStdudiesCount(allstudies,YetToRespondQue,ApprovalQue,QueClosed,QueOpen,TotalQue)
     
-    
+    #edward 20210708 printing here to see
     #due date based view
     tableduedateheader = ['Due Date','Actions to Close by']
     lstbyDueDate= blaggregatebydate(ActionItems.objects.all())
@@ -1262,7 +1281,7 @@ def repPMTExcel (request):
     lstbyDueDate    = blaggregatebydate(ActionItems.objects.all())
     
     lstplanned         =  blprepareGoogleChartsfromDict(lstbyDueDate)
-    lstactual      = blgetActualRunDown(lstplanned)
+    lstactual      = blgetActualRunDown(lstplanned) # shows how many closed
     newlist = blformulateRundown(lstplanned,lstactual)
 
     
@@ -1398,8 +1417,9 @@ def closeoutprint(request,**kwargs):
     
     discsub = blgetDiscSubOrgfromID(ID)
     Signatories = blgetSignotories(discsub)
+    
   
-    lstSignatoriesTimeStamp= blgettimestampuserdetails (ID, Signatories)
+    lstSignatoriesTimeStamp= blgettimestampuserdetails (ID, Signatories) #edward changed this to use new bl for signature 20210706
     signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
     
     newcloseouttemplate = blsetcloseouttemplate (ID)
@@ -1533,6 +1553,7 @@ class pmtrepviewall(UpdateView):
 
         
         #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
+        #edward 20210707 trying to use consolidated version blgettimestampuserdetails
         lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories) #it changes the signatories directly
         object_list = self.object.attachments_set.all() #-this one gets the the attachments and puts it into Object_List, edward added attachments
         rejectcomments = self.object.comments_set.all() #edward added new way of getting rejectcomments 

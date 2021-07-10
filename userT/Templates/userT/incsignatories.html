@@ -8,8 +8,11 @@
         <th width="40%">
           eMail / Name
         </th>
-        <th width="30%">
+        <th width="20%">
           Designation
+        </th>
+        <th width="16%">
+          Signature
         </th>
         <th>
           Signed
@@ -24,8 +27,8 @@
     <td>{{ items.0}}</td>
     <td>{{ items.1}} / {{ items.2}}</td>
     <td>{{ items.3}}</td>
-    <td>{{ items.4|localtime}}</td>
-   
+    <td style="font-family: Great Vibes;font-size: 20px">{{ items.4}}</td>
+    <td>{{ items.5|localtime}}</td>
     </tr>
    
     {%endfor%}
