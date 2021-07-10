@@ -444,14 +444,9 @@ class ApproverConfirm(UpdateView):
 
             #edward next approver sent email when approved 20210708 manage to send but trying to figure out how to send just to approver who submit and the next approver
             integerqueseries = blgetFieldValue(ID,"QueSeries") # using this to find Approver QueSeries
-            # newQueSeries = 1 #key should be here i think
-            ActionItems.mdlQueSeries.mgrsetQueSeries(ID,integerqueseries)
-        
             discsub = blgetDiscSubOrgfromID(ID)
-            
-            Signatoryemails = blgetSignatoryemailbyque2(discsub,integerqueseries+1) 
+            Signatoryemails = blgetSignatoryemailbyque2(discsub,integerqueseries+1)
             ContentSubject  =blbuildApprovedemail(ID) # using new bl since approver email should be this has been approved instead of submitted
-        
             success = blemailSendindividual(emailSender,Signatoryemails,ContentSubject[0], ContentSubject[1])  
             #edward end next approver sent email when approved 20210708  
               
@@ -744,7 +739,7 @@ def multiplefiles (request, **kwargs):
 
         # Signatoryemails = blgetSignatoryemailbyque(discsub,newQueSeries+1)    
         Signatoryemails = blgetSignatoryemailbyque2(discsub,newQueSeries) # edward 20210709 altered this to use with new bl
-
+        
             
         ContentSubject  =blbuildSubmittedemail(ID)
         
