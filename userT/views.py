@@ -49,6 +49,8 @@ from userT.parameters import *
 #edward scheduler
 # from .scheduler import *
 
+#from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.mixins import UserPassesTestMixin
 def loadsignature (request):
     
     form1 = frmMultipleFiles()
@@ -298,7 +300,7 @@ class ApproverList (ListView):
         dict_allRou = blgetuserRoutes(userZemail)
         Approver_R =    dict_allRou.get('Approver_Routes')
         
-        
+        print(Approver_R)
         for key, value in Approver_R.items():
             #x = blfuncActioneeComDisSub(value,key)
             allactionItems= blallActionsComDisSub(value,key)
@@ -324,11 +326,29 @@ class DetailActioneeItems (DetailView):
         return get_object_or_404(ActionItems, id=id1)
 
 
-class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
+class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
     #paginate_by = 20
     template_name = "userT/actionupdateapproveaction.html" #yhs changed to all small letters 
     form_class = ApproverForm
     success_url = '/ApproverList/'
+
+    def test_func(self,**kwargs):
+        
+        ingroup =  self.request.user.groups.filter(name="Approver").exists()
+
+        IdAI = self.kwargs.get("pk")
+        
+        emailID = self.request.user.email
+        inroute = blgetvaliduserinroute(IdAI,emailID)
+
+        #satifies 2 test before allowing to access items in Url  otherwise just redirect to main
+        if  (ingroup) and (inroute):
+            return True
+        else :
+            return False     
+    def handle_no_permission(self):
+        #if no permission from test_func return to main
+        return HttpResponseRedirect('/main')
 
     def get(self, request, *args, **kwargs):
         #uses pk key to automatically get objext
@@ -392,15 +412,17 @@ class ApproveItemsMixin(UpdateView,ListView, SingleObjectMixin):
         ApproverLevel = blgetApproverLevel(discsub)
         blsetApproverLevelTarget(idAI,ApproverLevel) #sets approver level target
         # end of edward added set approver target for approver 20210701 patch 2.5b
+        object_list = self.object.attachments_set.all()
 
+        context['object_list'] = object_list
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(idAI)
         context['Approver'] = True
         context ['Signatories'] = lstSignatoriesTimeStamp
         
         return context
 
-    def get_queryset(self):
-       return self.object.attachments_set.all() #-this one gets the the attachments and puts it into Object_List
+    # def get_queryset(self):
+    #    return self.object.attachments_set.all() #-this one gets the the attachments and puts it into Object_List
 
     def get_success_url(self):
         return reverse ('ApproverConfirm', kwargs={'id': self.object.id})
@@ -583,28 +605,56 @@ class HistoryFormMixin(ApproveItemsMixin):
     def get_success_url(self):
         return reverse ('HistoryConfirm', kwargs={'id': self.object.id })
 
-class ActioneeItemsMixin(ApproveItemsMixin):
+#@user_passes_test(lambda u: u.groups.filter(name='Actionee').count() == 0, login_url='/main')
+class ActioneeItemsMixin(UserPassesTestMixin,UpdateView):
     template_name = "userT/actionupdateapproveaction.html" #yhs changed to all small letters
     form_class = frmUpdateActioneeForm
     
+    #delete 
+    # def get(self, request, *args, **kwargs):
+    #     #uses pk key to automatically get objext
+    #     self.object = self.get_object(queryset=ActionItems.objects.all())
+    #     return super().get(request, *args, **kwargs)
+    def test_func(self,**kwargs):
+        
+        ingroup = self.request.user.groups.filter(name="Actionee").exists()
+        
+        IdAI = self.kwargs.get("pk")
+        emailID = self.request.user.email
+        inroute = blgetvaliduserinroute(IdAI,emailID)
+
+        #satifies 2 test before allowing to access items in Url  otherwise just redirect to main
+        if  (ingroup) and (inroute):
+            return True
+        else :
+            return False     
+     
+    def handle_no_permission(self):
+        #if no permission from test_func return to main
+        return HttpResponseRedirect('/main')
+
+    def get_object(self,queryset=None):
+       
+        queryset=ActionItems.objects.all()
+        return queryset.get(id=self.kwargs['pk'])
+
     def get_context_data(self,**kwargs):
         IdAI = self.kwargs.get("pk") #its actually the id and used as foreign key
         context = super().get_context_data(**kwargs)
         
         discsuborg = blgetDiscSubOrgfromID(IdAI)
         ApproverLevel = blgetApproverLevel(discsuborg)
-        
-        
         Signatories = blgetSignotories(discsuborg)
         blsetApproverLevelTarget(IdAI,ApproverLevel)
         #edward 20210707 trying to use consolidated version blgettimestampuserdetails
         lstSignatoriesTimeStamp= blgettimestampuserdetails (IdAI, Signatories)
-        
+        object_list = self.object.attachments_set.all()
+
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(IdAI)
         context['Approver'] = False
         context ['ApproverLevel'] = ApproverLevel
         context ['Signatories'] = lstSignatoriesTimeStamp
-        
+        context ['object_list'] = object_list
         return context
 
     def form_valid(self,form):
@@ -622,7 +672,7 @@ class ActioneeItemsMixin(ApproveItemsMixin):
             Status = Attachments.mdlDeleteAttachment.mgrDeleteAttachmentbyID(AttachmentID)
             
             return redirect('ActioneeFormMixin' , pk=ActionItemID)
-
+      
     def get_success_url(self):
         return reverse ('multiplefiles', kwargs={'forkeyid': self.object.id})
 

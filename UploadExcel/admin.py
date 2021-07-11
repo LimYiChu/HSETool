@@ -1,9 +1,58 @@
 from django.contrib import admin
 from .models import *
+from django.contrib.admin.forms import AuthenticationForm
+
 # Register your models here.
 class ActionItemsAdmin(admin.ModelAdmin):
     list_display =('StudyActionNo' ,'DueDate','StudyName', 'Recommendations', 'Response','Organisation', 'Disipline','Subdisipline','DateCreated','QueSeries',)
-    list_editable = ('DueDate','StudyName',)
+    list_editable = ('DueDate','StudyName')
+
+
+
+class delegatedadmin(admin.AdminSite):
+    
+    site_header = 'Delegated Admin'
+   
+    login_form = AuthenticationForm
+    # The below just gives 
+    def has_permission(self, request):
+        """
+        Checks if the current user has access.
+        """
+        return request.user.is_active
+
+class delegatedActionItemsAdmin(admin.ModelAdmin):
+    
+    list_display =('StudyActionNo' ,'DueDate','StudyName', 'Recommendations', 'Response','Organisation', 'Disipline','Subdisipline','DateCreated','QueSeries',)
+    list_editable = ('DueDate',)
+    
+    allfields = [f.name for f in ActionItems._meta.get_fields()]
+
+    
+    del allfields[0:2] #the first few items are foreign keys under meta function so gotta delete it
+    #readonly_fields=['StudyActionNo','StudyName', 'Recommendations', 'Response','Organisation', 'Disipline','Subdisipline','DateCreated','QueSeries',]
+    readonly_fields = allfields
+    
+
+    # def has_add_permission(self, request):
+    #     return True
+
+    # def has_change_permission(self, request,obj=None) :
+        
+    #     # if obj:
+    #     #     if obj.DueDate == "A":
+    #     #          return request.user.has_perm('DeptA')
+    #     #     elif obj.dept == "B":
+    #     #          return request.user.has_perm('DeptB')
+        
+    #     return False
+        #super().has_change_permission(request, obj=obj)
+
+
+delegatedadmin_site=delegatedadmin(name='Delegated Admin')
+#Since need to modify the view on action items have to do another admin.ModelAdmin to get a more appropriate views
+#This model.admon overrides functions etc on it
+delegatedadmin_site.register(ActionItems,delegatedActionItemsAdmin) 
 
 admin.site.register(UploadExl)
 admin.site.register(ActionItems, ActionItemsAdmin)

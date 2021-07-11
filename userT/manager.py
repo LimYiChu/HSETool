@@ -1,6 +1,15 @@
 from django.db.models import Q
 from django.db import models
 from django.contrib.auth.models import User
+
+from django.contrib.auth.base_user import BaseUserManager
+from django.utils.translation import ugettext_lazy as _
+
+
+
+
+
+
 class RoutesQuerySet(models.QuerySet):
     def get_ActioneeR(self,useremail):
         return self.filter(Actionee__iexact=useremail)

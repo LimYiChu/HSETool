@@ -10,6 +10,7 @@ from django.core.mail import EmailMessage
 import numpy as np
 from dateutil.relativedelta import *
 from userT.parameters import *
+import re
 
 def bladdriskcolourandoptiforflater (actionitems,removelist):
     
@@ -467,6 +468,38 @@ def blconverttodictforpdf(lstofsignatories): #edward altered this instead of cre
             
     return(dict)
 
+def blgetvaliduserinroute (idAI,emailid):
+    
+    discsuborg = blgetDiscSubOrgfromID(idAI)
+    queseries = blgetFieldValue(idAI,'QueSeries')
+
+    #starting to work with dictinary objects 
+    # so the below just converts the signatories in your action ID route to check
+    Signatories = dict(blgetSignotories(discsuborg))
+    
+    # the join is just to convert into string Approver1 or Approver2 or even actionee
+    approverseries = ''.join([k for k, v in Signatories.items() if v==emailid])
+
+    #must check queseries again to make sure queseries not at approver level
+    #So this example below is if multiple actionee and then access id which is at approver level
+    # 2 limb test must test for queseries because he could be an actionee and try and access url on approver que
+    if  approverseries == 'Actionee' :
+        if (queseries==0):
+            isvaliduser = emailid in Signatories.values() # Triple quadruple checking even though above should have sufficed
+            return isvaliduser
+        else :
+            return False
+    #if not actionee Next is just to find the approvernumber(level) with re.findall creates a list, even with 1 element, just to make it into an integer
+    approverlevel= ''.join(re.findall('[0-9]+', str(approverseries)))
+    
+    # 2 limb test
+
+    isvaliduser = emailid in Signatories.values()
+    if isvaliduser and (int(queseries)==int(approverlevel)):
+
+        return True
+    else :
+        return False
 
 # def blgettimestampuserdetails (id, Signatories): obsolete code commented by edward on 20210707 after adding signature field & creating new bl function, to be deleted in one month
 #         #pass in all Signatories and ID of action

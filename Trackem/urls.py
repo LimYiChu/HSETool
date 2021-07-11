@@ -23,6 +23,7 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.conf.urls.static import static
 from django.conf import settings
+from UploadExcel.admin import delegatedadmin_site
 # from Tenant.views import our_team
 from rest_framework import routers
 # TESTING THAT ONLY THIS GOES THROUGH demonstration for HS
@@ -32,6 +33,7 @@ urlpatterns = [
       # Load excel actions, routes ,
         path ('rest/',include(router.urls)),
         
+        path('delegatedadmin/', delegatedadmin_site.urls),
         path('upload/', login_required(UploadV.Load), name='Load' ),
         path('loadriskmatrix/', login_required(UploadV.loadriskmatrix), name='loadriskmatrix' ),
         path('uploadfield/', login_required(UploadV.uploadfield), name='uploadfield' ),

@@ -201,7 +201,7 @@ class frmAddRejectReason(forms.ModelForm):
             Div(
             Div (Field('Reason'), required=True, css_class='col-md-12'),  
             Div (Field('Attachment'), required=True, css_class='col-md-12'),   #yhs added requierd =true
-            Div (Field('fullname', type="hidden")),
+            Div (Field('Username', type="hidden")),
             
             ),
         )
