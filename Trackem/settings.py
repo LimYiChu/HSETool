@@ -93,7 +93,7 @@ WSGI_APPLICATION = 'Trackem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'trackemupgrade',
+        'NAME': 'trackem',
         'USER': 'root',
         'PASSWORD': 'Nice10day',
         'HOST': 'localhost',
