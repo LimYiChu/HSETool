@@ -88,7 +88,11 @@ urlpatterns = [
 
         #test googleapi
         path('googlecharts/',login_required(UserView.googlecharts),name='googlecharts'),
-        
+
+        #edward 20210713 new chart
+        path('googlecharts88/',login_required(UserView.googlecharts88),name='googlecharts88'),
+        #edward 20210713 end new chart
+
         #Following url /s for rejection 
         re_path(r'Comments/(?P<forkeyid>\d+)$', login_required(UserView.RejectReason.as_view()), name='RejectReason' ),
         re_path(r'multiplefiles/(?P<forkeyid>\d+)$', login_required(UserView.multiplefiles), name='multiplefiles' ),

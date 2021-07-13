@@ -51,6 +51,9 @@ from userT.parameters import *
 
 #from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import UserPassesTestMixin
+
+# edward 20210713 added json import
+import json
 def loadsignature (request):
     
     form1 = frmMultipleFiles()
@@ -112,8 +115,54 @@ def googlecharts(request):
       
 
     }
+    
     #return JsonResponse()
     return render(request, 'userT/googlecharts.html',context) #ok checked by yhs
+
+# edward 20210713 new chart
+def googlecharts88(request):
+    
+    
+    # lstbyDueDate    = blaggregatebydate(ActionItems.objects.all())
+    
+    # lstplanned          = blprepareGoogleChartsfromDict(lstbyDueDate)
+    # lstactual           = blgetActualRunDown(lstplanned)
+    # newlist             = blformulateRundown(lstplanned,lstactual)
+    
+    # for items in lstbyDueDate:
+
+    #     x=items.get('DueDate')
+
+    # subtotal =[]
+    # for items in lstbyDueDate:
+    #    subtotal.append(items['count']) #how to access dictionary object by
+    
+    # content1 =  newlist
+
+    content2 = [    ['Year', 'Planned', 'Actual'],
+                    ['2021-06-08', 68, 68], 
+                    ['2021-07-08', 67, 68], 
+                    ['2021-07-09', 62, 65], 
+                    ['2021-07-15', 58, 58], 
+                    ['2021-07-16', 57, 58], 
+                    ['2021-07-23', 54, 56], 
+                    ['2021-07-30', 14, 20], 
+                    ['2021-08-26',  13, 14], 
+                    ['2021-10-15', 10, 11], 
+                    ['2021-10-16', 8, 9], 
+                    ['2021-10-17', 0, 5]
+                ]
+    # print(content2)
+    context = {
+        
+        'content' : content2,
+        
+      
+
+    }
+    #return JsonResponse()
+    return render(request, 'userT/googlecharts88.html',context) #ok checked by yhs
+# edward 20210713 end new chart
 
 def mainDashboard (request):
    

@@ -1,0 +1,64 @@
+{% extends "userT/base3.html"%}
+<!doctype html>
+<html lang="en">
+{%block maindashboard%}
+<H1>Googlecharts</H1>
+
+
+<html>
+  <head>
+    
+    <script type="text/javascript">
+        google.charts.load('current', {'packages':['corechart','controls']});
+       
+        google.charts.setOnLoadCallback(drawChart);
+    
+        function drawChart() {
+        
+            var chartdata = {{ content | safe }};
+            var data = google.visualization.arrayToDataTable(chartdata);
+            
+            var dashboard = new google.visualization.Dashboard(
+                document.getElementById('dashboard_div'));
+            
+            var donutRangeSlider = new google.visualization.ControlWrapper({
+                'controlType': 'DateRangeFilter',
+                'containerId': 'filter_div',
+                'options': {
+                    'filterColumnLabel': 'Date'
+                }
+                });
+            
+            dashboard.bind(donutRangeSlider, data);
+            var options = {
+        
+                title: 'Run-Down Curve',
+                colors: ['blue', 'red'],
+                vAxis:{title : 'Actions'},
+                hAxis:{ format: 'MMM d,y', title : 'Date'},
+                //curveType: 'function',
+                legend: {position: 'top', textStyle: {color: 'red', fontSize: 16}},
+                width: 1200,
+                height: 500
+
+            };
+    
+            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+            //chart.draw(data,options);
+            
+            chart.draw(data,options);
+        }
+        
+
+            
+        
+        </script>
+    </head>
+    <body>
+        <div id="curve_chart" style="width: 900px; height: 500px;"></div>
+        <div id="dashboard_div"></div>
+        <div id="filter_div"></div>
+      <div id="chart_div"></div>
+    </body>
+    </html>
+    {%endblock%}
