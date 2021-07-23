@@ -1,3 +1,4 @@
+from django.db.models.fields import NullBooleanField
 from django.http.response import FileResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy, resolve
@@ -54,6 +55,8 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 
 # edward 20210713 added json import
 import json
+#edward 20210722 added datetime
+from datetime import date
 def loadsignature (request):
     
     form1 = frmMultipleFiles()
@@ -119,43 +122,127 @@ def googlecharts(request):
     #return JsonResponse()
     return render(request, 'userT/googlecharts.html',context) #ok checked by yhs
 
+    
 # edward 20210713 new chart
 def googlecharts88(request):
     
     
-    # lstbyDueDate    = blaggregatebydate(ActionItems.objects.all())
+    lstbyDueDate    = blaggregatebydate(ActionItems.objects.all())
     
-    # lstplanned          = blprepareGoogleChartsfromDict(lstbyDueDate)
-    # lstactual           = blgetActualRunDown(lstplanned)
-    # newlist             = blformulateRundown(lstplanned,lstactual)
+    lstplanned          = blprepareGoogleChartsfromDict(lstbyDueDate)
+    lstactual           = blgetActualRunDown(lstplanned)
+    newlist             = blformulateRundown(lstplanned,lstactual)
     
-    # for items in lstbyDueDate:
+    for items in lstbyDueDate:
 
-    #     x=items.get('DueDate')
+        x=items.get('DueDate')
 
-    # subtotal =[]
-    # for items in lstbyDueDate:
-    #    subtotal.append(items['count']) #how to access dictionary object by
+    subtotal =[]
+    for items in lstbyDueDate:
+       subtotal.append(items['count']) #how to access dictionary object by
     
-    # content1 =  newlist
+    content1 =  newlist
+# edward 20210723 new graphing to stop on current day
+    #gettting current date 
+    today = date.today()
+    #print(str(today))
+    filler = 0
+    closed =(len(ActionItems.objects.filter(QueSeries=99)))
+    TotalActionItems = (len(ActionItems.objects.all())) 
+    actual = (TotalActionItems-closed) # use this to append the actual data
+# content2 using hardcoded data for testing 
+    # content2 = [    
+    #                 ['2021-06-08', 68, 68], 
+    #                 ['2021-06-08', 68, 68],
+    #                 ['2021-07-08', 67, 68], 
+    #                 ['2021-07-09', 62, 65], 
+    #                 ['2021-07-15', 58, 58], 
+    #                 ['2021-07-16', 57, 58], 
+    #                 ['2021-07-20', 57, 58], 
+    #                 ['2021-07-24', 57, 58], 
+    #                 ['2021-07-25', 54, 56], 
+    #                 ['2021-07-30', 14, 20], 
+    #                 ['2021-08-26', 13, 14], 
+    #                 ['2021-10-15', 10, 12], 
+    #                 ['2021-10-16', 8, 10], 
+    #                 ['2021-10-17', 0, 5]
+    #             ]
+# edward 20210723 loops through the list & if there is no entry for todays date, it will slot it in along with the empty planned data & current actual data  
+    for items in content1:
+        if items[0] != str(today):
+            content1.append([str(today),' ',actual]) # just sub the number here with actual to get it to work usgin dynamic instaead of hardcoded
+            #print(items)
+# edward 20210723 uses filler method to cut off the red line if the date has not passed         
+    for items in content1:
+        if items[0]> str(today):
+            items.append(filler)
+            if items[3] == filler : # can use filler or just 0 since filler = 0 
+                items.pop(2)
+                items.pop(2)
+                #print(items)
+# edward 20210723 end new graphing to stop on current day
+                
 
-    content2 = [    ['Year', 'Planned', 'Actual'],
-                    ['2021-06-08', 68, 68], 
-                    ['2021-07-08', 67, 68], 
-                    ['2021-07-09', 62, 65], 
-                    ['2021-07-15', 58, 58], 
-                    ['2021-07-16', 57, 58], 
-                    ['2021-07-23', 54, 56], 
-                    ['2021-07-30', 14, 20], 
-                    ['2021-08-26',  13, 14], 
-                    ['2021-10-15', 10, 11], 
-                    ['2021-10-16', 8, 9], 
-                    ['2021-10-17', 0, 5]
+    contentplanned = [    
+                    ['2021-06-08', 68], 
+                    ['2021-06-08', 68],
+                    ['2021-07-08', 67], 
+                    ['2021-07-09', 62], 
+                    ['2021-07-15', 58], 
+                    ['2021-07-16', 57], 
+                    ['2021-07-23', 54], 
+                    ['2021-07-30', 14], 
+                    ['2021-08-26', 13], 
+                    ['2021-08-28', 10],
+                    ['2021-08-30',5],    
+                    
+                    
+    ]
+    contentactual = [    
+                    ['2021-06-08', 68], 
+                    ['2021-06-08', 68],
+                    ['2021-07-08', 67], 
+                    ['2021-07-09', 65], 
+                    ['2021-07-15', 60], 
+                    ['2021-07-16', 59], 
+                    ['2021-07-23', 57], 
+                    ['2021-07-30', 25], 
+                    ['2021-08-26', 22],
+                    ['2021-08-28',20],
+                    ['2021-08-30',],  
+                       
                 ]
+    #edward 20210722 merging lists in python
+    # mergedlst = (blmerge(contentplanned, contentactual))
+    # mergedlst = [(sub + [contentplanned[i][-1]]) for i, sub in enumerate(contentactual)]
+    # print(mergedlst)
+                
+    # contentactual = [    
+    #                 ['2021-06-08', 68], 
+    #                 ['2021-06-08', 68],
+    #                 ['2021-07-08', 68], 
+    #                 ['2021-07-09', 65], 
+    #                 ['2021-07-15', 58], 
+    #                 ['2021-07-16', 58], 
+    #                 ['2021-07-23', 56], 
+    #                 ['2021-07-30', 20], 
+    #                 ['2021-08-26', 19]
+                    
+    #             ]
     # print(content2)
+    # for item in content2: 
+    #     for items in content3:
+    #         item.append(items[1])
+       
+    #     print(content2)
+            
+    
     context = {
         
-        'content' : content2,
+        # 'contentplanned' :contentplanned,
+        # 'contentactual' : contentactual
+        'content' : content1
+
         
       
 

@@ -26,18 +26,20 @@ class UserManager(BaseUserManager):
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save()
-        
+        return user
 
         # normalUser.set_password(password)
         # normalUser.save(using=self._db)
         # return normalUser
     
-    def create_superuser(self, email,fullname,disipline,password=None):
+    def create_superuser(self, email,password, **extra_fields):
+        extra_fields.setdefault('staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
         Superuser=self.create_user(
                 email,
-                fullname,
-                disipline,
                 password=password,
+                **extra_fields
         )
         #Superuser.fullname  =   fullname
         #Superuser.disipline =   disipline

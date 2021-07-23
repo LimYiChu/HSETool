@@ -152,7 +152,7 @@
             </div>
 
 <!--If user is admin, then he can have extra buttons to manage the users etc.-->            
-  {% if request.user.is_admin %}
+  {% if request.user.is_superuser %}
   <div class="card" style="background-color: rgb(52,58,64)">
     <h4>
       <div class="card-header">
