@@ -11,6 +11,8 @@ import numpy as np
 from dateutil.relativedelta import *
 from userT.parameters import *
 import re
+#edward 20210722 added datetime
+from datetime import date
 
 def bladdriskcolourandoptiforflater (actionitems,removelist):
     
@@ -1126,3 +1128,26 @@ def stripAndmatch(lstcount,lstlabel):
     
     return newlstcount,lstlabel
 
+def blstopcharttoday(content):
+    # edward 20210723 new graphing to stop on current day
+ #gettting current date 
+    today = date.today()
+    #print(str(today))
+    filler = 0
+    closed =(len(ActionItems.objects.filter(QueSeries=99)))
+    TotalActionItems = (len(ActionItems.objects.all())) 
+    actual = (TotalActionItems-closed) # use this to append the actual data
+# edward 20210723 loops through the list & if there is no entry for todays date, it will slot it in along with the empty planned data & current actual data  
+    for items in content:
+        if items[0] != str(today):
+            content.append([str(today),' ',actual]) # just sub the number here with actual to get it to work usgin dynamic instaead of hardcoded
+            #print(items)
+# edward 20210723 uses filler method to cut off the red line if the date has not passed         
+    for items in content:
+        if items[0]> str(today):
+            items.append(filler)
+            if items[3] == filler : # can use filler or just 0 since filler = 0 
+                items.pop(2)
+                items.pop(2)
+                #print(items)
+# edward 20210723 end new graphing to stop on current day
