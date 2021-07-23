@@ -127,22 +127,23 @@ def googlecharts(request):
 def googlecharts88(request):
     
     
-    lstbyDueDate    = blaggregatebydate(ActionItems.objects.all())
+    # lstbyDueDate    = blaggregatebydate(ActionItems.objects.all())
     
-    lstplanned          = blprepareGoogleChartsfromDict(lstbyDueDate)
-    lstactual           = blgetActualRunDown(lstplanned)
-    newlist             = blformulateRundown(lstplanned,lstactual)
+    # lstplanned          = blprepareGoogleChartsfromDict(lstbyDueDate)
+    # lstactual           = blgetActualRunDown(lstplanned)
+    # newlist             = blformulateRundown(lstplanned,lstactual)
     
-    for items in lstbyDueDate:
+    # for items in lstbyDueDate:
 
-        x=items.get('DueDate')
+    #     x=items.get('DueDate')
 
-    subtotal =[]
-    for items in lstbyDueDate:
-       subtotal.append(items['count']) #how to access dictionary object by
+    # subtotal =[]
+    # for items in lstbyDueDate:
+    #    subtotal.append(items['count']) #how to access dictionary object by
     
-    content1 =  newlist
-    blstopcharttoday(content1)
+    # content1 =  newlist
+    # print(content1)
+    # blstopcharttoday(content1)
     
 # # edward 20210723 new graphing to stop on current day
 #  #gettting current date 
@@ -167,22 +168,23 @@ def googlecharts88(request):
 #                 #print(items)
 # edward 20210723 end new graphing to stop on current day   
 # content2 using hardcoded data for testing 
-    # content2 = [    
-    #                 ['2021-06-08', 68, 68], 
-    #                 ['2021-06-08', 68, 68],
-    #                 ['2021-07-08', 67, 68], 
-    #                 ['2021-07-09', 62, 65], 
-    #                 ['2021-07-15', 58, 58], 
-    #                 ['2021-07-16', 57, 58], 
-    #                 ['2021-07-20', 57, 58], 
-    #                 ['2021-07-24', 57, 58], 
-    #                 ['2021-07-25', 54, 56], 
-    #                 ['2021-07-30', 14, 20], 
-    #                 ['2021-08-26', 13, 14], 
-    #                 ['2021-10-15', 10, 12], 
-    #                 ['2021-10-16', 8, 10], 
-    #                 ['2021-10-17', 0, 5]
-    #             ]
+    content2 = [    
+                    ['2021-06-08', 68, 68], 
+                    ['2021-06-08', 68, 68],
+                    ['2021-07-08', 67, 68], 
+                    ['2021-07-09', 62, 65], 
+                    ['2021-07-15', 58, 58], 
+                    ['2021-07-16', 57, 58], 
+                    ['2021-07-20', 57, 58], 
+                    ['2021-07-23', 57, 58], 
+                    ['2021-07-25', 54, 56], 
+                    ['2021-07-30', 14, 20], 
+                    ['2021-08-26', 13, 14], 
+                    ['2021-10-15', 10, 12], 
+                    ['2021-10-16', 8, 10], 
+                    ['2021-10-17', 0, 5]
+                ]
+    blstopcharttoday(content2)
 
                 
 
@@ -244,7 +246,7 @@ def googlecharts88(request):
         
         # 'contentplanned' :contentplanned,
         # 'contentactual' : contentactual
-        'content' : content1
+        'content' : content2
 
         
       
