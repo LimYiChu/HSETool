@@ -15,38 +15,43 @@ class UserManager(BaseUserManager):
     def create_user(self, email,password,**extra_fields):
         if not email:
             raise ValueError("users must have an email account")
-        # normalUser   = self.model (
+       
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+         # normalUser   = self.model (
         #             email= self.normalize_email(email),
         #             fullname = fullname,
         #             disipline = disipline,
 
         # )
         
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)
-        user.save()
-        
-
         # normalUser.set_password(password)
         # normalUser.save(using=self._db)
         # return normalUser
     
-    def create_superuser(self, email,fullname,disipline,password=None):
-        Superuser=self.create_user(
+    def create_superuser(self, email,password, **extra_fields):
+        
+        extra_fields.setdefault('staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
+        superuser = self.create_user(
                 email,
-                fullname,
-                disipline,
                 password=password,
+                **extra_fields
         )
+        return superuser
         #Superuser.fullname  =   fullname
         #Superuser.disipline =   disipline
         #Superuser.set_password (password)
-        Superuser.admin  = True
-        Superuser.staff  = True
-        Superuser.is_superuser  =   True
-        Superuser.save(using=self._db)
-        return Superuser
+        # Superuser.admin  = True
+        # Superuser.staff  = True
+        # Superuser.is_superuser  =   True
+        # Superuser.save(using=self._db)
+       
 
 class CustomUser(AbstractBaseUser,PermissionsMixin):
     email       =   models.EmailField(max_length=254, unique=True)
@@ -72,6 +77,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
     def __str__(self):
         return self.email
 
+    #Dont delete its an example of what not to do
     # def has_perm(self, perm, obj=None):
     # #     "Does the user have a specific permission?"
     # #     # Simplest possible answer: Yes, always
@@ -81,7 +87,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
     # def has_module_perms(self, app_label):
     # #     #"Does the user have permissions to view the app `app_label`?"
     # #     # Simplest possible answer: Yes, always
-    #     return True
+    #     retn True
     # def save(self, *args, **kwargs):
     #     if not self.id:
     #         #self.type = self.default_type

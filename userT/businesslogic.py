@@ -147,7 +147,7 @@ def blformulateRundown(lstplanned,lstactual):
             plannedcounter = plannedcounter - (items[1])
             
         lstnewplanned.append (plannedcounter)
-        print(lstnewplanned)
+        
         blnsetwithdate = True
         for dates in lstactual :
       
@@ -468,7 +468,7 @@ def blconverttodictforpdf(lstofsignatories): #edward altered this instead of cre
             
     return(dict)
 
-def blgetvaliduserinroute (idAI,emailid):
+def blgetvaliduserinroute (idAI,emailid,History=False):
     
     discsuborg = blgetDiscSubOrgfromID(idAI)
     queseries = blgetFieldValue(idAI,'QueSeries')
@@ -477,31 +477,45 @@ def blgetvaliduserinroute (idAI,emailid):
     # so the below just converts the signatories in your action ID route to check
     Signatories = dict(blgetSignotories(discsuborg))
     
-    # the join is just to convert into string Approver1 or Approver2 or even actionee
-    approverseries = ''.join([k for k, v in Signatories.items() if v==emailid])
-
+    # the join is just to convert into string Actionee Approver1 or Approver2
+    # But just supposed to get 1 value, actionee or approver or...
+    # Need to modify for testing as sometimes we want to have 
+    approveractioneeseries = ''.join([k for k, v in Signatories.items() if v==emailid])
+    approverlevel= ''.join(re.findall('[0-9]+', str(approveractioneeseries)))
+    
+    isvaliduser = emailid in Signatories.values()
+    print ("History IS", History)
+    print (approveractioneeseries)
     #must check queseries again to make sure queseries not at approver level
     #So this example below is if multiple actionee and then access id which is at approver level
     # 2 limb test must test for queseries because he could be an actionee and try and access url on approver que
-    if  approverseries == 'Actionee' :
-        if (queseries==0):
+    #This if statements below is to cater for testing as well where you might have been assigned to actionee and approver in one route
+    #first test if you are actionee
+    if  'Actionee' in approveractioneeseries :
+        if (queseries==0) or History==True:
             isvaliduser = emailid in Signatories.values() # Triple quadruple checking even though above should have sufficed
             return isvaliduser
-        else :
+        #next need to check if approver in that mixed que for same route mostly while development
+        
+        elif ('Approver' in approveractioneeseries) and (str(queseries) in approverlevel):
+            
+            return True
+        else:
             return False
-    #if not actionee Next is just to find the approvernumber(level) with re.findall creates a list, even with 1 element, just to make it into an integer
-    approverlevel= ''.join(re.findall('[0-9]+', str(approverseries)))
+    elif ('Approver' in approveractioneeseries) :
+        
+        if (str(queseries) in approverlevel) or History==True:
     
     # 2 limb test
 
-    isvaliduser = emailid in Signatories.values()
-    if isvaliduser and (int(queseries)==int(approverlevel)):
+        #if isvaliduser and (str(queseries)==int(approverlevel)):
 
-        return True
+            return True
     else :
+        
         return False
-
-# def blgettimestampuserdetails (id, Signatories): obsolete code commented by edward on 20210707 after adding signature field & creating new bl function, to be deleted in one month
+#obsolete code commented by edward on 20210707 after adding signature field & creating new bl function, to be deleted in one month
+# def blgettimestampuserdetails (id, Signatories): 
 #         #pass in all Signatories and ID of action
 #         #return Signatories with Time Stamp
         
@@ -571,7 +585,7 @@ def blgettimestampuserdetails (id, Signatories):
         #next get all history that has got to do with ID from history tables
         #thinking that if you order by decending then you are done by getting latest first
         lstdictHistory = ActionItems.history.filter(id=id).filter(QueSeries=currentQueSeries).order_by('-history_date').values()
-        # edward appending blacnk string as filler 20210707   
+        # edward appending blank string as filler 20210707   
         filler= ''
         finallstoflst = []                                   
         for index, items in enumerate(Signatories):

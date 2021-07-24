@@ -36,7 +36,7 @@ urlpatterns = [
         path('delegatedadmin/', delegatedadmin_site.urls),
         path('upload/', login_required(UploadV.Load), name='Load' ),
         path('loadriskmatrix/', login_required(UploadV.loadriskmatrix), name='loadriskmatrix' ),
-        path('uploadfield/', login_required(UploadV.uploadfield), name='uploadfield' ),
+        path('uploadexceldf/', login_required(UploadV.uploadexceldf), name='uploadexceldf' ),
         path('LoadRoutes/', login_required(UploadV.LoadRoutes), name='LoadRoutes' ),
         path('login/',auth_views.LoginView.as_view(template_name='userT/login.html'),name='login'),
         path('logout/',auth_views.LogoutView.as_view(template_name='userT/logout.html'),name='logout'),
@@ -64,7 +64,7 @@ urlpatterns = [
        
        #historyapprovepath
        
-        path('HistoryList/<int:pk>/<slug:slug>/view', login_required(UserView.HistoryFormApprover.as_view()), name='HistoryFormApprover' ),
+        #path('HistoryList/<int:pk>/<slug:slug>/view', login_required(UserView.HistoryFormApprover.as_view()), name='HistoryFormApprover' ),
         path('HistoryList/<int:pk>/update/<actionee>', login_required(UserView.HistoryFormMixin.as_view()), name='HistoryFormMixin' ),
 
         #Following urls are for actionee approvers updates and approvals

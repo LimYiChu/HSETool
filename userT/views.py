@@ -104,7 +104,26 @@ def googlecharts(request):
        subtotal.append(items['count']) #how to access dictionary object by
     
     content1 =  newlist
-    
+    print (newlist)
+
+    content1= [['2021-01-10', 136, 136], 
+                ['2021-02-10', 133, 136], 
+                ['2021-04-18', 124, 136], 
+                ['2021-04-29', 113, 136], 
+                ['2021-05-01', 110, 136], 
+                ['2021-05-08', 80, 136], 
+                ['2021-06-03', 77, 133], 
+                ['2021-07-09', 70, 131], 
+                ['2021-07-13', 69, ], 
+                ['2021-07-15', 67, ], 
+                ['2021-07-16', 66, ], 
+                ['2021-07-23', 63, ], 
+                ['2021-07-30', 15, ], 
+                ['2021-08-26', 14, ], 
+                ['2021-10-10', 13, ], 
+                ['2021-10-15', 10, ], 
+                ['2021-10-16', 8, ], 
+                ['2021-10-17', 0, ]]
     context = {
         
         'content' : content1,
@@ -488,43 +507,46 @@ class ApproverConfirm(UpdateView):
       
         return queryset.get(id=self.kwargs['id'])
 
-class HistoryFormApprover(ApproveItemsMixin):
+#Guna using History Form Mixin - Need to delete below
+# class HistoryFormApprover(ApproveItemsMixin):
     
-    template_name = "userT/historyformapprover.html" 
-    form_class = frmApproverConfirmation
-    success_url = '/HistoryList/'
+#     template_name = "userT/historyformapprover.html" 
+#     form_class = frmApproverConfirmation
+#     success_url = '/HistoryList/'
     
-    def get_context_data(self,**kwargs):
-        id = self.object.id #its actually the id and used as foreign key
+#     def get_context_data(self,**kwargs):
+#         id = self.object.id #its actually the id and used as foreign key
         
-        context = super().get_context_data(**kwargs)
+#         context = super().get_context_data(**kwargs)
         
-        discsuborg = blgetDiscSubOrgfromID(id)
-        ApproverLevel = blgetApproverLevel(discsuborg)
+#         discsuborg = blgetDiscSubOrgfromID(id)
+#         ApproverLevel = blgetApproverLevel(discsuborg)
         
-        # #sets the signatory directly in getting timestamp
-        Signatories = blgetSignotories(discsuborg)
-        #edward 20210707 trying to use consolidated version blgettimestampuserdetails
-        lstSignatoriesTimeStamp= blgettimestampuserdetails (id, Signatories)
+#         # #sets the signatory directly in getting timestamp
+#         Signatories = blgetSignotories(discsuborg)
+#         #edward 20210707 trying to use consolidated version blgettimestampuserdetails
+#         lstSignatoriesTimeStamp= blgettimestampuserdetails (id, Signatories)
+#         object_list = self.object.attachments_set.all()
 
-        context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(id)
-        context['Approver'] = False
-        context ['ApproverLevel'] = ApproverLevel
-        context ['Signatories'] = lstSignatoriesTimeStamp
+#         context['object_list'] = object_list
+#         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(id)
+#         context['Approver'] = False
+#         context ['ApproverLevel'] = ApproverLevel
+#         context ['Signatories'] = lstSignatoriesTimeStamp
        
-        return context
-    def form_valid(self,form):
+#         return context
+#     def form_valid(self,form):
 
-        if (self.request.POST.get('Pullback')):
+#         if (self.request.POST.get('Pullback')):
 
-            return super().form_valid(form)
+#             return super().form_valid(form)
         
-        if (self.request.POST.get('Cancel')):
-#             
-           return HttpResponseRedirect('/HistoryList/')
+#         if (self.request.POST.get('Cancel')):
+# #             
+#            return HttpResponseRedirect('/HistoryList/')
 
-    def get_success_url(self):
-        return reverse ('HistoryConfirm', kwargs={'id': self.object.id })
+#     def get_success_url(self):
+#         return reverse ('HistoryConfirm', kwargs={'id': self.object.id })
 
 class HistoryConfirm(UpdateView):
     
@@ -551,10 +573,31 @@ class HistoryConfirm(UpdateView):
       
         return queryset.get(id=self.kwargs['id'])
 
-class HistoryFormMixin(ApproveItemsMixin):
-    template_name = "userT/historypullback.html" #yhs changed to all small letters
+class HistoryFormMixin(UserPassesTestMixin,UpdateView):
+    template_name = "userT/historypullback.html" 
     form_class = frmApproverConfirmation
     
+    def test_func(self,**kwargs):
+        
+        ingroup =  self.request.user.groups.filter(name="Approver").exists()
+        IdAI = self.kwargs.get("pk")
+        emailID = self.request.user.email
+        inroute = blgetvaliduserinroute(IdAI,emailID,True)
+
+        #satifies 2 test before allowing to access items in Url  otherwise just redirect to main
+        if  (ingroup) and (inroute):
+            return True
+        else :
+            return False     
+    def handle_no_permission(self):
+        #if no permission from test_func return to main
+        return HttpResponseRedirect('/main')
+
+    def get_object(self,queryset=None):
+       
+        queryset=ActionItems.objects.all()
+        return queryset.get(id=self.kwargs['pk'])
+
     def get_context_data(self, **kwargs,):
         #id = self.object.id  # old code just leave it as its a good example
         
@@ -570,11 +613,12 @@ class HistoryFormMixin(ApproveItemsMixin):
         # #sets the signatory directly in getting timestamp
         Signatories = blgetSignotories(discsuborg)
         
-        #edward 20210707 trying to use consolidated version blgettimestampuserdetails
+       
         lstSignatoriesTimeStamp= blgettimestampuserdetails (id, Signatories)
         
-        #edward history container 20210701 to be moved into bl version 2.7
-        #get user for where action has moved to their basket (complete)
+   
+        #get location of action and have it in tray at top of the action in history view
+        #Start edward
         actionlocation = []
         integerqueseries = blgetFieldValue(id,"QueSeries") #change to use bl function
         if integerqueseries != 99 and (Signatories !=[]): # looks at que series and then matches it against the list of signatories for an action, != means not equal
@@ -582,16 +626,18 @@ class HistoryFormMixin(ApproveItemsMixin):
             actionlocation.append(lststuckAt[1])
         else: 
             actionlocation.append('Closed')
+        #end edward
 
+        object_list = self.object.attachments_set.all()
+        context ['object_list'] = object_list
         context['actionlocation'] = actionlocation[0]
-        #edward end history container 20210701
-
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(id)
         context['Approver'] = False
         context ['ApproverLevel'] = ApproverLevel
         context ['Signatories'] = lstSignatoriesTimeStamp
         context ['isactionee'] = isactionee
         return context
+
     def form_valid(self,form):
 
         if (self.request.POST.get('Pullback')):
@@ -618,7 +664,7 @@ class ActioneeItemsMixin(UserPassesTestMixin,UpdateView):
     def test_func(self,**kwargs):
         
         ingroup = self.request.user.groups.filter(name="Actionee").exists()
-        
+        print (ingroup)
         IdAI = self.kwargs.get("pk")
         emailID = self.request.user.email
         inroute = blgetvaliduserinroute(IdAI,emailID)
