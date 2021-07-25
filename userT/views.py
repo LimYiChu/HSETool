@@ -90,23 +90,27 @@ def googlecharts(request):
     
     
     lstbyDueDate    = blaggregatebydate(ActionItems.objects.all())
-    
+    #print (lstbyDueDate)
+
     lstplanned          = blprepareGoogleChartsfromDict(lstbyDueDate)
+
+    print (lstplanned)
     lstactual           = blgetActualRunDown(lstplanned)
     newlist             = blformulateRundown(lstplanned,lstactual)
-    
+  
     for items in lstbyDueDate:
 
         x=items.get('DueDate')
 
     subtotal =[]
+   
     for items in lstbyDueDate:
        subtotal.append(items['count']) #how to access dictionary object by
     
     content1 =  newlist
-    print (newlist)
+    
 
-    content1= [['2021-01-10', 136, 136], 
+    content2= [['2021-01-10', 136, 136], 
                 ['2021-02-10', 133, 136], 
                 ['2021-04-18', 124, 136], 
                 ['2021-04-29', 113, 136], 

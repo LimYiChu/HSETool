@@ -11,6 +11,7 @@ import numpy as np
 from dateutil.relativedelta import *
 from userT.parameters import *
 import re
+from datetime import date
 
 def bladdriskcolourandoptiforflater (actionitems,removelist):
     
@@ -170,6 +171,8 @@ def blformulateRundown(lstplanned,lstactual):
 
 def blgetActualRunDown(lstdatesandcount):
     
+    #lstdatesandcount is passing in due dates and how many were meant to be closed
+    #
     
     closed = 99 #queseries
     countX = 0
@@ -190,7 +193,8 @@ def blgetActualRunDown(lstdatesandcount):
             actualdate = datetime.datetime.date(datestamp)
             
             for dates in lstdatesandcount:
-
+                #just checks and then uses due dates defined as the closed date
+                #guna put the equal too
                 if actualdate < dates[0] :
                     
                     countX = 1
@@ -207,16 +211,18 @@ def blgetActualRunDown(lstdatesandcount):
     newactual=[]
     finalactual=[]
     for key,value in dictdd.items():
-            
-      
+          
             for key in value:
                 newactual.append(key)
                 newactual.append(value[key])
                 finalactual.append(newactual)
                 newactual=[]
-                
- 
+    
+    #History is always in the past so today is the latest day
+    # Inject Today
+    #finalactual
     return finalactual
+#aggregates the duedate by counting each action item
 def blaggregatebydate (objActions):
 
     thedates = objActions.values('DueDate').annotate(count=Count('id')).values('DueDate', 'count').order_by('DueDate')
@@ -231,6 +237,11 @@ def blprepareGoogleChartsfromDict(QuerySet):
     firstdatefiller = [finallist[0][0] - relativedelta(months=+1),0] #just inserts a date one month before and uses dateutil
     
     finallist.insert(0,firstdatefiller)
+    #print ("FINALIST",finallist)
+
+    #finallist.insert(12,[date.today(),0])
+
+    #print ("TODAY",[date.today()])
 
     return finallist
 def blprepGoogChartsbyStudies (labels,count,newstudyname):
@@ -442,7 +453,7 @@ def blgetbyStdudiesCount(Studies,YetToRespondQue,pendingApprovalQue,closedAction
 def blconverttodictforpdf(lstofsignatories): #edward altered this instead of creating new bl because it is only used for closedoutsheet 20210706
     
     for items in lstofsignatories:
-        print(items)
+      
         fields = items[0]
         if ("actionee" in fields.lower()) :
             
@@ -484,8 +495,7 @@ def blgetvaliduserinroute (idAI,emailid,History=False):
     approverlevel= ''.join(re.findall('[0-9]+', str(approveractioneeseries)))
     
     isvaliduser = emailid in Signatories.values()
-    print ("History IS", History)
-    print (approveractioneeseries)
+    
     #must check queseries again to make sure queseries not at approver level
     #So this example below is if multiple actionee and then access id which is at approver level
     # 2 limb test must test for queseries because he could be an actionee and try and access url on approver que
