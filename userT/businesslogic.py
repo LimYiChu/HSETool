@@ -12,7 +12,11 @@ from dateutil.relativedelta import *
 from userT.parameters import *
 import re
 #edward 20210722 added datetime
-from datetime import date
+import datetime 
+from datetime import datetime as dt 
+
+
+
 
 def bladdriskcolourandoptiforflater (actionitems,removelist):
     
@@ -1130,33 +1134,24 @@ def stripAndmatch(lstcount,lstlabel):
     
 # edward 20210723 new graphing to stop on current day
 def blstopcharttoday(content):
-
- #gettting current date 
-    today = date.today().strftime('%Y-%m-%d')
-    #print(today)
-    #print(str(today))
-    closed =(len(ActionItems.objects.filter(QueSeries=99)))
-    TotalActionItems = (len(ActionItems.objects.all())) 
+    #declaring variables 
+    strtoday = dt.today().strftime('%Y-%m-%d') #todays date as string
+    closed =(len(ActionItems.objects.filter(QueSeries=99))) #closed items
+    TotalActionItems = (len(ActionItems.objects.all())) #total items
     actual = (TotalActionItems-closed) # use this to append the actual data
-# edward 20210723 loops through the list & if there is no entry for todays date, it will slot it in along with the empty planned data & current actual data  
-    # for items in content: 
-    print(content)  
-    if today in content:
-        print('XXXXXXXX')
-        content
-    elif today not in content:
-        content.append([today,' ',actual])
+    print("TODAY DATE",strtoday)
+    #stopping actual line logic 
      
-        #if items[0] != today:
-        # if today not in items[0]:
-        #     content.append([today,' ',actual]) # just sub the number here with actual to get it to work using dynamic instaead of hardcoded
-        # else: 
-        #     content           
-    #print(content)
-# edward 20210723 uses filler method to cut off the red line if the date has not passed         
+    #checking if there is matching string using find()
     for items in content:
-        if items[0]> today:
-            items.pop(2)    
-    #print(content)         
+        print("for",items[0],strtoday)
+        if items[0] != strtoday:
+            content.append([strtoday,' ',actual])
+            # content.append([strtoday,' ',actual])
+            print("if",content) 
+        
+    for items in content:
+        if items[0]> strtoday:
+            items.pop(2)
     return content
 # edward 20210723 end new graphing to stop on current day

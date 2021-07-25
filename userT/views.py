@@ -56,7 +56,8 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 # edward 20210713 added json import
 import json
 #edward 20210722 added datetime
-from datetime import date
+import datetime 
+from datetime import date as dt 
 def loadsignature (request):
     
     form1 = frmMultipleFiles()
@@ -168,23 +169,57 @@ def googlecharts88(request):
 #                 #print(items)
 # edward 20210723 end new graphing to stop on current day   
 # content2 using hardcoded data for testing 
-    content2 = [    
+    content = [    
                     ['2021-06-08', 68, 68], 
                     ['2021-06-08', 68, 68],
                     ['2021-07-08', 67, 68], 
-                    ['2021-07-09', 62, 65], 
-                    ['2021-07-15', 58, 58], 
-                    ['2021-07-16', 57, 58], 
-                    ['2021-07-20', 57, 58], 
-                    ['2021-07-23', 57, 58], 
+                    # ['2021-07-09', 62, 65], 
+                    # ['2021-07-15', 58, 58], 
+                    # ['2021-07-16', 57, 58], 
+                    # ['2021-07-20', 57, 58], 
+                    # ['2021-07-24', 57, 58], 
                     ['2021-07-25', 54, 56], 
                     ['2021-07-30', 14, 20], 
-                    ['2021-08-26', 13, 14], 
-                    ['2021-10-15', 10, 12], 
-                    ['2021-10-16', 8, 10], 
-                    ['2021-10-17', 0, 5]
+                    # ['2021-08-26', 13, 14], 
+                    # ['2021-10-15', 10, 12], 
+                    # ['2021-10-16', 8, 10], 
+                    # ['2021-10-17', 0, 5]
                 ]
-    blstopcharttoday(content2)
+
+
+    strtoday = dt.today().strftime('%Y-%m-%d') #todays date as string
+    today= dt.today()#.strftime('%Y-%m-%d') #todays date as string
+    closed =(len(ActionItems.objects.filter(QueSeries=99))) #closed items
+    TotalActionItems = (len(ActionItems.objects.all())) #total items
+    actual = (TotalActionItems-closed) # use this to append the actual data
+    currentdate = [today,' ',54]
+    empty=[]
+   
+    for items in content:
+        items[0] = datetime.datetime.strptime(items[0], '%Y-%m-%d') # datetime obj has problems bcs comparing down to the minute
+    #print(content)
+
+    for items in content: # second if loop looks in the list & for all the values that is not today it is appending the currentdate
+        if items[0] == today:
+        #if strtoday not in range(len(content)):
+            content.append(currentdate)
+            print("if2",items,content)  
+            break   
+        else:
+            content
+            print("if2",items,content)
+
+    # for items in content:
+    #     if items[0]> today:
+    #         items.pop(2)
+        
+
+    
+    #print(content)
+
+            
+
+    # blstopcharttoday(content2)
 
                 
 
@@ -246,7 +281,7 @@ def googlecharts88(request):
         
         # 'contentplanned' :contentplanned,
         # 'contentactual' : contentactual
-        'content' : content2
+        'content' : content
 
         
       
