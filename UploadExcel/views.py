@@ -19,7 +19,48 @@ import datetime
 #from .filter import ActionItemsFilter - not sure might need this for later for upload excel. had to remove stuff in filter.py
 #from .forms import UserRegisterForm
 # Create your views here.
-@csrf_exempt
+
+def uploadexceldf (request):
+    
+    if request.method == 'POST':
+       
+        form_upload = UploadExlForm(request.POST ,request.FILES)
+        if form_upload.is_valid():
+            
+            
+            form_upload.instance.Username = request.user.email
+            form_upload.save()
+            ID = form_upload.instance.id
+            form_upload = UploadExlForm()
+            obj = UploadExl.objects.get(id=ID)
+           
+            data_df = pd.read_excel(obj.Filename.path,keep_default_na=False)
+            dictdata = data_df.to_dict('records') # need to have records in there 
+           
+            ActionItems.objects.bulk_create(
+                                              [ActionItems(**vals) for vals in dictdata])
+
+            messages.add_message(request, messages.SUCCESS, 'File Uploaded Successfully')
+
+            #backup code dont delete
+            # allfields = [field.name for field in ActionItems._meta.get_fields() 
+            #                 if field.name != "id" and not field.get_internal_type() == "ForeignKey"]
+                            
+            #backup code dont delete
+            # for x in dictdata:
+            #     m = ActionItems(**x)
+
+            #     m.save()
+            #XX=[ActionItems(**vals) for vals in [dictdata]]
+    else:
+        form_upload= UploadExlForm()
+    
+    context = {
+        'form_upload' : form_upload
+
+    }
+    
+    return render(request, 'uploadexcel/upload.html', context)    
 
 def loadriskmatrix (request):
 
@@ -124,54 +165,11 @@ def Load (request):
     }
 
     return render(request, 'uploadexcel/upload.html', context)
-def uploadfield (request):
-    
-    if request.method == 'POST':
-        #UploadExl.objects.all().delete()
-       # ActionItems.objects.all().delete()
-        form_upload = UploadExlForm(request.POST ,request.FILES)
-        if form_upload.is_valid():
-            form_upload.instance.Username = request.user.email
-            form_upload.save()
-            ID = form_upload.instance.id
-            form_upload = UploadExlForm()
-            obj = UploadExl.objects.get(id=ID)
-            
-            with open (obj.Filename.path, 'r') as input_file:
-                csv_reader = csv.reader(input_file)
-                next(csv_reader)
-                for i, row in enumerate(csv_reader):
-            
-                    ActionItems.objects.create(
-                    StudyActionNo= row [1],
-                    StudyName= row[2],
-                    Facility=row[3],
-                    ProjectPhase=row[4],
-                    Cause= row [5],
-                    Consequence= row[6],
-                    Safeguard = row[7],
-                    InitialRisk = row [8],
-                    Recommendations= row[9],
-                    ResidualRisk = row[10],
-                    Organisation=row[11],
-                    Disipline=row[12],
-                    Subdisipline=row[13],
-                    FutureAction=row[14],
-                    DueDate=row[15],
-                    Guidewords = row[16],
-                    #QueSeries=row[17],
-                    
-                    )
-            messages.add_message(request, messages.SUCCESS, 'File Uploaded Successfully')
-    else:
-        form_upload= UploadExlForm()
-    
-    context = {
-        'form_upload' : form_upload
 
-    }
+#changin to dataframes
 
-    return render(request, 'uploadexcel/upload.html', context)    
+
+
 def LoadRoutes (request):
     #to load routes from excel when required
     pass
