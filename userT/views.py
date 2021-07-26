@@ -196,19 +196,23 @@ def googlecharts88(request):
     empty=[]
    
     for items in content:
-        items[0] = datetime.datetime.strptime(items[0], '%Y-%m-%d') # datetime obj has problems bcs comparing down to the minute
+        items[0] = datetime.datetime.strptime(items[0], '%Y-%m-%d').date() # datetime obj has problems bcs comparing down to the minute
     #print(content)
 
     for items in content: # second if loop looks in the list & for all the values that is not today it is appending the currentdate
         if items[0] == today:
         #if strtoday not in range(len(content)):
             content.append(currentdate)
-            print("if2",items,content)  
+            print("if1",items,content)
+              
             break   
         else:
             content
             print("if2",items,content)
-
+            
+    for items in content:        
+        items[0]=items[0].strftime('%Y-%m-%d')
+            
     # for items in content:
     #     if items[0]> today:
     #         items.pop(2)
