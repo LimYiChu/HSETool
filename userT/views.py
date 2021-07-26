@@ -583,7 +583,11 @@ class HistoryFormMixin(UserPassesTestMixin,UpdateView):
     
     def test_func(self,**kwargs):
         
-        ingroup =  self.request.user.groups.filter(name="Approver").exists()
+        if (self.request.user.groups.filter(name="Approver").exists()) or self.request.user.groups.filter(name="Actionee").exists():
+            ingroup =  True
+        else :
+            ingroup = False
+            
         IdAI = self.kwargs.get("pk")
         emailID = self.request.user.email
         inroute = blgetvaliduserinroute(IdAI,emailID,True)
