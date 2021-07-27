@@ -58,6 +58,7 @@ import json
 #edward 20210722 added datetime
 import datetime 
 from datetime import date as dt 
+from operator import itemgetter
 def loadsignature (request):
     
     form1 = frmMultipleFiles()
@@ -178,7 +179,7 @@ def googlecharts88(request):
                     # ['2021-07-16', 57, 58], 
                     # ['2021-07-20', 57, 58], 
                     # ['2021-07-24', 57, 58], 
-                    ['2021-07-25', 54, 56], 
+                    ['2021-07-27', 54, 56], 
                     ['2021-07-30', 14, 20], 
                     # ['2021-08-26', 13, 14], 
                     # ['2021-10-15', 10, 12], 
@@ -199,23 +200,19 @@ def googlecharts88(request):
         items[0] = datetime.datetime.strptime(items[0], '%Y-%m-%d').date() # datetime obj has problems bcs comparing down to the minute
     #print(content)
 
-    for items in content: # second if loop looks in the list & for all the values that is not today it is appending the currentdate
-        if items[0] == today:
-        #if strtoday not in range(len(content)):
-            content.append(currentdate)
-            print("if1",items,content)
-              
-            break   
-        else:
-            content
-            print("if2",items,content)
-            
-    for items in content:        
+    if not any(today in items for items in content) :
+        content.insert(0,currentdate)
+        print("after", content)
+    else :
+        content
+    sortedcontent = sorted(content, key=itemgetter(0))
+   
+    for items in sortedcontent:        
         items[0]=items[0].strftime('%Y-%m-%d')
             
-    # for items in content:
-    #     if items[0]> today:
-    #         items.pop(2)
+    for items in sortedcontent:
+        if items[0]> strtoday:
+            items.pop(2)
         
 
     
@@ -285,7 +282,7 @@ def googlecharts88(request):
         
         # 'contentplanned' :contentplanned,
         # 'contentactual' : contentactual
-        'content' : content
+        'content' : sortedcontent
 
         
       
