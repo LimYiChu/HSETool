@@ -1145,7 +1145,7 @@ def blstopcharttoday(content):
     closed =(len(ActionItems.objects.filter(QueSeries=99))) #closed items
     TotalActionItems = (len(ActionItems.objects.all())) #total items
     actual = (TotalActionItems-closed) # use this to append the actual data which is Total - Closed
-    currentdate = [today,' ',actual]
+    currentdate = [today,' ',actual] # it is what it says it is
 
     for items in content:
         items[0] = datetime.datetime.strptime(items[0], '%Y-%m-%d').date() # convert from string to date object. datetime obj has problems bcs comparing down to the minute
