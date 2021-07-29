@@ -129,160 +129,78 @@ def googlecharts(request):
 def googlecharts88(request):
     
     
-    # lstbyDueDate    = blaggregatebydate(ActionItems.objects.all())
+    lstbyDueDate    = blaggregatebydate(ActionItems.objects.all())
     
-    # lstplanned          = blprepareGoogleChartsfromDict(lstbyDueDate)
-    # lstactual           = blgetActualRunDown(lstplanned)
-    # newlist             = blformulateRundown(lstplanned,lstactual)
+    lstplanned          = blprepareGoogleChartsfromDict(lstbyDueDate)
+    lstactual           = blgetActualRunDown(lstplanned)
+    newlist             = blformulateRundown(lstplanned,lstactual)
     
-    # for items in lstbyDueDate:
+    for items in lstbyDueDate:
 
-    #     x=items.get('DueDate')
+        x=items.get('DueDate')
 
-    # subtotal =[]
-    # for items in lstbyDueDate:
-    #    subtotal.append(items['count']) #how to access dictionary object by
+    subtotal =[]
+    for items in lstbyDueDate:
+       subtotal.append(items['count']) #how to access dictionary object by
     
-    # content1 =  newlist
+    content =  newlist
     # print(content1)
     # blstopcharttoday(content1)
     
-# # edward 20210723 new graphing to stop on current day
-#  #gettting current date 
-#     today = date.today()
-#     #print(str(today))
-#     filler = 0
-#     closed =(len(ActionItems.objects.filter(QueSeries=99)))
-#     TotalActionItems = (len(ActionItems.objects.all())) 
-#     actual = (TotalActionItems-closed) # use this to append the actual data
-# # edward 20210723 loops through the list & if there is no entry for todays date, it will slot it in along with the empty planned data & current actual data  
-#     for items in content1:
-#         if items[0] != str(today):
-#             content1.append([str(today),' ',actual]) # just sub the number here with actual to get it to work usgin dynamic instaead of hardcoded
-#             #print(items)
-# # edward 20210723 uses filler method to cut off the red line if the date has not passed         
-#     for items in content1:
-#         if items[0]> str(today):
-#             items.append(filler)
-#             if items[3] == filler : # can use filler or just 0 since filler = 0 
-#                 items.pop(2)
-#                 items.pop(2)
-#                 #print(items)
 # edward 20210723 end new graphing to stop on current day   
 # content2 using hardcoded data for testing 
-    content = [    
-                    ['2021-06-08', 68, 68], 
-                    ['2021-06-08', 68, 68],
-                    ['2021-07-08', 67, 68], 
-                    # ['2021-07-09', 62, 65], 
-                    # ['2021-07-15', 58, 58], 
-                    # ['2021-07-16', 57, 58], 
-                    # ['2021-07-20', 57, 58], 
-                    # ['2021-07-24', 57, 58], 
-                    ['2021-07-27', 54, 56], 
-                    ['2021-07-30', 14, 20], 
-                    # ['2021-08-26', 13, 14], 
-                    # ['2021-10-15', 10, 12], 
-                    # ['2021-10-16', 8, 10], 
-                    # ['2021-10-17', 0, 5]
-                ]
+    # content = [    
+    #                 ['2021-06-08', 68, 68], 
+    #                 ['2021-06-08', 68, 68],
+    #                 ['2021-07-08', 67, 68], 
+    #                 # ['2021-07-09', 62, 65], 
+    #                 # ['2021-07-15', 58, 58], 
+    #                 # ['2021-07-16', 57, 58], 
+    #                 # ['2021-07-20', 57, 58], 
+    #                 # ['2021-07-24', 57, 58], 
+    #                 ['2021-07-25', 54, 56], 
+    #                 ['2021-07-30', 14, 20], 
+    #                 # ['2021-08-26', 13, 14], 
+    #                 # ['2021-10-15', 10, 12], 
+    #                 # ['2021-10-16', 8, 10], 
+    #                 # ['2021-10-17', 0, 5]
+    #             ]
+    content1 = blstopcharttoday(content)
 
-
-    strtoday = dt.today().strftime('%Y-%m-%d') #todays date as string
-    today= dt.today()#.strftime('%Y-%m-%d') #todays date as string
-    closed =(len(ActionItems.objects.filter(QueSeries=99))) #closed items
-    TotalActionItems = (len(ActionItems.objects.all())) #total items
-    actual = (TotalActionItems-closed) # use this to append the actual data
-    currentdate = [today,' ',54]
-    empty=[]
+    # strtoday = dt.today().strftime('%Y-%m-%d') #todays date as string
+    # today= dt.today()#.strftime('%Y-%m-%d') #todays date as string
+    # closed =(len(ActionItems.objects.filter(QueSeries=99))) #closed items
+    # TotalActionItems = (len(ActionItems.objects.all())) #total items
+    # actual = (TotalActionItems-closed) # use this to append the actual data
+    # currentdate = [today,' ',actual]
+    # empty=[]
    
-    for items in content:
-        items[0] = datetime.datetime.strptime(items[0], '%Y-%m-%d').date() # datetime obj has problems bcs comparing down to the minute
-    #print(content)
+    # for items in content:
+    #     items[0] = datetime.datetime.strptime(items[0], '%Y-%m-%d').date() # datetime obj has problems bcs comparing down to the minute
 
-    if not any(today in items for items in content) :
-        content.insert(0,currentdate)
-        print("after", content)
-    else :
-        content
-    sortedcontent = sorted(content, key=itemgetter(0))
+    # if not any(today in items for items in content) :
+    #     content.insert(0,currentdate)
+    #     print("InsertedDate", content)
+    # else :
+    #     content
+    # sortedcontent = sorted(content, key=itemgetter(0)) # itemgetter(0) sorts by first entry inside list of list (date in this case)
+    # print(sortedcontent)
    
-    for items in sortedcontent:        
-        items[0]=items[0].strftime('%Y-%m-%d')
-            
-    for items in sortedcontent:
-        if items[0]> strtoday:
-            items.pop(2)
+    # for items in sortedcontent:        
+    #     items[0]=items[0].strftime('%Y-%m-%d')
+    #     if items[0]> strtoday:
+    #         items.pop(2)
+    
+    # content = sortedcontent
         
 
-    
-    #print(content)
 
-            
-
-    # blstopcharttoday(content2)
-
-                
-
-    # contentplanned = [    
-    #                 ['2021-06-08', 68], 
-    #                 ['2021-06-08', 68],
-    #                 ['2021-07-08', 67], 
-    #                 ['2021-07-09', 62], 
-    #                 ['2021-07-15', 58], 
-    #                 ['2021-07-16', 57], 
-    #                 ['2021-07-23', 54], 
-    #                 ['2021-07-30', 14], 
-    #                 ['2021-08-26', 13], 
-    #                 ['2021-08-28', 10],
-    #                 ['2021-08-30',5],    
-                    
-                    
-    # ]
-    # contentactual = [    
-    #                 ['2021-06-08', 68], 
-    #                 ['2021-06-08', 68],
-    #                 ['2021-07-08', 67], 
-    #                 ['2021-07-09', 65], 
-    #                 ['2021-07-15', 60], 
-    #                 ['2021-07-16', 59], 
-    #                 ['2021-07-23', 57], 
-    #                 ['2021-07-30', 25], 
-    #                 ['2021-08-26', 22],
-    #                 ['2021-08-28',20],
-    #                 ['2021-08-30',],  
-                       
-    #             ]
-    # #edward 20210722 merging lists in python
-    # # mergedlst = (blmerge(contentplanned, contentactual))
-    # # mergedlst = [(sub + [contentplanned[i][-1]]) for i, sub in enumerate(contentactual)]
-    # # print(mergedlst)
-                
-    # # contentactual = [    
-    # #                 ['2021-06-08', 68], 
-    # #                 ['2021-06-08', 68],
-    # #                 ['2021-07-08', 68], 
-    # #                 ['2021-07-09', 65], 
-    # #                 ['2021-07-15', 58], 
-    # #                 ['2021-07-16', 58], 
-    # #                 ['2021-07-23', 56], 
-    # #                 ['2021-07-30', 20], 
-    # #                 ['2021-08-26', 19]
-                    
-    # #             ]
-    # # print(content2)
-    # # for item in content2: 
-    # #     for items in content3:
-    # #         item.append(items[1])
-       
-    # #     print(content2)
-            
     
     context = {
         
         # 'contentplanned' :contentplanned,
         # 'contentactual' : contentactual
-        'content' : sortedcontent
+        'content' : content1
 
         
       
@@ -1509,9 +1427,11 @@ def repPMTExcel (request):
     
     lstplanned         =  blprepareGoogleChartsfromDict(lstbyDueDate)
     lstactual      = blgetActualRunDown(lstplanned) # shows how many closed
-    newlist = blformulateRundown(lstplanned,lstactual)
-
     
+    newlist = blformulateRundown(lstplanned,lstactual)
+    #edward 20210727 rundown
+    newlist1 = blstopcharttoday(newlist)
+    #edward end 20210727 rundown
     if request.method == 'POST':
                 
         if (request.POST.get('allActions')):
@@ -1593,7 +1513,7 @@ def repPMTExcel (request):
         'lstbyDueDate' : lstbyDueDate,
         'tableduedateheader' : tableduedateheader,
         'totalallDueDate' : totalallDueDate, 
-        'rundowncontent': newlist,
+        'rundowncontent': newlist1, #edward 20210727 rundown
         'lstbyDisc' : lstbyDisc,
         'lstbyWorkshop' : lstbyWorkshop,
         'Indisets' : Indisets,

@@ -77,7 +77,7 @@
           }
   
         function initiateGoogleChart(){
-
+          google.charts.load('current', {'packages':['corechart']}); //edward 20210728 new chart
           google.charts.load('current', {'packages':['line']});
           google.charts.setOnLoadCallback(starter);
 
@@ -123,23 +123,31 @@
         ;
   
           var options = {
+            interpolateNulls: true,//edward 20210728 new chart 
             chart: {
               title: 'Run-Down Curve',
               subtitle: 'Action Items',
             
           },
             colors: ['blue', 'red'],
-            hAxis:{ format: 'MMM d,y'},
-            curveType: 'function',
-            legend: {position: 'left', textStyle: { fontSize: 16}},
-            width: 1200,
+            //hAxis:{ format: 'MMM d,y'}, //edward 20210728 new chart
+            hAxis:{ format: 'd MMMM'}, //edward 20210728 new chart
+            vAxis: {title: "Number of Actions",titleTextStyle: {
+              fontName: 'Helvetica',
+                fontSize: 20,
+                }},
+            //curveType: 'function', //edward 20210728 new chart
+            //legend: {position: 'left', textStyle: { fontSize: 16}}, //edward 20210728 new chart
+            legend: {position: 'top', textStyle: {color: 'red', fontSize: 16}},//edward 20210728 new chart
+            width: 1000,//edward 20210728 new chart changed the width to keep it in
             height: 500
         };
   
-            var chart = new google.charts.Line(document.getElementById('linecharted'));
-        //chart.draw(data,options);
+            //var chart = new google.charts.Line(document.getElementById('linecharted')); //edward 20210728 new chart
+            var chart = new google.visualization.LineChart(document.getElementById('linecharted'));//edward 20210728 new chart
+            chart.draw(data,options);//edward 20210728
         
-        chart.draw(data, google.charts.Line.convertOptions(options));
+        //chart.draw(data, google.charts.Line.convertOptions(options));
       }
     
     </script>
