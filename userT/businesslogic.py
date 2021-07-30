@@ -1152,7 +1152,6 @@ def blstopcharttoday(content):
 
     if not any(today in items for items in content) : #using list comprehension in place of for loop to look for date inside the list of list 
         content.insert(0,currentdate) # insert at beginning of the list
-        #print("InsertedDate", content)
     else :
         content
     sortedcontent = sorted(content, key=itemgetter(0)) # sorts  the list after insertion. itemgetter(0) sorts by first entry inside list of list (date in this case) 
@@ -1161,9 +1160,9 @@ def blstopcharttoday(content):
         items[0]=items[0].strftime('%Y-%m-%d') # convert date object back to string so js can use it
         if items[0]> strtoday:
             items.pop(2)
-    #print("before",content)       
-    content=sortedcontent
-    #print("after",content)
+      
+    updatedcontent=sortedcontent
+    
 
-    return content
+    return updatedcontent
 # edward 20210723 end new graphing to stop on current day

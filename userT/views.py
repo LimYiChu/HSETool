@@ -1430,7 +1430,7 @@ def repPMTExcel (request):
     
     newlist = blformulateRundown(lstplanned,lstactual)
     #edward 20210727 rundown
-    newlist1 = blstopcharttoday(newlist)
+    newliststop = blstopcharttoday(newlist)
     #edward end 20210727 rundown
     if request.method == 'POST':
                 
@@ -1513,7 +1513,7 @@ def repPMTExcel (request):
         'lstbyDueDate' : lstbyDueDate,
         'tableduedateheader' : tableduedateheader,
         'totalallDueDate' : totalallDueDate, 
-        'rundowncontent': newlist1, #edward 20210727 rundown
+        'rundowncontent': newliststop, #edward 20210727 rundown
         'lstbyDisc' : lstbyDisc,
         'lstbyWorkshop' : lstbyWorkshop,
         'Indisets' : Indisets,

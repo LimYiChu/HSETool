@@ -78,7 +78,7 @@
   
         function initiateGoogleChart(){
           google.charts.load('current', {'packages':['corechart']}); //edward 20210728 new chart
-          google.charts.load('current', {'packages':['line']});
+          //google.charts.load('current', {'packages':['line']});
           google.charts.setOnLoadCallback(starter);
 
         }
@@ -132,7 +132,7 @@
             colors: ['blue', 'red'],
             //hAxis:{ format: 'MMM d,y'}, //edward 20210728 new chart
             hAxis:{ format: 'd MMMM',}, //edward 20210728 new chart
-            pointSize: 7,
+            pointSize: 5,
             vAxis: {title: "Number of Actions",titleTextStyle: {
               fontName: 'Helvetica',
               
@@ -142,7 +142,7 @@
             //curveType: 'function', //edward 20210728 new chart
             //legend: {position: 'left', textStyle: { fontSize: 16}}, //edward 20210728 new chart
             legend: {position: 'top', textStyle: {color: 'red', fontSize: 16}},//edward 20210728 new chart
-            width: 1000,//edward 20210728 new chart changed the width to keep it in
+            width: 1200,//edward 20210728 new chart changed the width to keep it in
             height: 500
         };
   
