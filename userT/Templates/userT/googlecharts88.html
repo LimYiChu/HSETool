@@ -1,0 +1,122 @@
+{% extends "userT/base3.html"%}
+<!doctype html>
+<html lang="en">
+{%block maindashboard%}
+<H1>Googlecharts</H1>
+
+<html>
+  <head>
+    
+    <script type="text/javascript">
+        google.charts.load('current', {'packages':['corechart']});
+        //google.charts.load('current', {'packages':['line']});
+        google.charts.setOnLoadCallback(starter); //cant call drawchart with paarmeters, need the parameters to make the code effcient
+    
+        function starter(){
+            
+            
+                drawChart({{content|safe}});
+                //drawChart({{contentactual|safe}} );
+                //drawChart2LineChart({{content|safe}} , '{{content.0}}');
+                  
+        }
+
+        
+        function drawChart(values) {
+          //alert(values)
+          //alert(values2)
+        var chartdata = []; 
+        
+        var data = new google.visualization.DataTable();
+        data.addColumn('date', 'Date');
+        data.addColumn('number', 'Planned'); 
+        data.addColumn('number', 'Actual');
+        
+        //getting date
+        var today = new Date();
+        var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+        //alert(date)
+        //var data2 = new google.visualization.DataTable();
+        //data2.addColumn('date', 'Date');
+        //data.addColumn('number', 'Planned'); 
+        //data2.addColumn('number', 'Actual');
+
+        
+        //var joindata = google.visualization.data.join(data,data2,  'full', [['Date', 'Date']], ['Planned'], ['Actual']);
+        //alert (JSON.stringify(joindata));
+        //data.addRows(values);
+        var arrplot =[]
+        
+        for(var i = 0; i < values.length; i++){ // i = i + 1 
+          //for(var j = 0; j < values[i].length; j++){
+              
+            first = (values[0][0]);
+            seconddate=(values[1][0]);
+            dates= (values[i][0]);
+            planned = (values[i][1]);
+            actual =(values[i][2]);
+            
+            stringdatas = '[new Date(\'' + dates + '\'),'+ planned + ','+ actual + ']';
+                
+                arrplot.push(stringdatas)
+              
+          //}
+      }
+        //stringdata = '[new Date(\'' + first + '\'),200,210]';
+        var datarows = [];
+        
+        for (var k =0;k<arrplot.length;k++)
+        
+        {
+        
+        data.addRow(eval(arrplot[k]));
+        
+        
+      }
+
+        
+        
+  
+        var options = {
+          interpolateNulls: true,
+          chart: {
+            title: 'Run-Down Curve',
+            subtitle: 'Action Items',
+            
+          },
+          colors: ['blue', 'red'],
+          hAxis:{ format: 'd MMMM',
+
+          viewWindow: { min: new Date(2021,6,1), max: new Date(2021,7,31) } //working setting days of a month ( hardcoded for month of Auguest , 0=Jan, 1=Feb, etc)
+          //gridlines: {count: 2} // cosmetic change to display how many months on the x axix using grid lines
+                  
+        
+        },
+          
+          
+          
+          legend: {position: 'top', textStyle: {color: 'red', fontSize: 16}},
+          width: 1200,
+          height: 500
+        };
+        
+        var chart = new google.visualization.LineChart(document.getElementById('linechart'));
+        //chart.draw(data,options);
+        
+        chart.draw(data, options);
+      }
+       
+
+        
+      
+    </script>
+  </head>
+  <body>
+    <div id="linechart" style="width: 900px; height: 500px;"></div>
+    <div id="piechart2" style="width: 900px; height: 500px;"></div>
+    <div id="piechart3" style="width: 900px; height: 500px;"></div>
+    <div id="piechart4" style="width: 900px; height: 500px;"></div>
+  </body>
+</html>
+
+    {%endblock%}

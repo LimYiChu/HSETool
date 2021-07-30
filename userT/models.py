@@ -64,7 +64,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
     expiration     =  models.DateTimeField(null=True) 
     is_active = models.BooleanField(default=True) #according to django contrib doc, is_active returned here
     admin = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(blank=True,null=True,default=True)
     staff = models.BooleanField(default=True)
     
     objects =   UserManager()

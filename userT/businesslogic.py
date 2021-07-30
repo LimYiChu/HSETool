@@ -12,6 +12,13 @@ from dateutil.relativedelta import *
 from userT.parameters import *
 import re
 from datetime import date
+#edward 20210722 added datetime
+import datetime 
+from datetime import date as dt 
+from operator import itemgetter
+
+
+
 
 def bladdriskcolourandoptiforflater (actionitems,removelist):
     
@@ -185,17 +192,18 @@ def blgetActualRunDown(lstdatesandcount):
         dictactualhistory = ActionItems.history.filter(id=items.id).filter(QueSeries=closed).order_by('-history_date').values()
         #this is not supposed to be the case but for testing only it could be empty
         
-        #make sure there is an entry in the history table, this is for testing
+        # make sure there is an entry in the history table, this is for testing
+        # data going into js datatable has to be in a certain format & could not go as an empty entry 
+        # items closed taken from history table & mapped to less than equals dates
         if dictactualhistory: 
             datestamp = dictactualhistory[0].get('history_date')
             id = dictactualhistory[0].get('id')
             
-            actualdate = datetime.datetime.date(datestamp)
+            actualdate = datetime.datetime.date(datestamp) #taking the date as a date object
             
             for dates in lstdatesandcount:
-                #just checks and then uses due dates defined as the closed date
-                #guna put the equal too
-                if actualdate < dates[0] :
+
+                if actualdate <= dates[0] : 
                     
                     countX = 1
                     actualclosed.append(dates[0])
@@ -206,6 +214,7 @@ def blgetActualRunDown(lstdatesandcount):
     
     df = pd.DataFrame(finalclosed, columns=["duedate","tally"])
     dd = df.groupby(by=["duedate"]).count()
+    print(dd)
     dictdd = dd.to_dict()
  
     newactual=[]
@@ -1149,4 +1158,34 @@ def stripAndmatch(lstcount,lstlabel):
             
     
     return newlstcount,lstlabel
+    
+# edward 20210723 new graphing to stop on current day
+def blstopcharttoday(content):
+    
+    strtoday = dt.today().strftime('%Y-%m-%d') #todays date as string
+    today= dt.today()#.strftime('%Y-%m-%d') #todays date as date object
 
+    closed =(len(ActionItems.objects.filter(QueSeries=99))) #closed items
+    TotalActionItems = (len(ActionItems.objects.all())) #total items
+    actual = (TotalActionItems-closed) # use this to append the actual data which is Total - Closed
+    currentdate = [today,' ',actual] # it is what it says it is
+
+    for items in content:
+        items[0] = datetime.datetime.strptime(items[0], '%Y-%m-%d').date() # convert from string to date object. datetime obj has problems bcs comparing down to the minute
+
+    if not any(today in items for items in content) : #using list comprehension in place of for loop to look for date inside the list of list 
+        content.insert(0,currentdate) # insert at beginning of the list
+    else :
+        content
+    sortedcontent = sorted(content, key=itemgetter(0)) # sorts  the list after insertion. itemgetter(0) sorts by first entry inside list of list (date in this case) 
+    
+    for items in sortedcontent:        
+        items[0]=items[0].strftime('%Y-%m-%d') # convert date object back to string so js can use it
+        if items[0]> strtoday:
+            items.pop(2)
+      
+    updatedcontent=sortedcontent
+    
+
+    return updatedcontent
+# edward 20210723 end new graphing to stop on current day

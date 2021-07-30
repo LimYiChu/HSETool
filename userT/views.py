@@ -1,3 +1,4 @@
+from django.db.models.fields import NullBooleanField
 from django.http.response import FileResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy, resolve
@@ -51,6 +52,13 @@ from userT.parameters import *
 
 #from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import UserPassesTestMixin
+
+# edward 20210713 added json import
+import json
+#edward 20210722 added datetime
+import datetime 
+from datetime import date as dt 
+from operator import itemgetter
 def loadsignature (request):
     
     form1 = frmMultipleFiles()
@@ -135,8 +143,95 @@ def googlecharts(request):
       
 
     }
+    
     #return JsonResponse()
     return render(request, 'userT/googlecharts.html',context) #ok checked by yhs
+
+    
+# edward 20210713 new chart
+def googlecharts88(request):
+    
+    
+    lstbyDueDate    = blaggregatebydate(ActionItems.objects.all())
+    
+    lstplanned          = blprepareGoogleChartsfromDict(lstbyDueDate)
+    lstactual           = blgetActualRunDown(lstplanned)
+    newlist             = blformulateRundown(lstplanned,lstactual)
+    
+    for items in lstbyDueDate:
+
+        x=items.get('DueDate')
+
+    subtotal =[]
+    for items in lstbyDueDate:
+       subtotal.append(items['count']) #how to access dictionary object by
+    
+    content =  newlist
+    # print(content1)
+    # blstopcharttoday(content1)
+    
+# edward 20210723 end new graphing to stop on current day   
+# content2 using hardcoded data for testing 
+    # content = [    
+    #                 ['2021-06-08', 68, 68], 
+    #                 ['2021-06-08', 68, 68],
+    #                 ['2021-07-08', 67, 68], 
+    #                 # ['2021-07-09', 62, 65], 
+    #                 # ['2021-07-15', 58, 58], 
+    #                 # ['2021-07-16', 57, 58], 
+    #                 # ['2021-07-20', 57, 58], 
+    #                 # ['2021-07-24', 57, 58], 
+    #                 ['2021-07-25', 54, 56], 
+    #                 ['2021-07-30', 14, 20], 
+    #                 # ['2021-08-26', 13, 14], 
+    #                 # ['2021-10-15', 10, 12], 
+    #                 # ['2021-10-16', 8, 10], 
+    #                 # ['2021-10-17', 0, 5]
+    #             ]
+    content1 = blstopcharttoday(content)
+
+    # strtoday = dt.today().strftime('%Y-%m-%d') #todays date as string
+    # today= dt.today()#.strftime('%Y-%m-%d') #todays date as string
+    # closed =(len(ActionItems.objects.filter(QueSeries=99))) #closed items
+    # TotalActionItems = (len(ActionItems.objects.all())) #total items
+    # actual = (TotalActionItems-closed) # use this to append the actual data
+    # currentdate = [today,' ',actual]
+    # empty=[]
+   
+    # for items in content:
+    #     items[0] = datetime.datetime.strptime(items[0], '%Y-%m-%d').date() # datetime obj has problems bcs comparing down to the minute
+
+    # if not any(today in items for items in content) :
+    #     content.insert(0,currentdate)
+    #     print("InsertedDate", content)
+    # else :
+    #     content
+    # sortedcontent = sorted(content, key=itemgetter(0)) # itemgetter(0) sorts by first entry inside list of list (date in this case)
+    # print(sortedcontent)
+   
+    # for items in sortedcontent:        
+    #     items[0]=items[0].strftime('%Y-%m-%d')
+    #     if items[0]> strtoday:
+    #         items.pop(2)
+    
+    # content = sortedcontent
+        
+
+
+    
+    context = {
+        
+        # 'contentplanned' :contentplanned,
+        # 'contentactual' : contentactual
+        'content' : content1
+
+        
+      
+
+    }
+    #return JsonResponse()
+    return render(request, 'userT/googlecharts88.html',context) #ok checked by yhs
+# edward 20210713 end new chart
 
 def mainDashboard (request):
    
@@ -1386,9 +1481,11 @@ def repPMTExcel (request):
     
     lstplanned         =  blprepareGoogleChartsfromDict(lstbyDueDate)
     lstactual      = blgetActualRunDown(lstplanned) # shows how many closed
-    newlist = blformulateRundown(lstplanned,lstactual)
-
     
+    newlist = blformulateRundown(lstplanned,lstactual)
+    #edward 20210727 rundown
+    newliststop = blstopcharttoday(newlist)
+    #edward end 20210727 rundown
     if request.method == 'POST':
                 
         if (request.POST.get('allActions')):
@@ -1470,7 +1567,7 @@ def repPMTExcel (request):
         'lstbyDueDate' : lstbyDueDate,
         'tableduedateheader' : tableduedateheader,
         'totalallDueDate' : totalallDueDate, 
-        'rundowncontent': newlist,
+        'rundowncontent': newliststop, #edward 20210727 rundown
         'lstbyDisc' : lstbyDisc,
         'lstbyWorkshop' : lstbyWorkshop,
         'Indisets' : Indisets,
