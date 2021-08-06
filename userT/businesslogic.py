@@ -18,6 +18,10 @@ from datetime import date as dt
 from operator import itemgetter
 
 
+#edward 20210803 excel column formatting using dataframes
+def blsortdataframes(dfall,sortedheader) : #use list for sortedheader, just place what you want in order in parameters.py
+    sortedfall = dfall.reindex(columns=sortedheader) #sorting the columns based on specified sortedheader list if you want alphabetically just use df.sort_index(axis=1)
+    return sortedfall
 
 
 def bladdriskcolourandoptiforflater (actionitems,removelist):
@@ -812,33 +816,58 @@ def blgetActionStuckAt(allactions, lstoftableattributes,email=False):
     lstActionDetails = []
     lstgettriplet = []
     lstofindiactions =[]
-
+    
     for items in allactions:
+        
         for x in lstoftableattributes:
             lstActionDetails.append(eval('items.'+str(x))) #gets the value by basically executing the string content, just dynamic content stuff
+            # print('items.'+str(x))
+
+            # print(items.StudyActionNo)
        
         #the disc sub and company are not case sensitive but space sensitive, remove leading and end white spaces
         #bug fixes for version 1.8
-        strdiscipline = items.Disipline.rstrip().lstrip()
+        strdiscipline = items.Disipline.rstrip().lstrip() 
         strsubdiscipline = items.Subdisipline.rstrip().lstrip()
         strorganisation = items.Organisation.rstrip().lstrip()
         #end bug fix - should move this into signatories
-        lstgettriplet = [strdiscipline,strsubdiscipline,strorganisation]
-        lstofActioneeAppr = blgetSignotories (lstgettriplet)
+        lstgettriplet = [strdiscipline,strsubdiscipline,strorganisation] #edward 20210805 gets discsuborg from all the ActionItems
+        lstofActioneeAppr = blgetSignotories (lstgettriplet) #edward 20210805 gets Action Route for each action, if you print you get AR for each Action in server/db
+
 
         
         if items.QueSeries != 99 and (lstofActioneeAppr !=[]): # basically its looks at que series and then matches it against the list of entire signatories above
-            lststuckAt = lstofActioneeAppr[items.QueSeries]#basically just uses QueSeries to tell us where its stuck at
-            
+            lststuckAt = lstofActioneeAppr[items.QueSeries]#basically just uses QueSeries to tell us where its stuck at #edward 20210805 uses qseries to match AR e.g. if 0 then Actionee
             
             lstActionDetails.append("/".join(lststuckAt)) # Because there is 2 parts to the formula = Actionee , gunav -- So im Just joining them into string
         else:
-            lstActionDetails.append ("Closed") # if its 99 just have a tag closed
-           
+            lstActionDetails.append ("Closed") # if its 99 just have a tag closed 
         lstofindiactions.append (lstActionDetails)
         lstActionDetails =[]
 
     return lstofindiactions
+
+#edward 20210805 dictstuckat
+def blgetActionStuckAtdict(allactions,email=False):
+    dictActionDetails = {}
+    dictgettriplet = {}
+    dictofindiactions ={}
+    
+  
+    
+    for items in allactions : 
+        items['LOCATION']='ACTIONEE/APPROVER'
+        print(items)
+        
+    #print(allactions)
+            
+    
+
+
+
+
+    return dictofindiactions
+#edward 20210805 dictstuckat
 
 def blgetSignotories (lstorgdiscsub):
     #in - list of company disc sub
@@ -1189,3 +1218,23 @@ def blstopcharttoday(content):
 
     return updatedcontent
 # edward 20210723 end new graphing to stop on current day
+
+#edward 20210803 excel
+
+def bladdriskcolourandoptiforflater2 (actionitems):
+    
+    dfRiskMatrix = pd.DataFrame(list(RiskMatrix.objects.all().values()))
+            
+    for items in actionitems:
+                print(items)
+                #[items.pop(key) for key in removelist] # Reducing the data going to html
+                #
+                RiskColour = dfRiskMatrix.loc[dfRiskMatrix['Combined'].isin([items.get('InitialRisk')]),'RiskColour'].tolist() #cant use .item() as its causing an error when not matching
+                
+                if RiskColour:
+                    items['RiskColour'] = RiskColour[0]
+                else: 
+                    items['RiskColour'] = False
+    
+    return actionitems
+

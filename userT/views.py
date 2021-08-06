@@ -59,6 +59,9 @@ import json
 import datetime 
 from datetime import date as dt 
 from operator import itemgetter
+
+
+from collections import OrderedDict
 def loadsignature (request):
     
     form1 = frmMultipleFiles()
@@ -1007,6 +1010,7 @@ def rptoverallStatus(request, **kwargs):
           
             excelCompleteReport(request)
             
+            
         if ActionStatus =='Open':
             chartChanges = []
             if ActionsSorton == 'Company':
@@ -1303,13 +1307,33 @@ def Profile (request):
     return render(request, 'userT/profile.html') #yhs changed to small letters
 
 def repoverallexcel (request):
+    #edward 20210804 excel
+    
+    all_actions =   ActionItems.objects.all().values()#'StudyActionNo','StudyName','ProjectPhase', 'Facility','Guidewords', 'Deviation', 'Cause', 'Consequence', 'Safeguard','InitialRisk','ResidualRisk', 'Disipline' ,'Recommendations','DueDate', 'Response','FutureAction')
+    # print(all_actions)
+    blank=[]
+    all_actionsopt = bladdriskcolourandoptiforflater(all_actions, blank)
+    dfall1 = pd.DataFrame.from_dict(all_actionsopt) # sort dfall
+    dfall = blsortdataframes(dfall1,dfcompletecolumns)
 
-    workbook = excelCompleteReport(request)
+    #getting the actionee/approver 
+    dfalllist = blgetActionStuckAtdict(ActionItems.objects.all().values()) # getting a list of everything
+    #print(dfalllist)
+    # for items in dfalllist: # getting only the actionee/approver from the list 
+    #     print(items[-1]) 
+    # print(dfall)
 
-     
-    response = HttpResponse(content_type='application/ms-excel') #
+    response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename=AllActionDetails.xlsx' 
-    workbook.save(response) # odd  way but it works - took too long to figure out as no resource on the web
+    in_memory = BytesIO()
+    workbook = dfall.to_excel(in_memory)
+    in_memory.seek(0)    
+    response.write(in_memory.read())
+
+    # workbook = excelCompleteReport(request)
+    # response = HttpResponse(content_type='application/ms-excel') #
+    # response['Content-Disposition'] = 'attachment; filename=AllActionDetails.xlsx' 
+    # workbook.save(response) # odd  way but it works - took too long to figure out as no resource on the web
     return response
     
 def repPMTExcel (request):
@@ -1439,6 +1463,15 @@ def repPMTExcel (request):
     lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
     tableallheadermodified = ['Study Action No','Study Name', 'Discipline' ,'Recommendations', 'Response','Due Date','Initial Risk']
     
+    # # # edward 20210803 dataframes excel
+    # all_actions =   ActionItems.objects.all().values()#'StudyActionNo','StudyName','ProjectPhase', 'Facility','Guidewords', 'Deviation', 'Cause', 'Consequence', 'Safeguard','InitialRisk','ResidualRisk', 'Disipline' ,'Recommendations','DueDate', 'Response','FutureAction')
+    # rem_list2 = ['QueSeries','QueSeriesTarget','DateCreated'] #OPtimising data to be removed
+    # blank=[]
+    # all_actionsopt = bladdriskcolourandoptiforflater(all_actions, blank)
+    # dfall1 = pd.DataFrame.from_dict(all_actionsopt) # sort dfall
+    # dfall = blsortdataframes(dfall1,dfallcolumns)
+    # # # edward end 20210803 dataframes excel
+    
     #RejectDetails - gonna use a different way same way as actionne list
     #just using revision way to get all rejected actions
     revisiononwards = 1
@@ -1490,12 +1523,22 @@ def repPMTExcel (request):
                 
         if (request.POST.get('allActions')):
           
-            
+            #edward 20210803 dataframes excel
+            # in_memory = BytesIO()
+            # workbook = dfall.to_excel(in_memory)
+            #edward end 20210803 dataframes excel
+
             tableallheader.append("Current Actionee/Approver") #appends the last column that the list spits out #yhs changed from tableallheader to tableallheadermodified
             workbook = excelAllActions(lstofallactions,tableallheader,"All Action Items",1) #optional parameter passed to remove excel columns if required
             response = HttpResponse(content_type='application/ms-excel') #
             response['Content-Disposition'] = 'attachment; filename=byAllActions.xlsx' 
             workbook.save(response) # odd  way but it works - took too long to figure out as no resource on the web
+
+            #edward 20210803 dataframes excel
+            # in_memory.seek(0)    
+            # response.write(in_memory.read())
+            #edward end 20210803 dataframes excel
+
             return response
         elif (request.POST.get('rejectedactions')):
             
