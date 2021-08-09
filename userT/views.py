@@ -1309,19 +1309,14 @@ def Profile (request):
 def repoverallexcel (request):
     #edward 20210804 excel
     
-    all_actions =   ActionItems.objects.all().values()#'StudyActionNo','StudyName','ProjectPhase', 'Facility','Guidewords', 'Deviation', 'Cause', 'Consequence', 'Safeguard','InitialRisk','ResidualRisk', 'Disipline' ,'Recommendations','DueDate', 'Response','FutureAction')
-    # print(all_actions)
+    all_actions =   ActionItems.objects.all().values()
     blank=[]
-    all_actionsopt = bladdriskcolourandoptiforflater(all_actions, blank)
-    dfall1 = pd.DataFrame.from_dict(all_actionsopt) # sort dfall
-    dfall = blsortdataframes(dfall1,dfcompletecolumns)
-
-    #getting the actionee/approver 
+    
     dfalllist = blgetActionStuckAtdict(ActionItems.objects.all().values()) # getting a list of everything
-    #print(dfalllist)
-    # for items in dfalllist: # getting only the actionee/approver from the list 
-    #     print(items[-1]) 
-    # print(dfall)
+    # all_actionsopt = bladdriskcolourandoptiforflater(dfalllist, blank) #work
+    dfall1 = pd.DataFrame.from_dict(dfalllist) # sort dfall
+    dfall = blsortdataframes(dfall1,dfcompletecolumns)
+    print(dfalllist)
 
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename=AllActionDetails.xlsx' 

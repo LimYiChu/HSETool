@@ -73,5 +73,5 @@ for items in ALLOWED_HOSTS :
 
 # ***dataframes constants edward 20210804
 dfallcolumns=['StudyActionNo','StudyName','Disipline','Recommendations', 'Response','DueDate','InitialRisk','RiskColour']
-dfcompletecolumns=['StudyActionNo','StudyName','ProjectPhase','Facility','Guidewords','Deviation', 'Cause', 'Consequence', 'Safeguard','InitialRisk','ResidualRisk','Recommendations','DueDate', 'Response','FutureAction','Organisation','Disipline','Subdisipline','RiskColour']
+dfcompletecolumns=['StudyActionNo','StudyName','ProjectPhase','Facility','Guidewords','Deviation', 'Cause', 'Consequence', 'Safeguard','InitialRisk','ResidualRisk','Recommendations','DueDate', 'Response','FutureAction','Organisation','Disipline','Subdisipline','Action with'] # 'RiskColour',
 dfcompletecolumns2=['StudyActionNo','StudyName','ProjectPhase','Facility','Guidewords','Deviation', 'Cause', 'Consequence', 'Safeguard','InitialRisk','ResidualRisk','Recommendations','DueDate', 'Response','FutureAction','Organisation','Disipline','Subdisipline']

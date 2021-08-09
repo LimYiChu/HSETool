@@ -833,7 +833,7 @@ def blgetActionStuckAt(allactions, lstoftableattributes,email=False):
         #end bug fix - should move this into signatories
         lstgettriplet = [strdiscipline,strsubdiscipline,strorganisation] #edward 20210805 gets discsuborg from all the ActionItems
         lstofActioneeAppr = blgetSignotories (lstgettriplet) #edward 20210805 gets Action Route for each action, if you print you get AR for each Action in server/db
-
+        
 
         
         if items.QueSeries != 99 and (lstofActioneeAppr !=[]): # basically its looks at que series and then matches it against the list of entire signatories above
@@ -848,25 +848,35 @@ def blgetActionStuckAt(allactions, lstoftableattributes,email=False):
     return lstofindiactions
 
 #edward 20210805 dictstuckat
+# to have a generic function to pass in table headers for excel to call in views
 def blgetActionStuckAtdict(allactions,email=False):
-    dictActionDetails = {}
-    dictgettriplet = {}
-    dictofindiactions ={}
-    
-  
+
+    lstActionDetails = []
+    lstgettriplet = []
     
     for items in allactions : 
-        items['LOCATION']='ACTIONEE/APPROVER'
-        print(items)
+
+        # for x in lstoftableattributes: 
+        #     lstActionDetails.append(x)
+
+        strdis=items['Disipline'] # edward just using K-VP to identify & get the items
+        strsubdis=items['Subdisipline']
+        strorg=items['Organisation']
+
+        lstgettriplet = [strdis,strsubdis,strorg] 
+        lstofActioneeAppr = blgetSignotories (lstgettriplet)
         
-    #print(allactions)
+        if items['QueSeries'] != 99 and (lstofActioneeAppr !=[]): #edward - looks at key QueSeries & its value pairs 
+            lststuckAt = lstofActioneeAppr[items['QueSeries']] #edward - uses QSeries to see which level in AR it is
+            lstActionDetails.append("/".join(lststuckAt)) # edward using similar method as blgetActionstuckat to combine 
+            items['Action with'] = lstActionDetails[0] # edward sort of appending this value to a key
+        else:
+            items['Action with'] = ("Closed") # if its 99 just have a tag closed 
+        lstActionDetails =[]
+        allactionswithlocation = allactions
+    #print(allactionswithlocation)
             
-    
-
-
-
-
-    return dictofindiactions
+    return allactionswithlocation
 #edward 20210805 dictstuckat
 
 def blgetSignotories (lstorgdiscsub):
