@@ -872,8 +872,16 @@ def blgetActionStuckAtdict(allactions,email=False):
             items['Action with'] = lstActionDetails[0] # edward sort of appending this value to a key
         else:
             items['Action with'] = ("Closed") # if its 99 just have a tag closed 
+
+        
+        Actionee = ActionRoutes.mdlgetActioneeAppr.mgr_getactioneefromtriplet(lstgettriplet) # getting Actionee for each Item
+        items['Actionee'] = ((Actionee[0])['Actionee']) # just getting the Actionee from QuerySet
+
+        
+        
         lstActionDetails =[]
         allactionswithlocation = allactions
+        # print(allactions)
     #print(allactionswithlocation)
             
     return allactionswithlocation

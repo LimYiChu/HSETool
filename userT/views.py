@@ -1311,24 +1311,36 @@ def repoverallexcel (request):
     
     all_actions =   ActionItems.objects.all().values()
     blank=[]
-    
-    dfalllist = blgetActionStuckAtdict(ActionItems.objects.all().values()) # getting a list of everything
+
+    dfalllist = blgetActionStuckAtdict(all_actions) # getting a list of everything
     # all_actionsopt = bladdriskcolourandoptiforflater(dfalllist, blank) #work
     dfall1 = pd.DataFrame.from_dict(dfalllist) # sort dfall
     dfall = blsortdataframes(dfall1,dfcompletecolumns)
-    print(dfalllist)
-
+    # print(dfalllist)
+    
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename=AllActionDetails.xlsx' 
     in_memory = BytesIO()
-    workbook = dfall.to_excel(in_memory)
+    
+    workbook = dfall.to_excel(in_memory,sheet_name = 'All Action Details')
+    
+
+    #test formatting
+
+
+
+
+
     in_memory.seek(0)    
     response.write(in_memory.read())
-
-    # workbook = excelCompleteReport(request)
+    
+    #edward 20210804 original excel commented out bcs replacing with dfexcel
+    # workbook = excelCompleteReport(request) 
     # response = HttpResponse(content_type='application/ms-excel') #
     # response['Content-Disposition'] = 'attachment; filename=AllActionDetails.xlsx' 
-    # workbook.save(response) # odd  way but it works - took too long to figure out as no resource on the web
+    # workbook.save(response) # odd  way but it works - took too long to figure out as no resource on the web 
+    #edward end 20210804 original excel commented out bcs replacing with dfexcel
+    
     return response
     
 def repPMTExcel (request):
