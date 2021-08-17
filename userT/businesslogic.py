@@ -20,7 +20,7 @@ from operator import itemgetter
 import pandas as pd
 
 #edward 20210817 excel format
-def blexcelformat (workbook,worksheet,dfall):
+def blexcelformat (workbook,worksheet,dfallsorted):
     
     header_format = workbook.add_format({
         'bold': True,
@@ -30,12 +30,12 @@ def blexcelformat (workbook,worksheet,dfall):
         'fg_color': '#D3D3D3',
         'border': 1})
     header_format.set_bottom(6)
-    for col_num, value in enumerate(dfall.columns.values):
+    for col_num, value in enumerate(dfallsorted.columns.values):
         worksheet.write(0, col_num + 1, value, header_format)
     worksheet.set_column('B:V', 20)
     #worksheet.set_row(0,25) 
     worksheet.set_default_row(25)
-    
+
     return worksheet
 
 #edward 20210803 excel column formatting using dataframes
