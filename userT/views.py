@@ -59,8 +59,7 @@ import json
 import datetime 
 from datetime import date as dt 
 from operator import itemgetter
-#edward 20210817 excel format header reset
-import pandas.io.formats.excel
+
 
 
 from collections import OrderedDict
@@ -1315,46 +1314,19 @@ def repoverallexcel (request):
     blank=[]
 
     dfalllist = blgetActionStuckAtdict(all_actions) # getting a list of everything
-    # all_actionsopt = bladdriskcolourandoptiforflater(dfalllist, blank) #work
-    dfall1 = pd.DataFrame.from_dict(dfalllist) # sort dfall
-    dfall = blsortdataframes(dfall1,dfcompletecolumns)
-    # print(dfalllist)
+    # all_actionsopt = bladdriskcolourandoptiforflater(dfalllist, blank)
+    dfallsort = pd.DataFrame.from_dict(dfalllist) # sort dfall
+    dfall = blsortdataframes(dfallsort,dfcompletecolumns)
     
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename=AllActionDetails.xlsx' 
     in_memory = BytesIO()
     
-    # workbook = dfall.to_excel(in_memory,sheet_name = 'All Action Details')
-    
-    
     with pd.ExcelWriter(in_memory)as writer:
         dfall.to_excel(writer, sheet_name='All Action Details',engine='xlsxwriter',header=False,startrow=1)
-
         workbook = writer.book
         worksheet = writer.sheets['All Action Details']
-        header_format = workbook.add_format({
-            'bold': True,
-            'text_wrap': True,
-            'align': 'center',
-            'valign': 'vcenter',
-            'fg_color': '#D3D3D3',
-            'border': 1})
-        header_format.set_bottom(6)
-        for col_num, value in enumerate(dfall.columns.values):
-            worksheet.write(0, col_num + 1, value, header_format)
-        worksheet.set_column('B:V', 20)
-        #worksheet.set_row(0,25) 
-        worksheet.set_default_row(25)
-      
-        
-        
-        
-
-    #test formatting
-
-
-
-
+        formattedexcel = blexcelformat(workbook,worksheet,dfall)
 
     in_memory.seek(0)    
     response.write(in_memory.read())

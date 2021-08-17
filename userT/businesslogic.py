@@ -16,7 +16,27 @@ from datetime import date
 import datetime 
 from datetime import date as dt 
 from operator import itemgetter
+#edward 20210817 added pandas
+import pandas as pd
 
+#edward 20210817 excel format
+def blexcelformat (workbook,worksheet,dfall):
+    
+    header_format = workbook.add_format({
+        'bold': True,
+        'text_wrap': True,
+        'align': 'center',
+        'valign': 'vcenter',
+        'fg_color': '#D3D3D3',
+        'border': 1})
+    header_format.set_bottom(6)
+    for col_num, value in enumerate(dfall.columns.values):
+        worksheet.write(0, col_num + 1, value, header_format)
+    worksheet.set_column('B:V', 20)
+    #worksheet.set_row(0,25) 
+    worksheet.set_default_row(25)
+    
+    return worksheet
 
 #edward 20210803 excel column formatting using dataframes
 def blsortdataframes(dfall,sortedheader) : #use list for sortedheader, just place what you want in order in parameters.py
