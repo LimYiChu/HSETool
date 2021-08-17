@@ -20,7 +20,7 @@ from operator import itemgetter
 import pandas as pd
 
 #edward 20210817 excel format
-def blexcelformat (workbook,worksheet,dfallsorted):
+def blexcelformat (dfallsorted,workbook,worksheet):
     
     header_format = workbook.add_format({
         'bold': True,

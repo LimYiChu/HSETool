@@ -1326,7 +1326,7 @@ def repoverallexcel (request):
         dfallsorted.to_excel(writer, sheet_name='All Action Details',engine='xlsxwriter',header=False,startrow=1)
         workbook = writer.book #gives excelwriter access to workbook
         worksheet = writer.sheets['All Action Details'] #gives excelwriter access to worksheet
-        formattedexcel = blexcelformat(workbook,worksheet,dfallsorted)
+        formattedexcel = blexcelformat(dfallsorted,workbook,worksheet)
 
     in_memory.seek(0)    
     response.write(in_memory.read())
