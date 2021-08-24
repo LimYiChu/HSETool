@@ -214,7 +214,7 @@ def blgetActualRunDown(lstdatesandcount):
     
     df = pd.DataFrame(finalclosed, columns=["duedate","tally"])
     dd = df.groupby(by=["duedate"]).count()
-    print(dd)
+    
     dictdd = dd.to_dict()
  
     newactual=[]
