@@ -1647,7 +1647,7 @@ def StickyNote(request):
 #     return HttpResponse('TEST')
 
 #this part need to be tidied up. For time's sake i just copy from def (repPMTExcel). by YHS
-def closeoutprint1(request,**kwargs): #edward 20210820 changed to 1 
+def closeoutprint(request,**kwargs): 
    
     ID = (kwargs["id"])
     
@@ -1705,7 +1705,7 @@ def closeoutprint1(request,**kwargs): #edward 20210820 changed to 1
     
     return response
 #edward 20210820 pdf bulk
-def closeoutprint(request,**kwargs):
+def closeoutprint1(request,**kwargs): #edward 20210820 duplicate of closeoutprint to build bulk upload
    
     ID = (kwargs["id"])
     lstclosed = ActionItems.objects.filter(QueSeries =99)
@@ -1812,7 +1812,7 @@ def mergedcloseoutprint(request):
             print(response)
     return response
 
-def closeoutsheet(request): #new naming convention - all small letters
+def closeoutsheet1(request):  #edward 20210820 duplicate of closeoutsheet to build bulk upload
     QueOpen = [0,1,2,3,4,5,6,7,8,9]
     QueClosed = [99]
     YetToRespondQue =[0]
@@ -1868,7 +1868,7 @@ def closeoutsheet(request): #new naming convention - all small letters
     return render(request, 'userT/closeoutsheet.html', context)
 #edward end 20210820 pdf bulk 
  
-def closeoutsheet1(request): #new naming convention - all small letters #edward 20210820 chnaged to 1 
+def closeoutsheet(request): #new naming convention - all small letters
     QueOpen = [0,1,2,3,4,5,6,7,8,9]
     QueClosed = [99]
     YetToRespondQue =[0]
