@@ -80,6 +80,15 @@
             
             <div style="float:left;" class="col-md-6">
               <div class ="card">
+                
+                  <!-- edward 20210820 bulk download -->
+                <div><h5 class="card-header">
+                  <a> Test Bulk Download
+                   <!-- <a>< {{lstclosed}} >Bulk Download <i class="bi bi-file-earmark-spreadsheet" ></i> </button> </a> -->
+                   <button type="button" class="btn btn-outline-primary btn-sm;" style = "float: right; padding-bottom:1pt; padding-top: 1pt">  <a class ="article-title" href="{% url  'mergedcloseouprint' %}" style="float: right;">Test Download  </button> </a></a>
+               </h5></div>
+                <!-- edward 20210820 bulk download -->
+
                 <div><h5 class="card-header">
                   Close-Out Sheet
               </h5></div>
@@ -103,12 +112,14 @@
                 </tr>
             </thead>
             <tbody>
+              
               {% for closeditem  in lstclosed %}
              
             <tr>
               <td><a class="article-title" href="{% url  'closeoutprint' closeditem.id %}">{{ closeditem.StudyActionNo }}</a></td>
               <td>{{ closeditem.StudyName }}</td>
               <td>{{ closeditem.Disipline }}</td>
+              
               
               <td>Closed</td>
               

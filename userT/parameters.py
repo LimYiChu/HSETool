@@ -70,3 +70,8 @@ for items in ALLOWED_HOSTS :
 #closeoutsheet test for one page location
 #closeoutest = 'closeoutsheet.pdf' #commented because did not want to push single page template back to main (could result in mistake setting pdf to print to this template instead)
 #get host name from where it comes from inside settings
+
+# ***dataframes constants edward 20210804
+dfallcolumns=['StudyActionNo','StudyName','Disipline','Recommendations', 'Response','DueDate','InitialRisk','RiskColour']
+dfcompletecolumns=['StudyActionNo','StudyName','ProjectPhase','Facility','Guidewords','Deviation', 'Cause', 'Consequence', 'Safeguard','InitialRisk','ResidualRisk','Recommendations','DueDate', 'Response','FutureAction','Organisation','Disipline','Subdisipline','Actionee','Action with','Revision'] # 'RiskColour',
+dfcompletecolumns2=['StudyActionNo','StudyName','ProjectPhase','Facility','Guidewords','Deviation', 'Cause', 'Consequence', 'Safeguard','InitialRisk','ResidualRisk','Recommendations','DueDate', 'Response','FutureAction','Organisation','Disipline','Subdisipline']

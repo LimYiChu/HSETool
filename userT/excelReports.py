@@ -100,17 +100,36 @@ def excelCompleteReport(request):
             row_num += 1
             row=[]
             for field in allfields:
+
+
+                    #edward 20210802
+                    actionlocation = []
+                    #edward 20210802
+
                     param = 'actions.'+ str(field)
                     actionitemvalue = eval(param)
-                    
+
                     if (str(field).lower() == 'id'):
                         discsuborg = blgetDiscSubOrgfromID(actionitemvalue)
+
+                        #edward 20210802
+                        Signatories = blgetSignotories(discsuborg)
+                        integerqueseries = blgetFieldValue(actionitemvalue,"QueSeries")
+                        if integerqueseries != 99 and (Signatories !=[]): # looks at que series and then matches it against the list of signatories for an action, != means not equal
+                            lststuckAt = Signatories[integerqueseries]#uses QueSeries to indicate where action currently is
+                            actionlocation.append(lststuckAt[1])
+                        else: 
+                            actionlocation.append('Closed')
+                        print(actionlocation)
+                        #edward 20210802
+
+                        
                         Actionee = ActionRoutes.mdlgetActioneeAppr.mgr_getactioneefromtriplet(discsuborg)
                         for items in Actionee:
                             row.append(items.get('Actionee'))
 
                     if (str(field).lower() == 'queseries'):
-
+                            
                             if actionitemvalue == 99:
                                 actionitemvalue = "Closed"
                             else:

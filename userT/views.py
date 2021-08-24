@@ -1,4 +1,5 @@
 from django.db.models.fields import NullBooleanField
+from django.http import response
 from django.http.response import FileResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy, resolve
@@ -59,10 +60,13 @@ import json
 import datetime 
 from datetime import date as dt 
 from operator import itemgetter
-
+from collections import OrderedDict
 def sidebar (request):
 
   return render(request, 'userT/basesidebar.html')
+
+
+
 
 def loadsignature (request):
     
@@ -1012,6 +1016,7 @@ def rptoverallStatus(request, **kwargs):
           
             excelCompleteReport(request)
             
+            
         if ActionStatus =='Open':
             chartChanges = []
             if ActionsSorton == 'Company':
@@ -1308,13 +1313,37 @@ def Profile (request):
     return render(request, 'userT/profile.html') #yhs changed to small letters
 
 def repoverallexcel (request):
+    #edward 20210804 excel
+    
+    all_actions =   ActionItems.objects.all().values()
+    blank=[]
 
-    workbook = excelCompleteReport(request)
-
-     
-    response = HttpResponse(content_type='application/ms-excel') #
+    dfalllist = blgetActionStuckAtdict(all_actions) # getting a list of everything
+    # all_actionsopt = bladdriskcolourandoptiforflater(dfalllist, blank)
+    dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format 
+    dfallsorted = blsortdataframes(dfall,dfcompletecolumns) # sort dfall
+    
+    response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename=AllActionDetails.xlsx' 
-    workbook.save(response) # odd  way but it works - took too long to figure out as no resource on the web
+    in_memory = BytesIO()
+    
+    with pd.ExcelWriter(in_memory)as writer: #using excelwriter library to edit worksheet
+        dfallsorted.to_excel(writer, sheet_name='All Action Details',engine='xlsxwriter',header=False,startrow=1)
+        workbook = writer.book #gives excelwriter access to workbook
+        worksheet = writer.sheets['All Action Details'] #gives excelwriter access to worksheet
+        formattedexcel = blexcelformat(dfallsorted,workbook,worksheet)
+
+    in_memory.seek(0)    
+    response.write(in_memory.read())
+    #edward 20210804 excel end
+
+    #edward 20210804 original excel commented out bcs replacing with dfexcel
+    # workbook = excelCompleteReport(request) 
+    # response = HttpResponse(content_type='application/ms-excel') #
+    # response['Content-Disposition'] = 'attachment; filename=AllActionDetails.xlsx' 
+    # workbook.save(response) # odd  way but it works - took too long to figure out as no resource on the web 
+    #edward end 20210804 original excel commented out bcs replacing with dfexcel
+    
     return response
     
 def repPMTExcel (request):
@@ -1444,6 +1473,15 @@ def repPMTExcel (request):
     lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
     tableallheadermodified = ['Study Action No','Study Name', 'Discipline' ,'Recommendations', 'Response','Due Date','Initial Risk']
     
+    # # # edward 20210803 dataframes excel
+    # all_actions =   ActionItems.objects.all().values()#'StudyActionNo','StudyName','ProjectPhase', 'Facility','Guidewords', 'Deviation', 'Cause', 'Consequence', 'Safeguard','InitialRisk','ResidualRisk', 'Disipline' ,'Recommendations','DueDate', 'Response','FutureAction')
+    # rem_list2 = ['QueSeries','QueSeriesTarget','DateCreated'] #OPtimising data to be removed
+    # blank=[]
+    # all_actionsopt = bladdriskcolourandoptiforflater(all_actions, blank)
+    # dfall1 = pd.DataFrame.from_dict(all_actionsopt) # sort dfall
+    # dfall = blsortdataframes(dfall1,dfallcolumns)
+    # # # edward end 20210803 dataframes excel
+    
     #RejectDetails - gonna use a different way same way as actionne list
     #just using revision way to get all rejected actions
     revisiononwards = 1
@@ -1495,12 +1533,22 @@ def repPMTExcel (request):
                 
         if (request.POST.get('allActions')):
           
-            
+            #edward 20210803 dataframes excel
+            # in_memory = BytesIO()
+            # workbook = dfall.to_excel(in_memory)
+            #edward end 20210803 dataframes excel
+
             tableallheader.append("Current Actionee/Approver") #appends the last column that the list spits out #yhs changed from tableallheader to tableallheadermodified
             workbook = excelAllActions(lstofallactions,tableallheader,"All Action Items",1) #optional parameter passed to remove excel columns if required
             response = HttpResponse(content_type='application/ms-excel') #
             response['Content-Disposition'] = 'attachment; filename=byAllActions.xlsx' 
             workbook.save(response) # odd  way but it works - took too long to figure out as no resource on the web
+
+            #edward 20210803 dataframes excel
+            # in_memory.seek(0)    
+            # response.write(in_memory.read())
+            #edward end 20210803 dataframes excel
+
             return response
         elif (request.POST.get('rejectedactions')):
             
@@ -1603,13 +1651,13 @@ def StickyNote(request):
 #     return HttpResponse('TEST')
 
 #this part need to be tidied up. For time's sake i just copy from def (repPMTExcel). by YHS
-def closeoutprint(request,**kwargs):
+def closeoutprint(request,**kwargs): 
    
     ID = (kwargs["id"])
     
     obj = ActionItems.objects.filter(id=ID).values() # one for passing into PDF
     objFk =ActionItems.objects.get(id=ID) # this is for getting all attachments
-
+    
     ObjAttach = objFk.attachments_set.all()  #get attcahments from foreign key
     
     
@@ -1660,7 +1708,170 @@ def closeoutprint(request,**kwargs):
    #return FileResponse(bufferfile, as_attachment=True, filename=out_file)
     
     return response
+#edward 20210820 pdf bulk
+def closeoutprint1(request,**kwargs): #edward 20210820 duplicate of closeoutprint to build bulk upload
+   
+    ID = (kwargs["id"])
+    lstclosed = ActionItems.objects.filter(QueSeries =99)
+    obj = ActionItems.objects.filter(id=ID).values() # one for passing into PDF
+    objFk =ActionItems.objects.get(id=ID) # this is for getting all attachments
+    
+    ObjAttach = objFk.attachments_set.all()  #get attcahments from foreign key
+    
+    obj1 = ActionItems.objects.values()
+    
+    studyActionNo =  objFk.StudyActionNo
+    print(studyActionNo)
+    replacestudyActionNo= studyActionNo.replace("/","_") #emdr comments replacing slash with underscore since / is filepath 
+    Filename = replacestudyActionNo  + ".pdf" #emdr comments, specifying type of file, in this case pdf
+    #edward new tempfolder from parameters
+    out_file = tempfolder + Filename #emdr comments, chucking it into tempfolder
+       
+    data_dict=obj[0] # emdr comments extracting data dict from QS, use 0 since there is only data dict in the qs for each item
+    
+    discsub = blgetDiscSubOrgfromID(ID) #emdr comments standard getting discsuborg from id
+    Signatories = blgetSignotories(discsub)  #emdr comments standard getting signatories from discsuborg
+    
   
+    lstSignatoriesTimeStamp= blgettimestampuserdetails (ID, Signatories) #edward changed this to use new bl for signature 20210706
+    signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp) #emdr comments just converting signatories to dict since using kvp for pdf
+    
+    newcloseouttemplate = blsetcloseouttemplate (ID) # emdr comments setting template depending on level of approvers
+
+    file = pdfgenerate(newcloseouttemplate,out_file,data_dict,signatoriesdict) #emdr comments using my pitstc pdfgenerator
+    
+    in_memory = BytesIO() 
+    
+    zip = ZipFile(in_memory,mode="w") #emdr comments basic zip + bytesio formatting 
+    
+    for eachfile in ObjAttach: #emdr comments getting  corresponding attachments for each item
+        filename = os.path.basename(eachfile.Attachment.name)
+        zip.write (eachfile.Attachment.path, "Attach_"+filename)
+    
+    
+    
+    closeoutname = os.path.basename(out_file) 
+    zip.write (out_file, closeoutname)
+    zip.close()
+    
+    response = HttpResponse(content_type="application/zip") #emdr comments getting the zip file
+    response["Content-Disposition"] = "attachment; filename=" + studyActionNo+ ".zip"
+
+    in_memory.seek(0)    
+    response.write(in_memory.read())
+    
+    
+    #dont delete below as its a way to actualy read from memory can be used elsewhere
+    #response = HttpResponse(content_type='application/pdf')
+    #response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
+    #bufferfile = pdfsendtoclient ('atrtemplateautofontreadonly.pdf',data_dict)
+    #edward changed file location to parameters
+ 
+   #return FileResponse(bufferfile, as_attachment=True, filename=out_file)
+    
+    return response
+
+# edward 20210823 pdf bulk back to main
+
+def mergedcloseoutprint(request):
+    obj = ActionItems.objects.values()
+    
+    for items in obj:
+        closed = (items['QueSeries'] == 99)
+        if closed == True :
+            items['StudyActionNo'] = items['StudyActionNo'].replace("/","_")
+            newcloseouttemplate = blsetcloseouttemplate (items['id'])
+            data_dict=items
+            discsub = blgetDiscSubOrgfromID(items['id']) 
+            Signatories = blgetSignotories(discsub) 
+            lstSignatoriesTimeStamp= blgettimestampuserdetails (items['id'], Signatories) 
+            i = items["StudyActionNo"] 
+            j = (i + '.pdf')
+            signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
+            out_file = 'static/media/temp/bulkpdf/' + j 
+            file = pdfgenerate(newcloseouttemplate,out_file,data_dict,signatoriesdict)
+
+            in_memory = BytesIO() 
+            zip = ZipFile(in_memory,mode="w")  
+
+            objFk =ActionItems.objects.get(id = items['id']) 
+            ObjAttach = objFk.attachments_set.all()  
+            
+            for eachfile in ObjAttach: 
+                filename = os.path.basename(eachfile.Attachment.name)
+                zip.write (eachfile.Attachment.path, i+"_Attachment"+filename)
+                #zip.printdir()
+                zip.extractall('static/media/temp/bulkpdf/pdfattachments')
+
+            closeoutname = os.path.basename(out_file) 
+            zip.write (out_file, closeoutname)
+            zip.close()
+              
+            
+            response = HttpResponse(content_type="application/zip")
+            response["Content-Disposition"] = "attachment; filename=" + i + ".zip"
+            
+            in_memory.seek(0)    
+            response.write(in_memory.read())
+            print(response)
+    return response
+
+def closeoutsheet1(request):  #edward 20210820 duplicate of closeoutsheet to build bulk upload
+    QueOpen = [0,1,2,3,4,5,6,7,8,9]
+    QueClosed = [99]
+    YetToRespondQue =[0]
+    ApprovalQue = [1,2,3,4,5,6,7,8,9]
+    TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
+    allstudies = Studies.objects.all()
+
+    tablestudiesheader = ['Studies', 'Yet to Respond' ,'Approval Stage','Closed','Open Actions', 'Total Actions']
+   
+
+    
+    lstbyWorkshop = blgetbyStdudiesCount(allstudies,YetToRespondQue,ApprovalQue,QueClosed,QueOpen,TotalQue)
+
+    allactions = ActionItems.objects.all()
+    tableallheader = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
+    lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
+    tableallheadermodified =  ['Study Action No','Study Name', 'Discipline' ,'Recommendations','Response','Initial Risk'] 
+    filename = [] # for appending filename place before for loop
+    
+    #Guna
+
+    lstclosed = ActionItems.objects.filter(QueSeries =99)
+    
+    if (request.POST.get('GeneratePDF')): 
+        x=ActionItems.objects.all()  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
+       
+        y= x.values()          
+        for item in y :            
+            i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file  
+            j = (i + '.pdf')  # easier to breakdown j & to append further on          
+            del item["id"]      
+            data_dict=item
+            out_file = staticmedia + j
+            pdfgenerate(atrtemplate,out_file,data_dict)#returns from pdfgenerator #edward added atrtemplate location in parameters
+            filename.append(j) #can only append str, appending j shows the filename for userview instead of whole location 
+            context1={
+                'filename' : filename,
+                'table': True,
+                'lstbyWorkshop' : lstbyWorkshop,
+                'lstofallactions' : lstofallactions,
+            }
+        return render(request, 'userT/closeoutsheet.html', context1)                    
+    
+
+    context = {
+        'lstclosed' : lstclosed,
+        'lstbyWorkshop' : lstbyWorkshop,
+        'lstofallactions' : lstofallactions,
+        'tablestudiesheader' : tablestudiesheader,
+        
+    }
+
+    return render(request, 'userT/closeoutsheet.html', context)
+#edward end 20210820 pdf bulk 
+ 
 def closeoutsheet(request): #new naming convention - all small letters
     QueOpen = [0,1,2,3,4,5,6,7,8,9]
     QueClosed = [99]
@@ -1684,7 +1895,8 @@ def closeoutsheet(request): #new naming convention - all small letters
     #Guna
 
     lstclosed = ActionItems.objects.filter(QueSeries =99)
- 
+    print(lstclosed)
+
     if (request.POST.get('GeneratePDF')): 
         x=ActionItems.objects.all()  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
        
