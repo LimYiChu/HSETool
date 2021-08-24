@@ -1767,7 +1767,7 @@ def closeoutprint(request,**kwargs):
     
     return response
 
-# edward 20210823 pdf bulk
+# edward 20210823 pdf bulk back to main
 
 def mergedcloseoutprint(request):
     obj = ActionItems.objects.values()
