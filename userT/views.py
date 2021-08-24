@@ -59,6 +59,11 @@ import json
 import datetime 
 from datetime import date as dt 
 from operator import itemgetter
+
+def sidebar (request):
+
+  return render(request, 'userT/basesidebar.html')
+
 def loadsignature (request):
     
     form1 = frmMultipleFiles()
@@ -418,7 +423,7 @@ class ApproverList (ListView):
         dict_allRou = blgetuserRoutes(userZemail)
         Approver_R =    dict_allRou.get('Approver_Routes')
         
-        print(Approver_R)
+        
         for key, value in Approver_R.items():
             #x = blfuncActioneeComDisSub(value,key)
             allactionItems= blallActionsComDisSub(value,key)
@@ -709,7 +714,7 @@ class HistoryFormMixin(UserPassesTestMixin,UpdateView):
        
         context = super().get_context_data(**kwargs)
         
-        #print ("KWARGS",context)
+       
         discsuborg = blgetDiscSubOrgfromID(id)
         ApproverLevel = blgetApproverLevel(discsuborg)
         
@@ -767,7 +772,7 @@ class ActioneeItemsMixin(UserPassesTestMixin,UpdateView):
     def test_func(self,**kwargs):
         
         ingroup = self.request.user.groups.filter(name="Actionee").exists()
-        print (ingroup)
+        
         IdAI = self.kwargs.get("pk")
         emailID = self.request.user.email
         inroute = blgetvaliduserinroute(IdAI,emailID)
