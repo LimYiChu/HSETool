@@ -144,6 +144,8 @@ urlpatterns = [
         # path('scheduler/',login_required(UserView.scheduler),name='scheduler'),
         #edward 20210823 pdf
         path('mergedcloseoutprint/', login_required(UserView.mergedcloseoutprint), name='mergedcloseouprint' ),
+        # edward 20210827 base3
+        path('base3/', login_required(UserView.base3), name='base3' ),
       ]
 
 if settings.DEBUG:

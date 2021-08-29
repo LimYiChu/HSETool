@@ -8,25 +8,31 @@
 <!--breadcrumbs-->
 <h4><b>
     <nav>
-      <ol class="breadcrumb">
+      <!-- 20210828 edward UI bg color -->
+      <ol class="breadcrumb" style="background-color: #ffffff;position:relative;  right:40px;">
         <li class="breadcrumb-item normal">
           <a href="/main">Dashboard</a>
         </li>
         <li class="breadcrumb-item active">
             <a aria-current="page">History List</a>
         </li>
+        <li>
+          <!-- This supposed to be empty to maintain the parent - child RS in css -->
+        </li>
       </ol>
     </nav>
   </b></h4>
+  
   <h6>
     <div class="row">
-      <div class="col-md-12">
-        <div class="card">
-          <h4 class="card-header">
+      <div class="col-md-12" >
+        <div class="card" >
+          <!-- 20210828 edward UI bg color -->
+          <h4 class="card-header" style="background-color: #ffffff; font-size:xx-large;">
             History List
           </h4>
-
-                <div class="tab h5" style="background-color: rgb(231, 234, 235);">
+                <!-- 20210828 edward UI bg color -->
+                <div class="tab h5" style="background-color: rgb(252, 248, 248);">
                   
                     <button class="tablinks" onclick="openReport(event, 'actioneeactions')">Actionee Actions</button>
                     <button class="tablinks" onclick="openReport(event, 'approveractions')" >Approver Actions</button>

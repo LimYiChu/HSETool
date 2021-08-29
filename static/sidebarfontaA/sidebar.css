@@ -6,19 +6,22 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Open Sans', sans-serif;
+    
+    
+    /* font-family: 'Open Sans', sans-serif; */
 }
 
 body{
-    background: #f5f6fa;
+    background: #ffffff;
+    
 }
 
 .wrapper .sidebar{
-    background: rgb(5, 68, 104);
-    position: fixed;
-    top: 0;
+    background: #ffffff;
+    position: absolute;
+    top: 10;
     left: 0;
-    width: 300px;
+    width: auto;
     height: 100%;
     padding: 20px 0;
     transition: all 0.5s ease;
@@ -52,8 +55,8 @@ body{
  
 
     border-bottom: 1px solid #4a828a;
-    color: rgb(241, 237, 237);
-    font-size: 25px;
+    color: rgb(35, 35, 37);
+    font-size: 20px;
     position: relative;
 }
 .wrapper .sidebar ul div div a{
@@ -62,29 +65,29 @@ body{
     padding-left: 60px;
 
     border-bottom: 1px solid #4a828a;
-    color: rgb(241, 237, 237);
-    font-size: 25px;
+    color: rgb(37, 35, 35);
+    font-size: 20px;
     position: relative;
 }
 
 
 .wrapper .sidebar ul div a .icon{
-    color: #dee4ec;
+    color: #141618;
     width: 30px;
     display: inline-block;
 }
 
 .wrapper .sidebar ul div a:hover,
 .wrapper .sidebar ul div a.active{
-    color: #0c7db1;
+    color: #d7e9e2;
 
-    background:white;
+    background:rgb(59, 58, 58);
     border-right: 2px solid rgb(5, 68, 104);
 }
 
 .wrapper .sidebar ul div a:hover .icon,
 .wrapper .sidebar ul li a.active .icon{
-    color: #0c7db1;
+    color: #d7e9e2;
 }
 
 .wrapper .sidebar ul div a:hover:before,
@@ -97,28 +100,28 @@ body{
     display: block;
     padding: 13px 30px;
     border-bottom: 1px solid #4a828a;
-    color: rgb(241, 237, 237);
-    font-size: 25px;
+    color: rgb(37, 35, 35);
+    font-size: 20px;
     position: relative;
 }
 
 .wrapper .sidebar ul li a .icon{
-    color: #dee4ec;
+    color: #222324;
     width: 30px;
     display: inline-block;
 }
 
 .wrapper .sidebar ul li a:hover,
 .wrapper .sidebar ul li a.active{
-    color: #0c7db1;
+    color: #d7e9e2;
 
-    background:white;
+    background:rgb(59, 58, 58);
     border-right: 2px solid rgb(5, 68, 104);
 }
 
 .wrapper .sidebar ul li a:hover .icon,
 .wrapper .sidebar ul li a.active .icon{
-    color: #0c7db1;
+    color: #d7e9e2;
 }
 
 .wrapper .sidebar ul li a:hover:before,
