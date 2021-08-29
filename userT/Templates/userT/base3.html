@@ -23,7 +23,7 @@
   
   <div class="navbar-nav md-3"> 
     <div class="nav navbar-nav md-3">
-        <h3><li><a class="nav-link active" aria-current="page"  style=" color:black; font-family:Montserrat ;font-weight: bold";>eHS-Tools</a></li> </h3>
+        <h3><li><a class="nav-link active" aria-current="page"  style=" color:black; font-family:Montserrat ;font-weight: bold; font-size:37px";>eHSTools</a></li> </h3>
       </div><!--consider to have linkedin or facebook link-->     
     <li class="nav-item">
       <h3> <a class="nav-link active" aria-current="page"style="color:black"> <img src="{% static 'sapura.png' %}" alt="client" width="5%" height="30%"></a> </h3>
@@ -117,7 +117,26 @@
                     </a>
                         </div>
                     </div>
-                
+
+                <div>
+                    <a href="#CC" data-toggle="collapse"  >
+                        <span class="icon"><i class="fas fa-id-card"></i></span>
+                        <span class="item">Profile Management</span>
+                    </a>
+                </div>
+                    <div id="CC" class="collapse">
+                        <div>
+                    <a href="{% url 'password_change' %}">
+                        <span class="icon" ><i class="fas fa-key"></i></span>
+                        <span class="item" >Change Password</span>
+                    </a>
+
+                    <a href="{% url 'password_reset' %}">
+                        <span class="icon" ><i class="fas fa-redo"></i></span>
+                        <span class="item" >Reset Password</span>
+                    </a>
+                        </div>
+                    </div>
                 
                 <li>
                     <a href="/ContactUs">
@@ -125,20 +144,14 @@
                         <span class="item">Contact Us</span>
                     </a>
                 </li>
-                <li>
-                    <a href="#">
-                        <span class="icon"><i class="fas fa-id-card"></i></span>
-                        <span class="item">Profile Management</span>
-                    </a>
-                </li>
                 
                 {% if request.user.is_superuser %}
                 <div>
-                    <a href="#CC" data-toggle="collapse">
+                    <a href="#DD" data-toggle="collapse">
                         <span class="icon"><i class="fas fa-user-shield"></i></span>
                         <span class="item">Admin</span>
                     </a>
-                <div id="CC" class="collapse">  
+                <div id="DD" class="collapse">  
                     <a href="/uploadexceldf">
                         <span class="icon" ><i class="fas fa-clipboard-list"></i></span>
                         <span class="item" >Upload File</span>
@@ -157,6 +170,7 @@
                       <span class="item">Delegated Admin</span>
                   </a>
               </li>
+              
                 {% elif request.user.is_admin %}
                 <li>
                     <a href="/delegatedadmin">

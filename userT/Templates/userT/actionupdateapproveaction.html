@@ -14,8 +14,9 @@
 <!--breadcrumbs-->
 <div class=''>
     <nav>
-      <ol class="breadcrumb" >
-        <li class="breadcrumb-item">
+      <!-- 20210828 edward UI added border color -->
+      <ol class="breadcrumb" style="background-color: #ffffff; position:relative;  right:40px;" >
+        <li class="breadcrumb-item" >
           <a style="color:black" href="/main">Dashboard</a>
         </li>
         {% if block.is_ApproverDetails %}<!--doesnt work...-->      
@@ -30,6 +31,9 @@
 
         <li class="breadcrumb-item active">
             <a aria-current="page">{{object.StudyActionNo}}</a>
+        </li>
+        <li>
+          <!-- This supposed to be empty to maintain the parent - child RS in css -->
         </li>
       </ol>
     </nav>
