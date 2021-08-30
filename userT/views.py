@@ -61,6 +61,12 @@ import datetime
 from datetime import date as dt 
 from operator import itemgetter
 from collections import OrderedDict
+
+def base3 (request):
+    return render(request,'userT/base3.html')
+
+
+
 def sidebar (request):
 
   return render(request, 'userT/basesidebar.html')

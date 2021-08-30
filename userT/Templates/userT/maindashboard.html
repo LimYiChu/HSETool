@@ -83,22 +83,35 @@
     </script>
   </head>
 
+  <!--breadcrumbs-->
+  <h4><b>
+    <nav>
+       <!-- 20210828 edward UI added border color -->
+      <ol class="breadcrumb" style="background-color: #ffffff;position:relative;  right: -15px;">
+        <li class="breadcrumb-item normal">
+          <a href="/main">My Dashboard</a>
+        </li>
+        <li>
+            <!-- This supposed to be empty to maintain the parent - child RS in css -->
+        </li>
+      </ol>
+    </nav>
+</b></h4>
+<br> 
+      
+
 
 <div class="col-md-12 center">
-<div class="card">
-    <h4><div class="card-header" >
-     Your Actions
-    </div></h4>
+<div class="card" >
+    
     <h5>
-    <div class="card-body">
+    
         <div class="row">
             <div class="col-md-12" >
             <div class="card">
-                    <div class="card-header"  >
+                    <div class="card-header" style="background-color: #ffffff;"  >
 
-                    <a href="/ActioneeList" >
-                        Actionee Action   - You have a total of {{totalactioneeaction}} actions in your que.       
-                       </a>
+                    <a href="/ActioneeList" >Actionee Action   - You have a total of {{totalactioneeaction}} actions in your que.</a>
                     
                     </div>
                 <div >
@@ -125,7 +138,7 @@
         <div class="row">         
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header" >
+                    <div class="card-header" style="background-color: #ffffff;">
                             <a href="/ApproverList">
                         Approver Actions - You have a total of {{totalapproveraction}} actions in your que. 
                             </a>
@@ -149,7 +162,7 @@
 
     </div>
 </h5>
-</div>
+
 </div>
 </div>
 </div>

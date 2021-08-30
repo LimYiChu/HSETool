@@ -1,9 +1,15 @@
 {% load static %}
-<!doctype html>
-<html lang="en">
-  <head>
+<!doctype html >
+<html lang="en" >
+  <head >
     
     {%include "userT/inclscriptslinkbase3.html"%}
+    <!-- 20210525 edward sidebar -->
+    <link rel="stylesheet" type="text/css" href="{% static 'sidebarfontaA/sidebar.css' %}" > <!--Using Font awesome -->
+    <link rel="stylesheet" href="{% static 'sidebarfontaA/css/all.css' %}">
+     <!-- 20210525 edward UI -->
+    <link rel="stylesheet" type="text/css" href="{% static 'breadcrumb/arrow.css' %}" > 
+    
 
 <title>Your Dashboard</title>
 </head>
@@ -11,195 +17,190 @@
   
 
 <body>
+
+    
 <!--Top Nav Bar-->
-<nav class="navbar navbar-expand-lg" style="background-color: rgb(248,248,248); border-bottom:darkgrey solid 1px">
+<nav class="navbar navbar-expand-lg" style="background-color: #ffffff; border-bottom:rgb(255, 255, 255) solid 1px ;">
 <div class="container-fluid">
   
-  <div class="navbar-nav md-3">      
+  <div class="navbar-nav md-3"> 
+    <div class="nav navbar-nav md-3">    
+      </div><!--consider to have linkedin or facebook link-->     
     <li class="nav-item">
-      <h3> <a class="nav-link active" aria-current="page"style="color:black"> <img src="{% static 'sapura.png' %}" alt="client" width="5%" height="30%"> Sapura Energy</a> </h3>
+      <h3> <a class="nav-link active" aria-current="page"style="color:black"> <img src="{% static 'ehstools.png' %}" alt="client" width="100%" height="30%"></a> </h3>
   </div>
+  
+  <!--Username and Logout button including bottom border-->
+  <h5>
+    <div  class="pb-2 mb-3 text-right" >
+      <div style="font-size:20px ;font-family:'Open Sans', sans-serif"> 
+        <i ></i>{{user.email}} <!--hold, make this clickable and link to user profile.-->
+         <a href="/logout">
+        <button type="button" class="btn btn-secondary btn-sm;"><i class="fas fa-sign-out-alt"></i>Logout</button> 
+      </a>
+       </div>    
+   </div>
+  </h5>  
 
-       <div class="nav navbar-nav md-3">
-        <h3><li><a class="nav-link active" aria-current="page"  style=" color:black; font-family:pacifico" >ePcIC Tracker </a></li> </h3>
-      </div><!--consider to have linkedin or facebook link-->
+       
 
 </div>    
 </nav>
+<!-- 
+<div class="wrapper">
+    <div class="section">
+ <div class="top_navbar">
+   <div class="hamburger">
+     <a href="#">
+       <i class="fas fa-bars" style="position: absolute; left: 295px; top:75px;"></i>
+     </a>
+   </div>
+ </div>
+ <script>
+    var hamburger = document.querySelector(".hamburger");
+	hamburger.addEventListener("click", function(){
+		document.querySelector("body").classList.toggle("active");
+	})
 
-
+  </script> -->
 
 <!--sidebar left-->
 
   
-<div class="row">
-    <div class="sidebar-sticky col-md-2" style="background-image: linear-gradient(to right, #f8f8f8, #fafafa, #fbfcfb, #fdfdfd, #ffffff); border-right:darkgrey solid 1px"> <!--hold not yet able to solve the side bar 100% height need to set in css-->
+<div class="row" >
+    <div class="sidebar-sticky col-md-2" style="background-color:rgb(255, 255, 255); border-right:rgb(255, 255, 255) solid 1px"> 
       
         <!--<ul class="nav flex-column"></ul>--commented out by GV-->
     
   
-      <div id="card-738960" style="margin-right:5px;margin-left:20px"  >
-      <br>
+      <div id="accordion" style="margin-right:5px;margin-left:20px; margin-top:-15px;"  >
+    
       
-         <div class="card" style="background-color: rgb(52,58,64);">
-        <h4> 
-            <div class="card-header" >
-                <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-1" style="color:white;font-size:1vw;">Your Actions</a>
-            </div>
-        </h4>
-        <h5>
-              <div id="card-element-1" class="collapse" >
-                <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" >
-                    <a href="/main" style ="color: black;">
-                     Dashboard                
+      <div class="wrapper">
+        <!--Top menu -->
+        <div >
+        <div class="sidebar">
+            <ul>
+                <div id="cme">
+                    <a href="/main"  >
+                        <span class="icon"><i class="fas fa-chart-pie"></i></span>
+                        <span class="item"  >My Dashboard</span>
                     </a>
-                  </div>
-                  <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/ActioneeList" style ="color: Black;">
-                  Actionee Actions</a>
-                 </div>
-                 <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/ApproverList" style ="color: black;">
-                  Approver Actions
-                 </a></div>
-                 <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/HistoryList" style ="color: black;">
-                  History
-                 </a></div>
-              </div>
-        </h5>
-        </div>
-            
-        <div class="card" style="background-color: rgb(52,58,64);">
-          <h4>  
-          <div class="card-header">
-              <a class="collapsed card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-2" style="color:white;font-size:1vw;">Reporting</a>
-            </div>
-          </h4>
-          <h5>
-                <div id="card-element-2" class="collapse">
-                   <!-- <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/actionstatus" style ="color: black;">
-                    Open/Closed Actions
-                    </a>  </div>
-                <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/discslice" style ="color: black;">
-                    Disciplines Breakdown
-                    </a>  </div>-->
-                 <!--<div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/IndividualBreakdownByUsers" style ="color: black;">
-                      Individual Breakdown 
-                    </a>  </div>
-                   <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/IndividualBreakdownByUsers" style ="color: black;">
-                      Individual Breakdown - By Users
-                    </a>  </div>
-                    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/IndividualBreakdownByUsers" style ="color: black;">
-                      My Actions History
-                    </a>  </div>
-                    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/IndividualBreakdownByActions" style ="color: black;">
-                      View All Actions 
-                    </a>  </div>-->
-                  <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/reppmt" style ="color: black;">
-                    PMT Reporting
-                    </a> </div>
-                  <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/closeoutsheet" style ="color: black;">
-                    Close-Out Sheets
-                   </a> </div>
                     
-                     <!--Disabled for initial Deployment--><!--
-                    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/ReportingTable" style ="color: black;">
-                      Reporting Table
-                      </a> </div>-->
-                
-            </div>
-          </h5>
-        </div>
+                </div>
+                <div >
+                    <a href="#AA" data-toggle="collapse" >
+                        <span class="icon" ><i class="fas fa-user-clock"></i></span>
+                        <span class="item" >Your Actions</span>
+                    </a>
+                    <div id="AA" class="collapse" >
+                           
+                        <a href="/ActioneeList">
+                            <span class="icon" ><i class="fas fa-clipboard-list"></i></span>
+                            <span class="item" >Actionee Actions</span>
+                        </a>
 
-            
-        <div class="card" style="background-color: rgb(52,58,64);">
-          <h4>    
-          <div class="card-header">
-                 <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-4" style="color:white;font-size:1vw;">Contact</a>
-                  </div>
-          </h4>
-          <h5>        
-                  <div id="card-element-4" class="collapse">
-                    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/ContactUs" style ="color: black;">
-                    Contact Us
-                    </a>  
+                        <a href="/ApproverList">
+                            <span class="icon" ><i class="fas fa-clipboard-list"></i></span>
+                            <span class="item" >Approver Actions</span>
+                        </a>
+
+                        <a href="/HistoryList">
+                            <span class="icon" ><i class="fas fa-history"></i></span>
+                            <span class="item" >History</span>
+                        </a>
+                    
                     </div>
-                  </div>
-           </h5> 
-        </div>
-
-            <div class="card" style="background-color: rgb(52,58,64);">
-              <h4>
-              <div class="card-header">
-                 <a class="card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-5" style="color:white;font-size:1vw;">Profile Management</a>
-              </div>
-              </h4>
-              <h5>
-                  <div id="card-element-5" class="collapse">
-                    <!--Disabled for initial Deployment--><!--
-                    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/Profile" style ="color: black;">
-                    Profile
-                    </a>  </div>
-                    -->
-                    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="{% url 'password_change' %}" style ="color: black;">
-                      Change Password
-                    </a>  </div>
-
-                    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="{% url 'password_reset' %}" style ="color: black;">
-                      Reset Password
-                    </a>  </div> 
+                    </div>
                 
-              </div>
-            </h5>
-            </div>
 
-<!--If user is admin, then he can have extra buttons to manage the users etc.-->            
-  {% if request.user.is_superuser %}
-  <div class="card" style="background-color: rgb(52,58,64)">
-    <h4>
-      <div class="card-header">
-        <a class="collapsed card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-3" style="color:white;font-size:1vw;"> Admin</a>
-      </div>
-    </h4> 
-    <h5> 
-    <div id="card-element-3" class="collapse">
-    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/uploadexceldf" style ="color: black;">
-     Upload File
-    </a>  </div>
+                <div>
+                    <a href="#BB" data-toggle="collapse"  >
+                        <span class="icon"><i class="fas fa-chart-line"></i></span>
+                        <span class="item">Reporting</span>
+                    </a>
+                </div>
+                    <div id="BB" class="collapse">
+                        <div>
+                    <a href="/reppmt">
+                        <span class="icon" ><i class="fas fa-users"></i></span>
+                        <span class="item" >PMT Reporting</span>
+                    </a>
 
-   
-    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/loadriskmatrix" style ="color: black;">
-      Upload Risk Matrix
-    </a>  </div>
-    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/delegatedadmin" style ="color: black;">
-      Delegated Admin
-    </a>  </div>
-    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/emailreminders" style ="color: black;">
-      Send Email Reminder
-    </a>  </div>
-    <!--<div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/GeneratePDF" style ="color: black;">
-      Generate Close-Out Report
-    </a>  </div>-->
-    </div>
-    </h5>
-  </div>
-          
-  {% elif request.user.is_admin %}
+                    <a href="/closeoutsheet">
+                        <span class="icon" ><i class="fas fa-archive"></i></span>
+                        <span class="item" >Close-Out Sheets</span>
+                    </a>
+                        </div>
+                    </div>
 
-  <div class="card" style="background-color: rgb(52,58,64)">
-    <h4>
-      <div class="card-header">
-        <a class="collapsed card-link" data-toggle="collapse" data-parent="#card-738960" href="#card-element-3" style="color:white;font-size:1vw;"> Delegated Admin</a>
-      </div>
-    </h4> 
-    <h5> 
-    <div id="card-element-3" class="collapse">
-    <div class="card-body" style="text-indent: 10px; background-color:rgb(218, 218, 218)" ><a href="/delegatedadmin" style ="color: black;">
-     Edit Due Date
-    </a>  </div>
-          </div>
+                <div>
+                    <a href="#CC" data-toggle="collapse"  >
+                        <span class="icon"><i class="fas fa-id-card"></i></span>
+                        <span class="item">Profile Management</span>
+                    </a>
+                </div>
+                    <div id="CC" class="collapse">
+                        <div>
+                    <a href="{% url 'password_change' %}">
+                        <span class="icon" ><i class="fas fa-key"></i></span>
+                        <span class="item" >Change Password</span>
+                    </a>
+
+                    <a href="{% url 'password_reset' %}">
+                        <span class="icon" ><i class="fas fa-redo"></i></span>
+                        <span class="item" >Reset Password</span>
+                    </a>
+                        </div>
+                    </div>
+                
+                <li>
+                    <a href="/ContactUs">
+                        <span class="icon"><i class="fas fa-user-friends"></i></span>
+                        <span class="item">Contact Us</span>
+                    </a>
+                </li>
+                
+                {% if request.user.is_superuser %}
+                <div>
+                    <a href="#DD" data-toggle="collapse">
+                        <span class="icon"><i class="fas fa-user-shield"></i></span>
+                        <span class="item">Admin</span>
+                    </a>
+                <div id="DD" class="collapse">  
+                    <a href="/uploadexceldf">
+                        <span class="icon" ><i class="fas fa-clipboard-list"></i></span>
+                        <span class="item" >Upload File</span>
+                    </a>
+
+                    <a href="/loadriskmatrix">
+                        <span class="icon" ><i class="fas fa-clipboard-list"></i></span>
+                        <span class="item" >Upload Risk Matrix</span>
+                    </a>
+
+                    </div>
+                    </div>
+                <li>
+                  <a href="/delegatedadmin">
+                      <span class="icon"><i class="fas fa-cog"></i></span>
+                      <span class="item">Delegated Admin</span>
+                  </a>
+              </li>
+              
+                {% elif request.user.is_admin %}
+                <li>
+                    <a href="/delegatedadmin">
+                        <span class="icon"><i class="fas fa-cog"></i></span>
+                        <span class="item">Delegated Admin</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
         </div>
-  {% endif %}
-</div>
-  
+      </div>
+        </div>    
+      </div>
+        
 
 
   {%block ToolTip%}
@@ -214,17 +215,7 @@
     
     <main role="main" class="col-lg-10 pt-3 px-4" >
 
-      <!--Username and Logout button including bottom border-->
-      <h5>
-      <div  class="pb-2 mb-3 border-bottom text-right" >
-        <div style="font-size:large"> 
-          <i class="bi bi-person-bounding-box"></i>{{user.email}} <!--hold, make this clickable and link to user profile.-->
-           <a href="/logout">
-          <button type="button" class="btn btn-secondary btn-sm;"><i class="material-icons">logout</i>Logout</button> 
-        </a>
-         </div>    
-     </div>
-    </h5>  
+      
     
               {%block Actionee%}
 

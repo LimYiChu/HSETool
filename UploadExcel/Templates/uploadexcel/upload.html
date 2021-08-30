@@ -5,8 +5,8 @@
 
     {% block ToolTip %}
 
-
-    <div class="postitnote sticky "  style="font-size:small; font-family:Lato; margin-right:5px;margin-left:5px "> 
+  <!-- 20210828 edward UI added border color -->
+    <div class="postitnote sticky "  style="font-size:small; font-family:Lato; margin-right:5px;margin-left:347px; margin-top:400px;"> 
         <div class="col-md-1;margin-right:5px;margin-left:5px">
            <table class="sticky table table-hover" > <!--set to maximum 20 rows per page-->
             <thead class="thead">
@@ -40,15 +40,20 @@
     {% block FileUpload%}
     <div>
 <nav>
-    <ol class="breadcrumb">
+  <!-- 20210828 edward UI added border color -->
+    <ol class="breadcrumb"  style="background-color: #ffffff; position:relative;  right:-15px;">
         <li class="breadcrumb-item normal">
           <a href="/main">Home</a>
         </li>
         <li class="breadcrumb-item active">
          <a aria-current="page">Upload Excel</a>
         </li>
+        <li>
+          <!-- This supposed to be empty to maintain the parent - child RS in css -->
+        </li>
     </ol>
 </nav>
+<br>
 
 </div>
 

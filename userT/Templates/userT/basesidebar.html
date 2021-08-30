@@ -34,37 +34,64 @@
 
     <div class="wrapper">
         <!--Top menu -->
-        <div class="sidebar">
+        <div class="sidebar" id="accordion">
             <ul>
                 <div id="cme">
-                    <a href="#cme" data-toggle="collapse"  >
+                    <a href="/main"  >
                         <span class="icon"><i class="fas fa-home"></i></span>
                         <span class="item"  >Home</span>
                     </a>
                     
                 </div>
                 <div>
-                    <a href="#AA" data-toggle="collapse">
-                        <span class="icon" id="cme"><i class="fas fa-desktop"></i></span>
+                    <a href="#AA" data-toggle="collapse" data-parent="#accordion" >
+                        <span class="icon" id="cme"><i class="fas fa-chart-pie"></i></span>
                         <span class="item" >My Dashboard</span>
                     </a>
                     <div id="AA">
                            <div>
-                        <a href="#">
-                            <span class="icon" id="cme"><i class="fas fa-project-diagram"></i></span>
+                        <a href="/ActioneeList">
+                            <span class="icon" id="cme"><i class="fas fa-clipboard-list"></i></span>
                             <span class="item" >Actionee Actions</span>
                         </a>
+
+                        <a href="/ApproverList">
+                            <span class="icon" id="cme"><i class="fas fa-clipboard-list"></i></span>
+                            <span class="item" >Approver Actions</span>
+                        </a>
+
+                        <a href="/HistoryList">
+                            <span class="icon" id="cme"><i class="fas fa-history"></i></span>
+                            <span class="item" >History</span>
+                        </a>
+                    
                     </div>
                     </div>
                 </div>
-                <li>
-                    <a href="#">
+
+                <div>
+                    <a href="#AA" data-toggle="collapse" data-parent="#accordion" >
                         <span class="icon"><i class="fas fa-chart-line"></i></span>
-                        <span class="item">Reports</span>
+                        <span class="item">Reporting</span>
                     </a>
-                </li>
+                </div>
+                    <div id="AA">
+                        <div>
+                    <a href="/reppmt">
+                        <span class="icon" id="cme"><i class="fas fa-history"></i></span>
+                        <span class="item" >Reporting</span>
+                    </a>
+
+                    <a href="/closeoutsheet">
+                        <span class="icon" id="cme"><i class="fas fa-history"></i></span>
+                        <span class="item" >Close-Out Sheets</span>
+                    </a>
+                        </div>
+                    </div>
+                
+                
                 <li>
-                    <a href="#">
+                    <a href="/ContactUs">
                         <span class="icon"><i class="fas fa-user-friends"></i></span>
                         <span class="item">Contact Us</span>
                     </a>
@@ -94,8 +121,24 @@
         </div>
 
     </div>
+
+    <div class="wrapper">
+        <div class="section">
+     <div class="top_navbar">
+       <div class="hamburger">
+         <a href="#">
+           <i class="fas fa-bars" style="position: absolute; left: 295px; top:75px;"></i>
+         </a>
+       </div>
+     </div>
+    
   <script>
+    var hamburger = document.querySelector(".hamburger");
+	hamburger.addEventListener("click", function(){
+		document.querySelector("body").classList.toggle("active");
+	})
 
   </script>
+  
 </body>
 </html>

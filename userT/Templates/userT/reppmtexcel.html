@@ -161,22 +161,29 @@
 <body onload="openReport(event, 'All Actions')" >
 <!--breadcrumbs-->
 <h4><b>
+  
     <nav>
-      <ol class="breadcrumb">
+      <!-- 20210828 edward UI -->
+      <ol class="breadcrumb" style="background-color: #ffffff; position:relative;  right:0px;">
         <li class="breadcrumb-item normal">
           <a href="/main">Dashboard</a>
         </li>
         <li class="breadcrumb-item active">
             <a aria-current="page">Reporting</a>
         </li>
+        <li>
+          <!-- This supposed to be empty to maintain the parent - child RS in css -->
+        </li>
       </ol>
     </nav>
-</b></h4>    
+</b></h4>
+   <br> 
+   
 <h6>
     <div class="row">
       <div class="col-md-12">
             <div class="card">
-              <div><h4 class="card-header">
+              <div><h4 class="card-header" style="background-color: #ffffff; font-size:xx-large;">
                 <a> PMT Reporting <!--<a class="article-title" href="{% url  'repoverallexcel' %}">Download Entire Data</a>-->
                  <a><button type="button" class="btn btn-outline-primary btn-sm;" style = "float: right; padding-bottom:1pt; padding-top: 1pt">  <a class ="article-title" href="{% url  'repoverallexcel' %}" style="float: right;">Download Complete Excel <i class="bi bi-file-earmark-spreadsheet"></i> </button> </a></a>
              </h4></div>

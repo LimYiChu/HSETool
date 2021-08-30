@@ -14,9 +14,10 @@
 <!--breadcrumbs-->
 <div class=''>
     <nav>
-      <ol class="breadcrumb" >
-        <li class="breadcrumb-item">
-          <a style="color:black" href="/main">Dashboard</a>
+      <!-- 20210828 edward UI -->
+      <ol class="breadcrumb" style="background-color: #ffffff; position:relative;  right:0px;" >
+        <li class="breadcrumb-item" >
+          <a style="color:rgb(255, 255, 255)" href="/main">Dashboard</a>
         </li>
         {% if block.is_ApproverDetails %}<!--doesnt work...-->      
         <li class="breadcrumb-item">
@@ -31,14 +32,17 @@
         <li class="breadcrumb-item active">
             <a aria-current="page">{{object.StudyActionNo}}</a>
         </li>
+        <li>
+          <!-- This supposed to be empty to maintain the parent - child RS in css -->
+        </li>
       </ol>
     </nav>
-
+<br>
    
 <!--breadcrumbs - needs to be automated.-->
 
 <div class="card"  >
-  <div class="card-header" >
+  <div class="card-header"  >
      <a style="color:black; font-size:large">Details</a>
             <button type="button" class="btn btn-outline-primary btn-sm;" style = "float: right;">  <a class ="article-title" href="{% url 'indiprint' object.id %}" style="float: right;">Generate PDF <i class="bi bi-printer"></i>  </button> 
              <!-- <button type="button" class="btn btn-outline-primary btn-sm;" style = "float: right;">  <a class ="article-title" href="{% url 'indiprint' object.id %}" style="float: right;">Delegate Actions <i class="bi bi-shuffle"></i>   </button> -->
