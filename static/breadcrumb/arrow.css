@@ -2,8 +2,9 @@
     list-style: none; 
     overflow: hidden; 
     font: 18px Helvetica, Arial, Sans-Serif;
-    margin: 40px;
+    margin: 0px;
     padding: 0;
+    right:40px;
     
   }
   .breadcrumb li { 
@@ -54,8 +55,8 @@
   }
   .breadcrumb li:nth-child(2) a       { background:        rgb(169, 177, 170); }
   .breadcrumb li:nth-child(2) a:after { border-left-color: rgb(169, 177, 170); }
-  .breadcrumb li:nth-child(3) a       { background:        hsla(34,85%,55%,1); }
-  .breadcrumb li:nth-child(3) a:after { border-left-color: hsla(34,85%,55%,1); }
+  .breadcrumb li:nth-child(3) a       { background:        rgb(128, 231, 180); }
+  .breadcrumb li:nth-child(3) a:after { border-left-color: rgb(128, 231, 180); }
   .breadcrumb li:nth-child(4) a       { background:        hsla(34,85%,65%,1); }
   .breadcrumb li:nth-child(4) a:after { border-left-color: hsla(34,85%,65%,1); }
   .breadcrumb li:nth-child(5) a       { background:        hsla(34,85%,75%,1); }
@@ -67,8 +68,8 @@
     cursor: default;
   }
   .breadcrumb li:last-child a:after { border: 0; }
-  .breadcrumb li a:hover { background: rgb(128, 228, 228); }
-  .breadcrumb li a:hover:after { border-left-color: rgb(128, 228, 228) !important; }
+  .breadcrumb li a:hover { background: #d7e9e2; }
+  .breadcrumb li a:hover:after { border-left-color: #d7e9e2 !important; }
   
   
   .steps {

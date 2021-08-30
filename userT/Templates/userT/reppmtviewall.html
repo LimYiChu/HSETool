@@ -18,22 +18,23 @@
 <!--breadcrumbs-->
 <div class=''>
     <nav>
-      <ol class="breadcrumb"  >
+      <!-- 20210828 edward UI -->
+      <ol class="breadcrumb" style="background-color: #ffffff;position:relative;  right:0px;" >
         <li class="breadcrumb-item">
-          <a style="color:black" href="/main">Dashboard</a>
+          <a style="color:rgb(255, 255, 255)" href="/main">Dashboard</a>
         </li>
-         
-        <li class="breadcrumb-item">
-          View All Actions<!--add if to differentiate actionee and approver-->
-      </li>
-     
-
+        <li class="breadcrumb-item active">
+          <a aria-current="page" href="/reppmt">Reporting</a><!--add if to differentiate actionee and approver-->
+        </li>
         <li class="breadcrumb-item active">
             <a aria-current="page">{{object.StudyActionNo}}</a>
         </li>
+        <li>
+          <!-- This supposed to be empty to maintain the parent - child RS in css -->
+        </li>
       </ol>
     </nav>
-
+<br>
    
 <!--breadcrumbs - needs to be automated.-->
 <!---->

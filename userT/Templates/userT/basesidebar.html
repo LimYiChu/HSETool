@@ -121,8 +121,24 @@
         </div>
 
     </div>
+
+    <div class="wrapper">
+        <div class="section">
+     <div class="top_navbar">
+       <div class="hamburger">
+         <a href="#">
+           <i class="fas fa-bars" style="position: absolute; left: 295px; top:75px;"></i>
+         </a>
+       </div>
+     </div>
+    
   <script>
+    var hamburger = document.querySelector(".hamburger");
+	hamburger.addEventListener("click", function(){
+		document.querySelector("body").classList.toggle("active");
+	})
 
   </script>
+  
 </body>
 </html>

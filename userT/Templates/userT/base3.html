@@ -1,7 +1,7 @@
 {% load static %}
-<!doctype html>
-<html lang="en">
-  <head>
+<!doctype html >
+<html lang="en" >
+  <head >
     
     {%include "userT/inclscriptslinkbase3.html"%}
     <!-- 20210525 edward sidebar -->
@@ -17,16 +17,17 @@
   
 
 <body>
+
+    
 <!--Top Nav Bar-->
-<nav class="navbar navbar-expand-lg" style="background-color: #ffffff; border-bottom:rgb(255, 255, 255) solid 1px">
+<nav class="navbar navbar-expand-lg" style="background-color: #ffffff; border-bottom:rgb(255, 255, 255) solid 1px ;">
 <div class="container-fluid">
   
   <div class="navbar-nav md-3"> 
-    <div class="nav navbar-nav md-3">
-        <h3><li><a class="nav-link active" aria-current="page"  style=" color:black; font-family:Montserrat ;font-weight: bold; font-size:37px";>eHSTools</a></li> </h3>
+    <div class="nav navbar-nav md-3">    
       </div><!--consider to have linkedin or facebook link-->     
     <li class="nav-item">
-      <h3> <a class="nav-link active" aria-current="page"style="color:black"> <img src="{% static 'sapura.png' %}" alt="client" width="5%" height="30%"></a> </h3>
+      <h3> <a class="nav-link active" aria-current="page"style="color:black"> <img src="{% static 'ehstools.png' %}" alt="client" width="100%" height="30%"></a> </h3>
   </div>
   
   <!--Username and Logout button including bottom border-->
@@ -45,19 +46,34 @@
 
 </div>    
 </nav>
+<!-- 
+<div class="wrapper">
+    <div class="section">
+ <div class="top_navbar">
+   <div class="hamburger">
+     <a href="#">
+       <i class="fas fa-bars" style="position: absolute; left: 295px; top:75px;"></i>
+     </a>
+   </div>
+ </div>
+ <script>
+    var hamburger = document.querySelector(".hamburger");
+	hamburger.addEventListener("click", function(){
+		document.querySelector("body").classList.toggle("active");
+	})
 
-
+  </script> -->
 
 <!--sidebar left-->
 
   
-<div class="row">
-    <div class="sidebar-sticky col-md-2" style="background-image: linear-gradient(to right, #f8f8f8, #fafafa, #fbfcfb, #fdfdfd, #ffffff); border-right:rgb(255, 255, 255) solid 1px"> <!--hold not yet able to solve the side bar 100% height need to set in css-->
+<div class="row" >
+    <div class="sidebar-sticky col-md-2" style="background-color:rgb(255, 255, 255); border-right:rgb(255, 255, 255) solid 1px"> 
       
         <!--<ul class="nav flex-column"></ul>--commented out by GV-->
     
   
-      <div id="accordion" style="margin-right:5px;margin-left:20px"  >
+      <div id="accordion" style="margin-right:5px;margin-left:20px; margin-top:-15px;"  >
     
       
       <div class="wrapper">
@@ -183,7 +199,8 @@
         </div>
       </div>
         </div>    
-      </div>  
+      </div>
+        
 
 
   {%block ToolTip%}
