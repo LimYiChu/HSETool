@@ -68,8 +68,8 @@
     cursor: default;
   }
   .breadcrumb li:last-child a:after { border: 0; }
-  .breadcrumb li a:hover { background: #d7e9e2; }
-  .breadcrumb li a:hover:after { border-left-color: #d7e9e2 !important; }
+  .breadcrumb li a:hover { background: #78e2e2; }
+  .breadcrumb li a:hover:after { border-left-color: #78e2e2 !important; }
   
   
   .steps {
