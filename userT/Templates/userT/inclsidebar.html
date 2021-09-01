@@ -1,0 +1,118 @@
+<div class="sidebar" >
+    <ul>
+        <div id="cme">
+            <a href="/main"  >
+                <span class="icon"><i class="fas fa-chart-pie"></i></span>
+                <span class="item"  >My Dashboard</span>
+            </a>
+            
+        </div>
+        <div >
+            <a href="#AA" data-toggle="collapse" >
+                <span class="icon" ><i class="fas fa-user-clock"></i></span>
+                <span class="item" >Your Actions</span>
+            </a>
+            <div id="AA" class="collapse" >
+                   
+                <a href="/ActioneeList">
+                    <span class="icon" ><i class="fas fa-clipboard-list"></i></span>
+                    <span class="item" >Actionee Actions</span>
+                </a>
+
+                <a href="/ApproverList">
+                    <span class="icon" ><i class="fas fa-clipboard-list"></i></span>
+                    <span class="item" >Approver Actions</span>
+                </a>
+
+                <a href="/HistoryList">
+                    <span class="icon" ><i class="fas fa-history"></i></span>
+                    <span class="item" >History</span>
+                </a>
+            
+            </div>
+            </div>
+        
+
+        <div>
+            <a href="#BB" data-toggle="collapse"  >
+                <span class="icon"><i class="fas fa-chart-line"></i></span>
+                <span class="item">Reporting</span>
+            </a>
+        </div>
+            <div id="BB" class="collapse">
+                <div>
+            <a href="/reppmt">
+                <span class="icon" ><i class="fas fa-users"></i></span>
+                <span class="item" >PMT Reporting</span>
+            </a>
+
+            <a href="/closeoutsheet">
+                <span class="icon" ><i class="fas fa-archive"></i></span>
+                <span class="item" >Close-Out Sheets</span>
+            </a>
+                </div>
+            </div>
+
+        <div>
+            <a href="#CC" data-toggle="collapse"  >
+                <span class="icon"><i class="fas fa-id-card"></i></span>
+                <span class="item">Profile Management</span>
+            </a>
+        </div>
+            <div id="CC" class="collapse">
+                <div>
+            <a href="{% url 'password_change' %}">
+                <span class="icon" ><i class="fas fa-key"></i></span>
+                <span class="item" >Change Password</span>
+            </a>
+
+            <a href="{% url 'password_reset' %}">
+                <span class="icon" ><i class="fas fa-redo"></i></span>
+                <span class="item" >Reset Password</span>
+            </a>
+                </div>
+            </div>
+        
+        <li>
+            <a href="/ContactUs">
+                <span class="icon"><i class="fas fa-user-friends"></i></span>
+                <span class="item">Contact Us</span>
+            </a>
+        </li>
+        
+        {% if request.user.is_superuser %}
+        <div>
+            <a href="#DD" data-toggle="collapse">
+                <span class="icon"><i class="fas fa-user-shield"></i></span>
+                <span class="item">Admin</span>
+            </a>
+        <div id="DD" class="collapse">  
+            <a href="/uploadexceldf">
+                <span class="icon" ><i class="fas fa-clipboard-list"></i></span>
+                <span class="item" >Upload File</span>
+            </a>
+
+            <a href="/loadriskmatrix">
+                <span class="icon" ><i class="fas fa-clipboard-list"></i></span>
+                <span class="item" >Upload Risk Matrix</span>
+            </a>
+
+            </div>
+            </div>
+        <li>
+          <a href="/delegatedadmin">
+              <span class="icon"><i class="fas fa-cog"></i></span>
+              <span class="item">Delegated Admin</span>
+          </a>
+      </li>
+      
+        {% elif request.user.is_admin %}
+        <li>
+            <a href="/delegatedadmin">
+                <span class="icon"><i class="fas fa-cog"></i></span>
+                <span class="item">Delegated Admin</span>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</div>
