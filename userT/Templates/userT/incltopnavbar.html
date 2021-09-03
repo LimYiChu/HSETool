@@ -1,0 +1,21 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg" style="background-color: #ffffff; border-bottom:rgb(255, 255, 255) solid 1px ;">
+<!-- starting with container fluid & placing the logo on far left -->
+<div class="container-fluid">
+    <div class="navbar-nav md-3"> 
+            <h3> <a class="nav-link active" aria-current="page"style="color:#2ea9e2; font-size: 50px;"> <b>ehs tools</b> </a> </h3>   
+    </div>
+
+<!--Username and Logout button including bottom border-->
+        <h5>
+            <div  class="pb-2 mb-3 text-right" >
+                <div style="font-size:20px ;font-family:'Open Sans', sans-serif"> 
+                    <i ></i>{{user.email}}
+                        <a href="/logout">
+                            <button type="button" class="btn btn-secondary btn-sm;"><i class="fas fa-sign-out-alt"></i>Logout</button> 
+                        </a>
+                </div>  
+            </div>
+        </h5>
+</div>
+</nav>
