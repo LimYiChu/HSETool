@@ -20,10 +20,10 @@ body{
     background: #ffffff;
     position: relative;
     top: 10;
-    left: -28px;
+    left: 10px;
     width: 250px;
     height: 100%;
-    padding: 20px 0;
+    padding: 20px 8pt;
     transition: all 0.5s ease;
 
 
