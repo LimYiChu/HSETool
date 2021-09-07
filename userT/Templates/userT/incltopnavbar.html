@@ -4,18 +4,26 @@
 <div class="container-fluid">
     <div class="navbar-nav md-3"> 
             <h3> <a class="nav-link active" aria-current="page"style="color:#2ea9e2; font-size: 50px;"> <b>ehs tools</b> </a> </h3>   
+            <h1 class="nav-link active" aria-current="page"style="color:#2ea9e2; font-size: 20px; position: relative; left : -10pt; bottom: -30px; "> <b>ver 3.0</b> </h1>  
+
+            <h5 style="font-size:20px ;font-family:'Open Sans', sans-serif; position:relative; right:-1200px; top:20px" > 
+                <i ></i>{{user.email}}
+                    <a href="/logout">
+                        <button type="button" class="btn btn-secondary btn-sm;"><i class="fas fa-sign-out-alt"></i>Logout</button> 
+                    </a>
+                </h5>  
     </div>
 
-<!--Username and Logout button including bottom border-->
-        <h5>
+<!--Username and Logout button including bottom border to be deleted one week from now-->
+        <!-- <h5>
             <div  class="pb-2 mb-3 text-right" >
-                <div style="font-size:20px ;font-family:'Open Sans', sans-serif"> 
+                <div style="font-size:20px ;font-family:'Open Sans', sans-serif; position:relative; right:25px; top:20px" > 
                     <i ></i>{{user.email}}
                         <a href="/logout">
                             <button type="button" class="btn btn-secondary btn-sm;"><i class="fas fa-sign-out-alt"></i>Logout</button> 
                         </a>
                 </div>  
             </div>
-        </h5>
+        </h5> -->
 </div>
 </nav>
