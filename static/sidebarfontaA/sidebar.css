@@ -18,9 +18,9 @@ body{
 
 .wrapper .sidebar{
     background: #ffffff;
-    position: relative;
+    position: absolute;
     top: 10;
-    left: 10px;
+    left: 225px;
     width: 250px;
     height: 100%;
     padding: 20px 8pt;
