@@ -46,7 +46,7 @@
                         {% for x  in routes %}
                       <tr>
                         <td><a class="article-title" href="{% url  'ApproveFormMixin' x.id %}">{{ x.StudyActionNo }}</a></td>
-                        <td>{{ x.StudyName }}</td>
+                        <td>{{ x.StudyName__StudyName }}</td>
                         <td>{{ x.Disipline }} / {{ x.Subdisipline }} </td>
                        
                         <td>{{ x.Cause }}</td>

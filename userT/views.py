@@ -343,17 +343,17 @@ class ActioneeList (ListView):
     template_name   =   'userT/actionlistactionee.html' #yhs changed to all small letters
     
     def get_queryset(self):
+        
         userZemail = self.request.user.email
         ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
-        #actioneeItems = blfuncActioneeComDisSub(ActioneeRoutes,0) - To be deleted - this was limited to 3 streams
-        
         ActioneeActions = blallActionsComDisSub(ActioneeRoutes,0)
-        rem_list = ['Consequence','FutureAction','Deviation','QueSeries','QueSeriesTarget','DateCreated']
 
+        print("AAAA",ActioneeActions)
+        rem_list = []
+        #rem_list = ['Consequence','FutureAction','Deviation','QueSeries','QueSeriesTarget','DateCreated']
         finalactionitems = bladdriskcolourandoptimise(ActioneeActions,rem_list)
-       
-                
-                
+        
+        #print (finalactionitems)
         return finalactionitems
     
     def get_context_data(self, **kwargs):
@@ -361,12 +361,7 @@ class ActioneeList (ListView):
         context['riskmatrix'] = blgetRiskMatrixColour()
        
         return context
-        # context = super().get_context_data(**kwargs)
-        # # Add in a QuerySet of all the books
-        # context['book_list'] = Book.objects.all()
-        
-        #res = next((sub for sub in riskmatrices if sub['Combined'] == "5A"),None)
-       
+               
 class HistoryList (ListView):
     template_name   =   'userT/historylist.html' #ok checked by yhs in terms of capital letters.
     
@@ -381,8 +376,8 @@ class HistoryList (ListView):
         lstgetHistoryforUser             = blgetHistoryforUser(userZemail,Actionee_R)
         
         #the sequence just appends risk matrix colours
-        rem_list = ['Consequence','FutureAction','Deviation','QueSeries','QueSeriesTarget','DateCreated']
-        finalactionitems = bladdriskcolourandoptimise(lstgetHistoryforUser,rem_list)
+        #rem_list = ['Consequence','FutureAction','Deviation','QueSeries','QueSeriesTarget','DateCreated']
+        finalactionitems = bladdriskcolourandoptimise(lstgetHistoryforUser)
         
         return lstgetHistoryforUser
 
@@ -407,16 +402,16 @@ class HistoryList (ListView):
 
         approverflatdict = [item for sublist in ApproverActions for item in sublist] # Just merging all approvers levels into a flatter list
 
-        rem_list = ['Consequence','FutureAction','Deviation','QueSeries','QueSeriesTarget','DateCreated']
+        #rem_list = ['Consequence','FutureAction','Deviation','QueSeries','QueSeriesTarget','DateCreated']
        
         #addriskcolour to approver list
-        finalappractionitems= bladdriskcolourandoptimise(approverflatdict,rem_list) 
+        finalappractionitems= bladdriskcolourandoptimise(approverflatdict) 
         
         rejecteditemsid = blRejectedHistortyActionsbyId(userZemail,0,1)
 
         # Need to make a list to feed into bladdriskcolourandoptimise as that function is expecting a list of dictionaries
         rejecteditemsbyhistory = [blgetActionItemsbyid(rejecteditemsid)]
-        newrejecteditemsbyhist                        = bladdriskcolourandoptimise(rejecteditemsbyhistory,rem_list)
+        newrejecteditemsbyhist                        = bladdriskcolourandoptimise(rejecteditemsbyhistory)
         #Last part , pass back to HTML and render in tab
         #print (rejecteditemsbyhistory)
         context['rejectedhistory'] = rejecteditemsbyhistory
@@ -438,12 +433,12 @@ class ApproverList (ListView):
             #x = blfuncActioneeComDisSub(value,key)
             allactionItems= blallActionsComDisSub(value,key)
             ApproverActions.insert(key,allactionItems)
-            
-        rem_list = ['Consequence','FutureAction','Deviation','QueSeries','QueSeriesTarget','DateCreated']
         
+                
         for items in ApproverActions:
             #have to do a loop as its adding another level compared to actionee
-            finalactionitems= bladdriskcolourandoptimise(items,rem_list) #The way python works its not using this finally but editing ApproverActions directly
+            #rem_list removed from equation as now its getting only relevant data
+            finalactionitems= bladdriskcolourandoptimise(items) #The way python works its not using this finally but editing ApproverActions directly
 
         return ApproverActions
     def get_context_data(self, **kwargs):
@@ -601,7 +596,7 @@ class ApproverConfirm(UpdateView):
             integerqueseries = blgetFieldValue(ID,"QueSeries") # using this to find Approver QueSeries
             discsub = blgetDiscSubOrgfromID(ID)
             Signatoryemails = blgetSignatoryemailbyque2(discsub,integerqueseries+1)
-            ContentSubject  =blbuildApprovedemail(ID) # using new bl since approver email should be this has been approved instead of submitted
+            ContentSubject  = blbuildSubmittedemail(ID,True)#change the function call to try and have code standardised #blbuildApprovedemail(ID) # using new bl since approver email should be this has been approved instead of submitted
             success = blemailSendindividual(emailSender,Signatoryemails,ContentSubject[0], ContentSubject[1])  
             #edward end next approver sent email when approved 20210708  
               

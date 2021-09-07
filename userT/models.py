@@ -127,6 +127,18 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
     #     # Simplest possible answer: Yes, always
     #     return True
 #changed active to is_active
+class Phases (models.Model):
+    ProjectPhase = models.CharField(max_length=200, null=True)
+    Scheduled = models.CharField(max_length=200, null=True)
+    Description  = models.CharField(max_length=1000, null=True)
+    
+    objects = models.Manager()
+    class Meta:
+       verbose_name_plural = "Phases" 
+
+    def __str__(self): 
+       return '%s' %(self.ProjectPhase)
+
 class Studies (models.Model):
     StudyName = models.CharField(max_length=200, null=True)
     ProjectPhase = models.CharField(max_length=200, null=True)
@@ -137,7 +149,7 @@ class Studies (models.Model):
        verbose_name_plural = "Studies" #this if not done gives a view of Studiess
 
     def __str__(self): 
-       return '%s ---%s' %(self.StudyName, self.ProjectPhase)
+       return '%s -- %s' %(self.StudyName, self.ProjectPhase)
 
 class RiskMatrix (models.Model):
     Consequence = models.CharField(max_length=20, null=True,blank=True)

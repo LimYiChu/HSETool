@@ -6,19 +6,25 @@ class QuerySet(models.QuerySet):
     #edward 20210729 changing icontains to iexact for Org,Disc,SubDisc
     def get_myActions(self,userorganisation,userdisipline,usersubdisipline,que): 
         return self.filter(Organisation__iexact=userorganisation).filter(Disipline__iexact=userdisipline).filter(
-                Subdisipline__iexact=usersubdisipline).filter(QueSeries__iexact=que).values()
+                Subdisipline__iexact=usersubdisipline).filter(QueSeries__iexact=que).values(
+
+                    'id','StudyActionNo','StudyName__StudyName','Disipline',
+                    'Subdisipline', 'Cause', 'Recommendations','DueDate',
+                    'InitialRisk'
+                )
 
     #edward 20210729 changing icontains to iexact for Disc,SubDisc
     def get_myActionsCount(self,userorganisation,userdisipline,usersubdisipline,que): #edward 20210729 changing icontains to iexact for Org,Disc,SubDisc
         return self.filter(Organisation__iexact=userorganisation).filter(Disipline__iexact=userdisipline).filter(Subdisipline__iexact=usersubdisipline).filter(QueSeries__iexact=que).count ()
     #edward 20210729 changing icontains to iexact for Disc,SubDisc
+    #GV weird foreign Key filtering process__StudyName refers back table with foreign key and its field
     def get_myActionsCountbyStudies(self,studies, organisation,disipline,subdisipline,que):
-        return self.filter(StudyName__iexact=studies).filter(Organisation__iexact=organisation).filter(Disipline__iexact=disipline).filter(
+        return self.filter(StudyName__StudyName=studies).filter(Organisation__iexact=organisation).filter(Disipline__iexact=disipline).filter(
             
                             Subdisipline__iexact=subdisipline).filter(QueSeries__iexact=que).count ()
     #edward 20210729 changing icontains to iexact for Org,Disc,SubDisc
-    def get_allActionsCountbyStudies(self,studies, que):
-        return self.filter(StudyName__iexact=studies).filter(QueSeries__iexact=que).count ()
+    def get_allActionsCountbyStudies(self,studies, que):#Gv - studies edited here
+        return self.filter(StudyName__StudyName=studies).filter(QueSeries__iexact=que).count ()
     #edward 20210729 changing icontains to iexact for Org,Disc,SubDisc
     def get_allActionsCountbyDisc(self,Disc, que):
         return self.filter(Disipline__iexact=Disc).filter(QueSeries__iexact=que).count ()
