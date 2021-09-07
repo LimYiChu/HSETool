@@ -91,6 +91,7 @@ body{
 
     background:rgb(59, 58, 58);
     border-right: 2px solid rgb(5, 68, 104);
+    width: 190pt;
 }
 
 .wrapper .sidebar ul div a:hover .icon,
@@ -125,6 +126,7 @@ body{
 
     background:rgb(59, 58, 58);
     border-right: 2px solid rgb(5, 68, 104);
+    width: 190pt;
 }
 
 .wrapper .sidebar ul li a:hover .icon,
