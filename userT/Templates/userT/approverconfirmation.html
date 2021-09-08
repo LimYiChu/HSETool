@@ -12,7 +12,7 @@
 
 {%endblock%}
 
-    <div class="postitnote sticky "  style="font-size:small; font-family:Lato; margin-right:5px;margin-left:5px "> <!-- to be discussed with guna -->
+    <div class="postitnote sticky "  style="font-size:small; font-family:Lato; margin-right:5px;margin-left:0px; margin-top:10px; width:150pt "> <!-- to be discussed with guna -->
         <div class="col-md-1;margin-right:5px;margin-left:5px">
            <table class="sticky table table-hover" > <!--set to maximum 20 rows per page-->
             <thead class="thead">
@@ -46,7 +46,7 @@
 <body>
 
     
-        <form method="POST" enctype = 'multipart/form-data' >  
+        <form method="POST" enctype = 'multipart/form-data' style="margin-left:20pt; margin-top:50px;" >  
             <fieldset class="form-group" >
             {% csrf_token %}  
             {%crispy form%}
