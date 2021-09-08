@@ -5,7 +5,7 @@
 {% block ToolTip %}
 
     <!-- 20210828 edward UI -->
-    <div class="postitnote sticky "  style="font-size:small; font-family:Lato; margin-right:5px;margin-left:5px;margin-top:450px;position:absolute  "> 
+    <div class="postitnote sticky "  style="font-size:small; font-family:Lato; margin-right:5px;margin-left:0px; margin-top:10px; width:150pt; position:absolute;  "> 
         <div class="col-md-1;margin-right:5px;margin-left:5px">
            <table class="sticky table table-hover" > <!--set to maximum 20 rows per page-->
             <thead class="thead">
@@ -54,7 +54,7 @@
 <div class=''>
     <nav>
       <!-- 20210828 edward UI -->
-      <ol class="breadcrumb" style="background-color: #ffffff; position:relative;  right:0px;">
+      <ol class="breadcrumb" style="background-color: #ffffff; position:relative;  right: -40px; bottom: -25px;">
         <li class="breadcrumb-item">
           <a href="/main">Dashboard</a>
         </li>
@@ -71,7 +71,7 @@
 <!--breadcrumbs - needs to be automated.-->
 
 
-    <form method="POST" enctype = 'multipart/form-data' >  
+    <form method="POST" enctype = 'multipart/form-data' style="margin-left:20pt; margin-top:50px;" >  
         <fieldset class="form-group" > <!--Fieldset is ultimtely important and must be inside the form and encompass the buttons. 
             The buttons was removed from forms into direct HTml to give the btn-outline-primary class. In forms it does not work
         -->
@@ -85,8 +85,8 @@
           </div>
           <br>
           <div>
-            <div class="form-group"><input type="submit" name="Upload" value=" Upload Files & Sign" class="btn btn-outline-primary float-right col-md-6"  id="submit-id-approve" onclick="var e=this;setTimeout(function(){e.disabled=true;},0);return true;"></div> 
-            <div class="form-group"><input type="submit" name="Cancel" value="Cancel" class="btn btn-outline-primary float-right col-md-6"  id="submit-id-reject"/></div>
+            <div class="form-group"><input type="submit" name="Upload" value=" Upload Files & Sign" class="btn btn-outline-primary btm-md float-right"  id="submit-id-approve" onclick="var e=this;setTimeout(function(){e.disabled=true;},0);return true;"></div> 
+            <div class="form-group"><input type="submit" name="Cancel" value="Cancel" class="btn btn-outline-primary btn-md float-right"  id="submit-id-reject"/></div>
           </div>
         </div>
         </fieldset>
