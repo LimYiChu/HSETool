@@ -8,7 +8,7 @@
     <h4><b>
         <nav>
            <!-- 20210828 edward UI added border color -->
-          <ol class="breadcrumb" style="background-color: #ffffff;position:relative;  right: -15px;bottom: -25px;">
+          <ol class="breadcrumb" style="background-color: #ffffff;position:relative;  right: -40px;bottom: -25px;">
             <li class="breadcrumb-item normal">
               <a href="/main">Dashboard</a>
             </li>
@@ -23,7 +23,7 @@
         </nav>
   </b></h4> 
 <br>
-<div class="col-md-12 center" >
+<div class="col-md-12 center" style="left:20pt">
   <div class="card" style="width: auto;" >
   <h6>
         <div class="row">
@@ -32,9 +32,9 @@
               <h4 class="card-header" style="background-color: #ffffff; font-size:xx-large;">
                 Approver List
               </h4>
-              <div class="card-body" style="float:left col-md-12">
+              <div class="card-body" style="float:left col-md-12; overflow:scroll;">
                 <p class="card-text">
-                  <table style="font-size:30" class="table table-striped table-hover" id="example" style = "width:100%"> <!--set to maximum 20 rows per page-->
+                  <table style="font-size:30; width:100%" class="table table-striped table-hover" id="example" > <!--set to maximum 20 rows per page-->
                     
                     {%include "userT/inclactioneeapprtableheader.html"%}
                     <th>Responses</th>

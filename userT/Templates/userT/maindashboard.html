@@ -4,7 +4,7 @@
 {% block maindashboard%}
 <!--hidden for styling-->
 <!--
-<h1>Your Actions</h1>
+<h1>Your Actions</h1>comment for pushing to main
 -->
 <head>
     
@@ -85,24 +85,14 @@
 
   <!--breadcrumbs-->
   <h4><b>
-    <nav>
-       <!-- 20210828 edward UI added border color -->
-      <ol class="breadcrumb" style="background-color: #ffffff;position:relative;  right: -15px; bottom: -25px;">
-        <li class="breadcrumb-item normal">
-          <a href="/main">My Dashboard</a>
-        </li>
-        <li>
-            <!-- This supposed to be empty to maintain the parent - child RS in css -->
-        </li>
-      </ol>
-    </nav>
+    {%include "userT/inclbcmaindashboard.html"%}
 </b></h4>
 <br> 
       
 
 
-<div class="col-md-12 center" >
-<div class="card" style="width: auto;" >
+<div class="col-md-12 center" style="left:20pt" >
+<div class="card" style="width: auto; overflow: scroll;" >
     
     <h5>
     

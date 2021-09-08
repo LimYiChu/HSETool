@@ -20,10 +20,10 @@ body{
     background: #ffffff;
     position: absolute;
     top: 10;
-    left: -28px;
+    left: 225px;
     width: 250px;
     height: 100%;
-    padding: 20px 0;
+    padding: 20px 8pt;
     transition: all 0.5s ease;
 
 
@@ -91,6 +91,7 @@ body{
 
     background:rgb(59, 58, 58);
     border-right: 2px solid rgb(5, 68, 104);
+    width: 190pt;
 }
 
 .wrapper .sidebar ul div a:hover .icon,
@@ -125,6 +126,7 @@ body{
 
     background:rgb(59, 58, 58);
     border-right: 2px solid rgb(5, 68, 104);
+    width: 190pt;
 }
 
 .wrapper .sidebar ul li a:hover .icon,
