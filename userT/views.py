@@ -61,6 +61,9 @@ import datetime
 from datetime import date as dt 
 from operator import itemgetter
 from collections import OrderedDict
+#edward 20210909
+import shutil
+import glob
 
 def base3 (request):
     return render(request,'userT/base3.html')
@@ -1779,8 +1782,8 @@ def closeoutprint1(request,**kwargs): #edward 20210820 duplicate of closeoutprin
 
 # edward 20210823 pdf bulk back to main
 
-def mergedcloseoutprint(request):
-    obj = ActionItems.objects.values()
+def mergedcloseoutprint(request,obj=ActionItems.objects.values()):
+    obj = ActionItems.objects.values() # to be altered when move to bl
     
     for items in obj:
         closed = (items['QueSeries'] == 99)
@@ -1794,32 +1797,46 @@ def mergedcloseoutprint(request):
             i = items["StudyActionNo"] 
             j = (i + '.pdf')
             signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
-            out_file = 'static/media/temp/bulkpdf/' + j 
+            x = os.makedirs('static/media/temp/bulkpdf/' + i, exist_ok=True )
+            dst ='static/media/temp/bulkpdf/' + i
+            out_file = os.path.join(dst,j)
             file = pdfgenerate(newcloseouttemplate,out_file,data_dict,signatoriesdict)
-
-            in_memory = BytesIO() 
-            zip = ZipFile(in_memory,mode="w")  
+    
+            # in_memory = BytesIO() 
+            # zip = ZipFile(in_memory,mode="w")  
 
             objFk =ActionItems.objects.get(id = items['id']) 
-            ObjAttach = objFk.attachments_set.all()  
+            ObjAttach = objFk.attachments_set.all()
+            # print(objFk)
+            # print(ObjAttach)  
             
             for eachfile in ObjAttach: 
                 filename = os.path.basename(eachfile.Attachment.name)
-                zip.write (eachfile.Attachment.path, i+"_Attachment"+filename)
-                #zip.printdir()
-                zip.extractall('static/media/temp/bulkpdf/pdfattachments')
+                attachmentorigin= 'media/attachments/' + filename
+                shutil.copy(attachmentorigin ,dst)
+                print(filename)
+            #     zip.write(eachfile.Attachment.path, i+"_Attachment"+filename)
+                
+            
+            # closeoutname = os.path.basename(out_file) 
+            # zip.write (out_file, closeoutname)
+            # extractlocation = 'static/media/temp/bulkpdf/'
+             
+            # print(zip.infolist()) 
+            # print(in_memory)
+            # zip.extractall(extractlocation)
+            
+            # zip.close()
+            
+            # response = HttpResponse(content_type="application/zip")
+            # response["Content-Disposition"] = "attachment; filename=" + i + ".zip"
 
-            closeoutname = os.path.basename(out_file) 
-            zip.write (out_file, closeoutname)
-            zip.close()
-              
+            # test = shutil.make_archive('bulk', 'zip', extractlocation) 
+            # zip.printdir()
             
-            response = HttpResponse(content_type="application/zip")
-            response["Content-Disposition"] = "attachment; filename=" + i + ".zip"
-            
-            in_memory.seek(0)    
-            response.write(in_memory.read())
-            print(response)
+            # in_memory.seek(0)    
+            # response.write(in_memory.read())   
+    response = HttpResponse(content_type="application/zip")      
     return response
 
 def closeoutsheet1(request):  #edward 20210820 duplicate of closeoutsheet to build bulk upload
