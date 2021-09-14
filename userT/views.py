@@ -1783,7 +1783,7 @@ def closeoutprint1(request,**kwargs): #edward 20210820 duplicate of closeoutprin
 # edward 20210823 pdf bulk back to main
 
 def mergedcloseoutprint(request,obj=ActionItems.objects.values()):
-    obj = ActionItems.objects.values() # to be altered when move to bl
+    obj = ActionItems.objects.filter(QueSeries = 99).values() # to be altered when move to bl
     attachments = "media/attachments/"
     bulkpdfdir = "static/media/temp/bulkpdf/"
     bulkpdfzipdir = "static/media/temp/"
@@ -1792,9 +1792,10 @@ def mergedcloseoutprint(request,obj=ActionItems.objects.values()):
     bulkpdfziplocation = bulkpdfzipdir + bulkpdfzipfile
     foldername = tempfolder + bulkpdfzipfile
     createzipfilename = bulkpdfzipdir + bulkpdfzipfilename
-
+    
     for items in obj:
-        closed = (items['QueSeries'] == 99)
+        # closed = (items['QueSeries'] == 99)
+        closed = True
         if closed == True :
             items['StudyActionNo'] = items['StudyActionNo'].replace("/","_")
             newcloseouttemplate = blsetcloseouttemplate (items['id'])
