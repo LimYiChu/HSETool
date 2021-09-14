@@ -1784,7 +1784,13 @@ def closeoutprint1(request,**kwargs): #edward 20210820 duplicate of closeoutprin
 
 def mergedcloseoutprint(request,obj=ActionItems.objects.values()):
     obj = ActionItems.objects.values() # to be altered when move to bl
-    
+    attachments = "media/attachments/"
+    bulkpdfdir = "static/media/temp/bulkpdf/"
+    bulkpdfzipdir = "static/media/temp/"
+    bulkpdfzipfile = 'bulkpdftest' +".zip"
+    bulkpdfziplocation = bulkpdfzipdir + bulkpdfzipfile
+    foldername = tempfolder + bulkpdfzipfile
+
     for items in obj:
         closed = (items['QueSeries'] == 99)
         if closed == True :
@@ -1797,8 +1803,8 @@ def mergedcloseoutprint(request,obj=ActionItems.objects.values()):
             i = items["StudyActionNo"] 
             j = (i + '.pdf')
             signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
-            x = os.makedirs('static/media/temp/bulkpdf/' + i, exist_ok=True )
-            dst ='static/media/temp/bulkpdf/' + i
+            x = os.makedirs(bulkpdfdir + i, exist_ok=True )
+            dst =bulkpdfdir + i
             out_file = os.path.join(dst,j)
             file = pdfgenerate(newcloseouttemplate,out_file,data_dict,signatoriesdict)
 
@@ -1807,16 +1813,18 @@ def mergedcloseoutprint(request,obj=ActionItems.objects.values()):
             
             for eachfile in ObjAttach: 
                 filename = os.path.basename(eachfile.Attachment.name)
-                attachmentorigin= 'media/attachments/' + filename
+                attachmentorigin= attachments + filename
                 shutil.copy(attachmentorigin ,dst)
-                # print(filename)
-    test = shutil.make_archive('static/media/temp/bulkpdftest', 'zip', 'static/media/temp/bulkpdf') 
+               
+    test = shutil.make_archive(bulkpdfzipdir + 'bulkpdftest', 'zip', bulkpdfdir) 
 
     in_memory = BytesIO() 
     zip = ZipFile(in_memory,mode="w") 
     
-    zip.write (os.path.join("/bulkpdftest.zip"))
-    zip.printdir()
+    finalname = os.path.basename(foldername)
+
+    zip.write (bulkpdfziplocation,finalname)
+    # zip.printdir()
     zip.close()
 
     response = HttpResponse(content_type="application/zip") 
