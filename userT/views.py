@@ -1801,42 +1801,30 @@ def mergedcloseoutprint(request,obj=ActionItems.objects.values()):
             dst ='static/media/temp/bulkpdf/' + i
             out_file = os.path.join(dst,j)
             file = pdfgenerate(newcloseouttemplate,out_file,data_dict,signatoriesdict)
-    
-            # in_memory = BytesIO() 
-            # zip = ZipFile(in_memory,mode="w")  
 
             objFk =ActionItems.objects.get(id = items['id']) 
             ObjAttach = objFk.attachments_set.all()
-            # print(objFk)
-            # print(ObjAttach)  
             
             for eachfile in ObjAttach: 
                 filename = os.path.basename(eachfile.Attachment.name)
                 attachmentorigin= 'media/attachments/' + filename
                 shutil.copy(attachmentorigin ,dst)
-                print(filename)
-            #     zip.write(eachfile.Attachment.path, i+"_Attachment"+filename)
-                
-            
-            # closeoutname = os.path.basename(out_file) 
-            # zip.write (out_file, closeoutname)
-            # extractlocation = 'static/media/temp/bulkpdf/'
-             
-            # print(zip.infolist()) 
-            # print(in_memory)
-            # zip.extractall(extractlocation)
-            
-            # zip.close()
-            
-            # response = HttpResponse(content_type="application/zip")
-            # response["Content-Disposition"] = "attachment; filename=" + i + ".zip"
+                # print(filename)
+    test = shutil.make_archive('static/media/temp/bulkpdftest', 'zip', 'static/media/temp/bulkpdf') 
 
-            # test = shutil.make_archive('bulk', 'zip', extractlocation) 
-            # zip.printdir()
-            
-            # in_memory.seek(0)    
-            # response.write(in_memory.read())   
-    response = HttpResponse(content_type="application/zip")      
+    in_memory = BytesIO() 
+    zip = ZipFile(in_memory,mode="w") 
+    
+    zip.write (os.path.join("/bulkpdftest.zip"))
+    zip.printdir()
+    zip.close()
+
+    response = HttpResponse(content_type="application/zip") 
+    response['Content-Disposition'] = 'attachment; filename= Bulk Closeout Sheets.zip'
+
+    in_memory.seek(0)    
+    response.write(in_memory.read())
+      
     return response
 
 def closeoutsheet1(request):  #edward 20210820 duplicate of closeoutsheet to build bulk upload
