@@ -1787,9 +1787,11 @@ def mergedcloseoutprint(request,obj=ActionItems.objects.values()):
     attachments = "media/attachments/"
     bulkpdfdir = "static/media/temp/bulkpdf/"
     bulkpdfzipdir = "static/media/temp/"
-    bulkpdfzipfile = 'bulkpdftest' +".zip"
+    bulkpdfzipfile = 'bulkpdffiles' +".zip"
+    bulkpdfzipfilename = 'bulkpdffiles'
     bulkpdfziplocation = bulkpdfzipdir + bulkpdfzipfile
     foldername = tempfolder + bulkpdfzipfile
+    createzipfilename = bulkpdfzipdir + bulkpdfzipfilename
 
     for items in obj:
         closed = (items['QueSeries'] == 99)
@@ -1816,7 +1818,7 @@ def mergedcloseoutprint(request,obj=ActionItems.objects.values()):
                 attachmentorigin= attachments + filename
                 shutil.copy(attachmentorigin ,dst)
                
-    test = shutil.make_archive(bulkpdfzipdir + 'bulkpdftest', 'zip', bulkpdfdir) 
+    test = shutil.make_archive(createzipfilename, 'zip', bulkpdfdir) 
 
     in_memory = BytesIO() 
     zip = ZipFile(in_memory,mode="w") 
