@@ -1784,58 +1784,18 @@ def closeoutprint1(request,**kwargs): #edward 20210820 duplicate of closeoutprin
 
 def mergedcloseoutprint(request):
     obj = ActionItems.objects.filter(QueSeries = 99).values() # to be altered when move to bl
-    # bulkpdfattachments = "media/attachments/"
-    # bulkpdfzipdir = "static/media/temp/"
-    # bulkpdfmakebulkpdfdir = "static/media/temp/bulkpdf"
-    # bulkpdfdir = "static/media/temp/bulkpdf/"
-    # bulkpdfzipfilename = 'bulkpdffiles'
-    # bulkpdfzipfile = 'bulkpdffiles' +".zip"
-    # bulkpdfziplocation = bulkpdfzipdir + bulkpdfzipfile
-    # bulkpdfzipfoldername = tempfolder + bulkpdfzipfile
-    # bulkpdfcreatezipfilename = bulkpdfzipdir + bulkpdfzipfilename
-
+   
     blbulkdownload(obj,bulkpdfmakebulkpdfdir,bulkpdfdir,bulkpdfattachments,bulkpdfcreatezipfilename)
-    # for items in obj:
-    #     # closed = (items['QueSeries'] == 99)
-    #     closed = True
-    #     if closed == True :
-    #         os.makedirs(makebulkpdfdir,exist_ok=True)
-    #         items['StudyActionNo'] = items['StudyActionNo'].replace("/","_")
-    #         newcloseouttemplate = blsetcloseouttemplate (items['id'])
-    #         data_dict=items
-    #         discsub = blgetDiscSubOrgfromID(items['id']) 
-    #         Signatories = blgetSignotories(discsub) 
-    #         lstSignatoriesTimeStamp= blgettimestampuserdetails (items['id'], Signatories) 
-    #         i = items["StudyActionNo"] 
-    #         j = (i + '.pdf')
-    #         signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
-    #         x = os.makedirs(bulkpdfdir + i, exist_ok=True )
-    #         dst =bulkpdfdir + i
-    #         out_file = os.path.join(dst,j)
-    #         file = pdfgenerate(newcloseouttemplate,out_file,data_dict,signatoriesdict)
-
-    #         objFk =ActionItems.objects.get(id = items['id']) 
-    #         ObjAttach = objFk.attachments_set.all()
-            
-    #         for eachfile in ObjAttach: 
-    #             filename = os.path.basename(eachfile.Attachment.name)
-    #             attachmentorigin= attachments + filename
-    #             shutil.copy(attachmentorigin ,dst)
-               
-    # test = shutil.make_archive(createzipfilename, 'zip', bulkpdfdir) 
 
     in_memory = BytesIO() 
     zip = ZipFile(in_memory,mode="w") 
-    
     finalname = os.path.basename(bulkpdfzipfoldername)
-
     zip.write (bulkpdfziplocation,finalname)
     # zip.printdir()
     zip.close()
-
+    
     response = HttpResponse(content_type="application/zip") 
     response['Content-Disposition'] = 'attachment; filename= Bulk Closeout Sheets.zip'
-
     in_memory.seek(0)    
     response.write(in_memory.read())
       
