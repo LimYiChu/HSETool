@@ -1798,7 +1798,7 @@ def mergedcloseoutprint(request):
     
     obj = ActionItems.objects.filter(QueSeries = 99).values() # to be altered when move to bl
    
-    returnzipfile = blbulkdownload(obj,bulkpdfmakebulkpdfdir,bulkpdfdir,bulkpdfattachments,bulkpdfcreatezipfilename) #to remove bulkpdfmakebulkpdfdir
+    returnzipfile = blbulkdownload(obj,bulkpdfdir,bulkpdfcreatezipfilename) #to remove bulkpdfmakebulkpdfdir
 
     in_memory = BytesIO() 
     zip = ZipFile(in_memory,mode="w") 

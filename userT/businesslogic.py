@@ -36,8 +36,9 @@ def blmakedir(makedstdir):
 
 #         return attachmentorigin
 
-def blbulkdownload(obj,makedstdir,dstfolders,attachments,createzipfilename): # changedstfolder to basefolder
+def blbulkdownload(obj,dstfolders,createzipfilename): # changedstfolder to basefolder
     # os.makedirs(makedstdir,exist_ok=True)
+    attachments = "media/attachments/"
     for items in obj:
         # closed = (items['QueSeries'] == 99)
         closed = True
