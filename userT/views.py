@@ -1788,7 +1788,7 @@ def mergedcloseoutprint(request):
     #edward 20210915 bulkpdf parameters
     bulkpdfattachments = "media/attachments/"
     bulkpdfzipdir = "static/media/temp/"
-    bulkpdfmakebulkpdfdir = "static/media/temp/bulkpdf"
+    bulkpdfmakebulkpdfdir = "static/media/temp/bulkpdf" # to be removed
     bulkpdfdir = "static/media/temp/bulkpdf/"
     bulkpdfzipfilename = 'bulkpdffiles'
     bulkpdfzipfile = 'bulkpdffiles' +".zip"
@@ -1798,7 +1798,7 @@ def mergedcloseoutprint(request):
     
     obj = ActionItems.objects.filter(QueSeries = 99).values() # to be altered when move to bl
    
-    returnzipfile = blbulkdownload(obj,bulkpdfmakebulkpdfdir,bulkpdfdir,bulkpdfattachments,bulkpdfcreatezipfilename)
+    returnzipfile = blbulkdownload(obj,bulkpdfmakebulkpdfdir,bulkpdfdir,bulkpdfattachments,bulkpdfcreatezipfilename) #to remove bulkpdfmakebulkpdfdir
 
     in_memory = BytesIO() 
     zip = ZipFile(in_memory,mode="w") 
