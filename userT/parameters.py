@@ -32,34 +32,12 @@ for items in ALLOWED_HOSTS :
         staticmedia = '/opt/bitnami/projects/HSETool/static/media/'#static/media folder location (used for old pdf generate function in views called closeoutsheet)
         closeouttemplate = '/opt/bitnami/projects/HSETool/closeouttemplate'#closeouttemplate location (used for pdf closeoutprint & indiprint)
         atrtemplate = '/opt/bitnami/projects/HSETool/atrtemplateautofontreadonly.pdf'#atrtemplatelocation (used for old pdf generate function in views called closeoutsheet)
-
-        #edward 20210915 bulkpdf parameters
-        bulkpdfattachments = "media/attachments/"
-        bulkpdfzipdir = "static/media/temp/"
-        bulkpdfmakebulkpdfdir = "static/media/temp/bulkpdf"
-        bulkpdfdir = "static/media/temp/bulkpdf/"
-        bulkpdfzipfilename = 'bulkpdffiles'
-        bulkpdfzipfile = 'bulkpdffiles' +".zip"
-        bulkpdfziplocation = bulkpdfzipdir + bulkpdfzipfile
-        bulkpdfzipfoldername = tempfolder + bulkpdfzipfile
-        bulkpdfcreatezipfilename = bulkpdfzipdir + bulkpdfzipfilename
         
     else :
         tempfolder = 'static/media/temp/'
         staticmedia = 'static/media/'
         closeouttemplate = 'closeouttemplate'
-        atrtemplate = 'atrtemplateautofontreadonly.pdf' 
-
-        #edward 20210915 bulkpdf parameters
-        bulkpdfattachments = "media/attachments/"
-        bulkpdfzipdir = "static/media/temp/"
-        bulkpdfmakebulkpdfdir = "static/media/temp/bulkpdf"
-        bulkpdfdir = "static/media/temp/bulkpdf/"
-        bulkpdfzipfilename = 'bulkpdffiles'
-        bulkpdfzipfile = 'bulkpdffiles' +".zip"
-        bulkpdfziplocation = bulkpdfzipdir + bulkpdfzipfile
-        bulkpdfzipfoldername = tempfolder + bulkpdfzipfile
-        bulkpdfcreatezipfilename = bulkpdfzipdir + bulkpdfzipfilename                                                                                                                                                
+        atrtemplate = 'atrtemplateautofontreadonly.pdf'                                                                                                                                                 
  
 
 

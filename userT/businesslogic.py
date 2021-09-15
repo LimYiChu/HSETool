@@ -24,13 +24,24 @@ import shutil
 
 # edward 20210915 bulk download 
 
-def blbulkdownload(obj,makedstdir,dstfolders,attachments,createzipfilename):
+def blmakedir(makedstdir):
+    createddir = os.makedirs(makedstdir,exist_ok=True)
+    return createddir
 
+def blfkattachment(ObjAttach,attachments):
+
+    for eachfile in ObjAttach: 
+        filename = os.path.basename(eachfile.Attachment.name)
+        attachmentorigin= attachments + filename
+
+        return attachmentorigin
+
+def blbulkdownload(obj,makedstdir,dstfolders,attachments,createzipfilename):
+    os.makedirs(makedstdir,exist_ok=True)
     for items in obj:
         # closed = (items['QueSeries'] == 99)
         closed = True
         if closed == True :
-            os.makedirs(makedstdir,exist_ok=True)
             items['StudyActionNo'] = items['StudyActionNo'].replace("/","_")
             newcloseouttemplate = blsetcloseouttemplate (items['id'])
             data_dict=items
@@ -44,18 +55,19 @@ def blbulkdownload(obj,makedstdir,dstfolders,attachments,createzipfilename):
             dst =dstfolders + i
             out_file = os.path.join(dst,j)
             file = pdfgenerate(newcloseouttemplate,out_file,data_dict,signatoriesdict)
-
             objFk =ActionItems.objects.get(id = items['id']) 
             ObjAttach = objFk.attachments_set.all()
-            
-            for eachfile in ObjAttach: 
-                filename = os.path.basename(eachfile.Attachment.name)
-                attachmentorigin= attachments + filename
-                shutil.copy(attachmentorigin ,dst)
 
-    archivedfile = shutil.make_archive(createzipfilename, 'zip', dstfolders)
+            # for eachfile in ObjAttach: 
+            #     filename = os.path.basename(eachfile.Attachment.name)
+            #     attachmentorigin= attachments + filename
+            attachmentorigin = blfkattachment(ObjAttach,attachments)
 
-    return archivedfile
+    shutil.copy(attachmentorigin ,dst) #move outside for loop
+
+    returnzipfile = shutil.make_archive(createzipfilename, 'zip', dstfolders)
+
+    return returnzipfile
 
 #edward 20210817 excel format
 def blexcelformat (dfallsorted,workbook,worksheet):
