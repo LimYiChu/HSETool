@@ -1786,15 +1786,13 @@ def closeoutprint(request,**kwargs):
 def mergedcloseoutprint(request):
 
     #edward 20210915 bulkpdf parameters
-    bulkpdfattachments = "media/attachments/"
-    bulkpdfzipdir = "static/media/temp/"
-    bulkpdfmakebulkpdfdir = "static/media/temp/bulkpdf" # to be removed
+    # bulkpdfzipdir = "static/media/temp/"
+    # bulkpdfzipfilename = 'bulkpdffiles'
+    # bulkpdfzipfile = 'bulkpdffiles' +".zip"
+
     bulkpdfdir = "static/media/temp/bulkpdf/"
-    bulkpdfzipfilename = 'bulkpdffiles'
-    bulkpdfzipfile = 'bulkpdffiles' +".zip"
-    bulkpdfziplocation = bulkpdfzipdir + bulkpdfzipfile
-    bulkpdfzipfoldername = tempfolder + bulkpdfzipfile
-    bulkpdfcreatezipfilename = bulkpdfzipdir + bulkpdfzipfilename
+    bulkpdfzipfoldername = tempfolder + ('bulkpdffiles' +".zip")
+    bulkpdfcreatezipfilename = "static/media/temp/" + 'bulkpdffiles'
     
     obj = ActionItems.objects.filter(QueSeries = 99).values() # to be altered when move to bl
    
