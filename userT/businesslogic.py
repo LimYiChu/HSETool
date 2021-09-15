@@ -18,6 +18,44 @@ from datetime import date as dt
 from operator import itemgetter
 #edward 20210817 added pandas
 import pandas as pd
+# edward 20210915 bulk download
+from userT.pdfgenerator import *
+import shutil
+
+# edward 20210915 bulk download 
+
+def blbulkdownload(obj,makedstdir,dstfolders,attachments,createzipfilename):
+
+    for items in obj:
+        # closed = (items['QueSeries'] == 99)
+        closed = True
+        if closed == True :
+            os.makedirs(makedstdir,exist_ok=True)
+            items['StudyActionNo'] = items['StudyActionNo'].replace("/","_")
+            newcloseouttemplate = blsetcloseouttemplate (items['id'])
+            data_dict=items
+            discsub = blgetDiscSubOrgfromID(items['id']) 
+            Signatories = blgetSignotories(discsub) 
+            lstSignatoriesTimeStamp= blgettimestampuserdetails (items['id'], Signatories) 
+            i = items["StudyActionNo"] 
+            j = (i + '.pdf')
+            signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
+            x = os.makedirs(dstfolders + i, exist_ok=True )
+            dst =dstfolders + i
+            out_file = os.path.join(dst,j)
+            file = pdfgenerate(newcloseouttemplate,out_file,data_dict,signatoriesdict)
+
+            objFk =ActionItems.objects.get(id = items['id']) 
+            ObjAttach = objFk.attachments_set.all()
+            
+            for eachfile in ObjAttach: 
+                filename = os.path.basename(eachfile.Attachment.name)
+                attachmentorigin= attachments + filename
+                shutil.copy(attachmentorigin ,dst)
+
+    archivedfile = shutil.make_archive(createzipfilename, 'zip', dstfolders)
+
+    return archivedfile
 
 #edward 20210817 excel format
 def blexcelformat (dfallsorted,workbook,worksheet):
