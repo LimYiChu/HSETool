@@ -36,10 +36,10 @@ def blmakedir(makedstdir):
 
 #         return attachmentorigin
 
-def blbulkdownload(obj,dstfolders,createzipfilename): # changedstfolder to basefolder
+def blbulkdownload(objactionitems,destinationfolders,createzipfilename): # changedstfolder destinationfolder
     # os.makedirs(makedstdir,exist_ok=True)
     attachments = "media/attachments/"
-    for items in obj:
+    for items in objactionitems: #objactionitems
         # closed = (items['QueSeries'] == 99)
         closed = True
         if closed == True :
@@ -49,25 +49,24 @@ def blbulkdownload(obj,dstfolders,createzipfilename): # changedstfolder to basef
             discsub = blgetDiscSubOrgfromID(items['id']) 
             Signatories = blgetSignotories(discsub) 
             lstSignatoriesTimeStamp= blgettimestampuserdetails (items['id'], Signatories) 
-            i = items["StudyActionNo"] 
-            j = (i + '.pdf')
+            studyactno = items["StudyActionNo"] # i renamed to studyactno
+            studyactnopdf = (studyactno + '.pdf')
             signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
-            x = os.makedirs(dstfolders + i, exist_ok=True ) #rename i to subfolder id
-            dst =dstfolders + i
-            out_file = os.path.join(dst,j)
+            makesubfolders = os.makedirs(destinationfolders + studyactno, exist_ok=True ) # renamed i to studyactno
+            destination =destinationfolders + studyactno #dst to destination
+            out_file = os.path.join(destination,studyactnopdf)
             file = pdfgenerate(newcloseouttemplate,out_file,data_dict,signatoriesdict)
             
             objFk =ActionItems.objects.get(id = items['id']) 
             ObjAttach = objFk.attachments_set.all()
 
             for eachfile in ObjAttach: 
-                filename = os.path.basename(eachfile.Attachment.path) # dont need .name , put full path, .smtg else after attachment
+                filename = os.path.basename(eachfile.Attachment.path) # changed from .name to .path
                 attachmentorigin= attachments + filename
-            # attachmentorigin = blfkattachment(ObjAttach,attachments)
 
-                shutil.copy(attachmentorigin, dst) #move outside for loop
+                shutil.copy(attachmentorigin, destination) #copying all done inside for loop for each attachment
 
-    returnzipfile = shutil.make_archive(createzipfilename, 'zip', dstfolders)
+    returnzipfile = shutil.make_archive(createzipfilename, 'zip', destinationfolders)
 
     return returnzipfile
 

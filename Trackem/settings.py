@@ -184,3 +184,8 @@ DEFAULT_FROM_EMAIL = 'ehstools@prism-ehstools.awsapps.com' #required to be decla
 #EMAIL_HOST_USER = 'actionstracker@gmail.com'
 #EMAIL_HOST_PASSWORD = 'Helloworld2021'
 #EMAIL_USE_SSL = False
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

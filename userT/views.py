@@ -1786,17 +1786,13 @@ def closeoutprint(request,**kwargs):
 def mergedcloseoutprint(request):
 
     #edward 20210915 bulkpdf parameters
-    # bulkpdfzipdir = "static/media/temp/"
-    # bulkpdfzipfilename = 'bulkpdffiles'
-    # bulkpdfzipfile = 'bulkpdffiles' +".zip"
-
     bulkpdfdir = "static/media/temp/bulkpdf/"
-    bulkpdfzipfoldername = tempfolder + ('bulkpdffiles' +".zip")
-    bulkpdfcreatezipfilename = "static/media/temp/" + 'bulkpdffiles'
+    bulkpdfzipfoldername = tempfolder + ("bulkpdffiles" +".zip")
+    bulkpdfcreatezipfilename = "static/media/temp/" + "bulkpdffiles" #can be just slash
     
-    obj = ActionItems.objects.filter(QueSeries = 99).values() # to be altered when move to bl
+    objactionitems = ActionItems.objects.filter(QueSeries = 99).values() # to be altered when move to bl
    
-    returnzipfile = blbulkdownload(obj,bulkpdfdir,bulkpdfcreatezipfilename) #to remove bulkpdfmakebulkpdfdir
+    returnzipfile = blbulkdownload(objactionitems,bulkpdfdir,bulkpdfcreatezipfilename) #to remove bulkpdfmakebulkpdfdir
 
     in_memory = BytesIO() 
     zip = ZipFile(in_memory,mode="w") 
@@ -1891,7 +1887,7 @@ def closeoutsheet(request): #new naming convention - all small letters
     #Guna
 
     lstclosed = ActionItems.objects.filter(QueSeries =99)
-    print(lstclosed)
+    # print(lstclosed)
 
     if (request.POST.get('GeneratePDF')): 
         x=ActionItems.objects.all()  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
