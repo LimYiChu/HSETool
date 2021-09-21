@@ -61,10 +61,8 @@ import datetime
 from datetime import date as dt 
 from operator import itemgetter
 from collections import OrderedDict
-#edward 20210909
-import shutil
-import glob
-import gviz_api
+
+
 
 def base3 (request):
     return render(request,'userT/base3.html')
