@@ -3,6 +3,7 @@ from django.urls import reverse
 from .manager import *
 from simple_history.models import HistoricalRecords
 from datetime import datetime
+from userT.models import *
 # Create your models here.
 class UploadExl(models.Model):
 
@@ -16,9 +17,14 @@ class UploadExl(models.Model):
 class ActionItems(models.Model):
    
     StudyActionNo   =   models.CharField(max_length=100,null=True,blank=True)
-    StudyName       =   models.CharField(max_length=255,null=True,blank=True)
-    Facility        =   models.CharField(max_length=255,null=True,blank=True)
-    ProjectPhase           =   models.CharField(max_length=255,null=True,blank=True)
+    StudyName_backup       =   models.CharField(max_length=255,null=True,blank=True)
+    StudyName       =   models.ForeignKey(Studies, on_delete=models.SET_NULL,null=True,blank=True) 
+    Facility       =   models.CharField(max_length=255,null=True,blank=True)
+   
+
+    ProjectPhase_backup         =   models.CharField(max_length=255,null=True,blank=True)
+    ProjectPhase       =   models.ForeignKey(Phases, on_delete=models.SET_NULL,null=True,blank=True)
+
     Cause           =   models.TextField(null=True,blank=True)
     Safeguard           = models.TextField(null=True,blank=True)
     Consequence     =   models.TextField(null=True,blank=True)

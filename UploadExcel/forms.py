@@ -79,6 +79,7 @@ class CommonLayout (Layout):
             Div (Field('Disipline', type="hidden")),
             Div (Field('Subdisipline', type="hidden")),
             Div (Field('Organisation', type="hidden")),
+            Div (Field('StudyName_backup', type="hidden")),
            Div (Field('QueSeries', type="hidden")),
     
             ),
@@ -173,6 +174,7 @@ class frmApproverConfirmation(forms.ModelForm):
          #Div (Field('DueDate', type="hidden")),
             Div (Field('Safeguard', type="hidden")),
             Div (Field('Consequence', type="hidden")),
+             Div (Field('StudyName_backup', type="hidden")),
            #Div (Field('FutureAction', type="hidden")),
            Div (Field('Facility', type="hidden")),
             Div (Field('Disipline', type="hidden")),

@@ -13,8 +13,24 @@
         //google.charts.setOnLoadCallback(starter); //cant call drawchart with paarmeters, need the parameters to make the code effcient
         function initiateGooPieChart(){
          
+          //testjson()
           google.charts.load('current', {'packages':['corechart']});
           google.charts.setOnLoadCallback(starterPie); 
+          
+        }
+
+        function testjson(){
+          
+          var newjsondata = JSON.parse(document.querySelector('#jsonData').getAttribute('data-json'));
+
+          alert(newjsondata.Title[0]);
+          alert(newjsondata.data[0].Organisation);
+          alert ("this is 1");
+          index=1
+          charttitle = '///Open/Closed Actions:::'
+          drawPieChart (newjsondata,index,charttitle);
+
+          alert ("this is 2");
 
         }
         function starterPie ()
@@ -31,12 +47,17 @@
         function drawPieChart(values,index,chartTitle) 
         {
           
+          
           firstindex = chartTitle.lastIndexOf("///")+3
           
           lastindex = chartTitle.lastIndexOf(":::")
           var newtitle = chartTitle.substring(firstindex,lastindex );
-         
+          
+          
+
           var data = google.visualization.arrayToDataTable(values);
+
+          
   
           var options = {
             title: newtitle,
@@ -154,12 +175,15 @@
         //edward 20210730 commit
       }
     
+   
     </script>
   </head>
 
 
 <body onload="openReport(event, 'All Actions')" >
-<!--breadcrumbs-->
+  <div style="display: none" id="jsonData" data-json="{{ XYZ}}"></div>
+
+  <!--breadcrumbs-->
 <h4><b>
   
     <nav>
@@ -186,11 +210,22 @@
     <div class="row">
       <div class="col-md-12">
             <div class="card">
-              <div><h4 class="card-header" style="background-color: #ffffff; font-size:xx-large;">
-                <a> PMT Reporting <!--<a class="article-title" href="{% url  'repoverallexcel' %}">Download Entire Data</a>-->
-                 <a><button type="button" class="btn btn-outline-primary btn-sm;" style = "float: right; padding-bottom:1pt; padding-top: 1pt">  <a class ="article-title" href="{% url  'repoverallexcel' %}" style="float: right;">Download Complete Excel <i class="bi bi-file-earmark-spreadsheet"></i> </button> </a></a>
-             </h4></div>
+              <div>
+                <div style="float:left" class="card-header"><h4  style="background-color: #ffffff; font-size:xx-large;">
+                  <a> PMT Reporting >><!--<a class="article-title" href="{% url  'repoverallexcel' %}">Download Entire Data</a>-->
+                  </h4>
+                </div>
 
+                <div style="float:left" class="tab h5" style="background-color: rgb(231, 234, 235);">
+                    <h3 style="background-color: #34b7eb; font-size:xx-large;">
+                    <button  onclick="openReport(event, 'dde')">Detailed Engineering (DDE)</button>
+                    <button  onclick="openReport(event, 'PieChart');testme()" >Construction</button>
+                    <a><button type="button" class="btn btn-outline-primary btn-sm;"  padding-bottom:1pt; padding-top: 1pt"> 
+                    <a class ="article-title" href="{% url  'repoverallexcel' %}" style="float: right;">Download Complete Excel <i class="bi bi-file-earmark-spreadsheet"></i> </button> </a></a>
+                  
+                    </h3>
+                  </div>
+            </div>
             <div class="tab h5" style="background-color: rgb(231, 234, 235);">
               
               <button class="tablinks" onclick="openReport(event, 'All Actions')">All Actions</button>

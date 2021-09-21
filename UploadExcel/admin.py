@@ -48,11 +48,19 @@ class delegatedActionItemsAdmin(admin.ModelAdmin):
     #     return False
         #super().has_change_permission(request, obj=obj)
 
+class delegatedStudiesAdmin(admin.ModelAdmin):
+
+    list_display =('StudyName' ,'ProjectPhase','AttendanceList', )
+    #list_display_links = ('StudyName',)
+    #list_editable = ('StudyName',)
+
+    readonly_fields = ('ProjectPhase','AttendanceList')
 
 delegatedadmin_site=delegatedadmin(name='Delegated Admin')
 #Since need to modify the view on action items have to do another admin.ModelAdmin to get a more appropriate views
 #This model.admon overrides functions etc on it
 delegatedadmin_site.register(ActionItems,delegatedActionItemsAdmin) 
+delegatedadmin_site.register(Studies,delegatedStudiesAdmin)
 
 admin.site.register(UploadExl)
 admin.site.register(ActionItems, ActionItemsAdmin)
