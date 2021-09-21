@@ -18,6 +18,57 @@ from datetime import date as dt
 from operator import itemgetter
 #edward 20210817 added pandas
 import pandas as pd
+# edward 20210915 bulk download
+from userT.pdfgenerator import *
+import shutil
+
+# edward 20210915 bulk download 
+
+def blmakedir(makedstdir):
+    createddir = os.makedirs(makedstdir,exist_ok=True)
+    return createddir
+
+# def blfkattachment(ObjAttach,attachments):
+
+#     for eachfile in ObjAttach: 
+#         filename = os.path.basename(eachfile.Attachment.name)
+#         attachmentorigin = attachments + filename
+
+#         return attachmentorigin
+
+def blbulkdownload(objactionitems,destinationfolders,createzipfilename): # changedstfolder destinationfolder
+    # os.makedirs(makedstdir,exist_ok=True)
+    attachments = "media/attachments/"
+    for items in objactionitems: #objactionitems
+        # closed = (items['QueSeries'] == 99)
+        closed = True
+        if closed == True :
+            items['StudyActionNo'] = items['StudyActionNo'].replace("/","_")
+            newcloseouttemplate = blsetcloseouttemplate (items['id'])
+            data_dict=items
+            discsub = blgetDiscSubOrgfromID(items['id']) 
+            Signatories = blgetSignotories(discsub) 
+            lstSignatoriesTimeStamp= blgettimestampuserdetails (items['id'], Signatories) 
+            studyactno = items["StudyActionNo"] # i renamed to studyactno
+            studyactnopdf = (studyactno + '.pdf')
+            signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
+            makesubfolders = os.makedirs(destinationfolders + studyactno, exist_ok=True ) # renamed i to studyactno
+            destination =destinationfolders + studyactno #dst to destination
+            out_file = os.path.join(destination,studyactnopdf)
+            file = pdfgenerate(newcloseouttemplate,out_file,data_dict,signatoriesdict)
+            
+            objFk =ActionItems.objects.get(id = items['id']) 
+            ObjAttach = objFk.attachments_set.all()
+
+            for eachfile in ObjAttach: 
+                filename = os.path.basename(eachfile.Attachment.path) # changed from .name to .path
+                attachmentorigin= attachments + filename
+
+                shutil.copy(attachmentorigin, destination) #copying all done inside for loop for each attachment
+
+    returnzipfile = shutil.make_archive(createzipfilename, 'zip', destinationfolders)
+
+    return returnzipfile
 
 #edward 20210817 excel format
 def blexcelformat (dfallsorted,workbook,worksheet):

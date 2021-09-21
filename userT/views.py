@@ -61,6 +61,9 @@ import datetime
 from datetime import date as dt 
 from operator import itemgetter
 from collections import OrderedDict
+#edward 20210909
+import shutil
+import glob
 
 def base3 (request):
     return render(request,'userT/base3.html')
@@ -1714,168 +1717,151 @@ def closeoutprint(request,**kwargs):
    #return FileResponse(bufferfile, as_attachment=True, filename=out_file)
     
     return response
-#edward 20210820 pdf bulk
-def closeoutprint1(request,**kwargs): #edward 20210820 duplicate of closeoutprint to build bulk upload
+
+#edward 20210820 pdf bulk the commented code to be deleted in one week time 
+# def closeoutprint1(request,**kwargs): #edward 20210820 duplicate of closeoutprint to build bulk upload
    
-    ID = (kwargs["id"])
-    lstclosed = ActionItems.objects.filter(QueSeries =99)
-    obj = ActionItems.objects.filter(id=ID).values() # one for passing into PDF
-    objFk =ActionItems.objects.get(id=ID) # this is for getting all attachments
+#     ID = (kwargs["id"])
+#     lstclosed = ActionItems.objects.filter(QueSeries =99)
+#     obj = ActionItems.objects.filter(id=ID).values() # one for passing into PDF
+#     objFk =ActionItems.objects.get(id=ID) # this is for getting all attachments
     
-    ObjAttach = objFk.attachments_set.all()  #get attcahments from foreign key
+#     ObjAttach = objFk.attachments_set.all()  #get attcahments from foreign key
     
-    obj1 = ActionItems.objects.values()
+#     obj1 = ActionItems.objects.values()
     
-    studyActionNo =  objFk.StudyActionNo
-    print(studyActionNo)
-    replacestudyActionNo= studyActionNo.replace("/","_") #emdr comments replacing slash with underscore since / is filepath 
-    Filename = replacestudyActionNo  + ".pdf" #emdr comments, specifying type of file, in this case pdf
-    #edward new tempfolder from parameters
-    out_file = tempfolder + Filename #emdr comments, chucking it into tempfolder
+#     studyActionNo =  objFk.StudyActionNo
+#     print(studyActionNo)
+#     replacestudyActionNo= studyActionNo.replace("/","_") #emdr comments replacing slash with underscore since / is filepath 
+#     Filename = replacestudyActionNo  + ".pdf" #emdr comments, specifying type of file, in this case pdf
+#     #edward new tempfolder from parameters
+#     out_file = tempfolder + Filename #emdr comments, chucking it into tempfolder
        
-    data_dict=obj[0] # emdr comments extracting data dict from QS, use 0 since there is only data dict in the qs for each item
+#     data_dict=obj[0] # emdr comments extracting data dict from QS, use 0 since there is only data dict in the qs for each item
     
-    discsub = blgetDiscSubOrgfromID(ID) #emdr comments standard getting discsuborg from id
-    Signatories = blgetSignotories(discsub)  #emdr comments standard getting signatories from discsuborg
+#     discsub = blgetDiscSubOrgfromID(ID) #emdr comments standard getting discsuborg from id
+#     Signatories = blgetSignotories(discsub)  #emdr comments standard getting signatories from discsuborg
     
   
-    lstSignatoriesTimeStamp= blgettimestampuserdetails (ID, Signatories) #edward changed this to use new bl for signature 20210706
-    signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp) #emdr comments just converting signatories to dict since using kvp for pdf
+#     lstSignatoriesTimeStamp= blgettimestampuserdetails (ID, Signatories) #edward changed this to use new bl for signature 20210706
+#     signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp) #emdr comments just converting signatories to dict since using kvp for pdf
     
-    newcloseouttemplate = blsetcloseouttemplate (ID) # emdr comments setting template depending on level of approvers
+#     newcloseouttemplate = blsetcloseouttemplate (ID) # emdr comments setting template depending on level of approvers
 
-    file = pdfgenerate(newcloseouttemplate,out_file,data_dict,signatoriesdict) #emdr comments using my pitstc pdfgenerator
+#     file = pdfgenerate(newcloseouttemplate,out_file,data_dict,signatoriesdict) #emdr comments using my pitstc pdfgenerator
     
-    in_memory = BytesIO() 
+#     in_memory = BytesIO() 
     
-    zip = ZipFile(in_memory,mode="w") #emdr comments basic zip + bytesio formatting 
+#     zip = ZipFile(in_memory,mode="w") #emdr comments basic zip + bytesio formatting 
     
-    for eachfile in ObjAttach: #emdr comments getting  corresponding attachments for each item
-        filename = os.path.basename(eachfile.Attachment.name)
-        zip.write (eachfile.Attachment.path, "Attach_"+filename)
+#     for eachfile in ObjAttach: #emdr comments getting  corresponding attachments for each item
+#         filename = os.path.basename(eachfile.Attachment.name)
+#         zip.write (eachfile.Attachment.path, "Attach_"+filename)
     
     
     
-    closeoutname = os.path.basename(out_file) 
-    zip.write (out_file, closeoutname)
-    zip.close()
+#     closeoutname = os.path.basename(out_file) 
+#     zip.write (out_file, closeoutname)
+#     zip.close()
     
-    response = HttpResponse(content_type="application/zip") #emdr comments getting the zip file
-    response["Content-Disposition"] = "attachment; filename=" + studyActionNo+ ".zip"
+#     response = HttpResponse(content_type="application/zip") #emdr comments getting the zip file
+#     response["Content-Disposition"] = "attachment; filename=" + studyActionNo+ ".zip"
 
-    in_memory.seek(0)    
-    response.write(in_memory.read())
+#     in_memory.seek(0)    
+#     response.write(in_memory.read())
     
     
-    #dont delete below as its a way to actualy read from memory can be used elsewhere
-    #response = HttpResponse(content_type='application/pdf')
-    #response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
-    #bufferfile = pdfsendtoclient ('atrtemplateautofontreadonly.pdf',data_dict)
-    #edward changed file location to parameters
+#     #dont delete below as its a way to actualy read from memory can be used elsewhere
+#     #response = HttpResponse(content_type='application/pdf')
+#     #response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
+#     #bufferfile = pdfsendtoclient ('atrtemplateautofontreadonly.pdf',data_dict)
+#     #edward changed file location to parameters
  
-   #return FileResponse(bufferfile, as_attachment=True, filename=out_file)
+#    #return FileResponse(bufferfile, as_attachment=True, filename=out_file)
     
-    return response
+#     return response
 
 # edward 20210823 pdf bulk back to main
 
 def mergedcloseoutprint(request):
-    obj = ActionItems.objects.values()
+
+    #edward 20210915 bulkpdf parameters
+    bulkpdfdir = "static/media/temp/bulkpdf/"
+    bulkpdfzipfoldername = tempfolder + ("bulkpdffiles" +".zip")
+    bulkpdfcreatezipfilename = "static/media/temp/" + "bulkpdffiles" #can be just slash
     
-    for items in obj:
-        closed = (items['QueSeries'] == 99)
-        if closed == True :
-            items['StudyActionNo'] = items['StudyActionNo'].replace("/","_")
-            newcloseouttemplate = blsetcloseouttemplate (items['id'])
-            data_dict=items
-            discsub = blgetDiscSubOrgfromID(items['id']) 
-            Signatories = blgetSignotories(discsub) 
-            lstSignatoriesTimeStamp= blgettimestampuserdetails (items['id'], Signatories) 
-            i = items["StudyActionNo"] 
-            j = (i + '.pdf')
-            signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
-            out_file = 'static/media/temp/bulkpdf/' + j 
-            file = pdfgenerate(newcloseouttemplate,out_file,data_dict,signatoriesdict)
+    objactionitems = ActionItems.objects.filter(QueSeries = 99).values() # to be altered when move to bl
+   
+    returnzipfile = blbulkdownload(objactionitems,bulkpdfdir,bulkpdfcreatezipfilename) #to remove bulkpdfmakebulkpdfdir
 
-            in_memory = BytesIO() 
-            zip = ZipFile(in_memory,mode="w")  
+    in_memory = BytesIO() 
+    zip = ZipFile(in_memory,mode="w") 
+    finalname = os.path.basename(bulkpdfzipfoldername)
+    zip.write (returnzipfile,finalname)
+    # zip.printdir()
+    zip.close()
 
-            objFk =ActionItems.objects.get(id = items['id']) 
-            ObjAttach = objFk.attachments_set.all()  
-            
-            for eachfile in ObjAttach: 
-                filename = os.path.basename(eachfile.Attachment.name)
-                zip.write (eachfile.Attachment.path, i+"_Attachment"+filename)
-                #zip.printdir()
-                zip.extractall('static/media/temp/bulkpdf/pdfattachments')
-
-            closeoutname = os.path.basename(out_file) 
-            zip.write (out_file, closeoutname)
-            zip.close()
-              
-            
-            response = HttpResponse(content_type="application/zip")
-            response["Content-Disposition"] = "attachment; filename=" + i + ".zip"
-            
-            in_memory.seek(0)    
-            response.write(in_memory.read())
-            print(response)
+    response = HttpResponse(content_type="application/zip") 
+    response['Content-Disposition'] = 'attachment; filename= Bulk Closeout Sheets.zip'
+    in_memory.seek(0)    
+    response.write(in_memory.read())
+      
     return response
 
-def closeoutsheet1(request):  #edward 20210820 duplicate of closeoutsheet to build bulk upload
-    QueOpen = [0,1,2,3,4,5,6,7,8,9]
-    QueClosed = [99]
-    YetToRespondQue =[0]
-    ApprovalQue = [1,2,3,4,5,6,7,8,9]
-    TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
-    allstudies = Studies.objects.all()
+# def closeoutsheet1(request):  #edward 20210820 duplicate of closeoutsheet to build bulk upload
+#     QueOpen = [0,1,2,3,4,5,6,7,8,9]
+#     QueClosed = [99]
+#     YetToRespondQue =[0]
+#     ApprovalQue = [1,2,3,4,5,6,7,8,9]
+#     TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
+#     allstudies = Studies.objects.all()
 
-    tablestudiesheader = ['Studies', 'Yet to Respond' ,'Approval Stage','Closed','Open Actions', 'Total Actions']
+#     tablestudiesheader = ['Studies', 'Yet to Respond' ,'Approval Stage','Closed','Open Actions', 'Total Actions']
    
 
     
-    lstbyWorkshop = blgetbyStdudiesCount(allstudies,YetToRespondQue,ApprovalQue,QueClosed,QueOpen,TotalQue)
+#     lstbyWorkshop = blgetbyStdudiesCount(allstudies,YetToRespondQue,ApprovalQue,QueClosed,QueOpen,TotalQue)
 
-    allactions = ActionItems.objects.all()
-    tableallheader = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
-    lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
-    tableallheadermodified =  ['Study Action No','Study Name', 'Discipline' ,'Recommendations','Response','Initial Risk'] 
-    filename = [] # for appending filename place before for loop
+#     allactions = ActionItems.objects.all()
+#     tableallheader = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
+#     lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
+#     tableallheadermodified =  ['Study Action No','Study Name', 'Discipline' ,'Recommendations','Response','Initial Risk'] 
+#     filename = [] # for appending filename place before for loop
     
-    #Guna
+#     #Guna
 
-    lstclosed = ActionItems.objects.filter(QueSeries =99)
+#     lstclosed = ActionItems.objects.filter(QueSeries =99)
     
-    if (request.POST.get('GeneratePDF')): 
-        x=ActionItems.objects.all()  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
+#     if (request.POST.get('GeneratePDF')): 
+#         x=ActionItems.objects.all()  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
        
-        y= x.values()          
-        for item in y :            
-            i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file  
-            j = (i + '.pdf')  # easier to breakdown j & to append further on          
-            del item["id"]      
-            data_dict=item
-            out_file = staticmedia + j
-            pdfgenerate(atrtemplate,out_file,data_dict)#returns from pdfgenerator #edward added atrtemplate location in parameters
-            filename.append(j) #can only append str, appending j shows the filename for userview instead of whole location 
-            context1={
-                'filename' : filename,
-                'table': True,
-                'lstbyWorkshop' : lstbyWorkshop,
-                'lstofallactions' : lstofallactions,
-            }
-        return render(request, 'userT/closeoutsheet.html', context1)                    
+#         y= x.values()          
+#         for item in y :            
+#             i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file  
+#             j = (i + '.pdf')  # easier to breakdown j & to append further on          
+#             del item["id"]      
+#             data_dict=item
+#             out_file = staticmedia + j
+#             pdfgenerate(atrtemplate,out_file,data_dict)#returns from pdfgenerator #edward added atrtemplate location in parameters
+#             filename.append(j) #can only append str, appending j shows the filename for userview instead of whole location 
+#             context1={
+#                 'filename' : filename,
+#                 'table': True,
+#                 'lstbyWorkshop' : lstbyWorkshop,
+#                 'lstofallactions' : lstofallactions,
+#             }
+#         return render(request, 'userT/closeoutsheet.html', context1)                    
     
 
-    context = {
-        'lstclosed' : lstclosed,
-        'lstbyWorkshop' : lstbyWorkshop,
-        'lstofallactions' : lstofallactions,
-        'tablestudiesheader' : tablestudiesheader,
+#     context = {
+#         'lstclosed' : lstclosed,
+#         'lstbyWorkshop' : lstbyWorkshop,
+#         'lstofallactions' : lstofallactions,
+#         'tablestudiesheader' : tablestudiesheader,
         
-    }
+#     }
 
-    return render(request, 'userT/closeoutsheet.html', context)
+#     return render(request, 'userT/closeoutsheet.html', context)
 #edward end 20210820 pdf bulk 
  
 def closeoutsheet(request): #new naming convention - all small letters
@@ -1901,7 +1887,7 @@ def closeoutsheet(request): #new naming convention - all small letters
     #Guna
 
     lstclosed = ActionItems.objects.filter(QueSeries =99)
-    print(lstclosed)
+    # print(lstclosed)
 
     if (request.POST.get('GeneratePDF')): 
         x=ActionItems.objects.all()  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
