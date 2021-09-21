@@ -61,6 +61,7 @@ import datetime
 from datetime import date as dt 
 from operator import itemgetter
 from collections import OrderedDict
+import gviz_api
 
 def base3 (request):
     return render(request,'userT/base3.html')
@@ -112,55 +113,113 @@ class anyView(viewsets.ModelViewSet):
 def googlecharts(request):
     
     
-    lstbyDueDate    = blaggregatebydate(ActionItems.objects.all())
-    #print (lstbyDueDate)
+    
+    # description = {"name": ("string", "Name"),
+    #            "salary": ("number", "Salary"),
+    #            "full_time": ("boolean", "Full Time Employee")}
+    # data = [{"name": "Mike", "salary": (10000, "$10,000"), "full_time": True},
+    #     {"name": "Jim", "salary": (800, "$800"), "full_time": False},
+    #     {"name": "Alice", "salary": (12500, "$12,500"), "full_time": True},
+    #     {"name": "Bob", "salary": (7000, "$7,000"), "full_time": True}]
 
-    lstplanned          = blprepareGoogleChartsfromDict(lstbyDueDate)
+    # data_table = gviz_api.DataTable(description)
+    # data_table.LoadData(data)
+    # print("Content-type: text/plain")
+    # print()
+    # jsonresponse = (data_table.ToJSonResponse(columns_order=("name", "salary", "full_time"),
+    #                             order_by="salary"))
 
-    print (lstplanned)
-    lstactual           = blgetActualRunDown(lstplanned)
-    newlist             = blformulateRundown(lstplanned,lstactual)
+    content1 = [['By Studies', '///Open Actions by Organisation:::'], ['RWP', 13], 
+                ['HESS', 20], ['SFSB', 2], ['MMHE', 28]]
+    
+    
+    # # context['XYZ'] = json.dumps(forpie)
+    # # json.dumps(forpie)
+    #print ("CONTEXTFORPIE", forpie)
+    # print ("FORPIEafter",context['forpie'])
+    # lstbyDueDate    = blaggregatebydate(ActionItems.objects.all())
+    # #print (lstbyDueDate)
+
+    # lstplanned          = blprepareGoogleChartsfromDict(lstbyDueDate)
+
+    # print (lstplanned)
+    # lstactual           = blgetActualRunDown(lstplanned)
+    # newlist             = blformulateRundown(lstplanned,lstactual)
   
-    for items in lstbyDueDate:
+    # for items in lstbyDueDate:
 
-        x=items.get('DueDate')
+    #     x=items.get('DueDate')
 
-    subtotal =[]
+    # subtotal =[]
    
-    for items in lstbyDueDate:
-       subtotal.append(items['count']) #how to access dictionary object by
+    # for items in lstbyDueDate:
+    #    subtotal.append(items['count']) #how to access dictionary object by
     
-    content1 =  newlist
+    # content1 =  newlist
     
 
-    content2= [['2021-01-10', 136, 136], 
-                ['2021-02-10', 133, 136], 
-                ['2021-04-18', 124, 136], 
-                ['2021-04-29', 113, 136], 
-                ['2021-05-01', 110, 136], 
-                ['2021-05-08', 80, 136], 
-                ['2021-06-03', 77, 133], 
-                ['2021-07-09', 70, 131], 
-                ['2021-07-13', 69, ], 
-                ['2021-07-15', 67, ], 
-                ['2021-07-16', 66, ], 
-                ['2021-07-23', 63, ], 
-                ['2021-07-30', 15, ], 
-                ['2021-08-26', 14, ], 
-                ['2021-10-10', 13, ], 
-                ['2021-10-15', 10, ], 
-                ['2021-10-16', 8, ], 
-                ['2021-10-17', 0, ]]
+    # content2= [['2021-01-10', 136, 136], 
+    #             ['2021-02-10', 133, 136], 
+    #             ['2021-04-18', 124, 136], 
+    #             ['2021-04-29', 113, 136], 
+    #             ['2021-05-01', 110, 136], 
+    #             ['2021-05-08', 80, 136], 
+    #             ['2021-06-03', 77, 133], 
+    #             ['2021-07-09', 70, 131], 
+    #             ['2021-07-13', 69, ], 
+    #             ['2021-07-15', 67, ], 
+    #             ['2021-07-16', 66, ], 
+    #             ['2021-07-23', 63, ], 
+    #             ['2021-07-30', 15, ], 
+    #             ['2021-08-26', 14, ], 
+    #             ['2021-10-10', 13, ], 
+    #             ['2021-10-15', 10, ], 
+    #             ['2021-10-16', 8, ], 
+    #             ['2021-10-17', 0, ]]
     context = {
         
-        'content' : content1,
-        'charttitles' : "XYZ"
+         'content' : content1,
+    #     'charttitles' : "XYZ"
       
 
-    }
+     }
+    context['XYZ'] = json.dumps([{
+                    
+                    "data" : [[{
+                                "Feature1" : "Open Action by organisation",
+                                "Feature2" : "No: Open"},
+                                {
+                                "Feature1" : "MMHE","Feature2" : 28
+                                },{
+                                "Feature1" : "SFSB","Feature2" : 2
+                                },{
+                                    "Feature1" : "HESS","Feature2": 20
+                                },
+                                {
+                                    "Feature1" : "RWP","Feature2": 20
+                                }],[
+                                    {
+                                "Feature1" : "Open/Closed Actions", "Feature2" : "Open Closed"},
+                                {
+                                "Feature1" : "Open",
+                                "Feature2" : 192
+                                },
+                                
+                                {
+                                "Feature1" : "Closed",
+                                "Feature2" : 12
+                                },
+                                ]
+                            ]
+                }])
     
-    #return JsonResponse()
-    return render(request, 'userT/googlecharts.html',context) #ok checked by yhs
+    data=  [[['By Studies', '///Open/Closed Actions:::'], ['Open', 192], ['Closed', 12]], 
+            [['By Studies', '///Open Actions by Organisation:::'], ['HESS', 20], ['MMHE', 28], ['RWP', 13], ['SFSB', 2]],
+            [['By Studies', '///Submitted Actions by Organisation:::'], ['HESS', 12], ['MMHE', 16], ['RWP', 6], ['SFSB', 0]], 
+            [['By Studies', '///Open Actions by Discipline:::'], ['HUC', 19], ['Operations', 7], ['Drilling', 7], ['EHS', 1], ['EHS', 1], ['Safety', 9], ['Marine', 6], ['Electrical', 71], ['Commissioning', 3], ['Mechanical', 2], ['MARINE', 6], ['EHS', 0]], 
+            [['By Studies', '///Open Actions by Studies:::'], ['MRU Barge Campaign Post Shutdown - Phase3', 34], ['HAZID', 19], ['HAZOP', 2], ['CRA-DPDSV/PRECOMM', 0], ['Environmental Impact Identification (ENVID)', 0], ['Hazard Identification (HAZID) Study', 0], ['Hazard and Operability (HAZOP) Study', 0], ['SAFOP Report', 75], ['NMB Phase 4A Concept Definition - HAZID Report', 28], ['NMB Phase 4A Concept Definition', 34]]]
+
+    return render(request, 'userT/googlecharts.html',context) 
 
     
 # edward 20210713 new chart
@@ -1635,9 +1694,16 @@ def repPMTExcel (request):
         'listofrejectedheader': tablerheaderejected,
         'listofrejecteditems': listofrejecteditems,
         "rejectedactions": rejectedallactionitems,
-    
         
     }
+
+    # {item[0]: item[1:] for item in items}
+    # for items in forpie:
+
+    #     print (items)
+
+    
+
     return render(request, 'userT/reppmtexcel.html', context)
 
 def DisciplineBreakdown (request):

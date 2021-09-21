@@ -19,8 +19,9 @@ class ActionItems(models.Model):
     StudyActionNo   =   models.CharField(max_length=100,null=True,blank=True)
     StudyName_backup       =   models.CharField(max_length=255,null=True,blank=True)
     StudyName       =   models.ForeignKey(Studies, on_delete=models.SET_NULL,null=True,blank=True) 
-    Facility        =   models.CharField(max_length=255,null=True,blank=True)
-    
+    Facility       =   models.CharField(max_length=255,null=True,blank=True)
+   
+
     ProjectPhase_backup         =   models.CharField(max_length=255,null=True,blank=True)
     ProjectPhase       =   models.ForeignKey(Phases, on_delete=models.SET_NULL,null=True,blank=True)
 
