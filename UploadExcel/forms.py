@@ -50,8 +50,8 @@ class CommonLayout (Layout):
             
             Div(
             Div(Field('StudyActionNo',readonly=True),   css_class='col-md-2'), #style="font-family: Dancing Script",
-            Div (Field('StudyName',readonly=True),  css_class='col-md-3'),
-            Div (Field('ProjectPhase', readonly=True), css_class='col-md-3'),
+            Div (Field('StudyName',readonly=True ,disabled=True),  css_class='col-md-3'),
+            Div (Field('ProjectPhase', readonly=True,disabled=True), css_class='col-md-3'),
             Div (Field('InitialRisk', readonly=True), css_class='col-md-2'),
             Div (Field('ResidualRisk', readonly=True), css_class='col-md-2'),
             #Div (Field('QueSeries', readonly=True), css_class='col-md-3'),
@@ -151,8 +151,8 @@ class frmApproverConfirmation(forms.ModelForm):
         self.helper.layout = Layout(
         Div(
             Div(Field('StudyActionNo',readonly=True),   css_class='col-md-2'), 
-            Div (Field('StudyName',readonly=True),  css_class='col-md-3'),
-            Div (Field('ProjectPhase', readonly=True), css_class='col-md-3'),
+            Div (Field('StudyName',readonly=True,disabled=True),  css_class='col-md-3'),
+            Div (Field('ProjectPhase', readonly=True,disabled=True), css_class='col-md-3'),
             Div (Field('InitialRisk', readonly=True), css_class='col-md-2'),
             Div (Field('ResidualRisk', readonly=True), css_class='col-md-2'),
             #Div (Field('QueSeries', readonly=True), css_class='col-md-3'),

@@ -1743,10 +1743,21 @@ def closeoutprint(request,**kwargs):
   
     lstSignatoriesTimeStamp= blgettimestampuserdetails (ID, Signatories) #edward changed this to use new bl for signature 20210706
     signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
+
+    #20210923 edward fk to data_dict
+ 
+    # actiondetails = ActionItems.objects.get(id=ID)
+    # studyname = str(actiondetails.StudyName)
+    # projectphase = str(actiondetails.ProjectPhase)
+    # studynamephasedict = {'StudyName':studyname,'ProjectPhase':projectphase}
+    # data_dict.update(studynamephasedict)
+    # print(data_dict)
+    updateddata_dict = blgetfkdict(data_dict, ID)
+    print(updateddata_dict)
     
     newcloseouttemplate = blsetcloseouttemplate (ID)
 
-    file = pdfgenerate(newcloseouttemplate,out_file,data_dict,signatoriesdict)
+    file = pdfgenerate(newcloseouttemplate,out_file,updateddata_dict,signatoriesdict)
     
     in_memory = BytesIO()
     
@@ -2062,7 +2073,9 @@ def indiprint(request,**kwargs):
     response = HttpResponse(content_type="application/pdf")
     response["Content-Disposition"] = "attachment; filename=" + studyActionNo+ ".pdf"
     #edward changed file location to parameters
-    file = pdfsendtoclient(newcloseouttemplate, data_dict)
+    #20210923 edward study & phase fk
+    updateddata_dict = blgetfkdict(data_dict, ID)
+    file = pdfsendtoclient(newcloseouttemplate, updateddata_dict)
     response.write(file.read())
     return response
    

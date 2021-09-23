@@ -22,6 +22,17 @@ import pandas as pd
 from userT.pdfgenerator import *
 import shutil
 
+#edward 20210923 get fk dict
+
+def blgetfkdict(data_dict, ID):
+
+    actiondetails = ActionItems.objects.get(id=ID)
+    studyname = str(actiondetails.StudyName)
+    projectphase = str(actiondetails.ProjectPhase)
+    studynamephasedict = {'StudyName':studyname,'ProjectPhase':projectphase}
+    data_dict.update(studynamephasedict) # updating original with study & phase 
+
+    return data_dict
 # edward 20210915 bulk download 
 
 def blmakedir(makedstdir):
@@ -55,8 +66,10 @@ def blbulkdownload(objactionitems,destinationfolders,createzipfilename): # chang
             makesubfolders = os.makedirs(destinationfolders + studyactno, exist_ok=True ) # renamed i to studyactno
             destination =destinationfolders + studyactno #dst to destination
             out_file = os.path.join(destination,studyactnopdf)
-            file = pdfgenerate(newcloseouttemplate,out_file,data_dict,signatoriesdict)
-            
+            #20210923 edward fk study phase
+            updateddata_dict = blgetfkdict(data_dict, items['id'])
+            file = pdfgenerate(newcloseouttemplate,out_file,updateddata_dict,signatoriesdict)
+            #20210923 edward fk study phase
             objFk =ActionItems.objects.get(id = items['id']) 
             ObjAttach = objFk.attachments_set.all()
 
