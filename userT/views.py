@@ -61,10 +61,7 @@ import datetime
 from datetime import date as dt 
 from operator import itemgetter
 from collections import OrderedDict
-#edward 20210909
-import shutil
-import glob
-import gviz_api
+
 
 def base3 (request):
     return render(request,'userT/base3.html')
@@ -115,23 +112,6 @@ class anyView(viewsets.ModelViewSet):
 
 def googlecharts(request):
     
-    
-    
-    # description = {"name": ("string", "Name"),
-    #            "salary": ("number", "Salary"),
-    #            "full_time": ("boolean", "Full Time Employee")}
-    # data = [{"name": "Mike", "salary": (10000, "$10,000"), "full_time": True},
-    #     {"name": "Jim", "salary": (800, "$800"), "full_time": False},
-    #     {"name": "Alice", "salary": (12500, "$12,500"), "full_time": True},
-    #     {"name": "Bob", "salary": (7000, "$7,000"), "full_time": True}]
-
-    # data_table = gviz_api.DataTable(description)
-    # data_table.LoadData(data)
-    # print("Content-type: text/plain")
-    # print()
-    # jsonresponse = (data_table.ToJSonResponse(columns_order=("name", "salary", "full_time"),
-    #                             order_by="salary"))
-
     content1 = [['By Studies', '///Open Actions by Organisation:::'], ['RWP', 13], 
                 ['HESS', 20], ['SFSB', 2], ['MMHE', 28]]
     
@@ -216,12 +196,31 @@ def googlecharts(request):
                             ]
                 }])
     
-    data=  [[['By Studies', '///Open/Closed Actions:::'], ['Open', 192], ['Closed', 12]], 
+    data=  [[['By Studies', '///Open/Closed Actions:::'], ['Open', 220], ['Closed', 12]], 
             [['By Studies', '///Open Actions by Organisation:::'], ['HESS', 20], ['MMHE', 28], ['RWP', 13], ['SFSB', 2]],
             [['By Studies', '///Submitted Actions by Organisation:::'], ['HESS', 12], ['MMHE', 16], ['RWP', 6], ['SFSB', 0]], 
             [['By Studies', '///Open Actions by Discipline:::'], ['HUC', 19], ['Operations', 7], ['Drilling', 7], ['EHS', 1], ['EHS', 1], ['Safety', 9], ['Marine', 6], ['Electrical', 71], ['Commissioning', 3], ['Mechanical', 2], ['MARINE', 6], ['EHS', 0]], 
             [['By Studies', '///Open Actions by Studies:::'], ['MRU Barge Campaign Post Shutdown - Phase3', 34], ['HAZID', 19], ['HAZOP', 2], ['CRA-DPDSV/PRECOMM', 0], ['Environmental Impact Identification (ENVID)', 0], ['Hazard Identification (HAZID) Study', 0], ['Hazard and Operability (HAZOP) Study', 0], ['SAFOP Report', 75], ['NMB Phase 4A Concept Definition - HAZID Report', 28], ['NMB Phase 4A Concept Definition', 34]]]
 
+    featuresfields = ["Feature1", "Feature2"]
+    data2=[]
+    data3 =[]
+    #for items in data:
+        # for xyz in items:
+        #     data1 = dict(zip(featuresfields,xyz))
+        #     data2.append(data1)
+
+        # data2= [dict(zip(featuresfields,pies)) for pies in items]
+        
+        # data3.append(data2)
+        # data2=[]
+    data3 = blmakelistforjson(data,featuresfields)
+    
+    print (data3)
+    context['XYZ'] = json.dumps([{"data":data3}])
+  
+    print ("CONTEXTXYZ",context['XYZ'])
+       
     return render(request, 'userT/googlecharts.html',context) 
 
     
@@ -1699,14 +1698,25 @@ def repPMTExcel (request):
         "rejectedactions": rejectedallactionitems,
         
     }
-
-    # {item[0]: item[1:] for item in items}
-    # for items in forpie:
-
-    #     print (items)
-
+    #moving tojson 26/09/2021 - Guna. Moving to json enables cleaner javascript and data passing between python and html
     
+    
+    featuresfields = ["Feature1", "Feature2"]
+    data3 = blmakelistforjson(forpie,featuresfields)
+    context["piechartsjson"]= json.dumps([{"data":data3}])
+    
+    #Test for lineshart
+    #dataforrundown = blmakelistforjson(newliststop,featuresfields)
+    featuresfieldsline = ["Feature1", "Feature2","Feature3"]
+    for items in newliststop:
+        
+        data2= dict(zip(featuresfieldsline,items)) 
+        data3.append(data2)
+        data2 =[]
 
+    context["rundownchartsjson"] = json.dumps([{"data":newliststop}])
+    print ("CONTEXTRUNDOWN",context["rundownchartsjson"])
+    
     return render(request, 'userT/reppmtexcel.html', context)
 
 def DisciplineBreakdown (request):

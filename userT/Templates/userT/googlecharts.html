@@ -9,9 +9,9 @@
   <head>
     
     <script type="text/javascript">
-      google.charts.load('current', {'packages':['corechart']});
-      
-        google.charts.setOnLoadCallback(starter); //cant call drawchart with paarmeters, need the parameters to make the code effcient
+        
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(starterjsonPie); //cant call drawchart with paarmeters, need the parameters to make the code effcient
     
         function starter(){
               
@@ -45,7 +45,7 @@
                //drawPieChart ({{content|safe}})
                //drawPieChart (allarray)
               //alert (newjsondata)
-              alert('DONE')
+             
               //alert(newjsondata[0].data[0].Organisation);
 
              
@@ -60,14 +60,14 @@
         function drawPieChart(values,index) 
         {
           
+          chartTitle = values[0][1]
+          firstindex = chartTitle.lastIndexOf("///")+3
           
-          //firstindex = chartTitle.lastIndexOf("///")+3
-          
-          //lastindex = chartTitle.lastIndexOf(":::")
-          //var newtitle = chartTitle.substring(firstindex,lastindex );
+          lastindex = chartTitle.lastIndexOf(":::")
+          var newtitle = chartTitle.substring(firstindex,lastindex );
           
           
-          newtitle ="XXX"
+          //newtitle ="XXX"
           var data = google.visualization.arrayToDataTable(values);
 
           
@@ -179,6 +179,13 @@
     
     <div id="piechart1" style="width: 900px; height: 500px;"></div>
     <div id="piechart2" style="width: 900px; height: 500px;"></div>
+    <div id="piechart3" style="width: 900px; height: 500px;"></div>
+    <div id="piechart4" style="width: 900px; height: 500px;"></div>
+    <div id="piechart5" style="width: 900px; height: 500px;"></div>
+    <div id="piechart6" style="width: 900px; height: 500px;"></div>
+    <div id="piechart7" style="width: 900px; height: 500px;"></div>
+    <div id="piechart8" style="width: 900px; height: 500px;"></div>
+    <div id="piechart9" style="width: 900px; height: 500px;"></div>
     <div id="linechart" style="width: 900px; height: 500px;"></div>
   </body>
 </html>

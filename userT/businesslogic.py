@@ -22,8 +22,20 @@ import pandas as pd
 from userT.pdfgenerator import *
 import shutil
 
-# edward 20210915 bulk download 
+def blmakelistforjson (data,featurenames):
+    data3=[]
+    for items in data:
+        
+        
+        data2= [dict(zip(featurenames,pies)) for pies in items]
+        data3.append(data2)
+        data2 =[]
+        
+    return data3
+    
 
+
+# edward 20210915 bulk download 
 def blmakedir(makedstdir):
     createddir = os.makedirs(makedstdir,exist_ok=True)
     return createddir
