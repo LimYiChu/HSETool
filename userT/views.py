@@ -43,6 +43,7 @@ from io import StringIO, BytesIO
 #Rest Framework
 from rest_framework import viewsets
 from .serializers import *
+from rest_framework import generics
 #from .forms import UserRegisterForm
 # Create your views here.
 
@@ -66,13 +67,12 @@ from collections import OrderedDict
 def base3 (request):
     return render(request,'userT/base3.html')
 
-
-
 def sidebar (request):
 
   return render(request, 'userT/basesidebar.html')
 
-
+class actionlist(generics.ListCreateAPIView):
+    pass
 
 
 def loadsignature (request):
@@ -216,10 +216,9 @@ def googlecharts(request):
         # data2=[]
     data3 = blmakelistforjson(data,featuresfields)
     
-    print (data3)
     context['XYZ'] = json.dumps([{"data":data3}])
   
-    print ("CONTEXTXYZ",context['XYZ'])
+    #print ("CONTEXTXYZ",context['XYZ'])
        
     return render(request, 'userT/googlecharts.html',context) 
 
@@ -372,6 +371,7 @@ def mainDashboard (request):
         
         apprfinalist.append(chartappdata)
         
+        
         totalapproveraction = sum (appractioncount)
         #empties out the data for next loop otherwise it doubles the data to append on each study
         chartappdata = []
@@ -379,14 +379,21 @@ def mainDashboard (request):
         dataApprover = []
         labelsApprover =[]
         countbyStudies = []
-   
+    
+
+    approverjsonlist = blremoveemptylist(apprfinalist)
+    
+
     Context = {
         'totalapproveraction' : totalapproveraction,
         'totalactioneeaction' : totalactioneeaction,
-        'actioneefinallist' : actioneefinallist,
-        'apprfinalist' : apprfinalist,
-        
+        #'actioneefinallist' : actioneefinallist, #substituted with json data below
+        #'apprfinalist' : apprfinalist, #substituted with json data below
+        "pieactioneenew" : json.dumps([{"data":actioneefinallist}]),
+        "pieapprovernew" : json.dumps([{"data":approverjsonlist}])
             }
+    
+
     return render(request, 'userT/maindashboard.html',Context) #ok checked by yhs in terms of capital letters.
 
 
@@ -408,8 +415,7 @@ class ActioneeList (ListView):
         userZemail = self.request.user.email
         ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
         ActioneeActions = blallActionsComDisSub(ActioneeRoutes,0)
-
-        print("AAAA",ActioneeActions)
+        
         rem_list = []
         #rem_list = ['Consequence','FutureAction','Deviation','QueSeries','QueSeriesTarget','DateCreated']
         finalactionitems = bladdriskcolourandoptimise(ActioneeActions,rem_list)
@@ -1407,16 +1413,48 @@ def repoverallexcel (request):
     #edward end 20210804 original excel commented out bcs replacing with dfexcel
     
     return response
+
+def reppmtphases(request,phase):
+    '''
+    Modified version to cope with phases need to pass in subset of data and not all
+    '''
+    QueOpen = [0,1,2,3,4,5,6,7,8,9]
+    QueClosed = [99]
+    YetToRespondQue =[0]
+    ApprovalQue = [1,2,3,4,5,6,7,8,9]
+    TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
+
+    PhaseOpenActions= blphasegetAction(phase, QueOpen)
+    PhaseClosedActions = blphasegetAction(phase, QueClosed)
+
+    labelpie =['Open', 'Closed']
+    titlepie = "Open/Closed Actions"
+    forpie= blprepGoogChartsbyStudies(labelpie,[PhaseOpenActions,PhaseClosedActions],titlepie )
+
+    #Open action by organisation by phases
+    labelorg = ActionRoutes.mdlAllCompany.mgr_getOrgnames()
+    countorg =[] 
+    titleorg = "Open Actions by Organisation"          
+    for items in labelorg:
+            countorg.append(blgetCompanyActionCountPhase (items,QueOpen,phase))
+    googlechartlistorganisation = blprepGoogChartsbyStudies(labelorg,countorg,titleorg)
+    print ("COUNTORG",countorg)
+    forpie.append(googlechartlistorganisation)
+
+    context = {
+
+    }
+
+    # featuresfields = ["Feature1", "Feature2"]
+    # data3 = blmakelistforjson(forpie,featuresfields)
+    # context["piechartsjson"]= json.dumps([{"data":data3}])
+    return render(request, 'userT/reppmtexcel.html',context)
     
 def repPMTExcel (request):
+    '''This is the original function called when user selects PMT Reporting from menu
+    It dumps all actions into this function'''
     
-
-    #latest first
-    
-    #Signatories = 
-    #get individual actions
     QueOpen = [0,1,2,3,4,5,6,7,8,9]
-    
     QueClosed = [99]
     YetToRespondQue =[0]
     ApprovalQue = [1,2,3,4,5,6,7,8,9]
@@ -1427,12 +1465,6 @@ def repPMTExcel (request):
     allOpenActions= blfuncgetallAction('Y', QueOpen)
     allClosedActions = blfuncgetallAction('Y', QueClosed)
     
-    # forpie2 = [
-    #       ['OpenClosed', 'Open Closed'],
-    #       ['Open',     allOpenActions],
-    #       ['Closed',      allClosedActions],
-          
-    #     ]
     forpie=[]
     #this is for overall charts
     #listofOpenClosed = [allOpenActions,allClosedActions]
@@ -1490,14 +1522,8 @@ def repPMTExcel (request):
    
     forpie.append(googlechartliststudies)
 
-
-    # Open Actions by Workshop   
-  
     #***End Pie Guna
-    #get Individual action
 
-    # Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)   
-    # tableindiheader = ['User','Role','Organisation Route','In-Progress','Closed', 'Open Actions']
 
     Indisets = blgetIndiResponseCount2(discsuborg,QueOpen,QueClosed) 
     # tableindiheader = ['User','Role','Organisation Route','Yet-to-Respond','Yet-to-Approve','Closed', 'Open Actions']  
@@ -1510,30 +1536,20 @@ def repPMTExcel (request):
     
     allactions = ActionItems.objects.all()
     
-    rem_list = []
 
-    
-    # dfRiskMatrix = pd.DataFrame(list(RiskMatrix.objects.all().values()))
-    #     #print (dfRiskMatrix[['Combined','RiskColour']])
-        
-   
-        
-    # for items in allactions:
-    #             [items.pop(key) for key in rem_list] # Reducing the data going to html
-    #             #
-    #             RiskColour = dfRiskMatrix.loc[dfRiskMatrix['Combined'].isin([items.get('InitialRisk')]),'RiskColour'].tolist() #cant use .item() as its causing an error when not matching
-                
-    #             if RiskColour:
-    #                 items['RiskColour'] = RiskColour[0]
-    #             else: 
-    #                 items['RiskColour'] = False
-    
-    
-
-
-    tableallheader = ['id','StudyActionNo','StudyName', 'Disipline' ,'Recommendations', 'Response','DueDate','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
+    tableallheader = ['id','StudyActionNo','StudyName', 'ProjectPhase','Disipline' ,'Recommendations', 'Response','DueDate','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
     lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
-    tableallheadermodified = ['Study Action No','Study Name', 'Discipline' ,'Recommendations', 'Response','Due Date','Initial Risk']
+    tableallheadermodified = ['Study Action No','Study Name', 'Project Phase','Discipline' ,'Recommendations', 'Response','Due Date','Initial Risk']
+    
+    #Changing the All Actions to use dictionary and less passing of data to HTML
+    justenoughattributes =  ['id','StudyActionNo','Disipline' ,'Recommendations', 'QueSeries', 'Response','DueDate','InitialRisk']
+    phasesactions =  ActionItems.mdlgetField.mgrGetAllActionswithPhases(True,justenoughattributes)
+    
+    #this annotate function needs to first because it doesnt like addtional items added to query set
+    dictofallactions    = blannotatefktomodel(phasesactions)
+    #this sequence is important otherwise doesnt work
+    phaseswithrisk = bladdriskcolourandoptiforflater(dictofallactions,[])
+    dictofallactions    = blgetdictActionStuckAt(phaseswithrisk)
     
     # # # edward 20210803 dataframes excel
     # all_actions =   ActionItems.objects.all().values()#'StudyActionNo','StudyName','ProjectPhase', 'Facility','Guidewords', 'Deviation', 'Cause', 'Consequence', 'Safeguard','InitialRisk','ResidualRisk', 'Disipline' ,'Recommendations','DueDate', 'Response','FutureAction')
@@ -1544,7 +1560,7 @@ def repPMTExcel (request):
     # dfall = blsortdataframes(dfall1,dfallcolumns)
     # # # edward end 20210803 dataframes excel
     
-    #RejectDetails - gonna use a different way same way as actionne list
+    #RejectDetails - same logic as actionne list
     #just using revision way to get all rejected actions
     revisiononwards = 1
     queseries = 0
@@ -1591,6 +1607,11 @@ def repPMTExcel (request):
     #edward 20210727 rundown
     newliststop = blstopcharttoday(newlist)
     #edward end 20210727 rundown
+
+    #Pass in Phases
+     
+    listofPhases= Phases.mdlSetGetField.mgrGetAllActionsAndFields()
+
     if request.method == 'POST':
                 
         if (request.POST.get('allActions')):
@@ -1673,20 +1694,23 @@ def repPMTExcel (request):
             workbook.save(response) # odd way but it works - took too long to figure out as no resource on the web
             return response    
      
-    riskmatrix = blgetRiskMatrixColour()
-        
+    
+    #This needs to be worked on more as there are other problems now if risk matrix is not loaded
+    #riskmatrix = blgetRiskMatrixAvailable()
     context = {
         
-        'riskmatrix' : riskmatrix,
-        'forpie' : forpie,
+        'riskmatrix' : True,
+        #'forpie' : forpie, #commented out Guna
         'lstbyDueDate' : lstbyDueDate,
         'tableduedateheader' : tableduedateheader,
         'totalallDueDate' : totalallDueDate, 
-        'rundowncontent': newliststop, #edward 20210727 rundown
+        #'rundowncontent': newliststop, #edward 20210727 rundown#commented out Guna
         'lstbyDisc' : lstbyDisc,
         'lstbyWorkshop' : lstbyWorkshop,
         'Indisets' : Indisets,
         'lstofallactions' : lstofallactions,
+        #dict of all actions
+        "dictofallactions" : dictofallactions,
         'tableindiheader' : tableindiheader,
         'tablestudiesheader' : tablestudiesheader,
         'tabledischeader' : tabledischeader ,
@@ -1696,27 +1720,21 @@ def repPMTExcel (request):
         'listofrejectedheader': tablerheaderejected,
         'listofrejecteditems': listofrejecteditems,
         "rejectedactions": rejectedallactionitems,
-        
+        "listofPhases": listofPhases,
     }
     #moving tojson 26/09/2021 - Guna. Moving to json enables cleaner javascript and data passing between python and html
     
-    
+    #1st approach lace the dictionary wih features
     featuresfields = ["Feature1", "Feature2"]
     data3 = blmakelistforjson(forpie,featuresfields)
     context["piechartsjson"]= json.dumps([{"data":data3}])
     
     #Test for lineshart
     #dataforrundown = blmakelistforjson(newliststop,featuresfields)
-    featuresfieldsline = ["Feature1", "Feature2","Feature3"]
-    for items in newliststop:
-        
-        data2= dict(zip(featuresfieldsline,items)) 
-        data3.append(data2)
-        data2 =[]
+    #2nd approach should have done it like this in the first place simple stratight. Leaving the above to see how to lace and extract
+    context["rundownchartsjson"] = json.dumps([{"data":newliststop}]) #one line, going to leave the above approach so that it could be used elsewhere
+    #end Json changes
 
-    context["rundownchartsjson"] = json.dumps([{"data":newliststop}])
-    print ("CONTEXTRUNDOWN",context["rundownchartsjson"])
-    
     return render(request, 'userT/reppmtexcel.html', context)
 
 def DisciplineBreakdown (request):
@@ -1958,7 +1976,7 @@ def closeoutsheet(request): #new naming convention - all small letters
     #Guna
 
     lstclosed = ActionItems.objects.filter(QueSeries =99)
-    # print(lstclosed)
+    
 
     if (request.POST.get('GeneratePDF')): 
         x=ActionItems.objects.all()  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')

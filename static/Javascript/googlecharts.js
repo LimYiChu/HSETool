@@ -1,9 +1,7 @@
- 
-
-function initiateGoogleRundownChart()
+ function initiateGoogleRundownChart()
           {
             
-            google.charts.load('current', {'packages':['corechart']}); //edward 20210728 new chart
+            google.charts.load('current', {'packages':['corechart']}); 
             google.charts.setOnLoadCallback(starterRunD);
   
           }
@@ -78,16 +76,49 @@ function drawRunDownChart(values)
                     //var chart = new google.charts.Line(document.getElementById('linecharted')); //edward 20210728 new chart
                     var chart = new google.visualization.LineChart(document.getElementById('linecharted'));//edward 20210728 new chart
                     chart.draw(data,options);//edward 20210728
-                
-                //chart.draw(data, google.charts.Line.convertOptions(options));
-                //edward 20210730 commit
-              }
 
- function initiateGooPieChartX()
+              }
+function initiategoopiechartmainDB()
+              {
+ 
+                google.charts.load('current', {'packages':['corechart']});
+                google.charts.setOnLoadCallback(starterpiemaindashboard);
+
+              }
+function starterpiemaindashboard ()
+    {
+      var jsondataactionee = JSON.parse(document.querySelector('#jsondatapieActionee').getAttribute('data-json'));
+      var jsondataapprover = JSON.parse(document.querySelector('#jsondatapieApprover').getAttribute('data-json'));
+
+      let dataforpiearray = jsondataactionee[0].data
+      let dataforpiearrayappr = jsondataapprover[0].data
+
+      for (let i = 0; i < dataforpiearray.length; i++)
+
+                    {
+                      drawPieChartX (dataforpiearray[i],i,false)
+                    }
+      
+      for (let i = 0; i < dataforpiearrayappr.length; i++)
+
+        {
+          
+          drawPieChartX (dataforpiearrayappr[i],i,true)
+          }
+                    
+
+  }
+
+ function initiateGooPieChartPMT()
  {
     
     google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(starterjsonPie); 
+
+    var newjsondata = JSON.parse(document.querySelector('#jsonDataPieActionee').getAttribute('data-json'));
+    // google.charts.setOnLoadCallback(function () {
+    //   drawChart(dataArr);
+    // })
 
   }
 
@@ -102,11 +133,11 @@ function drawRunDownChart(values)
       {
       const allarrayX =  dataforpiearray[i].map (organisation => [organisation.Feature1,organisation.Feature2])
       drawPieChartX (allarrayX,i)
-      console.log (allarrayX)
+      
       }
   }
 
-  function drawPieChartX(values,index) 
+  function drawPieChartX(values,index,approver=false) 
         {
           chartTitle = values[0][1]
           firstindex = chartTitle.lastIndexOf("///")+3
@@ -139,11 +170,18 @@ function drawRunDownChart(values)
               chartArea:{left:20,top:100,width:'100%',height:'100%'},
               legend : {position: 'labeled', textStyle: {color: 'black', fontSize: 20}} //have to add this in otherwise charts seem small...like your dick
           };
-                  
+          
+          if (approver==false){
             var strpie = "piechart";
             var finalpie = strpie.concat(index);
-            
             var chart = new google.visualization.PieChart(document.getElementById(finalpie));
             chart.draw(data, options);
+            }
+            if (approver==true){
+              var strpie = "apppiechart";
+              var finalpie = strpie.concat(index);
+              var chart = new google.visualization.PieChart(document.getElementById(finalpie));
+              chart.draw(data, options);
+              }
 
           }

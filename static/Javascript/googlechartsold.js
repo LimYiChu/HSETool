@@ -151,4 +151,75 @@ function drawChart(values) {
             //var chart = new google.visualization.PieChart(document.getElementById('piechart'));
             //chart.draw(data, options);
             }
+    //MainDashboard below
+
+    google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(starter); //cant call drawchart with paarmeters, need the parameters to make the code effcient
     
+        function starter(){
+            
+            
+            {% for chart in actioneefinallist%}
+            {%if chart %}
+                drawChart({{chart|safe}} , {{ forloop.counter }},'{{chart.0}}',false);
+                {%endif%}
+            {%endfor%}
+
+            {% for appchart in apprfinalist%}
+             {%if appchart %} //cant work with !=[] just wants to state that it has data then trigger draw chart otherwise its just ugly red errors on screen
+            drawChart({{appchart|safe}} , {{ forloop.counter }},'{{appchart.0}}',true);
+            {%endif%}
+            {%endfor%}
+        }
+      function drawChart(values,index,chartTitle,approver) {
+        
+        firstindex = chartTitle.lastIndexOf("///")+3 //Doing this because it passes soem wird HTML together with the string &#27 or some other stuff
+        
+        lastindex = chartTitle.lastIndexOf(":::")
+        var newtitle = chartTitle.substring(firstindex,lastindex );
+       
+        var data = google.visualization.arrayToDataTable(values);
+
+        var options = {
+          title: newtitle,
+          is3D : true,
+
+          pieSliceText : 'value',
+            pieSliceTextStyle: {
+              bold: true,
+              fontSize: 25,
+              color: 'black'
+          },
+
+          titleTextStyle: {
+            color: 'Black',    // any HTML string color ('red', '#cc00cc')
+            fontName: 'Helvetica', // i.e. 'Times New Roman'
+            fontSize: 20, // 12, 18 whatever you want (don't specify px)
+            bold: true,    // true or false
+            italic: false   // true of false
+                        },
+            height: 500,
+            width: 700,
+            chartArea:{left:20,top:100,width:'100%',height:'100%'},
+         
+            legend : {position: 'labeled', textStyle: {color: 'black', fontSize: 20}} //have to add this in otherwise charts seem small...like your dick
+        };
+        
+        if (approver==false){
+        var strpie = "piechart";
+        var finalpie = strpie.concat(index);
+        var chart = new google.visualization.PieChart(document.getElementById(finalpie));
+        chart.draw(data, options);
+        }
+
+        if (approver==true){
+            var strpie = "apppiechart";
+            var finalpie = strpie.concat(index);
+            var chart = new google.visualization.PieChart(document.getElementById(finalpie));
+            chart.draw(data, options);
+            }
+        //var chart2 = new google.visualization.PieChart(document.getElementById('piechart2'));
+        
+    //chart2.draw(data, options);
+       
+      }

@@ -4,8 +4,8 @@ from django.contrib.admin.forms import AuthenticationForm
 
 # Register your models here.
 class ActionItemsAdmin(admin.ModelAdmin):
-    list_display =('StudyActionNo' ,'DueDate','StudyName', 'Recommendations', 'Response','Organisation', 'Disipline','Subdisipline','DateCreated','QueSeries',)
-    list_editable = ('DueDate','StudyName')
+    list_display =('StudyActionNo' ,'DueDate','StudyName','ProjectPhase', 'Recommendations', 'Response','Organisation', 'Disipline','Subdisipline','DateCreated','QueSeries',)
+    list_editable = ('DueDate','StudyName','ProjectPhase')
 
 
 

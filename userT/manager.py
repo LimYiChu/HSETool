@@ -69,6 +69,13 @@ class UserQuerySet(models.QuerySet):
     def get_field(self,EMAIL, fields):
                 
         return self.filter (email=EMAIL).values(fields)
+
+class GeneralQuerySet(models.QuerySet):
+   
+    def get_allacctionsandfield(self):
+                
+        return self.filter().values()
+
 class ActioneeManager(models.Manager):
     def get_queryset (self):
         return RoutesQuerySet(self.model, using=self._db)
@@ -119,9 +126,12 @@ class mgrSetGetfields(models.Manager):
     def mgrGetField(self,email, fields):
          #lookup = str(fields)+'__icontains' - This is how you search dynamically but since we are setting it
          return self.get_queryset().get_field(email, fields)
-# class Approver2Manager(models.Manager):
-#     def get_queryset (self):
-#         return RoutesQuerySet(self.model, using=self._db)
-#     def get_myroutes(self,useremail):
-#         return self.get_queryset().get_Approver2(useremail)
+    
+class mgrGeneralGetSetfields(models.Manager):
+    def get_queryset (self):
+         return GeneralQuerySet(self.model, using=self._db)
+
+    def mgrGetAllActionsAndFields(self):
+        return self.get_queryset().get_allacctionsandfield()
+
 

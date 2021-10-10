@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'Tenant',
     'simple_history',
     'rest_framework',
+   
     
     #'django_seed',
 
@@ -56,6 +57,7 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL =   'userT.CustomUser'#using custom user so can put in disipline etc
 USE_TZ = True #to use time zone to help with  with auto_now thatts giving a wrong time
 MIDDLEWARE = [
+    
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
