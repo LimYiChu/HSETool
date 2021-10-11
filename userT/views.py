@@ -1424,30 +1424,70 @@ def reppmtphases(request,phase):
     ApprovalQue = [1,2,3,4,5,6,7,8,9]
     TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
 
+    #Start Overall Open and Closed Actions
     PhaseOpenActions= blphasegetAction(phase, QueOpen)
     PhaseClosedActions = blphasegetAction(phase, QueClosed)
-
     labelpie =['Open', 'Closed']
     titlepie = "Open/Closed Actions"
     forpie= blprepGoogChartsbyStudies(labelpie,[PhaseOpenActions,PhaseClosedActions],titlepie )
+    
+    CompanyNames = ActionRoutes.mdlAllCompany.mgr_getOrgnames()
 
-    #Open action by organisation by phases
-    labelorg = ActionRoutes.mdlAllCompany.mgr_getOrgnames()
+    #Start Open action by organisation
     countorg =[] 
     titleorg = "Open Actions by Organisation"          
-    for items in labelorg:
+    for items in CompanyNames:
             countorg.append(blgetCompanyActionCountPhase (items,QueOpen,phase))
-    googlechartlistorganisation = blprepGoogChartsbyStudies(labelorg,countorg,titleorg)
-    print ("COUNTORG",countorg)
+    googlechartlistorganisation = blprepGoogChartsbyStudies(CompanyNames,countorg,titleorg)
     forpie.append(googlechartlistorganisation)
+    
+
+    #Start Submitted actions by organisation
+    titlesubmitted = "Submitted Actions by Organisation" 
+    countsubmitted =[]         
+    for items in CompanyNames:
+            countsubmitted.append(blgetCompanyActionCountPhase (items,ApprovalQue,phase))
+    googlechartlistsubmitted = blprepGoogChartsbyStudies(CompanyNames,countsubmitted,titlesubmitted)
+    forpie.append(googlechartlistsubmitted)
+   
+    # Start Open Actions for discipline
+    discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
+    countdiscsub= []
+    labelsDisc =[]
+    pietitledisc = "Open Actions by Discipline"
+    for itemPair in discsub:
+        countdiscsub.append(blgetDiscSubActionCountPhase (itemPair,QueOpen,phase))
+        labelsDisc.append(str(itemPair[0]))#+"/"+str(itemPair[1]))
+    googlechartlistdiscipline = blprepGoogChartsbyStudies(labelsDisc,countdiscsub,pietitledisc)
+    forpie.append(googlechartlistdiscipline) 
+
+
+    #By workshops - Overall OPen actions by Studies
+    labelsworkshop = Studies.objects.all()
+                
+    countstudies = []
+    labelsstudies = []
+    pietitlestudies = "Open Actions by Studies"
+
+    for study in labelsworkshop:
+        countstudies.append(blallActionCountbyStudies(study.StudyName,QueOpen))
+        labelsstudies.append(study.StudyName)
+        
+    googlechartliststudies = blprepGoogChartsbyStudies(labelsstudies,countstudies,pietitlestudies)
+   
+    forpie.append(googlechartliststudies)
+
+    #***End Pie Guna
 
     context = {
-
+        "piechartsjson" : json.dumps([{"data":forpie}])
     }
 
+    
     # featuresfields = ["Feature1", "Feature2"]
     # data3 = blmakelistforjson(forpie,featuresfields)
     # context["piechartsjson"]= json.dumps([{"data":data3}])
+
     return render(request, 'userT/reppmtexcel.html',context)
     
 def repPMTExcel (request):

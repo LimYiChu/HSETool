@@ -1325,6 +1325,24 @@ def blgetDiscSubActionCount(workshop,discsuborg,quelist):
         count += ActionItems.mdlgetActionDiscSubCount.mgr_getDiscSubItemsCount('X',discsuborg,eachQs) 
    
     return count
+
+def blgetDiscSubActionCountPhase(discsuborg,quelist,phase=""):
+    count = 0
+       
+
+    for eachQs in quelist:
+
+        if phase!="":
+            filters = {'Disipline':discsuborg[0], 'Subdisipline': discsuborg[1], 
+                            'QueSeries':eachQs,'ProjectPhase__ProjectPhase':phase}
+        else:
+            filters = {'Disipline':discsuborg[0], 'Subdisipline': discsuborg[1],
+                            'QueSeries':eachQs}
+
+        count += ActionItems.mdlallActionItemsCount.mgr_GeneralItemsCountbyFilters(filters) 
+   
+    return count
+
 def blgetDiscSubOrgActionCount(workshop,discsuborg,quelist):
     count = 0
     
@@ -1352,11 +1370,11 @@ def blgetCompanyActionCountPhase(company,quelist,phase="") :
         else:
             filters = {'Organisation':company, 'QueSeries':eachQs}
 
-        print ("FILTERS",filters)
+        
 
-        #count += ActionItems.mdlgetActionCompanyCount.mgr_getCompanyCountAll(filters) 
+        count += ActionItems.mdlgetActionCompanyCount.mgr_getCompanyCountAll(filters) 
 
-        print (ActionItems.mdlgetActionCompanyCount.mgr_getCompanyCountAll(filters))
+        #print (ActionItems.mdlgetActionCompanyCount.mgr_getCompanyCountAll(filters))
     return count
 
 def blgetActioneeItemsbyStream(contextRoutes,stream): 

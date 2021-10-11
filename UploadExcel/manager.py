@@ -29,6 +29,9 @@ class QuerySet(models.QuerySet):
     def get_allActionsCountbyDisc(self,Disc, que):
         return self.filter(Disipline__iexact=Disc).filter(QueSeries__iexact=que).count ()
 
+    def get_GeneralActionsCountbyFilters(self,Filters):
+        return self.filter(**Filters).count ()
+
     def set_field(self,ID, fields, value):
         
         
@@ -73,7 +76,7 @@ class QuerySet(models.QuerySet):
         return self.filter (Organisation__iexact=Company).filter (QueSeries__iexact=que).count()
     
     def get_mgrCompanyCountAll(self,filters):
-        return self.filter (**filters)
+        return self.filter (**filters).count()
     # def get_Approver1(self,userorganisation,userdisipline,usersubdisipline):
     #     return self.filter(Organisation__icontains=userorganisation).filter(Disipline__icontains=userdisipline).filter(Subdisipline__icontains=usersubdisipline)
     # def get_Approver2(self,useremail):
@@ -102,6 +105,7 @@ class myActionCount(models.Manager):
         return self.get_queryset().get_allActionsCountbyStudies(studies,que)
     def mgr_allItemsCountbyDisc(self,Disc,que):
         return self.get_queryset().get_allActionsCountbyDisc(Disc,que)
+    
 
 class mgrallActionCount(models.Manager):
     def get_queryset (self):
@@ -110,6 +114,8 @@ class mgrallActionCount(models.Manager):
         return self.get_queryset().get_allActionsCount(workshop,que)
     def mgr_getphaseItemsCount(self,phase,que):
         return self.get_queryset().get_phaseActionsCount(phase,que)
+    def mgr_GeneralItemsCountbyFilters(self,Filters):
+        return self.get_queryset().get_GeneralActionsCountbyFilters(Filters)
 
 class mgrgetActionDiscSubCount(models.Manager):
     def get_queryset (self):
