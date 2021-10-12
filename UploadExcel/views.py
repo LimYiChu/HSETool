@@ -16,10 +16,23 @@ import csv
 import pandas as pd
 import re
 import datetime
+#edward 20211008
+
 #from .filter import ActionItemsFilter - not sure might need this for later for upload excel. had to remove stuff in filter.py
 #from .forms import UserRegisterForm
 # Create your views here.
-
+def readsqltable(request):
+    studiesval = Studies.objects.values()
+    dfstudiesval=pd.DataFrame(studiesval)
+    print(dfstudiesval)
+    actionitemsval = ActionItems.objects.values()
+    dfactionitemsval = pd.DataFrame(actionitemsval)
+    dfstudiesval['StudyName_id'] = dfstudiesval['id']
+    print(dfstudiesval['StudyName_id'])
+    
+    
+    return HttpResponse("TEST")
+    
 def uploadexceldf (request):
     
     if request.method == 'POST':
@@ -33,10 +46,35 @@ def uploadexceldf (request):
             ID = form_upload.instance.id
             form_upload = UploadExlForm()
             obj = UploadExl.objects.get(id=ID)
-           
-            data_df = pd.read_excel(obj.Filename.path,keep_default_na=False)
-            dictdata = data_df.to_dict('records') # need to have records in there 
-           
+
+            #edward 20211011
+            #studies
+            studiesval = Studies.objects.values()
+            dfstudiesval=pd.DataFrame(studiesval) #2 columns to dict (id & studyname)
+
+            dfstudies2cols = dfstudiesval[['id','StudyName']]
+            dfstudiesindex = dfstudies2cols.set_index('id',inplace=True) #reindexing 
+            dfstudiesdict = dfstudies2cols.to_dict()['StudyName']
+            dfstudieswapkvp = dict((value, key) for key, value in dfstudiesdict.items()) #swapping kvp since we are using string as key & returning id as value pair
+
+            #phases
+            phasesval = Phases.objects.values()
+            dfphasesval=pd.DataFrame(phasesval) #2 columns to dict (id & studyname)
+
+            dfphases2cols = dfphasesval[['id','ProjectPhase']]
+            dfphasesindex = dfphases2cols.set_index('id',inplace=True) #reindexing 
+            dfphasesdict = dfphases2cols.to_dict()['ProjectPhase']
+            dfphaseswapkvp = dict((value, key) for key, value in dfphasesdict.items()) #swapping kvp since we are using string as key & returning id as value pair
+
+            data_df = pd.read_excel(obj.Filename.path,keep_default_na=False) #df conversion of studyname to studyname id should be done here
+
+            data_df['StudyName_id']= data_df['StudyName_id'].map(dfstudieswapkvp)
+            data_df['ProjectPhase_id']= data_df['ProjectPhase_id'].map(dfphaseswapkvp)
+
+            dictdata = data_df.to_dict('records') # need to have records in there, converts df to kvp dic data in a queryset 
+            
+            #edward 20211011
+            
             ActionItems.objects.bulk_create(
                                               [ActionItems(**vals) for vals in dictdata])
 

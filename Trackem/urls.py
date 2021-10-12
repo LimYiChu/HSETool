@@ -146,6 +146,8 @@ urlpatterns = [
         path('mergedcloseoutprint/', login_required(UserView.mergedcloseoutprint), name='mergedcloseouprint' ),
         # edward 20210827 base3
         path('base3/', login_required(UserView.base3), name='base3' ),
+        #edward 20211008 readsqltable
+        path('readsqltable/',login_required(UploadV.readsqltable), name='readsqltable'),
       ]
 
 if settings.DEBUG:

@@ -32,12 +32,17 @@ for items in ALLOWED_HOSTS :
         staticmedia = '/opt/bitnami/projects/HSETool/static/media/'#static/media folder location (used for old pdf generate function in views called closeoutsheet)
         closeouttemplate = '/opt/bitnami/projects/HSETool/closeouttemplate'#closeouttemplate location (used for pdf closeoutprint & indiprint)
         atrtemplate = '/opt/bitnami/projects/HSETool/atrtemplateautofontreadonly.pdf'#atrtemplatelocation (used for old pdf generate function in views called closeoutsheet)
-        
+        # pdf bulk directory
+        bulkpdfdir = "/opt/bitnami/projects/HSETool/static/media/temp/bulkpdf/"
+        bulkpdfcreatezipfilename = "/opt/bitnami/projects/HSETool/static/media/temp/" + "bulkpdffiles"
     else :
         tempfolder = 'static/media/temp/'
         staticmedia = 'static/media/'
         closeouttemplate = 'closeouttemplate'
-        atrtemplate = 'atrtemplateautofontreadonly.pdf'                                                                                                                                                 
+        atrtemplate = 'atrtemplateautofontreadonly.pdf'  
+        # pdf bulk directory
+        bulkpdfdir = "static/media/temp/bulkpdf/"
+        bulkpdfcreatezipfilename = "static/media/temp/" + "bulkpdffiles" #can be just slash                                                                                                                                               
  
 
 
@@ -75,3 +80,5 @@ for items in ALLOWED_HOSTS :
 dfallcolumns=['StudyActionNo','StudyName','Disipline','Recommendations', 'Response','DueDate','InitialRisk','RiskColour']
 dfcompletecolumns=['StudyActionNo','StudyName','ProjectPhase','Facility','Guidewords','Deviation', 'Cause', 'Consequence', 'Safeguard','InitialRisk','ResidualRisk','Recommendations','DueDate', 'Response','FutureAction','Organisation','Disipline','Subdisipline','Actionee','Action with','Revision'] # 'RiskColour',
 dfcompletecolumns2=['StudyActionNo','StudyName','ProjectPhase','Facility','Guidewords','Deviation', 'Cause', 'Consequence', 'Safeguard','InitialRisk','ResidualRisk','Recommendations','DueDate', 'Response','FutureAction','Organisation','Disipline','Subdisipline']
+dfrejectedcolumns = ['StudyActionNo','StudyName','ProjectPhase','Facility','Cause','Safeguard','InitialRisk','ResidualRisk','Recommendations','Organisation','Disipline','Subdisipline','Guidewords','Revision','RiskColour']
+dfindisummcolumns = ["User","Pending Submission","Pending Approval"]
