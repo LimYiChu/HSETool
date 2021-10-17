@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'Tenant',
     'simple_history',
     'rest_framework',
-   
+    'debug_toolbar',
+
     
     #'django_seed',
 
@@ -57,7 +58,7 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL =   'userT.CustomUser'#using custom user so can put in disipline etc
 USE_TZ = True #to use time zone to help with  with auto_now thatts giving a wrong time
 MIDDLEWARE = [
-    
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -66,6 +67,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'Trackem.urls'
@@ -191,3 +193,8 @@ DEFAULT_FROM_EMAIL = 'ehstools@prism-ehstools.awsapps.com' #required to be decla
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+INTERNAL_IPS = [
+    # ...
+    '127.0.0.1',
+    # ...
+]

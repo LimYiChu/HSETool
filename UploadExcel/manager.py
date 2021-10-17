@@ -32,6 +32,12 @@ class QuerySet(models.QuerySet):
     def get_GeneralActionsCountbyFilters(self,Filters):
         return self.filter(**Filters).count ()
 
+    def get_GeneralActionsCountbyFiltersKwargsQ(self,FilterKwargs):
+        return self.filter(FilterKwargs).count ()
+
+    def get_GeneralActionsKwargsQArgsValues(self,FilterKwargs,ArgsValues):
+        return self.filter(FilterKwargs).values(*ArgsValues)
+
     def set_field(self,ID, fields, value):
         
         
@@ -116,6 +122,10 @@ class mgrallActionCount(models.Manager):
         return self.get_queryset().get_phaseActionsCount(phase,que)
     def mgr_GeneralItemsCountbyFilters(self,Filters):
         return self.get_queryset().get_GeneralActionsCountbyFilters(Filters)
+    def mgr_GeneralItemsCountbyFiltersKwargsQ(self,FiltersKwargs):
+        return self.get_queryset().get_GeneralActionsCountbyFiltersKwargsQ(FiltersKwargs)
+    def mgr_GeneralItemsFiltersKwargsQReduced(self,FiltersKwargs,ReducedValuesArgs):
+        return self.get_queryset().get_GeneralActionsKwargsQArgsValues(FiltersKwargs,ReducedValuesArgs)
 
 class mgrgetActionDiscSubCount(models.Manager):
     def get_queryset (self):

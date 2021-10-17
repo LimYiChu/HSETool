@@ -26,7 +26,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 from UploadExcel.admin import delegatedadmin_site
 
-#import debug_toolbar
+import debug_toolbar
 # from Tenant.views import our_team
 from rest_framework import routers
 # TESTING THAT ONLY THIS GOES THROUGH demonstration for HS
@@ -35,7 +35,7 @@ router.register ('ActionItems', UserView.anyView)
 urlpatterns = [
       # Load excel actions, routes ,
         path ('rest/',include(router.urls)),
-        #path('__debug__/', include(debug_toolbar.urls)),
+        path('__debug__/', include(debug_toolbar.urls)),
 
         path('delegatedadmin/', delegatedadmin_site.urls),
         path('upload/', login_required(UploadV.Load), name='Load' ),
@@ -118,7 +118,7 @@ urlpatterns = [
 
         path('reppmt/',login_required(UserView.repPMTExcel),name='reppmt'),
         #re_path(r'^reppmt/(?P<Phases>)/$',login_required(UserView.reppmtnew),name='reppmtphases'),#Phases REPPMT
-        path('reppmt/<phase>',login_required(UserView.reppmtphases),name='reppmtphases'),
+        path('reppmt/<phase>',login_required(UserView.repPMTExcel),name='reppmtphases'),
 
         path('DisciplineBreakdown/',login_required(UserView.DisciplineBreakdown),name='DisciplineBreakdown'),
         #path('EmailReminder/',login_required(UserView.EmailReminder),name='EmailReminder'),

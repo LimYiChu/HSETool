@@ -78,6 +78,8 @@ function drawRunDownChart(values)
                     chart.draw(data,options);//edward 20210728
 
               }
+
+
 function initiategoopiechartmainDB()
               {
  
@@ -115,7 +117,7 @@ function starterpiemaindashboard ()
     google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(starterjsonPie); 
 
-    var newjsondata = JSON.parse(document.querySelector('#jsonDataPieActionee').getAttribute('data-json'));
+    //var newjsondata = JSON.parse(document.querySelector('#jsonDataPieActionee').getAttribute('data-json'));
     // google.charts.setOnLoadCallback(function () {
     //   drawChart(dataArr);
     // })
@@ -131,8 +133,8 @@ function starterpiemaindashboard ()
    for (let i = 0; i < dataforpiearray.length; i++)
 
       {
-      const allarrayX =  dataforpiearray[i].map (organisation => [organisation.Feature1,organisation.Feature2])
-      drawPieChartX (allarrayX,i)
+      //const allarrayX =  dataforpiearray[i].map (organisation => [organisation.Feature1,organisation.Feature2])
+      drawPieChartX (dataforpiearray[i],i)
       
       }
   }

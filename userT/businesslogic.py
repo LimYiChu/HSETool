@@ -1,3 +1,5 @@
+from .busiinesslogicQ import *
+
 import django_filters
 from django.http import HttpResponse
 import pandas as pd
@@ -15,13 +17,14 @@ from datetime import date
 #edward 20210722 added datetime
 import datetime 
 from datetime import date as dt 
-from operator import itemgetter
+from operator import itemgetter, or_
 #edward 20210817 added pandas
 import pandas as pd
 # edward 20210915 bulk download
 from userT.pdfgenerator import *
 import shutil
 from django.db.models import F
+
 
 def blremoveemptylist (listoflist):
     '''
@@ -32,7 +35,9 @@ def blremoveemptylist (listoflist):
     return listfinal
 def blannotatefktomodel(actionvalues):
     """
-    pass queryset dictionary values() from ActionItems Table only and then Annotates (adds) the foriegn key to the Model
+    Edward
+    pass queryset dictionary values() from ActionItems Table only and then Annotates (adds) the foriegn key 
+    StudyName and Project Phase to the Model
     """
     allactionsannotated =  actionvalues.annotate(StudyName=F(
                             'StudyName__StudyName')).annotate(ProjectPhase = F('ProjectPhase__ProjectPhase'))
@@ -892,7 +897,7 @@ def blgetIndiResponseCount(discsuborg,queseriesopen,queseriesclosed):
     finallistoflist = [x for x in completePendingPair if x]    
     return finallistoflist
     
-def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed): #Guna 20210703 to be consolidated
+def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed,phase=""): #Guna 20210703 to be consolidated
 
     indiPendingSeries =[]
     completePendingPair = []
@@ -900,8 +905,11 @@ def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed): #Guna 202
     #first loop through all routes disc/sub/org
     for itemtriplet in discsuborg:
         
-        totalopencount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesopen) 
-        totalclosedcount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesclosed)
+        # totalopencount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesopen) 
+        # totalclosedcount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesclosed)
+        totalopencount = blphasegetDiscSubOrgActionCountQ (itemtriplet,queseriesopen,phase) 
+        totalclosedcount = blphasegetDiscSubOrgActionCountQ (itemtriplet,queseriesclosed,phase)
+
         lstofActioneeApprover = blgetSignotories(itemtriplet)
 
        
@@ -912,7 +920,10 @@ def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed): #Guna 202
                 #indiPendingSeries.append(indique) #Append QueSeries
                 lstindique = [indique] #make que series into list otherwise doesn work, indique is 0 for Actionee-start of loop                
                 indiPendingSeries.append(indipair[1]) #append Name - #indipair gives all users in routes print indipair,indipendingseries
-                pendingResponse = blgetDiscSubOrgActionCount ('Y',itemtriplet,lstindique) #just uses queseries and maps back to the 
+                #pendingResponse = blgetDiscSubOrgActionCount ('Y',itemtriplet,lstindique) #just uses queseries and maps back to the
+                pendingResponse = blphasegetDiscSubOrgActionCountQ (itemtriplet,lstindique)
+
+                #pendingresponse = blgetDiscSubOrgActionCount ('Y',itemtriplet,lstindique)
                 #for items in itemtriplet:
                 #wanted to append and not have list of list of disc sub org
                 indiPendingSeries.append(indipair[0]) #AppendRole
@@ -931,6 +942,8 @@ def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed): #Guna 202
             completePendingPair.append (indiPendingSeries)
          
             indiPendingSeries = []
+
+    
 
     finallistoflist = [x for x in completePendingPair if x]    
     return finallistoflist
@@ -1255,7 +1268,8 @@ def blallActionCountbyStudies(studies,quelist):
         count += ActionItems.myActionItemsCount.mgr_allItemsCountbyStudies(studies,que) 
    
     return count
-#def blgetActionsResponded 
+
+
 
 def blfuncActionCount(contextRoutes,que):
    #just pass your routes it counts everything in your routes
@@ -1273,15 +1287,23 @@ def blfuncActionCount(contextRoutes,que):
 
     return allstreams
 
-def blphasegetAction(phase,que):
-    '''pass phases and QueSeries to get count of items in a list of QueSeries[open,closed etc]'''
-    count = 0
+# def blallphasegetAction(que,phase=""):
+#     '''this function gets all actions and or phases . Pass phase and QueSeries to get count 
+#     of items in a list of QueSeries[open,closed etc]'''
+#     count = 0
 
-    for eachQs in que:
+#     for eachQs in que:
+#         if phase!="":
+#             filters = {'QueSeries':eachQs,'ProjectPhase__ProjectPhase':phase}
+#         else:
+#             filters = {'QueSeries':eachQs}
 
-        count += ActionItems.mdlallActionItemsCount.mgr_getphaseItemsCount(phase,eachQs)
+#         count += ActionItems.mdlallActionItemsCount.mgr_GeneralItemsCountbyFilters(filters) 
+   
 
-    return count
+#     return count
+
+
 
 def blphasecreatepie(labels,values,title):
     '''Takes labels pie values and titles and  creates charts'''
@@ -1326,22 +1348,7 @@ def blgetDiscSubActionCount(workshop,discsuborg,quelist):
    
     return count
 
-def blgetDiscSubActionCountPhase(discsuborg,quelist,phase=""):
-    count = 0
-       
 
-    for eachQs in quelist:
-
-        if phase!="":
-            filters = {'Disipline':discsuborg[0], 'Subdisipline': discsuborg[1], 
-                            'QueSeries':eachQs,'ProjectPhase__ProjectPhase':phase}
-        else:
-            filters = {'Disipline':discsuborg[0], 'Subdisipline': discsuborg[1],
-                            'QueSeries':eachQs}
-
-        count += ActionItems.mdlallActionItemsCount.mgr_GeneralItemsCountbyFilters(filters) 
-   
-    return count
 
 def blgetDiscSubOrgActionCount(workshop,discsuborg,quelist):
     count = 0
@@ -1360,22 +1367,7 @@ def blgetCompanyActionCount(company,quelist,phase="") :
    
     return count
 
-def blgetCompanyActionCountPhase(company,quelist,phase="") :
 
-    count = 0
-
-    for eachQs in quelist:
-        if phase!="":
-            filters = {'Organisation':company, 'QueSeries':eachQs,'ProjectPhase__ProjectPhase':phase}
-        else:
-            filters = {'Organisation':company, 'QueSeries':eachQs}
-
-        
-
-        count += ActionItems.mdlgetActionCompanyCount.mgr_getCompanyCountAll(filters) 
-
-        #print (ActionItems.mdlgetActionCompanyCount.mgr_getCompanyCountAll(filters))
-    return count
 
 def blgetActioneeItemsbyStream(contextRoutes,stream): 
     que = 0 #denotes actionee items
