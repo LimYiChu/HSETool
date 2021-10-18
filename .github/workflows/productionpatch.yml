@@ -65,8 +65,8 @@ jobs:
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="" --include="" --filter=""
-        path: /userT/Templates/closeoutsheet.html
-        remote_path: /opt/bitnami/projects/HSETool/userT/Templates/closeoutsheet.html
+        path: /userT/Templates/userT/closeoutsheet.html
+        remote_path: /opt/bitnami/projects/HSETool/userT/Templates/userT/closeoutsheet.html
         remote_host: 52.74.252.12
         remote_port: 22
         remote_user: bitnami
@@ -133,8 +133,8 @@ jobs:
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="" --include="" --filter=""
-        path: /userT/Templates/closeoutsheet.html
-        remote_path: /opt/bitnami/projects/HSETool/userT/Templates/closeoutsheet.html
+        path: /userT/Templates/userT/closeoutsheet.html
+        remote_path: /opt/bitnami/projects/HSETool/userT/Templates/userT/closeoutsheet.html
         remote_host: 52.220.156.38
         remote_port: 22
         remote_user: bitnami
