@@ -1,4 +1,4 @@
-name : Patch for Prism & Test Server
+name : Patch for Prism Server
 
 on: #this line specifies on pull or push test
     workflow_dispatch:
@@ -17,57 +17,8 @@ jobs:
     steps:
     - name: test Get latest code
       uses: actions/checkout@v2
-# test instance server
+# prism instance server
     - name: stop server for test
-      uses: appleboy/ssh-action@master #github marketplace app 
-      with:
-        host: 54.255.201.56
-        username: bitnami
-        key: ${{ secrets.LIGHTSAIL_KEY }}
-        port: 22
-        script: |
-          sudo /opt/bitnami/ctlscript.sh stop apache
-
-    # - name: test Sync files usert
-    #   uses: burnett01/rsync-deployments@4.1
-    #   with:
-    #     switches: -avzr --delete --exclude="" --include="" --filter=""
-    #     path: /userT/views.py
-    #     remote_path: /opt/bitnami/projects/HSETool/userT/views.py
-    #     remote_host: 54.255.201.56
-    #     remote_port: 22
-    #     remote_user: bitnami
-    #     remote_key: ${{ secrets.LIGHTSAIL_KEY }}
-
-
-    - name: test Sync files uploadexcel
-      uses: burnett01/rsync-deployments@4.1
-      with:
-        switches: -avzr --delete --exclude="" --include="" --filter=""
-        path: /UploadExcel/admin.py
-        remote_path: /opt/bitnami/projects/HSETool/UploadExcel/admin.py
-        remote_host: 54.255.201.56
-        remote_port: 22
-        remote_user: bitnami
-        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
-
-
-    
-    - name: testing changing user group for SFTP transferred files 
-      uses: appleboy/ssh-action@master #github marketplace app 
-      with:
-        host: 54.255.201.56
-        username: bitnami
-        key: ${{ secrets.LIGHTSAIL_KEY }}
-        port: 22
-        script: |
-          sudo chgrp -R varwwwusers /opt/bitnami/projects/HSETool/ 
-          sudo chmod -R 770 /opt/bitnami/projects/HSETool/
-          sudo /opt/bitnami/ctlscript.sh start apache
-
-#prism demo server
-
-    - name: stop server for prism
       uses: appleboy/ssh-action@master #github marketplace app 
       with:
         host: 52.77.81.191
@@ -77,29 +28,39 @@ jobs:
         script: |
           sudo /opt/bitnami/ctlscript.sh stop apache
 
-    # - name: test Sync files usert
-    #   uses: burnett01/rsync-deployments@4.1
-    #   with:
-    #     switches: -avzr --delete --exclude="" --include="" --filter=""
-    #     path: /userT/views.py
-    #     remote_path: /opt/bitnami/projects/HSETool/userT/views.py
-    #     remote_host: 52.77.81.191
-    #     remote_port: 22
-    #     remote_user: bitnami
-    #     remote_key: ${{ secrets.LIGHTSAIL_KEY }}
-
-
-    - name: test Sync files uploadexcel
+    - name: test Sync files usert
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="" --include="" --filter=""
-        path: /UploadExcel/admin.py
-        remote_path: /opt/bitnami/projects/HSETool/UploadExcel/admin.py
+        path: /userT/views.py
+        remote_path: /opt/bitnami/projects/HSETool/userT/views.py
         remote_host: 52.77.81.191
         remote_port: 22
         remote_user: bitnami
         remote_key: ${{ secrets.LIGHTSAIL_KEY }}
- 
+
+    - name: test Sync files usert
+      uses: burnett01/rsync-deployments@4.1
+      with:
+        switches: -avzr --delete --exclude="" --include="" --filter=""
+        path: /userT/businesslogic.py
+        remote_path: /opt/bitnami/projects/HSETool/userT/businesslogic.py
+        remote_host: 52.77.81.191
+        remote_port: 22
+        remote_user: bitnami
+        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
+
+    - name: test Sync files usert
+      uses: burnett01/rsync-deployments@4.1
+      with:
+        switches: -avzr --delete --exclude="" --include="" --filter=""
+        path: /userT/Templates/closeoutsheet.html
+        remote_path: /opt/bitnami/projects/HSETool/userT/Templates/closeoutsheet.html
+        remote_host: 52.77.81.191
+        remote_port: 22
+        remote_user: bitnami
+        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
+  
     - name: testing changing user group for SFTP transferred files 
       uses: appleboy/ssh-action@master #github marketplace app 
       with:
@@ -111,5 +72,6 @@ jobs:
           sudo chgrp -R varwwwusers /opt/bitnami/projects/HSETool/ 
           sudo chmod -R 770 /opt/bitnami/projects/HSETool/
           sudo /opt/bitnami/ctlscript.sh start apache
+
 
           
