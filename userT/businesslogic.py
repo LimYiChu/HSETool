@@ -68,6 +68,8 @@ def blmakedir(makedstdir):
 #this function needs to be fixed
 def blbulkdownload(objactionitems,destinationfolders,createzipfilename): # changedstfolder destinationfolder
     # os.makedirs(makedstdir,exist_ok=True)
+    # dir = 'static/media/temp/bulkpdf/'
+    # shutil.rmtree(dir)
     attachments = "media/attachments/"
     for items in objactionitems: #objactionitems
         # closed = (items['QueSeries'] == 99)
