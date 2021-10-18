@@ -55,7 +55,7 @@ jobs:
       with:
         switches: -avzr --delete --exclude="" --include="" --filter=""
         path: /userT/Templates/closeoutsheet.html
-        remote_path: /opt/bitnami/projects/HSETool/userT/Templates/closeoutsheet.html
+        remote_path: /opt/bitnami/projects/HSETool/userT/Templates/userT/closeoutsheet.html
         remote_host: 52.77.81.191
         remote_port: 22
         remote_user: bitnami
