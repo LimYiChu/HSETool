@@ -33,10 +33,10 @@ class QuerySet(models.QuerySet):
         return self.filter(**Filters).count ()
 
     def get_GeneralActionsCountbyFiltersKwargsQ(self,FilterKwargs):
-        return self.filter(FilterKwargs).count ()
+        return self.filter(FilterKwargs).select_related("ProjectPhase","StudyName").count ()
 
     def get_GeneralActionsKwargsQArgsValues(self,FilterKwargs,ArgsValues):
-        return self.filter(FilterKwargs).values(*ArgsValues)
+        return self.filter(FilterKwargs).select_related("ProjectPhase","StudyName").values(*ArgsValues)
 
     def set_field(self,ID, fields, value):
         

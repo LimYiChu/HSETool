@@ -12,7 +12,7 @@ from UploadExcel.forms import *
 from django.contrib.auth import get_user_model
 import matplotlib as plt
 from .businesslogic import *
-from .busiinesslogicQ import *
+from .businesslogicQ import *
 from .tableheader import *
 from .excelReports import *
 from .models import *
@@ -1420,6 +1420,9 @@ def repPMTExcel (request,phase=""):
     '''This is the original function called when user selects PMT Reporting from menu
     It dumps all actions into this function'''
     
+    #added for phases - Get all phases from Phases table for Html
+    listofPhases= Phases.mdlSetGetField.mgrGetAllActionsAndFields()
+    
     #1st Pie Overall Actions Open/Closed
     forpie=[]
     PhaseOpenActions= blallphasegetAction(QueOpen,phase)
@@ -1462,7 +1465,7 @@ def repPMTExcel (request,phase=""):
     titlestudies = "Open Actions by Studies"
 
     for study in labelsworkshop:
-        countstudies.append(blallActionCountbyStudiesPhase(study.StudyName,QueOpen,phase))
+        countstudies.append(blallActionCountbyStudiesPhaseQ(study.StudyName,QueOpen,phase))
         labelsstudies.append(study.StudyName)
     googlechartliststudies = blprepGoogChartsbyStudies(labelsstudies,countstudies,titlestudies)
     forpie.append(googlechartliststudies)
@@ -1478,16 +1481,16 @@ def repPMTExcel (request,phase=""):
    
     listaggregatedindi,listaggregatedindiheader=blgroupbyaggsum(Indisets,tableindiheader,'User', ['Pending Submission','Pending Approval']) #this has been changed by edward 20210706, used to be Yet-to-Respond & Yet-to-Approve
     
-    allactions = ActionItems.objects.all()
+    # allactions = ActionItems.objects.all()
     tableallheader = ['id','StudyActionNo','StudyName', 'ProjectPhase','Disipline' ,'Recommendations', 'Response','DueDate','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
-    lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
+    # lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
     tableallheadermodified = ['Study Action No','Study Name', 'Project Phase','Discipline' ,'Recommendations', 'Response','Due Date','Initial Risk']
     
     #All actions and actions by Phases
     justenoughattributes =  ['id','StudyActionNo','Disipline' ,'Recommendations', 'QueSeries', 'Response','DueDate','InitialRisk']
     #phasesactions =  ActionItems.mdlgetField.mgrGetAllActionswithPhases(True,justenoughattributes) #Todelete old code
 
-    phasesactions =  blphasegetActionreducedfields(justenoughattributes,phase)
+    phasesactions =  blphasegetActionreducedfieldsQ(justenoughattributes,phase)
     #this annotate function needs to first because it doesnt like addtional items added to query set
     dictofallactions    = blannotatefktomodel(phasesactions)
     #this sequence is important otherwise doesnt work
@@ -1503,17 +1506,24 @@ def repPMTExcel (request,phase=""):
     # dfall = blsortdataframes(dfall1,dfallcolumns)
     # # # edward end 20210803 dataframes excel
     
-    #RejectDetails - same logic as actionne list
+    #Rejected Items Details - same logic as actionne list
     #just using revision way to get all rejected actions
-    revisiononwards = 1
-    queseries = 0
-    rejectedactions = ActionItems.mdlgetActionDiscSubCount.mgr_getAllRejectedItems(revisiononwards,queseries)
-    rem_list = ['Consequence','FutureAction','Deviation','QueSeries','QueSeriesTarget','DateCreated'] #OPtimising data to be removed
-    rejectedallactionitems = bladdriskcolourandoptiforflater(rejectedactions,rem_list)
+    revisiongte = 1
+    queseriesrejected = 0
+    
+    #Guna To delete below old code
+    # rejectedactions = ActionItems.mdlgetActionDiscSubCount.mgr_getAllRejectedItems(revisiongte,queseriesrejected)
+    # rem_list = ['Consequence','FutureAction','Deviation','QueSeries','QueSeriesTarget','DateCreated'] #OPtimising data to be removed
+    # rejectedallactionitems = bladdriskcolourandoptiforflater(rejectedactions,rem_list)
+    # dfrejection = pd.DataFrame.from_dict(rejectedallactionitems)
+
+    #Rejected details using Q Object
+    rejectedactions = blphasegetrejectedactionsQ (revisiongte,queseriesrejected,justenoughattributes,phase)
+    rejecteddictofallactions    = blannotatefktomodel(rejectedactions)
+    #this sequence is important otherwise doesnt work
+    rejectedallactionitems = bladdriskcolourandoptiforflater(rejecteddictofallactions,[])
     dfrejection = pd.DataFrame.from_dict(rejectedallactionitems)
-
-
-    #lstofrejectedforexcel = blgetActionStuckAt(rejectedactions, tableallheader)
+    
     #for Disipline based view
     tabledischeader = ['Discipline', 'Yet to Respond' ,'Approval Stage', 'Closed','Open Actions','Total Actions']
     lstbyDisc= blaggregatebyDisc(discsuborg,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue)
@@ -1530,18 +1540,17 @@ def repPMTExcel (request,phase=""):
    
     lstbyWorkshop = blgetbyStdudiesCount(allstudies,YetToRespondQue,ApprovalQue,QueClosed,QueOpen,TotalQue)
     
-    #edward 20210708 printing here to see
-    #due date based view
+    
+    #Changed to Q function and Phases
     tableduedateheader = ['Due Date','Actions to Close by']
-    lstbyDueDate= blaggregatebydate(ActionItems.objects.all())
+    fieldsrequired = ['id', 'DueDate']
+    lstbyDueDate= blaggregatebydate(blphasegetActionreducedfieldsQ(fieldsrequired,phase))
     
     subtotal =[]
     for items in lstbyDueDate:
        subtotal.append(items['count']) #how to access dictionary object by
     
     totalallDueDate = sum(subtotal)
-    
-    lstbyDueDate    = blaggregatebydate(ActionItems.objects.all())
     
     lstplanned         =  blprepareGoogleChartsfromDict(lstbyDueDate)
     lstactual      = blgetActualRunDown(lstplanned) # shows how many closed
@@ -1551,9 +1560,7 @@ def repPMTExcel (request,phase=""):
     newliststop = blstopcharttoday(newlist)
     #edward end 20210727 rundown
 
-    #Pass in Phases
-     
-    listofPhases= Phases.mdlSetGetField.mgrGetAllActionsAndFields()
+    
 
     if request.method == 'POST':
                 

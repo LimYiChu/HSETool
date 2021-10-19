@@ -1,5 +1,4 @@
-from .busiinesslogicQ import *
-
+from .businesslogicQ import *
 import django_filters
 from django.http import HttpResponse
 import pandas as pd
@@ -509,27 +508,26 @@ def blgetrejectedcount(discsuborg,revision):
     return lstfinallistcount
 
 def blaggregatebyDisc(discsuborg,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue):
+    '''Agregates by discpline across organisation. Takes in various QueSeries denoting Yettorespond, Approval 
+    Open Actions, Total Queue'''
+    
     lstofdiscdetails =[]
     lstcountbydisc =[]
-
-    
     for disc in discsuborg:
         lstcountbydisc.append ("/".join(disc))
-        lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,YetToRespondQue))
-        lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,ApprovalQue))
-        lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,QueClosed))
-        lstcountbydisc.append  (blgetDiscSubOrgActionCount('X',disc,QueOpen))
+        # lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,YetToRespondQue))
+        # lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,ApprovalQue))
+        # lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,QueClosed))
+        # lstcountbydisc.append  (blgetDiscSubOrgActionCount('X',disc,QueOpen))
+        # lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,TotalQue))
         
-        
-        
-        lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,TotalQue))
-        
-        # lstcountbydisc.append  (blallActionCountbyDisc(disc[0],QueOpen))
-        # lstcountbydisc.append (blallActionCountbyDisc(disc[0],YetToRespondQue))
-        # lstcountbydisc.append (blallActionCountbyDisc(disc[0],ApprovalQue))
-        # lstcountbydisc.append (blallActionCountbyDisc(disc[0],QueClosed))
-        # lstcountbydisc.append (blallActionCountbyDisc(disc[0],TotalQue))
-        
+        #Rewritten with QObject for optimisation
+        lstcountbydisc.append (blphasegetDiscSubOrgActionCountQ(disc,YetToRespondQue))
+        lstcountbydisc.append (blphasegetDiscSubOrgActionCountQ(disc,ApprovalQue))
+        lstcountbydisc.append (blphasegetDiscSubOrgActionCountQ(disc,QueClosed))
+        lstcountbydisc.append  (blphasegetDiscSubOrgActionCountQ(disc,QueOpen))
+        lstcountbydisc.append (blphasegetDiscSubOrgActionCountQ(disc,TotalQue))
+      
         
         lstofdiscdetails.append(lstcountbydisc)
         lstcountbydisc =[]
@@ -549,13 +547,23 @@ def blgetbyStdudiesCount(Studies,YetToRespondQue,pendingApprovalQue,closedAction
     lstcountbyStudies = []
     lstofstudiesdetails =[]
     for Study in Studies:
-        lstcountbyStudies.append (Study.StudyName)
+
+        studynameQ = Study.StudyName
+        lstcountbyStudies.append (studynameQ)
         
-        lstcountbyStudies.append (blallActionCountbyStudies(Study.StudyName,YetToRespondQue))
-        lstcountbyStudies.append (blallActionCountbyStudies(Study.StudyName,pendingApprovalQue))
-        lstcountbyStudies.append (blallActionCountbyStudies(Study.StudyName,closedActionsQueSeries))
-        lstcountbyStudies.append  (blallActionCountbyStudies(Study.StudyName,OpenQue))
-        lstcountbyStudies.append  (blallActionCountbyStudies(Study.StudyName,TotalQue))
+        # lstcountbyStudies.append (blallActionCountbyStudies(studynameQ,YetToRespondQue))
+        # lstcountbyStudies.append (blallActionCountbyStudies(studynameQ,pendingApprovalQue))
+        # lstcountbyStudies.append (blallActionCountbyStudies(studynameQ,closedActionsQueSeries))
+        # lstcountbyStudies.append  (blallActionCountbyStudies(studynameQ,OpenQue))
+        # lstcountbyStudies.append  (blallActionCountbyStudies(studynameQ,TotalQue))
+
+        #Convert to QObject
+        lstcountbyStudies.append (blallActionCountbyStudiesPhaseQ(studynameQ,YetToRespondQue))
+        lstcountbyStudies.append (blallActionCountbyStudiesPhaseQ(studynameQ,pendingApprovalQue))
+        lstcountbyStudies.append (blallActionCountbyStudiesPhaseQ(studynameQ,closedActionsQueSeries))
+        lstcountbyStudies.append  (blallActionCountbyStudiesPhaseQ(studynameQ,OpenQue))
+        lstcountbyStudies.append  (blallActionCountbyStudiesPhaseQ(studynameQ,TotalQue))
+
         lstofstudiesdetails.append(lstcountbyStudies)
         lstcountbyStudies =[]
     

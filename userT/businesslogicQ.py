@@ -51,9 +51,10 @@ def blallphasegetAction(que,phase=""):
     count += ActionItems.mdlallActionItemsCount.mgr_GeneralItemsCountbyFiltersKwargsQ(filters)
 
     return count
-def blphasegetActionreducedfields(reducedfields,phase=""):
-    '''this function gets all actions and or phases . Pass phase and only fields you want , this way returned data is less 
-    and q series is not required as a filter just returns everything'''
+def blphasegetActionreducedfieldsQ(reducedfields,phase=""):
+    '''Filters actions by phase.If phase is empty it retrives all actions. Reduced field parameter  
+    is used to return less data to html. Pass in list for reduced field e.g ['id','DueDate', 'QueSeries' etc]
+    .It uses QObject'''
     count = 0
     dictofQueSeries ={}
     QObjectSeries = []
@@ -68,6 +69,24 @@ def blphasegetActionreducedfields(reducedfields,phase=""):
     ActionsPhase =  ActionItems.mdlallActionItemsCount.mgr_GeneralItemsFiltersKwargsQReduced(filters,reducedfields)
 
     return ActionsPhase
+
+def blphasegetrejectedactionsQ(revision,queseries,reducedfields,phase="",):
+    '''this function gets all actions and or phases . Pass phase and only fields you want , this way returned data is less 
+    and q series is not required as a filter just returns everything'''
+    
+    QObjectMiscAND =Q()
+   
+   #,{'Revision__gte':revision},
+    if phase != "":
+        QObjectMiscAND =    Q(**{'QueSeries':queseries,'Revision__gte':revision,'ProjectPhase__ProjectPhase':phase})
+    else :
+        QObjectMiscAND =    Q(**{'QueSeries':queseries,'Revision__gte':revision})
+    #filters = blQobjectQueSeries(que) & QObjectMiscAND
+    
+    ActionsPhase =  ActionItems.mdlallActionItemsCount.mgr_GeneralItemsFiltersKwargsQReduced(QObjectMiscAND,reducedfields)
+
+    return ActionsPhase
+
 def blgetCompanyActionCountPhase(company,quelist,phase="") :
 
     count = 0
@@ -107,7 +126,7 @@ def blgetDiscSubActionCountPhase(discsuborg,quelist,phase=""):
    
     return count
 
-def blallActionCountbyStudiesPhase(studies,quelist,phase=""):
+def blallActionCountbyStudiesPhaseQ(studies,quelist,phase=""):
     '''Pass in StudyName and Que series list and phase to get count. If phase is empty it will search for all phases
     Uses Q Object For Optimisation'''
     count = 0
