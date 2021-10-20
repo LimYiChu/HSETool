@@ -1,7 +1,12 @@
 function phasesurl (phase)
 
 {
+    if (phase == '') {
 
-document.location.href = phase //just ads the phase part to the end of the reppmt/
-//document.location.href = "../main";
+        document.location.href = "../reppmt"
+
+    }else{
+        document.location.href = phase // adds the phase part to the end of the reppmt- it is then caught by views
+        
+}
 }

@@ -41,7 +41,7 @@
               <div>
                  <div style="float:left" class="tab h5" style="background-color: rgb(231, 234, 235);">
                     <h3 style=" font-size:xx-large;">
-
+                      <button  onclick="openReport(event, 'PHASES');phasesurl('')">All Phases</button>
                       {%for items in listofPhases%}
 
                         <button  onclick="openReport(event, 'PHASES');phasesurl('{{items.ProjectPhase}}')">{{items.ProjectPhase}}</button>
