@@ -1,6 +1,7 @@
 
 #edward created new parameter file 
 from Trackem.settings import *
+from .models import *
 #url-links
 cclist = ["ehstools@prism-ehstools.awsapps.com"]#cclist to send a copy of email to ehstools email since there is no record of sent mail for emails sent by system
 #appurl = "https://sapuraphase4a.prism-ehstools.com"#for now, please change appurl for different clients
@@ -48,7 +49,17 @@ for items in ALLOWED_HOSTS :
         bulkdlattachments = 'media/attachments/'                                                                                                                                             
  
 
+#Paramters to simply views.py . Commonly used parameters in Views.py to be parked here and standardised
 
+ 
+QueOpen = [0,1,2,3,4,5,6,7,8,9]
+QueClosed = [99]
+YetToRespondQue =[0]
+ApprovalQue = [1,2,3,4,5,6,7,8,9]
+TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
+discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg()
+discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
+organisationnames = ActionRoutes.mdlAllCompany.mgr_getOrgnames()
 
 
 #edward - old

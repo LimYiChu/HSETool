@@ -131,8 +131,11 @@ class Phases (models.Model):
     ProjectPhase = models.CharField(max_length=200, null=True)
     Scheduled = models.CharField(max_length=200, null=True)
     Description  = models.CharField(max_length=1000, null=True)
-    
+    Default = models.BooleanField(default=False)
     objects = models.Manager()
+    mdlSetGetField = mgrGeneralGetSetfields()
+   
+
     class Meta:
        verbose_name_plural = "Phases" 
 

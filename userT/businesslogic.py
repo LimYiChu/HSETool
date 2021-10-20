@@ -1,3 +1,4 @@
+from .businesslogicQ import *
 import django_filters
 from django.http import HttpResponse
 import pandas as pd
@@ -15,7 +16,7 @@ from datetime import date
 #edward 20210722 added datetime
 import datetime 
 from datetime import date as dt 
-from operator import itemgetter
+from operator import itemgetter, or_
 #edward 20210817 added pandas
 import pandas as pd
 # edward 20210915 bulk download
@@ -23,15 +24,6 @@ from userT.pdfgenerator import *
 import shutil
 # edward 20210929 fk
 from django.db.models import F
-
-#edward 20210923 get fk dict
-
-def blannotatefktomodel(actionvalues):
-    """
-    Annotates the FK objectvalues to the Model
-    """
-    allactionsannotated =  actionvalues.annotate(StudyName=F('StudyName__StudyName')).annotate(ProjectPhase = F('ProjectPhase__ProjectPhase'))
-    return allactionsannotated
 
 def bladdfktodict(data_dict,foreignkeys):
     # actiondetails = ActionItems.objects.get(id=ID)
@@ -50,6 +42,39 @@ def bladdfktodict(data_dict,foreignkeys):
     return data_dict
 # edward 20210915 bulk download 
 
+
+def blremoveemptylist (listoflist):
+    '''
+    pass in list of list and returns list with no empty list
+    '''
+    listfinal = [ele for ele in listoflist if ele != []]
+
+    return listfinal
+def blannotatefktomodel(actionvalues):
+    """
+    Edward
+    pass queryset dictionary values() from ActionItems Table only and then Annotates (adds) the foriegn key 
+    StudyName and Project Phase to the Model
+    """
+    allactionsannotated =  actionvalues.annotate(StudyName=F(
+                            'StudyName__StudyName')).annotate(ProjectPhase = F('ProjectPhase__ProjectPhase'))
+    
+    return allactionsannotated
+
+def blmakelistforjson (data,featurenames):
+    data3=[]
+    for items in data:
+        
+        
+        data2= [dict(zip(featurenames,pies)) for pies in items]
+        data3.append(data2)
+        data2 =[]
+        
+    return data3
+    
+
+
+# edward 20210915 bulk download 
 def blmakedir(makedstdir):
     """
     Creates a directory even if that directory already exists
@@ -146,7 +171,9 @@ def bladdriskcolourandoptiforflater (actionitems,removelist):
     return actionitems
 
 def bladdriskcolourandoptimise (actionitems,removelist=[]):
-    
+    ''' Accepts dictionary only items and then extracts InitialRisk using dataframes,
+    then looks up RiskMatrix Model and gets a risk colour. It uses the Combined value in the RiskMatrix to map back to the Risk COlour
+    the second parameter is optional seprate funtinality for removing addtional fields. Next revision this should be separated '''
     dfRiskMatrix = pd.DataFrame(list(RiskMatrix.objects.all().values()))
                 
     for dictitems in actionitems:
@@ -201,7 +228,16 @@ def blgetRiskMatrixColour():
         datadict.append(newdict)
     
     return datadict
+
+def blgetRiskMatrixAvailable():
     
+    if (RiskMatrix.objects.all()):
+        availability = True
+    else:
+        availability = False
+    
+    print(availability)
+    return availability
 
 def blgetuserRoutes(useremail):
     ApproverLevel = 8
@@ -355,12 +391,7 @@ def blprepareGoogleChartsfromDict(QuerySet):
     firstdatefiller = [finallist[0][0] - relativedelta(months=+1),0] #just inserts a date one month before and uses dateutil
     
     finallist.insert(0,firstdatefiller)
-    #print ("FINALIST",finallist)
-
-    #finallist.insert(12,[date.today(),0])
-
-    #print ("TODAY",[date.today()])
-
+   
     return finallist
 def blprepGoogChartsbyStudies (labels,count,newstudyname):
 
@@ -412,7 +443,7 @@ def blbuildSubmittedemail(ID,Approver=False):
         
     
     Content.append("To view this, please go to " + paremailurl +urlview + " . To approve go to your dashboard/approver que, to approve this and other actions")
-    print (Content)
+ 
 
     return Content
 
@@ -503,27 +534,26 @@ def blgetrejectedcount(discsuborg,revision):
     return lstfinallistcount
 
 def blaggregatebyDisc(discsuborg,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue):
+    '''Agregates by discpline across organisation. Takes in various QueSeries denoting Yettorespond, Approval 
+    Open Actions, Total Queue'''
+    
     lstofdiscdetails =[]
     lstcountbydisc =[]
-
-    
     for disc in discsuborg:
         lstcountbydisc.append ("/".join(disc))
-        lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,YetToRespondQue))
-        lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,ApprovalQue))
-        lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,QueClosed))
-        lstcountbydisc.append  (blgetDiscSubOrgActionCount('X',disc,QueOpen))
+        # lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,YetToRespondQue))
+        # lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,ApprovalQue))
+        # lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,QueClosed))
+        # lstcountbydisc.append  (blgetDiscSubOrgActionCount('X',disc,QueOpen))
+        # lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,TotalQue))
         
-        
-        
-        lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,TotalQue))
-        
-        # lstcountbydisc.append  (blallActionCountbyDisc(disc[0],QueOpen))
-        # lstcountbydisc.append (blallActionCountbyDisc(disc[0],YetToRespondQue))
-        # lstcountbydisc.append (blallActionCountbyDisc(disc[0],ApprovalQue))
-        # lstcountbydisc.append (blallActionCountbyDisc(disc[0],QueClosed))
-        # lstcountbydisc.append (blallActionCountbyDisc(disc[0],TotalQue))
-        
+        #Rewritten with QObject for optimisation
+        lstcountbydisc.append (blphasegetDiscSubOrgActionCountQ(disc,YetToRespondQue))
+        lstcountbydisc.append (blphasegetDiscSubOrgActionCountQ(disc,ApprovalQue))
+        lstcountbydisc.append (blphasegetDiscSubOrgActionCountQ(disc,QueClosed))
+        lstcountbydisc.append  (blphasegetDiscSubOrgActionCountQ(disc,QueOpen))
+        lstcountbydisc.append (blphasegetDiscSubOrgActionCountQ(disc,TotalQue))
+      
         
         lstofdiscdetails.append(lstcountbydisc)
         lstcountbydisc =[]
@@ -543,13 +573,23 @@ def blgetbyStdudiesCount(Studies,YetToRespondQue,pendingApprovalQue,closedAction
     lstcountbyStudies = []
     lstofstudiesdetails =[]
     for Study in Studies:
-        lstcountbyStudies.append (Study.StudyName)
+
+        studynameQ = Study.StudyName
+        lstcountbyStudies.append (studynameQ)
         
-        lstcountbyStudies.append (blallActionCountbyStudies(Study.StudyName,YetToRespondQue))
-        lstcountbyStudies.append (blallActionCountbyStudies(Study.StudyName,pendingApprovalQue))
-        lstcountbyStudies.append (blallActionCountbyStudies(Study.StudyName,closedActionsQueSeries))
-        lstcountbyStudies.append  (blallActionCountbyStudies(Study.StudyName,OpenQue))
-        lstcountbyStudies.append  (blallActionCountbyStudies(Study.StudyName,TotalQue))
+        # lstcountbyStudies.append (blallActionCountbyStudies(studynameQ,YetToRespondQue))
+        # lstcountbyStudies.append (blallActionCountbyStudies(studynameQ,pendingApprovalQue))
+        # lstcountbyStudies.append (blallActionCountbyStudies(studynameQ,closedActionsQueSeries))
+        # lstcountbyStudies.append  (blallActionCountbyStudies(studynameQ,OpenQue))
+        # lstcountbyStudies.append  (blallActionCountbyStudies(studynameQ,TotalQue))
+
+        #Convert to QObject
+        lstcountbyStudies.append (blallActionCountbyStudiesPhaseQ(studynameQ,YetToRespondQue))
+        lstcountbyStudies.append (blallActionCountbyStudiesPhaseQ(studynameQ,pendingApprovalQue))
+        lstcountbyStudies.append (blallActionCountbyStudiesPhaseQ(studynameQ,closedActionsQueSeries))
+        lstcountbyStudies.append  (blallActionCountbyStudiesPhaseQ(studynameQ,OpenQue))
+        lstcountbyStudies.append  (blallActionCountbyStudiesPhaseQ(studynameQ,TotalQue))
+
         lstofstudiesdetails.append(lstcountbyStudies)
         lstcountbyStudies =[]
     
@@ -829,8 +869,9 @@ def blgettimestampuserdetails (id, Signatories):
         #end of edward closeoutprint
 
 def blgetDiscSubOrgfromID (ID):
-    # just returns the company, disipline and sub from one object
-    #had to place the org at the last because already done other functions to return  DiscSub as first 2 index and wanted to reuse them
+    ''' just returns the company, disipline and sub (Triplet) for an object based on id of object in ActionItems
+    Org was placed at the last because other existing functions use Disc and Sub first. The return is a triplet of 
+    DiscSubOrg as a List '''
     orgdiscsub= []
     obj=ActionItems.objects.get(id=ID)
     
@@ -927,7 +968,7 @@ def blgetIndiResponseCount(discsuborg,queseriesopen,queseriesclosed):
     finallistoflist = [x for x in completePendingPair if x]    
     return finallistoflist
     
-def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed): #Guna 20210703 to be consolidated
+def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed,phase=""): #Guna 20210703 to be consolidated
 
     indiPendingSeries =[]
     completePendingPair = []
@@ -935,8 +976,11 @@ def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed): #Guna 202
     #first loop through all routes disc/sub/org
     for itemtriplet in discsuborg:
         
-        totalopencount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesopen) 
-        totalclosedcount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesclosed)
+        # totalopencount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesopen) 
+        # totalclosedcount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesclosed)
+        totalopencount = blphasegetDiscSubOrgActionCountQ (itemtriplet,queseriesopen,phase) 
+        totalclosedcount = blphasegetDiscSubOrgActionCountQ (itemtriplet,queseriesclosed,phase)
+
         lstofActioneeApprover = blgetSignotories(itemtriplet)
 
        
@@ -947,7 +991,10 @@ def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed): #Guna 202
                 #indiPendingSeries.append(indique) #Append QueSeries
                 lstindique = [indique] #make que series into list otherwise doesn work, indique is 0 for Actionee-start of loop                
                 indiPendingSeries.append(indipair[1]) #append Name - #indipair gives all users in routes print indipair,indipendingseries
-                pendingResponse = blgetDiscSubOrgActionCount ('Y',itemtriplet,lstindique) #just uses queseries and maps back to the 
+                #pendingResponse = blgetDiscSubOrgActionCount ('Y',itemtriplet,lstindique) #just uses queseries and maps back to the
+                pendingResponse = blphasegetDiscSubOrgActionCountQ (itemtriplet,lstindique)
+
+                #pendingresponse = blgetDiscSubOrgActionCount ('Y',itemtriplet,lstindique)
                 #for items in itemtriplet:
                 #wanted to append and not have list of list of disc sub org
                 indiPendingSeries.append(indipair[0]) #AppendRole
@@ -964,13 +1011,16 @@ def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed): #Guna 202
                 
             
             completePendingPair.append (indiPendingSeries)
-            # print (indiPendingSeries)
+         
             indiPendingSeries = []
+
+    
 
     finallistoflist = [x for x in completePendingPair if x]    
     return finallistoflist
 def blgetActionStuckAt(allactions, lstoftableattributes,email=False):
-
+    '''Pass a list of normmally all actions  and list of attributes to send back through 
+    with where the action is stuck at'''
     lstActionDetails = []
     lstgettriplet = []
     lstofindiactions =[]
@@ -979,10 +1029,7 @@ def blgetActionStuckAt(allactions, lstoftableattributes,email=False):
         
         for x in lstoftableattributes:
             lstActionDetails.append(eval('items.'+str(x))) #gets the value by basically executing the string content, just dynamic content stuff
-            # print('items.'+str(x))
-
-            # print(items.StudyActionNo)
-       
+            
         #the disc sub and company are not case sensitive but space sensitive, remove leading and end white spaces
         #bug fixes for version 1.8
         strdiscipline = items.Disipline.rstrip().lstrip() 
@@ -1003,9 +1050,31 @@ def blgetActionStuckAt(allactions, lstoftableattributes,email=False):
         lstofindiactions.append (lstActionDetails)
         lstActionDetails =[]
 
+    
     return lstofindiactions
+#Guna new function for dict
+# Cant get edward dictionary to work below
+def blgetdictActionStuckAt(allactions):
+    '''Pass a dictionary object from .values(...) and get the action stuck at data. This is done by gettings triplet 
+    and then mapping against signatories and then using queseries to decifer in that route
+    which signatory holds the actions. allactions passed in and modified directly and returned without making a copy of it. This will be the approach from here'''
+   
+    for items in allactions:
+        
+        lstoftriplet = blgetDiscSubOrgfromID (items['id']) 
+        lstofActioneeAppr = blgetSignotories (lstoftriplet)
+        
+        if items['QueSeries'] != 99 and (lstofActioneeAppr !=[]):
+             # basically its looks at que series and then matches it against the list of entire signatories above
+            lststuckAt = lstofActioneeAppr[items['QueSeries']]#basically just uses QueSeries to tell us where its stuck at
+            items['StuckAt'] = "/".join(lststuckAt)
+            
+        else:     
+            items['StuckAt'] = "Closed"
+   
+    return allactions
 
-#edward 20210805 dictstuckat
+#   edward 20210805 dictstuckat
 # to have a generic function to pass in table headers for excel to call in views
 def blgetActionStuckAtdict(allactions,email=False):
 
@@ -1039,8 +1108,7 @@ def blgetActionStuckAtdict(allactions,email=False):
         
         lstActionDetails =[]
         allactionswithlocation = allactions
-        # print(allactions)
-    #print(allactionswithlocation)
+        
             
     return allactionswithlocation
 #edward 20210805 dictstuckat
@@ -1271,7 +1339,8 @@ def blallActionCountbyStudies(studies,quelist):
         count += ActionItems.myActionItemsCount.mgr_allItemsCountbyStudies(studies,que) 
    
     return count
-#def blgetActionsResponded 
+
+
 
 def blfuncActionCount(contextRoutes,que):
    #just pass your routes it counts everything in your routes
@@ -1289,6 +1358,52 @@ def blfuncActionCount(contextRoutes,que):
 
     return allstreams
 
+# def blallphasegetAction(que,phase=""):
+#     '''this function gets all actions and or phases . Pass phase and QueSeries to get count 
+#     of items in a list of QueSeries[open,closed etc]'''
+#     count = 0
+
+#     for eachQs in que:
+#         if phase!="":
+#             filters = {'QueSeries':eachQs,'ProjectPhase__ProjectPhase':phase}
+#         else:
+#             filters = {'QueSeries':eachQs}
+
+#         count += ActionItems.mdlallActionItemsCount.mgr_GeneralItemsCountbyFilters(filters) 
+   
+
+#     return count
+
+
+
+def blphasecreatepie(labels,values,title):
+    '''Takes labels pie values and titles and  creates charts'''
+    
+    labels = labels
+    values = values
+    
+    pienameoverall = title
+    googlechartlistoverall = blprepGoogChartsbyStudies(labels,values,pienameoverall)
+    
+    return googlechartlistoverall
+def blprepGoogChartsbyStudies (labels,count,newstudyname):
+
+    studyname = "///" + newstudyname + ":::" # gotta do this since its passes all weird charaters to the jave script, with this i can then get the in between string in javascript
+    initiallist =[]
+    finallist =[]
+    Startlist = ['By Studies',studyname ]
+    for index , disc in  enumerate(labels):
+
+        initiallist.append(disc)
+        initiallist.append(count[index])
+
+        finallist.append(initiallist)
+
+        initiallist=[]
+    
+    finallist.insert(0,Startlist)
+
+    return finallist
 def blfuncgetallAction(workshop,que):
     count = 0
     for eachQs in que:
@@ -1303,6 +1418,9 @@ def blgetDiscSubActionCount(workshop,discsuborg,quelist):
         count += ActionItems.mdlgetActionDiscSubCount.mgr_getDiscSubItemsCount('X',discsuborg,eachQs) 
    
     return count
+
+
+
 def blgetDiscSubOrgActionCount(workshop,discsuborg,quelist):
     count = 0
     
@@ -1311,14 +1429,17 @@ def blgetDiscSubOrgActionCount(workshop,discsuborg,quelist):
    
     return count
    
-def blgetCompanyActionCount(company,quelist) :
+def blgetCompanyActionCount(company,quelist,phase="") :
 
     count = 0
 
     for eachQs in quelist:
-        count += ActionItems.mdlgetActionCompanyCount.mgr_getCompanyCount(company,eachQs) 
+        count += ActionItems.mdlgetActionCompanyCount.mgr_getCompanyCount(company,eachQs,phases=phase) 
    
     return count
+
+
+
 def blgetActioneeItemsbyStream(contextRoutes,stream): 
     que = 0 #denotes actionee items
     firststream = []
@@ -1407,7 +1528,7 @@ def bladdriskcolourandoptiforflater2 (actionitems):
     dfRiskMatrix = pd.DataFrame(list(RiskMatrix.objects.all().values()))
             
     for items in actionitems:
-                print(items)
+               
                 #[items.pop(key) for key in removelist] # Reducing the data going to html
                 #
                 RiskColour = dfRiskMatrix.loc[dfRiskMatrix['Combined'].isin([items.get('InitialRisk')]),'RiskColour'].tolist() #cant use .item() as its causing an error when not matching

@@ -29,6 +29,15 @@ class QuerySet(models.QuerySet):
     def get_allActionsCountbyDisc(self,Disc, que):
         return self.filter(Disipline__iexact=Disc).filter(QueSeries__iexact=que).count ()
 
+    def get_GeneralActionsCountbyFilters(self,Filters):
+        return self.filter(**Filters).count ()
+
+    def get_GeneralActionsCountbyFiltersKwargsQ(self,FilterKwargs):
+        return self.filter(FilterKwargs).select_related("ProjectPhase","StudyName").count ()
+
+    def get_GeneralActionsKwargsQArgsValues(self,FilterKwargs,ArgsValues):
+        return self.filter(FilterKwargs).select_related("ProjectPhase","StudyName").values(*ArgsValues)
+
     def set_field(self,ID, fields, value):
         
         
@@ -40,8 +49,14 @@ class QuerySet(models.QuerySet):
         #field = eval('obj.'+fields)
         #return field
 
+    def get_allacctionsforphase(self,PhaseDefault,listoffields):
+                
+        return self.filter(ProjectPhase__Default=PhaseDefault).values(*listoffields)
+
     def get_allActionsCount(self,workshop,que):
         return self.filter (QueSeries__iexact=que).count ()
+    def get_phaseActionsCount(self,phase,que):
+        return self.filter (QueSeries__iexact=que).filter(ProjectPhase__ProjectPhase=phase).count()
     #edward 20210729 changing icontains to iexact for Org,Disc,SubDisc
     def get_DiscSubActionsCount(self,workshop,DiscSub,que):
         return self.filter (Disipline__iexact=DiscSub[0]).filter(Subdisipline__iexact=DiscSub[1]).filter (QueSeries__iexact=que).count ()
@@ -66,6 +81,9 @@ class QuerySet(models.QuerySet):
     #edward 20210729 changing icontains to iexact for Org,Disc,SubDisc
     def get_mgrCompanyCount(self,Company,que):
         return self.filter (Organisation__iexact=Company).filter (QueSeries__iexact=que).count()
+    
+    def get_mgrCompanyCountAll(self,filters):
+        return self.filter (**filters).count()
     # def get_Approver1(self,userorganisation,userdisipline,usersubdisipline):
     #     return self.filter(Organisation__icontains=userorganisation).filter(Disipline__icontains=userdisipline).filter(Subdisipline__icontains=usersubdisipline)
     # def get_Approver2(self,useremail):
@@ -94,12 +112,21 @@ class myActionCount(models.Manager):
         return self.get_queryset().get_allActionsCountbyStudies(studies,que)
     def mgr_allItemsCountbyDisc(self,Disc,que):
         return self.get_queryset().get_allActionsCountbyDisc(Disc,que)
+    
 
 class mgrallActionCount(models.Manager):
     def get_queryset (self):
         return QuerySet(self.model, using=self._db)
     def mgr_getallItemsCount(self,workshop,que):
         return self.get_queryset().get_allActionsCount(workshop,que)
+    def mgr_getphaseItemsCount(self,phase,que):
+        return self.get_queryset().get_phaseActionsCount(phase,que)
+    def mgr_GeneralItemsCountbyFilters(self,Filters):
+        return self.get_queryset().get_GeneralActionsCountbyFilters(Filters)
+    def mgr_GeneralItemsCountbyFiltersKwargsQ(self,FiltersKwargs):
+        return self.get_queryset().get_GeneralActionsCountbyFiltersKwargsQ(FiltersKwargs)
+    def mgr_GeneralItemsFiltersKwargsQReduced(self,FiltersKwargs,ReducedValuesArgs):
+        return self.get_queryset().get_GeneralActionsKwargsQArgsValues(FiltersKwargs,ReducedValuesArgs)
 
 class mgrgetActionDiscSubCount(models.Manager):
     def get_queryset (self):
@@ -113,13 +140,15 @@ class mgrgetActionDiscSubCount(models.Manager):
     def mgr_getDiscSubOrgRejectedItems(self,DiscSub,Revision):
         return self.get_queryset().get_DiscSubOrgRejectedActions(DiscSub,Revision)
     def mgr_getAllRejectedItems(self,Revision,queseries):
-        return self.get_queryset(). get_AllRejectedActions(Revision,queseries)   
+        return self.get_queryset().get_AllRejectedActions(Revision,queseries)   
 
 class mgrgetActionCompanyCount(models.Manager):
     def get_queryset (self):
         return QuerySet(self.model, using=self._db)
-    def mgr_getCompanyCount(self,Company,que):
+    def mgr_getCompanyCount(self,Company,que,phases):
         return self.get_queryset().get_mgrCompanyCount(Company,que)
+    def mgr_getCompanyCountAll(self,filters):
+        return self.get_queryset().get_mgrCompanyCountAll(filters)
 
 class Approver1Manager(models.Manager):
     def get_queryset (self):
@@ -160,6 +189,8 @@ class mgrgetfields(models.Manager):
     def mgrGetField(self,ID, fields):
          #lookup = str(fields)+'__icontains' - This is how you search dynamically but since we are setting it
          return self.get_queryset().get_field(ID, fields)
+    def mgrGetAllActionswithPhases(self,boolPhaseDefault,listofFields=[]):
+        return self.get_queryset().get_allacctionsforphase(boolPhaseDefault,listofFields)
 
 class mgrDeleteAttachment(models.Manager):
 

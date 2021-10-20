@@ -50,16 +50,23 @@ class ActionItems(models.Model):
     Revision        =   models.IntegerField(blank=True,null=True,default=0)
     DateCreated     =  models.DateField(auto_now_add=True, null=True,blank=True)
     
+    class Meta:
+        indexes = [
+            models.Index(fields=['QueSeries', 'Organisation','Disipline','Subdisipline'])]
+
     history = HistoricalRecords()
     objects = models.Manager()
     myActionItems = myActionItemManager()
     myActionItemsCount = myActionCount()
+
+   
     mdlallActionItemsCount = mgrallActionCount()
     mdlQueSeries = mdlGetSetQueRevision()
     mdlSetField = mgrSetfields()
     mdlgetField = mgrgetfields()
     mdlgetActionDiscSubCount = mgrgetActionDiscSubCount()
     mdlgetActionCompanyCount = mgrgetActionCompanyCount()
+    
     #Approver1RoItems = Approver1ItemManager()
     #Approver2RoItems = Approver2ItemManager()
  

@@ -12,6 +12,7 @@ from UploadExcel.forms import *
 from django.contrib.auth import get_user_model
 import matplotlib as plt
 from .businesslogic import *
+from .businesslogicQ import *
 from .tableheader import *
 from .excelReports import *
 from .models import *
@@ -43,6 +44,7 @@ from io import StringIO, BytesIO
 #Rest Framework
 from rest_framework import viewsets
 from .serializers import *
+from rest_framework import generics
 #from .forms import UserRegisterForm
 # Create your views here.
 
@@ -70,13 +72,12 @@ from django.db.models import F
 def base3 (request):
     return render(request,'userT/base3.html')
 
-
-
 def sidebar (request):
 
   return render(request, 'userT/basesidebar.html')
 
-
+class actionlist(generics.ListCreateAPIView):
+    pass
 
 
 def loadsignature (request):
@@ -115,25 +116,8 @@ class anyView(viewsets.ModelViewSet):
     serializer_class = anySerializers
 
 def googlecharts(request):
-
-
-
-    # description = {"name": ("string", "Name"),
-    #            "salary": ("number", "Salary"),
-    #            "full_time": ("boolean", "Full Time Employee")}
-    # data = [{"name": "Mike", "salary": (10000, "$10,000"), "full_time": True},
-    #     {"name": "Jim", "salary": (800, "$800"), "full_time": False},
-    #     {"name": "Alice", "salary": (12500, "$12,500"), "full_time": True},
-    #     {"name": "Bob", "salary": (7000, "$7,000"), "full_time": True}]
-
-    # data_table = gviz_api.DataTable(description)
-    # data_table.LoadData(data)
-    # print("Content-type: text/plain")
-    # print()
-    # jsonresponse = (data_table.ToJSonResponse(columns_order=("name", "salary", "full_time"),
-    #                             order_by="salary"))
-
-    content1 = [['By Studies', '///Open Actions by Organisation:::'], ['RWP', 13],
+    
+    content1 = [['By Studies', '///Open Actions by Organisation:::'], ['RWP', 13], 
                 ['HESS', 20], ['SFSB', 2], ['MMHE', 28]]
 
 
@@ -216,15 +200,32 @@ def googlecharts(request):
                                 ]
                             ]
                 }])
-
-    data=  [[['By Studies', '///Open/Closed Actions:::'], ['Open', 192], ['Closed', 12]],
+    
+    data=  [[['By Studies', '///Open/Closed Actions:::'], ['Open', 220], ['Closed', 12]], 
             [['By Studies', '///Open Actions by Organisation:::'], ['HESS', 20], ['MMHE', 28], ['RWP', 13], ['SFSB', 2]],
             [['By Studies', '///Submitted Actions by Organisation:::'], ['HESS', 12], ['MMHE', 16], ['RWP', 6], ['SFSB', 0]],
             [['By Studies', '///Open Actions by Discipline:::'], ['HUC', 19], ['Operations', 7], ['Drilling', 7], ['EHS', 1], ['EHS', 1], ['Safety', 9], ['Marine', 6], ['Electrical', 71], ['Commissioning', 3], ['Mechanical', 2], ['MARINE', 6], ['EHS', 0]],
             [['By Studies', '///Open Actions by Studies:::'], ['MRU Barge Campaign Post Shutdown - Phase3', 34], ['HAZID', 19], ['HAZOP', 2], ['CRA-DPDSV/PRECOMM', 0], ['Environmental Impact Identification (ENVID)', 0], ['Hazard Identification (HAZID) Study', 0], ['Hazard and Operability (HAZOP) Study', 0], ['SAFOP Report', 75], ['NMB Phase 4A Concept Definition - HAZID Report', 28], ['NMB Phase 4A Concept Definition', 34]]]
 
-    return render(request, 'userT/googlecharts.html',context)
+    featuresfields = ["Feature1", "Feature2"]
+    data2=[]
+    data3 =[]
+    #for items in data:
+        # for xyz in items:
+        #     data1 = dict(zip(featuresfields,xyz))
+        #     data2.append(data1)
 
+        # data2= [dict(zip(featuresfields,pies)) for pies in items]
+        
+        # data3.append(data2)
+        # data2=[]
+    data3 = blmakelistforjson(data,featuresfields)
+    
+    context['XYZ'] = json.dumps([{"data":data3}])
+  
+    #print ("CONTEXTXYZ",context['XYZ'])
+       
+    return render(request, 'userT/googlecharts.html',context) 
 
 # edward 20210713 new chart
 def googlecharts88(request):
@@ -373,7 +374,8 @@ def mainDashboard (request):
 
 
         apprfinalist.append(chartappdata)
-
+        
+        
         totalapproveraction = sum (appractioncount)
         #empties out the data for next loop otherwise it doubles the data to append on each study
         chartappdata = []
@@ -381,14 +383,21 @@ def mainDashboard (request):
         dataApprover = []
         labelsApprover =[]
         countbyStudies = []
+    
+
+    approverjsonlist = blremoveemptylist(apprfinalist)
+    
 
     Context = {
         'totalapproveraction' : totalapproveraction,
         'totalactioneeaction' : totalactioneeaction,
-        'actioneefinallist' : actioneefinallist,
-        'apprfinalist' : apprfinalist,
-
+        #'actioneefinallist' : actioneefinallist, #substituted with json data below
+        #'apprfinalist' : apprfinalist, #substituted with json data below
+        "pieactioneenew" : json.dumps([{"data":actioneefinallist}]),
+        "pieapprovernew" : json.dumps([{"data":approverjsonlist}])
             }
+    
+
     return render(request, 'userT/maindashboard.html',Context) #ok checked by yhs in terms of capital letters.
 
 
@@ -410,8 +419,7 @@ class ActioneeList (ListView):
         userZemail = self.request.user.email
         ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
         ActioneeActions = blallActionsComDisSub(ActioneeRoutes,0)
-
-        print("AAAA",ActioneeActions)
+        
         rem_list = []
         #rem_list = ['Consequence','FutureAction','Deviation','QueSeries','QueSeriesTarget','DateCreated']
         finalactionitems = bladdriskcolourandoptimise(ActioneeActions,rem_list)
@@ -1414,133 +1422,88 @@ def repoverallexcel (request):
 
     return response
 
-def repPMTExcel (request):
-
-
-    #latest first
-
-    #Signatories =
-    #get individual actions
-    QueOpen = [0,1,2,3,4,5,6,7,8,9]
-
-    QueClosed = [99]
-    YetToRespondQue =[0]
-    ApprovalQue = [1,2,3,4,5,6,7,8,9]
-    TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
-    discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
-
-    #***Start Pie Chart Guna
-    allOpenActions= blfuncgetallAction('Y', QueOpen)
-    allClosedActions = blfuncgetallAction('Y', QueClosed)
-
-    # forpie2 = [
-    #       ['OpenClosed', 'Open Closed'],
-    #       ['Open',     allOpenActions],
-    #       ['Closed',      allClosedActions],
-
-    #     ]
+    
+def repPMTExcel (request,phase=""):
+    '''This is the original function called when user selects PMT Reporting from menu
+    It dumps all actions into this function'''
+    
+    #added for phases - Get all phases from Phases table for Html
+    listofPhases= Phases.mdlSetGetField.mgrGetAllActionsAndFields()
+    
+    #1st Pie Overall Actions Open/Closed
     forpie=[]
-    #this is for overall charts
-    #listofOpenClosed = [allOpenActions,allClosedActions]
-    labels = ['Open', 'Closed']
-    values = [allOpenActions,allClosedActions]
-
-    pienameoverall = "Open/Closed Actions"
-    googlechartlistoverall = blprepGoogChartsbyStudies(labels,values,pienameoverall)
-    forpie.append(googlechartlistoverall)
-
-    #Open action by organisation
-    labelsorg = ActionRoutes.mdlAllCompany.mgr_getOrgnames()
-    countorg =[]
-    pienameorg = "Open Actions by Organisation"
-    for items in labelsorg:
-            countorg.append(blgetCompanyActionCount (items,QueOpen))
-    googlechartlistorganisation = blprepGoogChartsbyStudies(labelsorg,countorg,pienameorg)
+    PhaseOpenActions= blallphasegetAction(QueOpen,phase)
+    PhaseClosedActions = blallphasegetAction(QueClosed,phase)
+    labelpie =['Open', 'Closed']
+    titlepie = "Open/Closed Actions"
+    googlechartlistoverphase= blprepGoogChartsbyStudies(labelpie,[PhaseOpenActions,PhaseClosedActions],titlepie )
+    forpie.append(googlechartlistoverphase)
+    
+    #2nd Pie Open action by organisation
+    countorg =[] 
+    titleorg = "Open Actions by Organisation"          
+    for items in organisationnames:
+            countorg.append(blgetCompanyActionCountPhase (items,QueOpen,phase))
+    googlechartlistorganisation = blprepGoogChartsbyStudies(organisationnames,countorg,titleorg)
     forpie.append(googlechartlistorganisation)
 
-    #Submitted actions by organisation
-    pienamesubmitted = "Submitted Actions by Organisation"
-    countsubmitted =[]
-    for items in labelsorg:
-            countsubmitted.append(blgetCompanyActionCount (items,ApprovalQue))
-
-    googlechartlistsubmitted = blprepGoogChartsbyStudies(labelsorg,countsubmitted,pienamesubmitted)
-
+   #3rd Pie Submitted actions by organisation
+    titlesubmitted = "Submitted Actions by Organisation" 
+    countsubmitted =[]         
+    for items in organisationnames:
+            countsubmitted.append(blgetCompanyActionCountPhase (items,ApprovalQue,phase))
+    googlechartlistsubmitted = blprepGoogChartsbyStudies(organisationnames,countsubmitted,titlesubmitted)
     forpie.append(googlechartlistsubmitted)
 
-    # Open Actionsfor discipline
-    discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
+    #4th Pie Open Actions for discipline
     countdiscsub= []
     labelsDisc =[]
-    pietitledisc = "Open Actions by Discipline"
+    titledisc = "Open Actions by Discipline"
     for itemPair in discsub:
-
-        countdiscsub.append(blgetDiscSubActionCount ('Y',itemPair,QueOpen))
+        countdiscsub.append(blgetDiscSubActionCountPhase (itemPair,QueOpen,phase))
         labelsDisc.append(str(itemPair[0]))#+"/"+str(itemPair[1]))
+    googlechartlistdiscipline = blprepGoogChartsbyStudies(labelsDisc,countdiscsub,titledisc)
+    forpie.append(googlechartlistdiscipline) 
 
-    googlechartlistdiscipline = blprepGoogChartsbyStudies(labelsDisc,countdiscsub,pietitledisc)
-
-    forpie.append(googlechartlistdiscipline)
-    #By workshops - Overall OPen actions by Studies
-    labelsworkshop = Studies.objects.all()
-
+    #5th Pie  Overall Open actions by Studies
+    labelsworkshop = Studies.objects.all()        
     countstudies = []
     labelsstudies = []
-    pietitlestudies = "Open Actions by Studies"
+    titlestudies = "Open Actions by Studies"
 
     for study in labelsworkshop:
-
-        countstudies.append(blallActionCountbyStudies(study.StudyName,QueOpen))
+        countstudies.append(blallActionCountbyStudiesPhaseQ(study.StudyName,QueOpen,phase))
         labelsstudies.append(study.StudyName)
-    googlechartliststudies = blprepGoogChartsbyStudies(labelsstudies,countstudies,pietitlestudies)
-
+    googlechartliststudies = blprepGoogChartsbyStudies(labelsstudies,countstudies,titlestudies)
     forpie.append(googlechartliststudies)
-
-
-    # Open Actions by Workshop
-
     #***End Pie Guna
-    #get Individual action
 
-    # Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)
-    # tableindiheader = ['User','Role','Organisation Route','In-Progress','Closed', 'Open Actions']
 
     Indisets = blgetIndiResponseCount2(discsuborg,QueOpen,QueClosed)
     # tableindiheader = ['User','Role','Organisation Route','Yet-to-Respond','Yet-to-Approve','Closed', 'Open Actions']
     tableindiheader = ['User','Role','Organisation Route','Pending Submission','Pending Approval','Closed', 'Open Actions'] #this has been changed by edward 20210706, used to be Yet-to-Respond & Yet-to-Approve
     
-    #getsummaryactions
+    
     #edited by edward 20210706 to only show yet to approve & yet to respond
-    # listaggregatedindi,listaggregatedindiheader=blgroupbyaggsum(Indisets,tableindiheader,'User', ['Yet-to-Respond','Yet-to-Approve','Closed','Open Actions])
+   
     listaggregatedindi,listaggregatedindiheader=blgroupbyaggsum(Indisets,tableindiheader,'User', ['Pending Submission','Pending Approval']) #this has been changed by edward 20210706, used to be Yet-to-Respond & Yet-to-Approve
     
-    allactions = ActionItems.objects.all()
+    # allactions = ActionItems.objects.all()
+    tableallheader = ['id','StudyActionNo','StudyName', 'ProjectPhase','Disipline' ,'Recommendations', 'Response','DueDate','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
+    # lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
+    tableallheadermodified = ['Study Action No','Study Name', 'Project Phase','Discipline' ,'Recommendations', 'Response','Due Date','Initial Risk']
+    
+    #All actions and actions by Phases
+    justenoughattributes =  ['id','StudyActionNo','Disipline' ,'Recommendations', 'QueSeries', 'Response','DueDate','InitialRisk']
+    #phasesactions =  ActionItems.mdlgetField.mgrGetAllActionswithPhases(True,justenoughattributes) #Todelete old code
 
-    rem_list = []
-
-
-    # dfRiskMatrix = pd.DataFrame(list(RiskMatrix.objects.all().values()))
-    #     #print (dfRiskMatrix[['Combined','RiskColour']])
-
-
-
-    # for items in allactions:
-    #             [items.pop(key) for key in rem_list] # Reducing the data going to html
-    #             #
-    #             RiskColour = dfRiskMatrix.loc[dfRiskMatrix['Combined'].isin([items.get('InitialRisk')]),'RiskColour'].tolist() #cant use .item() as its causing an error when not matching
-
-    #             if RiskColour:
-    #                 items['RiskColour'] = RiskColour[0]
-    #             else:
-    #                 items['RiskColour'] = False
-
-
-
-
-    tableallheader = ['id','StudyActionNo','StudyName', 'Disipline' ,'Recommendations', 'Response','DueDate','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
-    lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
-    tableallheadermodified = ['Study Action No','Study Name', 'Discipline' ,'Recommendations', 'Response','Due Date','Initial Risk']
-
+    phasesactions =  blphasegetActionreducedfieldsQ(justenoughattributes,phase)
+    #this annotate function needs to first because it doesnt like addtional items added to query set
+    dictofallactions    = blannotatefktomodel(phasesactions)
+    #this sequence is important otherwise doesnt work
+    phaseswithrisk = bladdriskcolourandoptiforflater(dictofallactions,[])
+    dictofallactions    = blgetdictActionStuckAt(phaseswithrisk)
+    
     # # # edward 20210803 dataframes excel
     # all_actions =   ActionItems.objects.all().values()#'StudyActionNo','StudyName','ProjectPhase', 'Facility','Guidewords', 'Deviation', 'Cause', 'Consequence', 'Safeguard','InitialRisk','ResidualRisk', 'Disipline' ,'Recommendations','DueDate', 'Response','FutureAction')
     # rem_list2 = ['QueSeries','QueSeriesTarget','DateCreated'] #OPtimising data to be removed
@@ -1563,16 +1526,18 @@ def repPMTExcel (request):
     dfall1 = pd.DataFrame.from_dict(all_actionsopt) # sort dfall
     dfall = blsortdataframes(dfall1,dfallcolumns)
     #edward 20211001 pd rejected excel 
-    revisiononwards = 1
-    queseries = 0
-    rejectedactions = ActionItems.mdlgetActionDiscSubCount.mgr_getAllRejectedItems(revisiononwards,queseries)
-    rejectedactionsannotate = blannotatefktomodel(rejectedactions)
-    rem_list = ['Consequence','FutureAction','Deviation','QueSeries','QueSeriesTarget','DateCreated'] #OPtimising data to be removed
-    rejectedallactionitems = bladdriskcolourandoptiforflater(rejectedactionsannotate,rem_list)
+   
+    revisiongte = 1
+    queseriesrejected = 0
+   
+
+    #Rejected details using Q Object
+    rejectedactions = blphasegetrejectedactionsQ (revisiongte,queseriesrejected,justenoughattributes,phase)
+    rejecteddictofallactions    = blannotatefktomodel(rejectedactions)
+    #this sequence is important otherwise doesnt work
+    rejectedallactionitems = bladdriskcolourandoptiforflater(rejecteddictofallactions,[])
     dfrejection = pd.DataFrame.from_dict(rejectedallactionitems)
-
-
-    #lstofrejectedforexcel = blgetActionStuckAt(rejectedactions, tableallheader)
+    
     #for Disipline based view
     tabledischeader = ['Discipline', 'Yet to Respond' ,'Approval Stage', 'Closed','Open Actions','Total Actions']
     lstbyDisc= blaggregatebyDisc(discsuborg,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue)
@@ -1588,20 +1553,19 @@ def repPMTExcel (request):
     tablestudiesheader = ['Studies', 'Yet to Respond' ,'Approval Stage','Closed','Open Actions', 'Total Actions']
 
     lstbyWorkshop = blgetbyStdudiesCount(allstudies,YetToRespondQue,ApprovalQue,QueClosed,QueOpen,TotalQue)
-
-    #edward 20210708 printing here to see
-    #due date based view
+    
+    
+    #Changed to Q function and Phases
     tableduedateheader = ['Due Date','Actions to Close by']
-    lstbyDueDate= blaggregatebydate(ActionItems.objects.all())
-
+    fieldsrequired = ['id', 'DueDate']
+    lstbyDueDate= blaggregatebydate(blphasegetActionreducedfieldsQ(fieldsrequired,phase))
+    
     subtotal =[]
     for items in lstbyDueDate:
        subtotal.append(items['count']) #how to access dictionary object by
 
     totalallDueDate = sum(subtotal)
-
-    lstbyDueDate    = blaggregatebydate(ActionItems.objects.all())
-
+    
     lstplanned         =  blprepareGoogleChartsfromDict(lstbyDueDate)
     lstactual      = blgetActualRunDown(lstplanned) # shows how many closed
 
@@ -1609,6 +1573,9 @@ def repPMTExcel (request):
     #edward 20210727 rundown
     newliststop = blstopcharttoday(newlist)
     #edward end 20210727 rundown
+
+    
+
     if request.method == 'POST':
 
         if (request.POST.get('allActions')):
@@ -1728,22 +1695,25 @@ def repPMTExcel (request):
             response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
             response['Content-Disposition'] = 'attachment; filename=byDueDates.xlsx'
             workbook.save(response) # odd way but it works - took too long to figure out as no resource on the web
-            return response
-
-    riskmatrix = blgetRiskMatrixColour()
-
+            return response    
+     
+    
+    #This needs to be worked on more as there are other problems now if risk matrix is not loaded
+    #riskmatrix = blgetRiskMatrixAvailable()
     context = {
-
-        'riskmatrix' : riskmatrix,
-        'forpie' : forpie,
+        
+        'riskmatrix' : True,
+        #'forpie' : forpie, #commented out Guna
         'lstbyDueDate' : lstbyDueDate,
         'tableduedateheader' : tableduedateheader,
-        'totalallDueDate' : totalallDueDate,
-        'rundowncontent': newliststop, #edward 20210727 rundown
+        'totalallDueDate' : totalallDueDate, 
+        #'rundowncontent': newliststop, #edward 20210727 rundown#commented out Guna
         'lstbyDisc' : lstbyDisc,
         'lstbyWorkshop' : lstbyWorkshop,
         'Indisets' : Indisets,
-        'lstofallactions' : lstofallactions,
+        #'lstofallactions' : lstofallactions,
+        #dict of all actions
+        "dictofallactions" : dictofallactions,
         'tableindiheader' : tableindiheader,
         'tablestudiesheader' : tablestudiesheader,
         'tabledischeader' : tabledischeader ,
@@ -1753,15 +1723,21 @@ def repPMTExcel (request):
         'listofrejectedheader': tablerheaderejected,
         'listofrejecteditems': listofrejecteditems,
         "rejectedactions": rejectedallactionitems,
-
+        "listofPhases": listofPhases,
+        "piechartsjson" : json.dumps([{"data":forpie}])
     }
-
-    # {item[0]: item[1:] for item in items}
-    # for items in forpie:
-
-    #     print (items)
-
-
+    #moving tojson 26/09/2021 - Guna. Moving to json enables cleaner javascript and data passing between python and html and javascript
+    
+    # #1st approach lace the dictionary wih features
+    #featuresfields = ["Feature1", "Feature2"]
+    #data3 = blmakelistforjson(forpie,featuresfields)
+    # context["piechartsjson"]= json.dumps([{"data":data3}])
+    
+    #Test for lineshart
+    #dataforrundown = blmakelistforjson(newliststop,featuresfields)
+    #2nd approach should have done it like this in the first place simple stratight. Leaving the above to see how to lace and extract
+    context["rundownchartsjson"] = json.dumps([{"data":newliststop}]) #one line, going to leave the above approach so that it could be used elsewhere
+    #end Json changes
 
     return render(request, 'userT/reppmtexcel.html', context)
 
@@ -2017,7 +1993,7 @@ def closeoutsheet(request): #new naming convention - all small letters
     #Guna
 
     lstclosed = ActionItems.objects.filter(QueSeries =99)
-    # print(lstclosed)
+    
 
     if (request.POST.get('GeneratePDF')):
         x=ActionItems.objects.all()  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')

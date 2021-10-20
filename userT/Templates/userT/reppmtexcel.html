@@ -4,185 +4,13 @@
 <html>
 
   <head>
-   
-    <script type="text/javascript">
-       
       
-        
-        //google.charts.load('current', {'packages':['line']});
-        //google.charts.setOnLoadCallback(starter); //cant call drawchart with paarmeters, need the parameters to make the code effcient
-        function initiateGooPieChart(){
-         
-          //testjson()
-          google.charts.load('current', {'packages':['corechart']});
-          google.charts.setOnLoadCallback(starterPie); 
-          
-        }
-
-        function testjson(){
-          
-          var newjsondata = JSON.parse(document.querySelector('#jsonData').getAttribute('data-json'));
-
-          alert(newjsondata.Title[0]);
-          alert(newjsondata.data[0].Organisation);
-          alert ("this is 1");
-          index=1
-          charttitle = '///Open/Closed Actions:::'
-          drawPieChart (newjsondata,index,charttitle);
-
-          alert ("this is 2");
-
-        }
-        function starterPie ()
-        {
-          {% for chart in forpie%}
-          {%if chart %}
-            
-                    drawPieChart({{chart|safe}} ,  {{ forloop.counter }},'{{chart.0}}');
-            {%endif%}
-          {%endfor%}
-              
-        }
-
-        function drawPieChart(values,index,chartTitle) 
-        {
-          
-          
-          firstindex = chartTitle.lastIndexOf("///")+3
-          
-          lastindex = chartTitle.lastIndexOf(":::")
-          var newtitle = chartTitle.substring(firstindex,lastindex );
-          
-          
-
-          var data = google.visualization.arrayToDataTable(values);
-
-          
-  
-          var options = {
-            title: newtitle,
-            is3D : true,
-            
-            pieSliceText : 'value',
-            pieSliceTextStyle: {
-              bold: true,
-              fontSize: 25,
-              color: 'black'
-          },
-            titleTextStyle: {
-              color: 'Black',    // any HTML string color ('red', '#cc00cc')
-              fontName: 'Helvetica', // i.e. 'Times New Roman'
-              fontSize: 25, // 12, 18 whatever you want (don't specify px)
-              bold: true,    // true or false
-              italic: false   // true of false
-                          },
-              height: 500,
-              width: 900,
-              
-              chartArea:{left:20,top:100,width:'100%',height:'100%'},
-              legend : {position: 'labeled', textStyle: {color: 'black', fontSize: 20}} //have to add this in otherwise charts seem small...like your dick
-          };
-          
-         
-          //var strpie = "piechart";
-          //var finalpie = strpie.concat(index);
-        
-        var strpie = "piechart";
-        var finalpie = strpie.concat(index);
-      
-        var chart = new google.visualization.PieChart(document.getElementById(finalpie));
-        chart.draw(data, options);
-
-          //var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-          //chart.draw(data, options);
-          }
-  
-        function initiateGoogleChart(){
-          google.charts.load('current', {'packages':['corechart']}); //edward 20210728 new chart
-          //google.charts.load('current', {'packages':['line']});
-          google.charts.setOnLoadCallback(starter);
-
-        }
-        function starter(){
-            
-                drawChart({{rundowncontent|safe}} );
-                   }
-
-        function drawChart(values) {
-        
-          var chartdata = [];
-          var data = new google.visualization.DataTable();
-          data.addColumn('date', 'Date');
-          data.addColumn('number', 'Planned');
-          data.addColumn('number', 'Actual');
-        
-          var arrplot =[]
-          for(var i = 0; i < values.length; i++){
-          //for(var j = 0; j < values[i].length; j++){
-              
-                first = (values[0][0]);
-                seconddate=(values[1][0]);
-                datess= (values[i][0]);
-                actual = (values[i][1]);
-                planned =(values[i][2]);
-                
-                stringdatas = '[new Date(\'' + datess + '\'),'+ actual + ','+ planned + ']';
-                
-                arrplot.push(stringdatas)
-              
-          //}
-      }
-        //stringdata = '[new Date(\'' + first + '\'),200,210]';
-          var datarows = [];
-          for (var k =0;k<arrplot.length;k++)
-        
-        {
-        
-            data.addRow(eval(arrplot[k]));
-        
-        }
-        ;
-  
-          var options = {
-            interpolateNulls: true,//edward 20210728 new chart 
-            chart: {
-              title: 'Run-Down Curve',
-              subtitle: 'Action Items',
-            
-          },
-            colors: ['blue', 'red'],
-            //hAxis:{ format: 'MMM d,y'}, //edward 20210728 new chart
-            hAxis:{ format: 'd MMMM',}, //edward 20210728 new chart
-            pointSize: 5,
-            vAxis: {title: "Number of Actions",titleTextStyle: {
-              fontName: 'Helvetica',
-              
-                fontSize: 20,
-                bold:true,
-                }},//edward 20210728 new chart
-            //curveType: 'function', //edward 20210728 new chart
-            //legend: {position: 'left', textStyle: { fontSize: 16}}, //edward 20210728 new chart
-            legend: {position: 'top', textStyle: {color: 'red', fontSize: 16}},//edward 20210728 new chart
-            width: 1200,//edward 20210728 new chart changed the width to keep it in
-            height: 500
-        };
-  
-            //var chart = new google.charts.Line(document.getElementById('linecharted')); //edward 20210728 new chart
-            var chart = new google.visualization.LineChart(document.getElementById('linecharted'));//edward 20210728 new chart
-            chart.draw(data,options);//edward 20210728
-        
-        //chart.draw(data, google.charts.Line.convertOptions(options));
-        //edward 20210730 commit
-      }
-    
-   
-    </script>
   </head>
-
-
 <body onload="openReport(event, 'All Actions')" >
-  <div style="display: none" id="jsonData" data-json="{{ XYZ}}"></div>
 
+  <div style="display: none" id="jsonDataPie" data-json="{{ piechartsjson}}"></div>
+  <div style="display: none" id="jsonDataRundown" data-json="{{ rundownchartsjson}}"></div>
+  
   <!--breadcrumbs-->
 <h4><b>
   
@@ -211,15 +39,13 @@
       <div class="col-md-12">
             <div class="card">
               <div>
-                <div style="float:left" class="card-header"><h4  style="background-color: #ffffff; font-size:xx-large;">
-                  <a> PMT Reporting >><!--<a class="article-title" href="{% url  'repoverallexcel' %}">Download Entire Data</a>-->
-                  </h4>
-                </div>
+                 <div style="float:left" class="tab h5" style="background-color: rgb(231, 234, 235);">
+                    <h3 style=" font-size:xx-large;">
+                      <button  onclick="openReport(event, 'PHASES');phasesurl('')">All Phases</button>
+                      {%for items in listofPhases%}
 
-                <div style="float:left" class="tab h5" style="background-color: rgb(231, 234, 235);">
-                    <h3 style="background-color: #34b7eb; font-size:xx-large;">
-                    <button  onclick="openReport(event, 'dde')">Detailed Engineering (DDE)</button>
-                    <button  onclick="openReport(event, 'PieChart');testme()" >Construction</button>
+                        <button  onclick="openReport(event, 'PHASES');phasesurl('{{items.ProjectPhase}}')">{{items.ProjectPhase}}</button>
+                    {%endfor%}
                     <a><button type="button" class="btn btn-outline-primary btn-sm;"  padding-bottom:1pt; padding-top: 1pt"> 
                     <a class ="article-title" href="{% url  'repoverallexcel' %}" style="float: right;">Download Complete Excel <i class="bi bi-file-earmark-spreadsheet"></i> </button> </a></a>
                   
@@ -233,10 +59,10 @@
               <button class="tablinks" onclick="openReport(event, 'IndividualSummary')">Individual (Summary)</button>
               <button class="tablinks" onclick="openReport(event, 'Studies/Workshops')">Studies/Workshops</button>
               <button class="tablinks" onclick="openReport(event, 'Discipline')">Discipline</button>
-              <button class="tablinks" onclick="openReport(event, 'DueDate');initiateGoogleChart()">Due Date & Run-Down</button>
+              <button class="tablinks" onclick="openReport(event, 'DueDate');initiateGoogleRundownChart()">Due Date & Run-Down</button>
               <button class="tablinks" onclick="openReport(event, 'Rejected')">Rejected (Summary)</button>
               <button class="tablinks" onclick="openReport(event, 'RejectedDetails')">Rejected (Details)</button>
-              <button class="tablinks" onclick="openReport(event, 'PieChart');initiateGooPieChart()">Pie Charts</button>
+              <button class="tablinks" onclick="openReport(event, 'PieChart');initiateGooPieChartPMT()">Pie Charts</button>
               
             </div>
             
@@ -260,18 +86,29 @@
                     </tr>
                 </thead>
                 <tbody>
-                  {%for details in lstofallactions%}
+                  {%for details in dictofallactions%}
                   <tr>
-                    <td><a class="article-title" href="{% url  'pmtrepviewall' details.0 %}">{{details.1}}</a> </td>
-                    <td>{{details.2}}</td>
-                    <td>{{details.3}}</td>
-                    <td>{{details.4}}</td>
-                    <td width="20%">{{details.5}}</td>
-                    <td>{{details.6}}</td>
-                    <td>{{details.7}}</td>
-                    
-                   
-                    <td width = "10%">{{details.8}}</td>
+                    <td>{{details.StudyActionNo}}</td>
+                    <td>{{details.StudyName}}</td>
+                    <td>{{details.ProjectPhase}}</td>
+                    <td>{{details.Disipline}}</td>
+                    <td width="20%">{{details.Recommendations}}</td>
+                    <td>{{details.Response}}</td>
+                    <td>{{details.DueDate}}</td>
+                    {%block incInitialRiskColour%}
+
+                        {%if riskmatrix%}
+                            {% with initialrisk=details.InitialRisk%}
+                            {% with riskcolour=details.RiskColour%}
+                              {%include "userT/incinitialriskcolour.html"%}
+                              {%endwith%}
+                            {%endwith%}
+                        {%else%}
+                          <td>{{ details.InitialRisk }}</td><!--Original Code-->
+                        {%endif%}
+
+                  {%endblock%}
+                    <td width = "10%">{{details.StuckAt}}</td>
                   </tr> 
                   {%endfor%}
                   
@@ -444,7 +281,7 @@
                 <!--For Pie Charts-->
                   <div id = "PieChart" class="tabcontent" style="border-left:0pc; border-right:0px;border-bottom:0px; overflow:scroll;">
                     <div  style="float:left" >
-                      
+                    <div  id="piechart0" style="float:left;"></div>
                     <div  id="piechart1" style="float:left;"></div>
                     <div  id="piechart2" style="float:left;"></div>
                     <div  id="piechart3" style="float:left;"></div>
@@ -593,7 +430,7 @@
         </form>
       </div>
     </div>
-
+    <div id = "PHASES" class="tabcontent" style="border-left:0pc; border-right:0px;border-bottom:0px; overflow:scroll;"></div>
 </h6>
 </body>     
   </div>
