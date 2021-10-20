@@ -21,10 +21,40 @@ import pandas as pd
 # edward 20210915 bulk download
 from userT.pdfgenerator import *
 import shutil
+# edward 20210929 fk
+from django.db.models import F
 
+#edward 20210923 get fk dict
+
+def blannotatefktomodel(actionvalues):
+    """
+    Annotates the FK objectvalues to the Model
+    """
+    allactionsannotated =  actionvalues.annotate(StudyName=F('StudyName__StudyName')).annotate(ProjectPhase = F('ProjectPhase__ProjectPhase'))
+    return allactionsannotated
+
+def bladdfktodict(data_dict,foreignkeys):
+    # actiondetails = ActionItems.objects.get(id=ID)
+    # studyname = str(actiondetails.StudyName)
+    # projectphase = str(actiondetails.ProjectPhase)
+    # foreignkeys = {}
+    # for field in ActionItems._meta.fields:
+    #     if field.get_internal_type() == 'ForeignKey':
+    #         fieldname = field.name
+            
+    #         x = {field.name : eval(f"{fieldname}")}
+            
+    #         foreignkeys.update(x)
+    data_dict.update(foreignkeys) # updating original with study & phase 
+
+    return data_dict
 # edward 20210915 bulk download 
 
 def blmakedir(makedstdir):
+    """
+    Creates a directory even if that directory already exists
+
+    """
     createddir = os.makedirs(makedstdir,exist_ok=True)
     return createddir
 
@@ -35,10 +65,12 @@ def blmakedir(makedstdir):
 #         attachmentorigin = attachments + filename
 
 #         return attachmentorigin
-
+#this function needs to be fixed
 def blbulkdownload(objactionitems,destinationfolders,createzipfilename): # changedstfolder destinationfolder
     # os.makedirs(makedstdir,exist_ok=True)
-    attachments = "media/attachments/"
+    # dir = 'static/media/temp/bulkpdf/'
+    # shutil.rmtree(dir)
+    
     for items in objactionitems: #objactionitems
         # closed = (items['QueSeries'] == 99)
         closed = True
@@ -55,14 +87,16 @@ def blbulkdownload(objactionitems,destinationfolders,createzipfilename): # chang
             makesubfolders = os.makedirs(destinationfolders + studyactno, exist_ok=True ) # renamed i to studyactno
             destination =destinationfolders + studyactno #dst to destination
             out_file = os.path.join(destination,studyactnopdf)
+            #20210923 edward fk study phase
+            #updateddata_dict = blannotatefktomodel(data_dict)
             file = pdfgenerate(newcloseouttemplate,out_file,data_dict,signatoriesdict)
-            
+            #20210923 edward fk study phase
             objFk =ActionItems.objects.get(id = items['id']) 
             ObjAttach = objFk.attachments_set.all()
 
             for eachfile in ObjAttach: 
                 filename = os.path.basename(eachfile.Attachment.path) # changed from .name to .path
-                attachmentorigin= attachments + filename
+                attachmentorigin= bulkdlattachments + filename
 
                 shutil.copy(attachmentorigin, destination) #copying all done inside for loop for each attachment
 
@@ -553,29 +587,66 @@ def blgetbyStdudiesCount(Studies,YetToRespondQue,pendingApprovalQue,closedAction
 def blconverttodictforpdf(lstofsignatories): #edward altered this instead of creating new bl because it is only used for closedoutsheet 20210706
     
     for items in lstofsignatories:
-      
-        fields = items[0]
-        if ("actionee" in fields.lower()) :
-            
-            localtimeX = timezone.localtime(items[5]) #edward changed this according to new bl function for signatures 20210706
-            #edward changed this to add actioneesignature according to new bl function for signatures 20210706
-            dict = {'actionee':items[0], 'actioneerole':items[3],'actioneename':items[2],'actioneesignature':items[4],
-                    'actioneetimestamp':localtimeX
-            }
-        elif ("approver"in fields.lower()):
+        print(items)
+        # print(items[5])
+        # print(timezone.localtime())
+        # if items[5] is None : 
+        #     print('TEST')
+        time = items[5] 
+        if time == []    :
+                
+            localtimeX = timezone.localtime() #edward changed this according to new bl function for signatures 20210706    
+            fields = items[0]
+            #print(fields)
+            if ("actionee" in fields.lower()) :
+                #print(items[5])
+                #localtimeX = timezone.localtime(items[5]) #edward changed this according to new bl function for signatures 20210706
+                #edward changed this to add actioneesignature according to new bl function for signatures 20210706
+                dict = {'actionee':items[0], 'actioneerole':items[3],'actioneename':items[2],'actioneesignature':items[4],
+                        'actioneetimestamp':localtimeX
+                }
+                
+            elif ("approver"in fields.lower()):
+                
+                
+        
+                strappr = str(items[0])
+                strapprrole = strappr+"role"
+                strapprname = strappr+"name"
+                strapprsignature = strappr+"signature" #edward added strapprsignature according to new bl function for signatures 20210706
+                strapprtimestamp = strappr+"timestamp"
 
-            localtimeX = timezone.localtime(items[5]) #edward changed this according to new bl function for signatures 20210706
+                #edward added strapprsignature according to new bl function for signatures 20210706
+                dictapp = {strappr.lower():items[0], strapprrole.lower():items[3],strapprname.lower():items[2],strapprsignature.lower():items[4],
+                        strapprtimestamp.lower():localtimeX}
+                dict.update(dictapp)
+        else:
+                
+            localtimeX = timezone.localtime(time) #edward changed this according to new bl function for signatures 20210706    
+            fields = items[0]
+            #print(fields)
+            if ("actionee" in fields.lower()) :
+                #print(items[5])
+                #localtimeX = timezone.localtime(items[5]) #edward changed this according to new bl function for signatures 20210706
+                #edward changed this to add actioneesignature according to new bl function for signatures 20210706
+                dict = {'actionee':items[0], 'actioneerole':items[3],'actioneename':items[2],'actioneesignature':items[4],
+                        'actioneetimestamp':localtimeX
+                }
+                
+            elif ("approver"in fields.lower()):
+                
+                
+        
+                strappr = str(items[0])
+                strapprrole = strappr+"role"
+                strapprname = strappr+"name"
+                strapprsignature = strappr+"signature" #edward added strapprsignature according to new bl function for signatures 20210706
+                strapprtimestamp = strappr+"timestamp"
 
-            strappr = str(items[0])
-            strapprrole = strappr+"role"
-            strapprname = strappr+"name"
-            strapprsignature = strappr+"signature" #edward added strapprsignature according to new bl function for signatures 20210706
-            strapprtimestamp = strappr+"timestamp"
-
-            #edward added strapprsignature according to new bl function for signatures 20210706
-            dictapp = {strappr.lower():items[0], strapprrole.lower():items[3],strapprname.lower():items[2],strapprsignature.lower():items[4],
-                    strapprtimestamp.lower():localtimeX}
-            dict.update(dictapp)
+                #edward added strapprsignature according to new bl function for signatures 20210706
+                dictapp = {strappr.lower():items[0], strapprrole.lower():items[3],strapprname.lower():items[2],strapprsignature.lower():items[4],
+                        strapprtimestamp.lower():localtimeX}
+                dict.update(dictapp)
             
     return(dict)
 
