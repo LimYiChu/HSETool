@@ -35,6 +35,8 @@ for items in ALLOWED_HOSTS :
         # pdf bulk directory
         bulkpdfdir = "/opt/bitnami/projects/HSETool/static/media/temp/bulkpdf/"
         bulkpdfcreatezipfilename = "/opt/bitnami/projects/HSETool/static/media/temp/" + "bulkpdffiles"
+        bulkdlattachments = '/opt/bitnami/projects/HSETool/media/attachments/'
+
     else :
         tempfolder = 'static/media/temp/'
         staticmedia = 'static/media/'
@@ -42,7 +44,8 @@ for items in ALLOWED_HOSTS :
         atrtemplate = 'atrtemplateautofontreadonly.pdf'  
         # pdf bulk directory
         bulkpdfdir = "static/media/temp/bulkpdf/"
-        bulkpdfcreatezipfilename = "static/media/temp/" + "bulkpdffiles" #can be just slash                                                                                                                                               
+        bulkpdfcreatezipfilename = "static/media/temp/" + "bulkpdffiles" #can be just slash   
+        bulkdlattachments = 'media/attachments/'                                                                                                                                             
  
 
 

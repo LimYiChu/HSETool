@@ -70,7 +70,7 @@ def blbulkdownload(objactionitems,destinationfolders,createzipfilename): # chang
     # os.makedirs(makedstdir,exist_ok=True)
     # dir = 'static/media/temp/bulkpdf/'
     # shutil.rmtree(dir)
-    attachments = "media/attachments/"
+    
     for items in objactionitems: #objactionitems
         # closed = (items['QueSeries'] == 99)
         closed = True
@@ -96,7 +96,7 @@ def blbulkdownload(objactionitems,destinationfolders,createzipfilename): # chang
 
             for eachfile in ObjAttach: 
                 filename = os.path.basename(eachfile.Attachment.path) # changed from .name to .path
-                attachmentorigin= attachments + filename
+                attachmentorigin= bulkdlattachments + filename
 
                 shutil.copy(attachmentorigin, destination) #copying all done inside for loop for each attachment
 
