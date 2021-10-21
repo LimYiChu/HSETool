@@ -159,6 +159,8 @@ class frmApproverConfirmation(forms.ModelForm):
             Div (Field('ProjectPhase', readonly=True,disabled=True), css_class='col-md-3'),
             Div (Field('InitialRisk', readonly=True), css_class='col-md-2'),
             Div (Field('ResidualRisk', readonly=True), css_class='col-md-2'),
+            Div (Field('StudyName',readonly=True,type="hidden")),
+            Div (Field('ProjectPhase',readonly=True,type="hidden")),
             #Div (Field('QueSeries', readonly=True), css_class='col-md-3'),
            #-somehow not working Div (Field('DueDate', readonly=True), css_class='col-md-2'),
             css_class='row',
