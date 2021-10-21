@@ -88,11 +88,11 @@
                 <tbody>
                   {%for details in dictofallactions%}
                   <tr>
-                    <td>{{details.StudyActionNo}}</td>
+                    <td><a class="article-title" href="{% url  'pmtrepviewall' details.id %}">{{details.StudyActionNo}}</a></td>
                     <td>{{details.StudyName}}</td>
                     <td>{{details.ProjectPhase}}</td>
                     <td>{{details.Disipline}}</td>
-                    <td width="20%">{{details.Recommendations}}</td>
+                    <td width="20%"><a class="article-title" href="{% url  'pmtrepviewall' details.id %}">{{details.Recommendations}}</a></td>
                     <td>{{details.Response}}</td>
                     <td>{{details.DueDate}}</td>
                     {%block incInitialRiskColour%}

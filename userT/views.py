@@ -70,10 +70,11 @@ from django.db.models import F
 
 
 def base3 (request):
+    
     return render(request,'userT/base3.html')
 
 def sidebar (request):
-
+    
   return render(request, 'userT/basesidebar.html')
 
 class actionlist(generics.ListCreateAPIView):
@@ -667,7 +668,9 @@ class ApproverConfirm(UpdateView):
             integerqueseries = blgetFieldValue(ID,"QueSeries") # using this to find Approver QueSeries
             discsub = blgetDiscSubOrgfromID(ID)
             Signatoryemails = blgetSignatoryemailbyque2(discsub,integerqueseries+1)
-            ContentSubject  = blbuildSubmittedemail(ID,True)#change the function call to try and have code standardised #blbuildApprovedemail(ID) # using new bl since approver email should be this has been approved instead of submitted
+            ContentSubject  = blbuildSubmittedemail(ID,"Approver")#change the function call to try and have code standardised #blbuildApprovedemail(ID) # using new bl since approver email should be this has been approved instead of submitted
+            
+            print ("ContentSubject", ContentSubject)
             success = blemailSendindividual(emailSender,Signatoryemails,ContentSubject[0], ContentSubject[1])
             #edward end next approver sent email when approved 20210708
 
@@ -930,13 +933,11 @@ class RejectReason (CreateView):
             discsub = blgetDiscSubOrgfromID(ID)
 
             Signatoryemails = blgetSignatoryemailbyque(discsub,intqueseries)
-
-
-            ContentSubject  =blbuildRejectionemail(ID,rejectreason)
-
+            ContentSubject  =blbuildSubmittedemail(ID,"Reject",rejectreason)
             success = blemailSendindividual(emailSender,Signatoryemails,ContentSubject[0], ContentSubject[1]) #send email, the xyz is dummy data and not used
 
             return super().form_valid(form)
+
         if (self.request.POST.get('Cancel')):
             #cant use success url, its got assocaition with dict object, so have to use below
 
@@ -1021,7 +1022,7 @@ def multiplefiles (request, **kwargs):
         Signatoryemails = blgetSignatoryemailbyque2(discsub,newQueSeries) # edward 20210709 altered this to use with new bl
 
 
-        ContentSubject  =blbuildSubmittedemail(ID)
+        ContentSubject  =blbuildSubmittedemail(ID,"Actionee")
 
         success = blemailSendindividual(emailSender,Signatoryemails,ContentSubject[0], ContentSubject[1])
 
@@ -1429,7 +1430,9 @@ def repPMTExcel (request,phase=""):
     
     #added for phases - Get all phases from Phases table for Html
     listofPhases= Phases.mdlSetGetField.mgrGetAllActionsAndFields()
-    
+    discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg()
+    discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
+    organisationnames = ActionRoutes.mdlAllCompany.mgr_getOrgnames()
     #1st Pie Overall Actions Open/Closed
     forpie=[]
     PhaseOpenActions= blallphasegetAction(QueOpen,phase)
@@ -1459,6 +1462,7 @@ def repPMTExcel (request,phase=""):
     countdiscsub= []
     labelsDisc =[]
     titledisc = "Open Actions by Discipline"
+    
     for itemPair in discsub:
         countdiscsub.append(blgetDiscSubActionCountPhase (itemPair,QueOpen,phase))
         labelsDisc.append(str(itemPair[0]))#+"/"+str(itemPair[1]))
@@ -1539,6 +1543,7 @@ def repPMTExcel (request,phase=""):
     dfrejection = pd.DataFrame.from_dict(rejectedallactionitems)
     
     #for Disipline based view
+    print (discsuborg)
     tabledischeader = ['Discipline', 'Yet to Respond' ,'Approval Stage', 'Closed','Open Actions','Total Actions']
     lstbyDisc= blaggregatebyDisc(discsuborg,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue)
 
@@ -2104,7 +2109,7 @@ def indiprint(request,**kwargs):
     data_dict=obj[0]
 
 
-    #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
+    
 
     #dont delete below as its a way to actualy read from memory
     #response = HttpResponse(content_type='application/pdf')

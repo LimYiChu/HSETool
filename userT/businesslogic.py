@@ -420,8 +420,13 @@ def blsetrejectionActionItems(ID,queseries):
     ActionItems.mdlQueSeries.mgrsetQueSeries(ID,queseries) 
     ActionItems.mdlQueSeries.mgrincrementRevision(ID)
 
-def blbuildSubmittedemail(ID,Approver=False):
+def blbuildSubmittedemail(ID,ActioneeApproverReject, RejectReason=""):
+    '''Pass in id of actions, and string of where its coming from i.e "Actionne", "Approver", "Reject" that have been submitted or approved and rejected and it returns list [Subject, Content]
+    Optional Parameter of reject reason can be passed in to state reason in content'''
+
     urlview = f"/pmtrepviewall/{ID}/view"
+    urlviewApprover = "/ApproverList/" # Not used yet thinking of redoing url below for simplification
+    urlviewRejection = "/ActioneeList/"
     Content=[]
 
     #Changing the waythis is done since retreiving single  object plus doesnt work with filter and values ori code below with 
@@ -431,53 +436,21 @@ def blbuildSubmittedemail(ID,Approver=False):
     studyName = str(actionDetails.StudyName)
     response = actionDetails.Response
     
-    # actionDetails = ActionItems.objects.filter(id=ID).values() # Since off the bat i did not pass any other information besides ID to rejection form i now have to information back for emails
-    # studyActionNo =  actionDetails[0].get('StudyActionNo')
-    # studyName = str(actionDetails[0].get('StudyName_id'))
-    # response = actionDetails[0].get('Response')
+    dictofsubjectcontent ={
+        'ActioneeSubject' : studyActionNo + " from " + studyName + " has been submitted ",
+        'ApproverSubject' : studyActionNo + " from " + studyName + " has been approved ",
+        'RejectSubject' : studyActionNo + " from " + studyName + " has been rejected ",
+        'ActioneeContent' : "To view this, please go to " + paremailurl +urlview + " . To approve go to your dashboard/approver que, to approve this and other actions",
+        'ApproverContent' : "To view this, please go to " + paremailurl +urlview + " . To approve go to your dashboard/approver que, to approve this and other actions",
+        'RejectContent' : "Rejection Reason : " + RejectReason + ". To attend to this go to your dashboard, view of rejection is available at " + paremailurl +urlview,
+    }
 
-    
-    if not Approver:
-        Content.append(studyActionNo + " from " + studyName + " has been submitted ") #This is subject
-    
-    elif Approver :
-        Content.append(studyActionNo + " from " + studyName + " has been approved ") #This is subject
-    
-        
-    
-    Content.append("To view this, please go to " + paremailurl +urlview + " . To approve go to your dashboard/approver que, to approve this and other actions")
- 
-
+    #as pythonic as it gets
+    Content = [ v for k,v in dictofsubjectcontent.items() if k.startswith(ActioneeApproverReject)]
+  
+   
     return Content
 
-# edward 20210708 building approved email since  content is slightly different
-def blbuildApprovedemail(ID):
-    urlview = f"/pmtrepviewall/{ID}/view"
-    Content=[]
-    actionDetails = ActionItems.objects.filter(id=ID).values() # Since off the bat i did not pass any other information besides ID to rejection form i now have to information back for emails
-    studyActionNo =  actionDetails[0].get('StudyActionNo')
-    studyName = actionDetails[0].get('StudyName')
-    response = actionDetails[0].get('Response')
-
-    Content.append(studyActionNo + " from " + studyName + " has been approved ") #This is subject
-    
-    Content.append("To view this, please go to " + paremailurl +urlview + " . To approve go to your dashboard/approver que, to approve this and other actions")#+ "...Response" + response) #this is the content of the email #passed the url here in the content
-    
-    return Content
-# edward end 20210708 building approved email since  content is slightly different
-def blbuildRejectionemail(ID,RejectReason):
-    urlview = f"/pmtrepviewall/{ID}/view"
-    Content=[]
-    actionDetails = ActionItems.objects.filter(id=ID).values() # Since off the bat i did not pass any other information besides ID to rejection form i now have to information back for emails
-    studyActionNo =  actionDetails[0].get('StudyActionNo')
-    studyName = actionDetails[0].get('StudyName')
-    response = actionDetails[0].get('Response')
-
-    Content.append(studyActionNo + " from " + studyName + " has been rejected ") #This is subject
-    #edward add-on for rejection url
-    Content.append("Rejection Reason : " + RejectReason + ". To attend to this, please go to " + paremailurl +urlview)#+ "...Response" + response) #this is the content of the email #passed the url here in the content
-    
-    return Content
 def blgetHistoryforUser(useremail, actioneeroutes):
     
     #first get user ID from CustomUser as only user id is used in history tables
@@ -598,35 +571,6 @@ def blgetbyStdudiesCount(Studies,YetToRespondQue,pendingApprovalQue,closedAction
     
     return lstofstudiesdetails
 
-#YHS copying for test
-#def blallActionCountbyDisipline(disipline,quelist):
-
-#    count = 0
-    
-#    for que in quelist:
-#        count += ActionItems.myActionItemsCount.mgr_myItemsCountbyStudies(disipline,que) #Stuck here.
-       
-   
-#    return count
-   
-
-#def blgetbyDispCount(discsuborg,OpenQue,YetToRespondQue,pendingApprovalQue,closedActionsQueSeries):
-   
-#    lstcountbydisciplines = []
-#    lstofdisciplinesdetails =[]
-#    for disipline in discsuborg:
-#        lstcountbydisciplines.append (blgetIndiResponseCount(disipline.discount))
-#        lstcountbydisciplines.append (blallActionCountbyDisipline(disipline.discount,OpenQue))
-#        lstcountbydisciplines.append (blallActionCountbyDisipline(disipline.discount,YetToRespondQue))
-#        lstcountbydisciplines.append (blallActionCountbyDisipline(disipline.discount,pendingApprovalQue))
-#        lstcountbydisciplines.append (blallActionCountbyDisipline(disipline.discount,closedActionsQueSeries))
-#        
-#        lstofdisciplinesdetails.append(lstcountbydisciplines)
-#        lstbydiscipline =[]
-    
-#    return lstbydiscipline
-
-#end of test code
 def blconverttodictforpdf(lstofsignatories): #edward altered this instead of creating new bl because it is only used for closedoutsheet 20210706
     
     for items in lstofsignatories:
@@ -1501,7 +1445,7 @@ def blstopcharttoday(content,testtotal,testclosed):
     today= dt.today()#.strftime('%Y-%m-%d') #todays date as date object
 
     actual = (testtotal-testclosed) # use this to append the actual data which is Total - Closed
-    print(actual)
+    
     currentdate = [today,' ',actual] # it is what it says it is
 
     for items in content:
