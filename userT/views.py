@@ -1557,8 +1557,9 @@ def repPMTExcel (request,phase=""):
     
     #Changed to Q function and Phases
     tableduedateheader = ['Due Date','Actions to Close by']
-    fieldsrequired = ['id', 'DueDate']
-    lstbyDueDate= blaggregatebydate(blphasegetActionreducedfieldsQ(fieldsrequired,phase))
+    fieldsrequired = ['id', 'DueDate','QueSeries']
+    actionitemsbyphase = blphasegetActionreducedfieldsQ(fieldsrequired,phase)
+    lstbyDueDate= blaggregatebydate(actionitemsbyphase)
     
     subtotal =[]
     for items in lstbyDueDate:
@@ -1569,11 +1570,13 @@ def repPMTExcel (request,phase=""):
     lstplanned         =  blprepareGoogleChartsfromDict(lstbyDueDate)
     lstactual      = blgetActualRunDown(lstplanned) # shows how many closed
 
+   
     newlist = blformulateRundown(lstplanned,lstactual)
+    
     #edward 20210727 rundown
     newliststop = blstopcharttoday(newlist)
     #edward end 20210727 rundown
-
+    print ("newliststop",newliststop)
     
 
     if request.method == 'POST':
@@ -2098,7 +2101,7 @@ def indiprint(request,**kwargs):
     data_dict=obj[0]
 
 
-    #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
+    
 
     #dont delete below as its a way to actualy read from memory
     #response = HttpResponse(content_type='application/pdf')

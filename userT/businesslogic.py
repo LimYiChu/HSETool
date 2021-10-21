@@ -321,7 +321,7 @@ def blformulateRundown(lstplanned,lstactual):
           
     return finallstplanned
 
-def blgetActualRunDown(lstdatesandcount):
+def blgetActualRunDown(lstdatesandcount,phase=""):
     
     #lstdatesandcount is passing in due dates and how many were meant to be closed
     #
@@ -1491,7 +1491,7 @@ def stripAndmatch(lstcount,lstlabel):
     return newlstcount,lstlabel
     
 # edward 20210723 new graphing to stop on current day
-def blstopcharttoday(content):
+def blstopcharttoday(content,phase=""):
     
     strtoday = dt.today().strftime('%Y-%m-%d') #todays date as string
     today= dt.today()#.strftime('%Y-%m-%d') #todays date as date object
