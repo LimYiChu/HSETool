@@ -320,21 +320,23 @@ def blformulateRundown(lstplanned,lstactual):
             lstnewplanned =[]
           
     return finallstplanned
-
-def blgetActualRunDown(lstdatesandcount):
+#edward 20211021 passing in actions 
+def blgetActualRunDown(lstdatesandcount,closeditems): 
     
     #lstdatesandcount is passing in due dates and how many were meant to be closed
-    #
+
     
     closed = 99 #queseries
     countX = 0
-    closeditems = ActionItems.objects.filter(QueSeries=closed)
+    #closeditems = ActionItems.objects.filter(QueSeries=closed) #20211021 edward to be removed after one week from now 
+    #closeditems = actions.filter(QueSeries=closed)#change in views #20211021 edward to be removed after one week from now 
+
     actualclosed =[]
     finalclosed =[]
     for items in closeditems:
         
         #check in history tables when it was closed
-        dictactualhistory = ActionItems.history.filter(id=items.id).filter(QueSeries=closed).order_by('-history_date').values()
+        dictactualhistory = ActionItems.history.filter(id=items["id"]).filter(QueSeries=closed).order_by('-history_date').values()
         #this is not supposed to be the case but for testing only it could be empty
         
         # make sure there is an entry in the history table, this is for testing
@@ -385,13 +387,14 @@ def blaggregatebydate (objActions):
 
 def blprepareGoogleChartsfromDict(QuerySet):
     finallist=[]
+    
     for dictitems in QuerySet:
         finallist.append(list(dictitems.values()))
     
     firstdatefiller = [finallist[0][0] - relativedelta(months=+1),0] #just inserts a date one month before and uses dateutil
     
     finallist.insert(0,firstdatefiller)
-   
+    
     return finallist
 def blprepGoogChartsbyStudies (labels,count,newstudyname):
 
@@ -1491,14 +1494,14 @@ def stripAndmatch(lstcount,lstlabel):
     return newlstcount,lstlabel
     
 # edward 20210723 new graphing to stop on current day
-def blstopcharttoday(content):
+def blstopcharttoday(content,testtotal,testclosed):
+    " Function that stops the Rundown curve at todays date. edward 20211021 "
     
     strtoday = dt.today().strftime('%Y-%m-%d') #todays date as string
     today= dt.today()#.strftime('%Y-%m-%d') #todays date as date object
 
-    closed =(len(ActionItems.objects.filter(QueSeries=99))) #closed items
-    TotalActionItems = (len(ActionItems.objects.all())) #total items
-    actual = (TotalActionItems-closed) # use this to append the actual data which is Total - Closed
+    actual = (testtotal-testclosed) # use this to append the actual data which is Total - Closed
+    print(actual)
     currentdate = [today,' ',actual] # it is what it says it is
 
     for items in content:
