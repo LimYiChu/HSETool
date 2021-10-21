@@ -1557,8 +1557,15 @@ def repPMTExcel (request,phase=""):
     
     #Changed to Q function and Phases
     tableduedateheader = ['Due Date','Actions to Close by']
-    fieldsrequired = ['id', 'DueDate']
+    fieldsrequired = ['id','StudyActionNo', 'DueDate','QueSeries']
+    actionitemsbyphase = blphasegetActionreducedfieldsQ(fieldsrequired,phase)
     lstbyDueDate= blaggregatebydate(blphasegetActionreducedfieldsQ(fieldsrequired,phase))
+   
+    #20211021 edward rundown by phase 
+    closed=99
+    closeditems = actionitemsbyphase.filter(QueSeries=closed)
+    totalactions = (len(actionitemsbyphase))
+    closedactions = (len(closeditems))
     
     subtotal =[]
     for items in lstbyDueDate:
@@ -1567,14 +1574,13 @@ def repPMTExcel (request,phase=""):
     totalallDueDate = sum(subtotal)
     
     lstplanned         =  blprepareGoogleChartsfromDict(lstbyDueDate)
-    lstactual      = blgetActualRunDown(lstplanned) # shows how many closed
-
-    newlist = blformulateRundown(lstplanned,lstactual)
-    #edward 20210727 rundown
-    newliststop = blstopcharttoday(newlist)
-    #edward end 20210727 rundown
-
+    lstactual      = blgetActualRunDown(lstplanned,closeditems) # shows how many closed pass in here 
     
+    newlist = blformulateRundown(lstplanned,lstactual)
+    #edward 20210727 rundown, 20211021 edward updated
+    newliststop = blstopcharttoday(newlist,totalactions,closedactions)
+    #edward end 20210727 rundown, 20211021 edward updated
+    #20211021 edward rundown by phase 
 
     if request.method == 'POST':
 
