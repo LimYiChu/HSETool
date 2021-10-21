@@ -49,28 +49,6 @@ jobs:
         remote_port: 22
         remote_user: bitnami
         remote_key: ${{ secrets.LIGHTSAIL_KEY }}
-
-    - name: test Sync files usert
-      uses: burnett01/rsync-deployments@4.1
-      with:
-        switches: -avzr --delete --exclude="" --include="" --filter=""
-        path: /userT/parameters.py
-        remote_path: /opt/bitnami/projects/HSETool/userT/parameters.py
-        remote_host: 52.77.81.191
-        remote_port: 22
-        remote_user: bitnami
-        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
-
-    - name: test Sync files usert
-      uses: burnett01/rsync-deployments@4.1
-      with:
-        switches: -avzr --delete --exclude="" --include="" --filter=""
-        path: /userT/Templates/userT/closeoutsheet.html
-        remote_path: /opt/bitnami/projects/HSETool/userT/Templates/userT/closeoutsheet.html
-        remote_host: 52.77.81.191
-        remote_port: 22
-        remote_user: bitnami
-        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
   
     - name: testing changing user group for SFTP transferred files 
       uses: appleboy/ssh-action@master #github marketplace app 
