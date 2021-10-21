@@ -57,9 +57,9 @@ QueClosed = [99]
 YetToRespondQue =[0]
 ApprovalQue = [1,2,3,4,5,6,7,8,9]
 TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
-discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg()
-discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
-organisationnames = ActionRoutes.mdlAllCompany.mgr_getOrgnames()
+# discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg()
+# discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
+# organisationnames = ActionRoutes.mdlAllCompany.mgr_getOrgnames()
 
 
 #edward - old
