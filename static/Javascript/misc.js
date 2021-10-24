@@ -1,6 +1,7 @@
-function phasesurl (phase)
+function phasesurl (id,phase)
 
 {
+    
     if (phase == '') {
 
         document.location.href = "../reppmt"
@@ -9,7 +10,20 @@ function phasesurl (phase)
         document.location.href = phase // adds the phase part to the end of the reppmt- it is then caught by views
         
 }
+   
 }
+
+function maketabactive (id){
+    ///make the tab (button active)
+    if (id===""){
+
+        id="allphases"
+    }
+    var gettab = document.getElementById(id)
+    gettab.className += " active"
+
+}
+
 function openReport(evt, ReportName) {
     var i, tabcontent, tablinks;
     

@@ -6,7 +6,7 @@
   <head>
       
   </head>
-<body onload="openReport(event, 'All Actions')" >
+<body onload="openReport(event, 'All Actions');maketabactive('{{phase}}')" >
 
   <div style="display: none" id="jsonDataPie" data-json="{{ piechartsjson}}"></div>
   <div style="display: none" id="jsonDataRundown" data-json="{{ rundownchartsjson}}"></div>
@@ -41,10 +41,10 @@
               <div>
                  <div style="float:left" class="tab h5" style="background-color: rgb(231, 234, 235);">
                     <h3 style=" font-size:xx-large;">
-                      <button  onclick="openReport(event, 'PHASES');phasesurl('')">All Phases</button>
+                      <button  id="allphases" onclick="openReport(event, 'PHASES');phasesurl(this.id,'')">All Phases</button>
                       {%for items in listofPhases%}
 
-                        <button  onclick="openReport(event, 'PHASES');phasesurl('{{items.ProjectPhase}}')">{{items.ProjectPhase}}</button>
+                        <button  id="{{items.ProjectPhase}}" onclick="openReport(event, 'PHASES');phasesurl(this.id,'{{items.ProjectPhase}}')">{{items.ProjectPhase}}</button>
                     {%endfor%}
                     <a><button type="button" class="btn btn-outline-primary btn-sm;"  padding-bottom:1pt; padding-top: 1pt"> 
                     <a class ="article-title" href="{% url  'repoverallexcel' %}" style="float: right;">Download Complete Excel <i class="bi bi-file-earmark-spreadsheet"></i> </button> </a></a>
