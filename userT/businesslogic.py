@@ -1417,11 +1417,7 @@ def blgetAllStudies ():
     return Studies.objects.all()
 
 def stripAndmatch(lstcount,lstlabel):
-    
-    # extends the list if the actionee routes are only1 (anything less than 3)
-    #needs a buffer of 3 to get it right 
-    #lstlabels.extend([0] * (3 - len(lstlabels)))
-   
+       
     indextoremove =[]
     #newlabels = lstlabels
     newlstcount = lstcount
@@ -1437,7 +1433,7 @@ def stripAndmatch(lstcount,lstlabel):
     
     return newlstcount,lstlabel
     
-# edward 20210723 new graphing to stop on current day
+
 def blstopcharttoday(content,testtotal,testclosed):
     " Function that stops the Rundown curve at todays date. edward 20211021 "
     

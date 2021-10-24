@@ -46,8 +46,7 @@ class QuerySet(models.QuerySet):
     def get_field(self,ID, fields):
                 
         return self.filter (id=ID).values(fields)
-        #field = eval('obj.'+fields)
-        #return field
+       
 
     def get_allacctionsforphase(self,PhaseDefault,listoffields):
                 
@@ -84,16 +83,7 @@ class QuerySet(models.QuerySet):
     
     def get_mgrCompanyCountAll(self,filters):
         return self.filter (**filters).count()
-    # def get_Approver1(self,userorganisation,userdisipline,usersubdisipline):
-    #     return self.filter(Organisation__icontains=userorganisation).filter(Disipline__icontains=userdisipline).filter(Subdisipline__icontains=usersubdisipline)
-    # def get_Approver2(self,useremail):
-    #     return self.filter(Approver2__icontains=useremail)
-    # def get_Approver3(self,useremail):
-    #     return self.filter(Approver3__icontains=useremail)
-    # def get_Approver4(self,useremail):
-    #     return self.filter(Approver4__icontains=useremail)
-    # def get_Approver5(self,useremail):
-    #     return self.filter(Approver5__icontains=useremail)
+    
 
 class myActionItemManager(models.Manager):
     def get_queryset (self):
@@ -198,26 +188,3 @@ class mgrDeleteAttachment(models.Manager):
         obj = get_object_or_404(self.model, id=ID)
         obj.delete()
         return True
-# class Approver2Manager(models.Manager):
-#     def get_queryset (self):
-#         return RoutesQuerySet(self.model, using=self._db)
-#     def get_myroutes(self,useremail):
-#         return self.get_queryset().get_Approver2(useremail)
-
-# class Approver3Manager(models.Manager):
-#     def get_queryset (self):
-#         return RoutesQuerySet(self.model, using=self._db)
-#     def get_myroutes(self,useremail):
-#         return self.get_queryset().get_Approver3(useremail)
-
-# class Approver4Manager(models.Manager):
-#     def get_queryset (self):
-#         return RoutesQuerySet(self.model, using=self._db)
-#     def get_myroutes(self,useremail):
-#         return self.get_queryset().get_Approver4(useremail)
-
-# class Approver5Manager(models.Manager):
-#     def get_queryset (self):
-#         return RoutesQuerySet(self.model, using=self._db)
-#     def get_myroutes(self,useremail):
-#         return self.get_queryset().get_Approver5(useremail)
