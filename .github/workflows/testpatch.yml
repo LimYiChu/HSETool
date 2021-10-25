@@ -70,7 +70,7 @@ jobs:
         remote_host: 52.77.81.191
         remote_port: 22
         remote_user: bitnami
-        remote_key: ${{ secrets.LIGHTSAIL_KEY }}\
+        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
 
     - name: test Sync files static userT Templates incltopnavbar.html
       uses: burnett01/rsync-deployments@4.1
@@ -81,7 +81,7 @@ jobs:
         remote_host: 52.77.81.191
         remote_port: 22
         remote_user: bitnami
-        remote_key: ${{ secrets.LIGHTSAIL_KEY }}\
+        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
 
     - name: test Sync files static userT Templates reppmtexcel.html
       uses: burnett01/rsync-deployments@4.1
