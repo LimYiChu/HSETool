@@ -46,8 +46,8 @@
 
                         <button  id="{{items.ProjectPhase}}" onclick="openReport(event, 'PHASES');phasesurl(this.id,'{{items.ProjectPhase}}')">{{items.ProjectPhase}}</button>
                     {%endfor%}
-                    <a><button type="button" class="btn btn-outline-primary btn-sm;"  padding-bottom:1pt; padding-top: 1pt"> 
-                    <a class ="article-title" href="{% url  'repoverallexcel' %}" style="float: right;">Download Complete Excel <i class="bi bi-file-earmark-spreadsheet"></i> </button> </a></a>
+                    <a><button type="button" class="btn btn-outline-primary btn-sm;"  padding-bottom:1pt; padding-top: 1pt> 
+                    <a class ="article-title" href="{% url  'repoverallexcel' %}" style="position: absolute; right: 10px;">Download Complete Excel <i class="bi bi-file-earmark-spreadsheet"></i> </button> </a></a>
                   
                     </h3>
                   </div>

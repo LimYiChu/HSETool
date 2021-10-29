@@ -332,13 +332,13 @@ def mainDashboard (request):
         apprfinalist.append(chartappdata)
         
         
-        totalapproveraction = sum (appractioncount)
-        #empties out the data for next loop otherwise it doubles the data to append on each study
-        chartappdata = []
+    totalapproveraction = sum (appractioncount)
+    #empties out the data for next loop otherwise it doubles the data to append on each study
+    chartappdata = []
 
-        dataApprover = []
-        labelsApprover =[]
-        countbyStudies = []
+    dataApprover = []
+    labelsApprover =[]
+    countbyStudies = []
     
 
     approverjsonlist = blremoveemptylist(apprfinalist)
