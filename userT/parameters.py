@@ -37,6 +37,7 @@ for items in ALLOWED_HOSTS :
         bulkpdfdir = "/opt/bitnami/projects/HSETool/static/media/temp/bulkpdf/"
         bulkpdfcreatezipfilename = "/opt/bitnami/projects/HSETool/static/media/temp/" + "bulkpdffiles"
         bulkdlattachments = '/opt/bitnami/projects/HSETool/media/attachments/'
+        bulkpdfzip = '/opt/bitnami/projects/HSETool/static/media/temp/bulkpdffiles.zip'   
 
     else :
         tempfolder = 'static/media/temp/'
@@ -46,7 +47,8 @@ for items in ALLOWED_HOSTS :
         # pdf bulk directory
         bulkpdfdir = "static/media/temp/bulkpdf/"
         bulkpdfcreatezipfilename = "static/media/temp/" + "bulkpdffiles" #can be just slash   
-        bulkdlattachments = 'media/attachments/'                                                                                                                                             
+        bulkdlattachments = 'media/attachments/'  
+        bulkpdfzip = 'static/media/temp/bulkpdffiles.zip'                                                                                                                                           
  
 
 #Paramters to simply views.py . Commonly used parameters in Views.py to be parked here and standardised
