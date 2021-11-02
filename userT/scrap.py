@@ -156,3 +156,108 @@
     #             ['2021-10-15', 10, ],
     #             ['2021-10-16', 8, ],
     #             ['2021-10-17', 0, ]]
+
+#20211027 edward   
+# def closeoutsheet(request):
+#     filename = [] # for appending filename place before for loop
+#     if (request.POST.get('GeneratePDF')):
+#         x=ActionItems.objects.filter(StudyName='HAZID')  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
+#         y= x.values()
+#         for item in y :
+#             i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file
+#             j = (i + '.pdf')  # easier to breakdown j
+#             del item["id"]
+#             data_dict=item
+#             out_file = 'static/media/' + j
+#             pdfgenerate('atrtemplateautofontreadonly.pdf',out_file,data_dict)
+#             filename.append(out_file) #can only append str
+#             context={
+#                 'filename' : filename,
+#                 'table': True
+#             }
+#             #return HttpResponse('TEST')
+#         #     return render(request, 'userT/closeoutsheet.html', context)
+#         # return render(request, 'userT/closeoutsheet.html')
+#         return render(request, 'userT/closeoutsheet.html', context)
+#     return render(request, 'userT/closeoutsheet.html')
+
+
+# for  making view all actions clickable & obtain the id using update view
+
+#20211027 edward  
+# def closeoutsheet1(request):  #edward 20210820 duplicate of closeoutsheet to build bulk upload
+#     QueOpen = [0,1,2,3,4,5,6,7,8,9]
+#     QueClosed = [99]
+#     YetToRespondQue =[0]
+#     ApprovalQue = [1,2,3,4,5,6,7,8,9]
+#     TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
+#     allstudies = Studies.objects.all()
+
+#     tablestudiesheader = ['Studies', 'Yet to Respond' ,'Approval Stage','Closed','Open Actions', 'Total Actions']
+
+
+
+#     lstbyWorkshop = blgetbyStdudiesCount(allstudies,YetToRespondQue,ApprovalQue,QueClosed,QueOpen,TotalQue)
+
+#     allactions = ActionItems.objects.all()
+#     tableallheader = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
+#     lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
+#     tableallheadermodified =  ['Study Action No','Study Name', 'Discipline' ,'Recommendations','Response','Initial Risk']
+#     filename = [] # for appending filename place before for loop
+
+#     #Guna
+
+#     lstclosed = ActionItems.objects.filter(QueSeries =99)
+
+#     if (request.POST.get('GeneratePDF')):
+#         x=ActionItems.objects.all()  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
+
+#         y= x.values()
+#         for item in y :
+#             i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file
+#             j = (i + '.pdf')  # easier to breakdown j & to append further on
+#             del item["id"]
+#             data_dict=item
+#             out_file = staticmedia + j
+#             pdfgenerate(atrtemplate,out_file,data_dict)#returns from pdfgenerator #edward added atrtemplate location in parameters
+#             filename.append(j) #can only append str, appending j shows the filename for userview instead of whole location
+#             context1={
+#                 'filename' : filename,
+#                 'table': True,
+#                 'lstbyWorkshop' : lstbyWorkshop,
+#                 'lstofallactions' : lstofallactions,
+#             }
+#         return render(request, 'userT/closeoutsheet.html', context1)
+
+
+#     context = {
+#         'lstclosed' : lstclosed,
+#         'lstbyWorkshop' : lstbyWorkshop,
+#         'lstofallactions' : lstofallactions,
+#         'tablestudiesheader' : tablestudiesheader,
+
+#     }
+
+#     return render(request, 'userT/closeoutsheet.html', context)
+#edward end 20210820 pdf bulk
+
+#20211027 edward  
+#-commented below to remove
+# def IndividualBreakdownByUsers(request):
+#     #Need to do some maths here  most of the functions have been charted out just need to remap back to individual
+#     # 2 functions need to merge
+#     discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
+
+#     #Signatories =
+
+#     QueOpen = [0,1,2,3,4,5,6,7,8,9]
+#     QueClosed = [99]
+#     Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)
+
+#     context = {
+
+#         'Indisets' : Indisets,
+
+#     }
+
+#     return render(request, 'userT/indibreakbyuser.html',context) #yhs changed to all small letters

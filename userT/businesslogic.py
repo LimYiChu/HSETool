@@ -122,8 +122,10 @@ def blbulkdownload(objactionitems,destinationfolders,createzipfilename): # chang
             for eachfile in ObjAttach: 
                 filename = os.path.basename(eachfile.Attachment.path) # changed from .name to .path
                 attachmentorigin= bulkdlattachments + filename
-
-                shutil.copy(attachmentorigin, destination) #copying all done inside for loop for each attachment
+                # 20211029 edward pending testing
+                dst = os.path.join(destination, os.path.basename(attachmentorigin))
+                shutil.copyfile(attachmentorigin,os.path.join(dst) ) #copying all done inside for loop for each attachment
+                # shutil.copy(attachmentorigin, destination) #copying all done inside for loop for each attachment, 20211028 previously used this but linux cannot use this through basecommand because of permission issues
 
     returnzipfile = shutil.make_archive(createzipfilename, 'zip', destinationfolders)
 

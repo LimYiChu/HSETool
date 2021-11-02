@@ -1,0 +1,1 @@
+python /opt/bitnami/projects/HSETool/manage.py bulkpdfcloseouts

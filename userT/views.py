@@ -66,6 +66,8 @@ from collections import OrderedDict
 #edward 20210924
 from django.forms.models import model_to_dict
 from django.db.models import F
+#edward 20211027 bulk pdf fix for large file dl
+from django.http import StreamingHttpResponse
 
 
 
@@ -330,15 +332,15 @@ def mainDashboard (request):
 
 
         apprfinalist.append(chartappdata)
-        
-        
-        totalapproveraction = sum (appractioncount)
-        #empties out the data for next loop otherwise it doubles the data to append on each study
-        chartappdata = []
+    
+    
+    totalapproveraction = sum (appractioncount)
+    #empties out the data for next loop otherwise it doubles the data to append on each study
+    chartappdata = []
 
-        dataApprover = []
-        labelsApprover =[]
-        countbyStudies = []
+    dataApprover = []
+    labelsApprover =[]
+    countbyStudies = []
     
 
     approverjsonlist = blremoveemptylist(apprfinalist)
@@ -902,25 +904,7 @@ class RejectReason (CreateView):
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(fk)
         return context
 
-#-commented below to remove
-# def IndividualBreakdownByUsers(request):
-#     #Need to do some maths here  most of the functions have been charted out just need to remap back to individual
-#     # 2 functions need to merge
-#     discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
 
-#     #Signatories =
-
-#     QueOpen = [0,1,2,3,4,5,6,7,8,9]
-#     QueClosed = [99]
-#     Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)
-
-#     context = {
-
-#         'Indisets' : Indisets,
-
-#     }
-
-#     return render(request, 'userT/indibreakbyuser.html',context) #yhs changed to all small letters
 
 def IndividualBreakdownByActions(request):
 
@@ -1780,8 +1764,23 @@ def closeoutprint(request,**kwargs):
 
     return response
 
-
+#edward 20211027 bulk pdf fix for large file dl
 def mergedcloseoutprint(request):
+
+    " Sends bulkpdf files with attachments in their repective folders in a zipped file to Client "
+   
+    # bulkpdfzipfoldername = tempfolder + ("bulkpdffiles" +".zip")
+    # objactionitems = ActionItems.objects.filter(QueSeries = 99).values() # to be altered when move to bl
+    # objactionitemsfk = blannotatefktomodel(objactionitems)
+    # returnzipfile = blbulkdownload(objactionitemsfk,bulkpdfdir,bulkpdfcreatezipfilename) #to remove bulkpdfmakebulkpdfdir
+
+    response = FileResponse(open(bulkpdfzip,'rb'))
+    response['Content-Disposition'] = 'attachment; filename= Bulk Closeout Sheets.zip'
+    
+    return response
+
+#edward 20211027 bulk pdf fix for large file dl - original func
+def mergedcloseoutprintoriginal(request): 
     
     #edward 20210915 bulkpdf parameters
     # bulkpdfdir = "static/media/temp/bulkpdf/"
@@ -1804,62 +1803,9 @@ def mergedcloseoutprint(request):
     response.write(in_memory.read())
 
     return response
-
-# def closeoutsheet1(request):  #edward 20210820 duplicate of closeoutsheet to build bulk upload
-#     QueOpen = [0,1,2,3,4,5,6,7,8,9]
-#     QueClosed = [99]
-#     YetToRespondQue =[0]
-#     ApprovalQue = [1,2,3,4,5,6,7,8,9]
-#     TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
-#     allstudies = Studies.objects.all()
-
-#     tablestudiesheader = ['Studies', 'Yet to Respond' ,'Approval Stage','Closed','Open Actions', 'Total Actions']
+#edward 20211027 bulk pdf fix for large file dl - original func
 
 
-
-#     lstbyWorkshop = blgetbyStdudiesCount(allstudies,YetToRespondQue,ApprovalQue,QueClosed,QueOpen,TotalQue)
-
-#     allactions = ActionItems.objects.all()
-#     tableallheader = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
-#     lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
-#     tableallheadermodified =  ['Study Action No','Study Name', 'Discipline' ,'Recommendations','Response','Initial Risk']
-#     filename = [] # for appending filename place before for loop
-
-#     #Guna
-
-#     lstclosed = ActionItems.objects.filter(QueSeries =99)
-
-#     if (request.POST.get('GeneratePDF')):
-#         x=ActionItems.objects.all()  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
-
-#         y= x.values()
-#         for item in y :
-#             i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file
-#             j = (i + '.pdf')  # easier to breakdown j & to append further on
-#             del item["id"]
-#             data_dict=item
-#             out_file = staticmedia + j
-#             pdfgenerate(atrtemplate,out_file,data_dict)#returns from pdfgenerator #edward added atrtemplate location in parameters
-#             filename.append(j) #can only append str, appending j shows the filename for userview instead of whole location
-#             context1={
-#                 'filename' : filename,
-#                 'table': True,
-#                 'lstbyWorkshop' : lstbyWorkshop,
-#                 'lstofallactions' : lstofallactions,
-#             }
-#         return render(request, 'userT/closeoutsheet.html', context1)
-
-
-#     context = {
-#         'lstclosed' : lstclosed,
-#         'lstbyWorkshop' : lstbyWorkshop,
-#         'lstofallactions' : lstofallactions,
-#         'tablestudiesheader' : tablestudiesheader,
-
-#     }
-
-#     return render(request, 'userT/closeoutsheet.html', context)
-#edward end 20210820 pdf bulk
 
 def closeoutsheet(request): #new naming convention - all small letters
     QueOpen = [0,1,2,3,4,5,6,7,8,9]
@@ -1916,33 +1862,6 @@ def closeoutsheet(request): #new naming convention - all small letters
     }
 
     return render(request, 'userT/closeoutsheet.html', context)
-
-# def closeoutsheet(request):
-#     filename = [] # for appending filename place before for loop
-#     if (request.POST.get('GeneratePDF')):
-#         x=ActionItems.objects.filter(StudyName='HAZID')  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
-#         y= x.values()
-#         for item in y :
-#             i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file
-#             j = (i + '.pdf')  # easier to breakdown j
-#             del item["id"]
-#             data_dict=item
-#             out_file = 'static/media/' + j
-#             pdfgenerate('atrtemplateautofontreadonly.pdf',out_file,data_dict)
-#             filename.append(out_file) #can only append str
-#             context={
-#                 'filename' : filename,
-#                 'table': True
-#             }
-#             #return HttpResponse('TEST')
-#         #     return render(request, 'userT/closeoutsheet.html', context)
-#         # return render(request, 'userT/closeoutsheet.html')
-#         return render(request, 'userT/closeoutsheet.html', context)
-#     return render(request, 'userT/closeoutsheet.html')
-
-
-# for  making view all actions clickable & obtain the id using update view
-
 
 class pmtrepviewall(UpdateView):
     template_name = "userT/reppmtviewall.html" #the html is missing object_list

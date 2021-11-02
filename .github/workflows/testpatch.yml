@@ -32,6 +32,17 @@ jobs:
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="" --include="" --filter=""
+        path: /pdfschedule.sh
+        remote_path: /opt/bitnami/projects/HSETool/pdfschedule.sh
+        remote_host: 52.77.81.191
+        remote_port: 22
+        remote_user: bitnami
+        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
+
+    - name: test Sync files usert views
+      uses: burnett01/rsync-deployments@4.1
+      with:
+        switches: -avzr --delete --exclude="" --include="" --filter=""
         path: /userT/views.py
         remote_path: /opt/bitnami/projects/HSETool/userT/views.py
         remote_host: 52.77.81.191
@@ -50,61 +61,28 @@ jobs:
         remote_user: bitnami
         remote_key: ${{ secrets.LIGHTSAIL_KEY }}
 
-    - name: test Sync files static Javascript misc.js
+    - name: test Sync files usert businesslogic
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="" --include="" --filter=""
-        path: /static/Javascript/misc.js
-        remote_path: /opt/bitnami/projects/HSETool/static/Javascript/misc.js
+        path: /userT/parameters.py
+        remote_path: /opt/bitnami/projects/HSETool/userT/parameters.py
         remote_host: 52.77.81.191
         remote_port: 22
         remote_user: bitnami
         remote_key: ${{ secrets.LIGHTSAIL_KEY }}
 
-    - name: test Sync files static generalcss tabsticky.css
+    - name: test Sync files usert businesslogic
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="" --include="" --filter=""
-        path: /static/generalcss/tabsticky.css
-        remote_path: /opt/bitnami/projects/HSETool/static/generalcss/tabsticky.css
+        path: /userT/management/commands/bulkpdfcloseouts.py
+        remote_path: /opt/bitnami/projects/HSETool/userT/management/commands/bulkpdfcloseouts.py
         remote_host: 52.77.81.191
         remote_port: 22
         remote_user: bitnami
         remote_key: ${{ secrets.LIGHTSAIL_KEY }}
 
-    - name: test Sync files static userT Templates incltopnavbar.html
-      uses: burnett01/rsync-deployments@4.1
-      with:
-        switches: -avzr --delete --exclude="" --include="" --filter=""
-        path: /userT/Templates/userT/incltopnavbar.html
-        remote_path: /opt/bitnami/projects/HSETool/userT/Templates/userT/incltopnavbar.html
-        remote_host: 52.77.81.191
-        remote_port: 22
-        remote_user: bitnami
-        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
-
-    - name: test Sync files static userT Templates reppmtexcel.html
-      uses: burnett01/rsync-deployments@4.1
-      with:
-        switches: -avzr --delete --exclude="" --include="" --filter=""
-        path: /userT/Templates/userT/reppmtexcel.html
-        remote_path: /opt/bitnami/projects/HSETool/userT/Templates/userT/reppmtexcel.html
-        remote_host: 52.77.81.191
-        remote_port: 22
-        remote_user: bitnami
-        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
-
-    - name: test Sync files static userT Templates base3.html
-      uses: burnett01/rsync-deployments@4.1
-      with:
-        switches: -avzr --delete --exclude="" --include="" --filter=""
-        path: /userT/Templates/userT/base3.html
-        remote_path: /opt/bitnami/projects/HSETool/userT/Templates/userT/base3.html
-        remote_host: 52.77.81.191
-        remote_port: 22
-        remote_user: bitnami
-        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
-  
     - name: testing changing user group for SFTP transferred files 
       uses: appleboy/ssh-action@master #github marketplace app 
       with:
