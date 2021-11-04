@@ -46,9 +46,13 @@ class UserAdmin2(BaseUserAdmin):
     list_filter = ['admin']
     ordering = ('email',)
 
+class ActionRoutesAdmin(admin.ModelAdmin):
+    list_display =('id','Organisation' ,'Disipline','Subdisipline','Actionee','ProjectPhase')
+    list_editable = ('Actionee','ProjectPhase')
+
 admin.site.register(CustomUser,UserAdmin2)
 #admin.site.register(Group)
-admin.site.register(ActionRoutes)
+admin.site.register(ActionRoutes,ActionRoutesAdmin)
 admin.site.register(Studies)
 admin.site.register(RiskMatrix)
 admin.site.register(Phases)

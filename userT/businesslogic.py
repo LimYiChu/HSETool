@@ -425,8 +425,8 @@ def blbuildSubmittedemail(ID,ActioneeApproverReject, RejectReason=""):
     Optional Parameter of reject reason can be passed in to state reason in content'''
 
     urlview = f"/pmtrepviewall/{ID}/view"
-    urlviewApprover = "/ApproverList/" # Not used yet thinking of redoing url below for simplification
-    urlviewRejection = "/ActioneeList/"
+    urlviewApprover = f"/ApproverList/{ID}/approve" # Not used yet thinking of redoing url below for simplification
+    urlviewRejection = f"/ActioneeList/{ID}/update"
     Content=[]
 
     #Changing the waythis is done since retreiving single  object plus doesnt work with filter and values ori code below with 
@@ -440,15 +440,14 @@ def blbuildSubmittedemail(ID,ActioneeApproverReject, RejectReason=""):
         'ActioneeSubject' : studyActionNo + " from " + studyName + " has been submitted ",
         'ApproverSubject' : studyActionNo + " from " + studyName + " has been approved ",
         'RejectSubject' : studyActionNo + " from " + studyName + " has been rejected ",
-        'ActioneeContent' : "To view this, please go to " + paremailurl +urlview + " . To approve go to your dashboard/approver que, to approve this and other actions",
-        'ApproverContent' : "To view this, please go to " + paremailurl +urlview + " . To approve go to your dashboard/approver que, to approve this and other actions",
-        'RejectContent' : "Rejection Reason : " + RejectReason + ". To attend to this go to your dashboard, view of rejection is available at " + paremailurl +urlview,
+        'ActioneeContent' : "To view this, please go to " + paremailurl + urlviewApprover + " . To approve go to your dashboard/approver que, to approve this and other actions",
+        'ApproverContent' : "To view this, please go to " + paremailurl + urlviewApprover + " . To approve go to your dashboard/approver que, to approve this and other actions",
+        'RejectContent' : "Rejection Reason : " + RejectReason + ". To attend to this go to your dashboard, view of rejection is available at " + paremailurl +urlviewRejection,
     }
 
     #as pythonic as it gets
     Content = [ v for k,v in dictofsubjectcontent.items() if k.startswith(ActioneeApproverReject)]
   
-   
     return Content
 
 def blgetHistoryforUser(useremail, actioneeroutes):
