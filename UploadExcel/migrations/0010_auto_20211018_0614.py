@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('UploadExcel', '0009_actionitems_uploadexcel_queseri_9f4706_idx'),
+        ('UploadExcel', '0009_auto_20210908_0645'),
     ]
 
     operations = [
@@ -15,4 +15,3 @@ class Migration(migrations.Migration):
             index=models.Index(fields=['QueSeries', 'Organisation', 'Disipline', 'Subdisipline'], name='UploadExcel_QueSeri_9f4706_idx'),
         ),
     ]
- 

@@ -544,13 +544,10 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
         if (self.request.POST.get('Pullback')):
 
             return super().form_valid(form)
+        
         if (self.request.POST.get('Delete')):
-                #  need another intermediate screen for approval no comments
-            AttachmentID = self.request.POST.get ('filepk') # hidden file that holds ID of the attachment
-            ActionItemID = form.instance.id
-            Status = Attachments.mdlDeleteAttachment.mgrDeleteAttachmentbyID(AttachmentID)
-
-            return redirect('ActioneeFormMixin' , pk=ActionItemID)
+            #if delete function required for approver to copy from actioneemixin
+            pass
 
         if (self.request.POST.get('Next')):
             return super().form_valid(form)
@@ -826,7 +823,7 @@ class ActioneeItemsMixin(UserPassesTestMixin,UpdateView):
 
         queryset=ActionItems.objects.all()
         return queryset.get(id=self.kwargs['pk'])
-
+        
     def get_context_data(self,**kwargs):
         IdAI = self.kwargs.get("pk") #its actually the id and used as foreign key
         context = super().get_context_data(**kwargs)
@@ -856,9 +853,11 @@ class ActioneeItemsMixin(UserPassesTestMixin,UpdateView):
 
         if (self.request.POST.get('Delete')):
                 #  need another intermediate screen for approval no comments
-            AttachmentID = self.request.POST.get ('filepk') # hidden file that holds ID of the attachment
+            AttachmentID = self.request.POST.get ('Delete') 
             ActionItemID = form.instance.id
             Status = Attachments.mdlDeleteAttachment.mgrDeleteAttachmentbyID(AttachmentID)
+           
+            
 
             return redirect('ActioneeFormMixin' , pk=ActionItemID)
 

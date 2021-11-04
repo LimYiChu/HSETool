@@ -145,8 +145,9 @@ class Phases (models.Model):
 class Studies (models.Model):
     StudyName = models.CharField(max_length=200, null=True)
     ProjectPhase = models.CharField(max_length=200, null=True)
-    AttendanceList  = models.CharField(max_length=1000, null=True)
+    AttendanceList  = models.CharField(max_length=200, null=True)
     DateConducted = models.DateField(auto_now_add=True,null=True)
+    Form = models.CharField(max_length=100, null=True)
     objects = models.Manager()
     class Meta:
        verbose_name_plural = "Studies" #this if not done gives a view of Studiess
@@ -187,6 +188,9 @@ class ActionRoutes(models.Model):
     Approver6       =   models.CharField(max_length=100, null=True,blank=True)
     Approver7       =   models.CharField(max_length=100, null=True,blank=True)
     Approver8       =   models.CharField(max_length=100, null=True,blank=True)
+
+    ProjectPhase =   models.ForeignKey(Phases, on_delete=models.SET_NULL,null=True,blank=True)
+
     objects = models.Manager()
     ActioneeRo = ActioneeManager()
     ApproverRo = ApproverManager()
