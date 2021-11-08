@@ -6,95 +6,94 @@
 <!--
 <h1>Your Actions</h1>comment for pushing to main
 -->
+<!--hello world-->
+
 <head>
-    
+
     <script type="text/javascript">
-        
-     
+
+
     </script>
-  </head>
-  <body onload="initiategoopiechartmainDB()">
-  <div style="display: none" id="jsondatapieActionee" data-json="{{ pieactioneenew}}"></div>
-  <div style="display: none" id="jsondatapieApprover" data-json="{{ pieapprovernew}}"></div>
-  <!--breadcrumbs-->
-  <h4><b>
-    {%include "userT/inclbcmaindashboard.html"%}
-</b></h4>
-<br> 
-      
+</head>
 
+<body onload="initiategoopiechartmainDB()">
+    <div style="display: none" id="jsondatapieActionee" data-json="{{ pieactioneenew}}"></div>
+    <div style="display: none" id="jsondatapieApprover" data-json="{{ pieapprovernew}}"></div>
+    <!--breadcrumbs-->
+    <h4><b>
+            {%include "userT/inclbcmaindashboard.html"%}
+        </b></h4>
+    <br>
 
-<div class="col-md-12 center" style="left:20pt" >
-<div class="card" style="width: auto; overflow: scroll;" >
-    
-    <h5>
-    
-        <div class="row">
-            <div class="col-md-12" >
-            <div class="card">
-                    <div class="card-header" style="background-color: #ffffff;"  >
+    <div class="col-md-12 center" style="left:20pt">
+        <div class="card" style="width: auto; overflow: scroll;">
+            <h5>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header" style="background-color: #ffffff;">
 
-                    <a href="/ActioneeList" >Actionee Action   - You have a total of {{totalactioneeaction}} actions in your que.</a>
-                    
+                                <a href="/ActioneeList">Actionee Action - You have a total of {{totalactioneeaction}}
+                                    actions in your que.</a>
+
+                            </div>
+
+                            <div class="card-body ">
+                                <a href="/ActioneeList">
+                                    <div style="float:left;" id="piechart0"></div>
+                                    <div style="float:left;" id="piechart1"></div>
+                                    <!--DONT ADD WIDTH TO ELEMENT, resize from google chart-->
+                                    <div style="float:left;" id="piechart2"></div>
+                                    <div style="float:left;" id="piechart3"></div>
+                                    <div style="float:left;" id="piechart4"></div>
+                                    <div style="float:left;" id="piechart5"></div>
+                                    <div style="float:left;" id="piechart6"></div>
+                                    <div style="float:left;" id="piechart7"></div>
+                                    <div style="float:left;" id="piechart8"></div>
+                                    <div style="float:left;" id="piechart9"></div>
+                            </div>
+
+                        </div>
+                        <!--<a class="h5" href="/ActioneeList">Go to All Your Actions</a>-->
+                        <!--Not used-->
+
                     </div>
-                <div >
-                
-                    <div class="card-body " > 
-                        <a href="/ActioneeList">
-                        <div style="float:left;" id="piechart0" ></div> 
-                        <div style="float:left;" id="piechart1" ></div> <!--DONT ADD WIDTH TO ELEMENT, resize from google chart-->
-                        <div style="float:left;" id="piechart2" ></div>
-                        <div style="float:left;" id="piechart3" ></div>
-                        <div style="float:left;" id="piechart4" ></div>
-                        <div style="float:left;" id="piechart5" ></div>
-                        <div style="float:left;" id="piechart6" ></div>
-                        <div style="float:left;" id="piechart7" ></div>
-                        <div style="float:left;" id="piechart8" ></div>
-                        <div style="float:left;" id="piechart9" ></div>
-                    </div>
-                
                 </div>
-            <!--<a class="h5" href="/ActioneeList">Go to All Your Actions</a>--><!--Not used-->
-            </div>                      
-            </div>
-        </div> 
-        
-        <div class="row">         
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header" style="background-color: #ffffff;">
-                            <a href="/ApproverList">
-                        Approver Actions - You have a total of {{totalapproveraction}} actions in your que. 
-                            </a>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header" style="background-color: #ffffff;">
+                                <a href="/ApproverList">
+                                    Approver Actions - You have a total of {{totalapproveraction}} actions in your que.
+                                </a>
+                            </div>
+                            <div class="card-body ">
+                                <a href="/ApproverList">
+
+                                    <div style="float:left;" id="apppiechart0"></div>
+                                    <div style="float:left;" id="apppiechart1"></div>
+                                    <!--DONT ADD WIDTH TO ELEMENT, resize from google chart-->
+                                    <div style="float:left;" id="apppiechart2"></div>
+                                    <div style="float:left;" id="apppiechart3"></div>
+                                    <div style="float:left;" id="apppiechart4"></div>
+                                    <div style="float:left;" id="apppiechart5"></div>
+                                    <div style="float:left;" id="apppiechart6"></div>
+                                    <div style="float:left;" id="apppiechart7"></div>
+                                    <div style="float:left;" id="apppiechart8"></div>
+                                    <div style="float:left;" id="apppiechart9"></div>
+                            </div>
+                            <!--<a class="h5" href="/ApproverList">Go to Your Pending Approvals</a>-->
+                            <!--Not Used-->
+                        </div>
                     </div>
-                    <div class="card-body " > 
-                      <a href="/ApproverList">
-
-                        <div style="float:left;" id="apppiechart0" ></div>
-                        <div style="float:left;" id="apppiechart1" ></div> <!--DONT ADD WIDTH TO ELEMENT, resize from google chart-->
-                        <div style="float:left;" id="apppiechart2" ></div>
-                        <div style="float:left;" id="apppiechart3" ></div>
-                        <div style="float:left;" id="apppiechart4" ></div>
-                        <div style="float:left;" id="apppiechart5" ></div>
-                        <div style="float:left;" id="apppiechart6" ></div>
-                        <div style="float:left;" id="apppiechart7" ></div>
-                        <div style="float:left;" id="apppiechart8" ></div>
-                        <div style="float:left;" id="apppiechart9" ></div>
-            </div>
-            <!--<a class="h5" href="/ApproverList">Go to Your Pending Approvals</a>--> <!--Not Used-->
-            </div>
-            </div>
+                </div>
+            </h5>
         </div>
+    </div>
 
-    
-</h5>
-</div>
-</div>
-</div>
-</div>
+    <br>
 
-<br>
-
-{%endblock%}
+    {%endblock%}
 
 </body>
