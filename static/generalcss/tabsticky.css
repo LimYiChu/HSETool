@@ -1,54 +1,92 @@
-.postitnote  {
-    width:250px; /*original value width 250px, height240px*/
+.postitnote {
+  width: 250px;
+  /*original value width 250px, height240px*/
   height: auto;
-  position:relative;
-  background:beige;
-  overflow:hidden;
-  margin:30px auto;
-  padding:20px;
-  border-radius:0 0 0 30px/45px;
-  font-family: 'Times New Roman', cursive;
-  line-height:1.7em;
-  font-size:19px;
-  } 
-  
-  thead input {
-    width: 100%;
-  } 
-  .pagination a.active {
-    background-color: #4CAF50;
-    color: white;
-  }
-  
-  .pagination a:hover:not(.active) {background-color: #ddd;}
-
-}
-/* Style the tab */
-.tab {
+  position: relative;
+  background: beige;
   overflow: hidden;
-  border: 1px solid #ccc;
-  background-color: #f1f1f1;
+  margin: 30px auto;
+  padding: 20px;
+  border-radius: 0 0 0 30px/45px;
+  font-family: 'Times New Roman', cursive;
+  line-height: 1.7em;
+  font-size: 19px;
 }
 
-/* Style the buttons that are used to open the tab content */
-.tab button {
-  background-color: inherit;
-  float: left;
+thead input {
+  width: 100%;
+}
+
+.pagination a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.pagination a:hover:not(.active) {
+  background-color: #ddd;
+}
+
+#download-excel {
+  position: absolute;
+  right: 5px;
   border: none;
+  padding: 5px;
+  border: 1px solid #007bff;
+}
+
+#download-excel :hover {
+  text-decoration: none;
+  color: white;
+  background-color: #007bff;
+}
+
+/* Style the tab */
+.tab-h5 {
+  overflow: hidden;
+  display: -webkit-box;
+  padding-top: 5px;
+  padding-bottom: 10px;
+}
+
+.tab-h5-top button {
+  float: left;
+  margin: 5px;
+  border: solid #ddd 3px;
+  border-radius: 5px;
   outline: none;
   cursor: pointer;
   padding: 14px 16px;
   transition: 0.3s;
 }
 
+/* Style the buttons that are used to open the tab content */
+.tab-h5 button {
+  background-color: white;
+  -webkit-box-flex: 1;
+  padding: 10px 15px 6px 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 300px;
+  min-width: 50px;
+  border: solid #ddd 1px;
+  border-bottom: none;
+  border-radius: 5px 5px 0 0;
+  text-overflow: ellipsis;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
 /* Change background color of buttons on hover */
-.tab button:hover {
+.tab-h5-top button.active,
+.tab-h5 button:hover {
   background-color: #ddd;
 }
 
 /* Create an active/current tablink class */
-.tab button.active {
-  background-color:#2ea9e2;
+.tab-h5-top button.active,
+.tab-h5 button.active {
+  background-color: #93D3F0;
+  border: solid #086996 1px;
 }
 
 /* Style the tab content */
@@ -58,14 +96,21 @@
   border: 1px solid #ccc;
   border-top: none;
 }
+
 .tabcontent {
-  animation: fadeEffect 1s; /* Fading effect takes 1 second */
+  animation: fadeEffect 1s;
+  /* Fading effect takes 1 second */
 }
 
 /* Go from zero to full opacity */
 @keyframes fadeEffect {
-  from {opacity: 0;}
-  to {opacity: 1;}
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 div.sticky {
@@ -76,6 +121,7 @@ div.sticky {
   font-size: 20px;
   width: 100%;
 }
+
 .card-columns {
-column-count: 2;
+  column-count: 2;
 }

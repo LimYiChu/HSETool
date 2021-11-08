@@ -9,258 +9,261 @@
 
 <body onload="openReport(event, 'All')">
   <h4><b>
-  <nav>
-    <!-- 20210828 edward UI added border color -->
-    <ol class="breadcrumb"  style="background-color: #ffffff; position:relative;  right: -40px; bottom: -25px;">
-      <li class="breadcrumb-item normal">
-        <a href="/main">Dashboard</a>
-      </li>
-      <li class="breadcrumb-item active">
-          <a aria-current="page">Close-Out Sheets</a>
-      </li>
-      <li>
-        <!-- This supposed to be empty to maintain the parent - child RS in css -->
-      </li>
-    </ol>
-  </nav>
-</b></h4>
-<br>
-<br>
-<div class="col-md-12 center" style="left:20pt">
-  <div class="card" style="width: auto;" >
-<h6>
-  <div class="row">
-    <div class="col-md-12">
-        <div class="card">
-          <div><h5 class="card-header">
-              Generate Close-Out Sheets
-          </h5></div>
-          <div class="tab">
-            <button class="tablinks" onclick="openReport(event, 'All')">All</button>
-            {% for items in lstbyWorkshop%}
-            <button class="tablinks" onclick="openReport(event, '{{items.0}}')" >{{items.0}}</button>
-            {%endfor%}
-          </div>
+      <nav>
+        <!-- 20210828 edward UI added border color -->
+        <ol class="breadcrumb" style="background-color: #ffffff; position:relative;  right: -40px; bottom: -25px;">
+          <li class="breadcrumb-item normal">
+            <a href="/main">Dashboard</a>
+          </li>
+          <li class="breadcrumb-item-active">
+            <a aria-current="page">Close-Out Sheets</a>
+          </li>
+          <li>
+            <!-- This supposed to be empty to maintain the parent - child RS in css -->
+          </li>
+        </ol>
+      </nav>
+    </b></h4>
+  <br>
+  <br>
+  <div class="col-md-12 center" style="left:20pt">
+    <div class="card" style="width: auto;">
+      <h6>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div>
+                <h5 class="card-header">
+                  Generate Close-Out Sheets
+                </h5>
+              </div>
+              <div class="tab-h5">
+                <button class="tablinks" onclick="openReport(event, 'All')">All</button>
+                {% for items in lstbyWorkshop%}
+                <button class="tablinks" onclick="openReport(event, '{{items.0}}')">{{items.0}}</button>
+                {%endfor%}
+              </div>
 
-          <form  action="#" method="POST"> 
-          <div id = "All"class="tabcontent" style="border-left:0pc; border-right:0px;border-bottom:0px">
-          
-            
-           
-            <br>
-            <div style="float:left;" class="col-md-6">
-              <div class ="card">
-                <div><h5 class="card-header">
-                  Summary
-              </h5></div>
-              <table class="table">
-                <thead>
-                  <tr class="filters">
-                    {%for items in tablestudiesheader%}
-                  <th>
-                    {{items}}
-                  </th>
-                  {%endfor%}
-                    
-                    
-                </tr>
-            </thead>
-            <tbody>
-              {% for items in lstbyWorkshop%}
-              
-              <tr>
-                <td>{{items.0}}</td>
-                <td>{{items.1}}</td>
-                
-                <td>{{items.2}}</td>
-                <td>{{items.3}}</td>
-                <td>{{items.4}}</td>
-                <td>{{items.5}}</td>
-              </tr> 
-              {%endfor%}
-              
-              </tbody>
-                </tbody>
-              </table>
-            </div>
-            <br>
-            </div>
-            
-            <div style="float:left;" class="col-md-6">
-              <div class ="card">
-                
-                  <!-- edward 20210820 bulk download -->
-                <div><h5 class="card-header">
-                  <a> Bulk Download
-                   <!-- <a>< {{lstclosed}} >Bulk Download <i class="bi bi-file-earmark-spreadsheet" ></i> </button> </a> -->
-                   <button type="button" class="btn btn-outline-primary btn-sm;" style = "float: right; padding-bottom:1pt; padding-top: 1pt">  <a class ="article-title" href="{% url  'mergedcloseouprint' %}" style="float: right;"> Download  </button> </a></a>
-               </h5></div>
-                <!-- edward 20210820 bulk download -->
+              <form action="#" method="POST">
+                <div id="All" class="tabcontent" style="border-left:0pc; border-right:0px;border-bottom:0px">
 
-                <div><h5 class="card-header">
-                  Close-Out Sheet
-              </h5></div>
-              <table id="closeoutsheet" class="table" style="width:100%">
-                <thead class="thead">
-                      <tr class="filters">
-                        <th width="3%">
-                          StudyActionNo
-                        </th>
-                        <th width="3%">
-                          StudyName
-                        </th>
-                        <th width="3%">
-                          Discipline
-                        </th>
-                        <th width="3%">
-                          Status
-                        </th>
-                    
-                    
-                </tr>
-            </thead>
-            <tbody>
-              
-              {% for closeditem  in lstclosed %}
-             
-            <tr>
-              <td><a class="article-title" href="{% url  'closeoutprint' closeditem.id %}">{{ closeditem.StudyActionNo }}</a></td>
-              <td>{{ closeditem.StudyName }}</td>
-              <td>{{ closeditem.Disipline }}</td>
-              
-              
-              <td>Closed</td>
-              
-             
-            {%endfor%}
-              
-              </tbody>
-                </tbody>
-              </table>
+
+
+                  <br>
+                  <div style="float:left;" class="col-md-6">
+                    <div class="card">
+                      <div>
+                        <h5 class="card-header">
+                          Summary
+                        </h5>
+                      </div>
+                      <table class="table">
+                        <thead>
+                          <tr class="filters">
+                            {%for items in tablestudiesheader%}
+                            <th>
+                              {{items}}
+                            </th>
+                            {%endfor%}
+
+
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for items in lstbyWorkshop%}
+
+                          <tr>
+                            <td>{{items.0}}</td>
+                            <td>{{items.1}}</td>
+
+                            <td>{{items.2}}</td>
+                            <td>{{items.3}}</td>
+                            <td>{{items.4}}</td>
+                            <td>{{items.5}}</td>
+                          </tr>
+                          {%endfor%}
+
+                        </tbody>
+                        </tbody>
+                      </table>
+                    </div>
+                    <br>
+                  </div>
+
+                  <div style="float:left;" class="col-md-6">
+                    <div class="card">
+
+                      <!-- edward 20210820 bulk download -->
+                      <div>
+                        <h5 class="card-header">
+                          <a> Bulk Download
+                            <!-- <a>< {{lstclosed}} >Bulk Download <i class="bi bi-file-earmark-spreadsheet" ></i> </button> </a> -->
+                            <button type="button" class="btn btn-outline-primary btn-sm;"
+                              style="float: right; padding-bottom:1pt; padding-top: 1pt"> <a class="article-title"
+                                href="{% url  'mergedcloseouprint' %}" style="float: right;"> Download </button>
+                          </a></a>
+                        </h5>
+                      </div>
+                      <!-- edward 20210820 bulk download -->
+
+                      <div>
+                        <h5 class="card-header">
+                          Close-Out Sheet
+                        </h5>
+                      </div>
+                      <table id="closeoutsheet" class="table" style="width:100%">
+                        <thead class="thead">
+                          <tr class="filters">
+                            <th width="3%">
+                              StudyActionNo
+                            </th>
+                            <th width="3%">
+                              StudyName
+                            </th>
+                            <th width="3%">
+                              Discipline
+                            </th>
+                            <th width="3%">
+                              Status
+                            </th>
+
+
+                          </tr>
+                        </thead>
+                        <tbody>
+
+                          {% for closeditem  in lstclosed %}
+
+                          <tr>
+                            <td><a class="article-title"
+                                href="{% url  'closeoutprint' closeditem.id %}">{{ closeditem.StudyActionNo }}</a></td>
+                            <td>{{ closeditem.StudyName }}</td>
+                            <td>{{ closeditem.Disipline }}</td>
+
+
+                            <td>Closed</td>
+
+
+                            {%endfor%}
+
+                        </tbody>
+                        </tbody>
+                      </table>
+                    </div>
+                    <br>
+                  </div>
+                </div>
+                <!--different colour for different status-->
+                {% for items in lstbyWorkshop%}
+                <div id="{{items.0}}" class="tabcontent" style="border-left:0pc; border-right:0px;border-bottom:0px">
+                  {%csrf_token%}
+
+                  <br>
+                  <div class="col-md-6">
+                    <div class="card">
+                      <div>
+                        <h5 class="card-header">
+                          Summary
+                        </h5>
+                      </div>
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th>
+                              Status
+                            </th>
+                            <th>
+                              Total No.
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+
+                          <tr>
+                            <td>
+                              Open Actions
+                            </td>
+                            <td>{{items.4}}</td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Yet To Respond
+                            </td>
+                            <td>{{items.1}}</td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Pending Approval
+                            </td>
+                            <td>{{items.2}}</td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Closed
+                            </td>
+                            <td>{{items.3}}</td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Total
+                            </td>
+                            <td>{{items.5}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <br>
+                  </div>
+                </div>
+                {%endfor%}
             </div>
-            <br>
-            </div>
-          </div>
-<!--different colour for different status-->
-          {% for items in lstbyWorkshop%}
-          <div id = "{{items.0}}"class="tabcontent" style="border-left:0pc; border-right:0px;border-bottom:0px">
-            {%csrf_token%}
-            
-            <br>
-            <div class="col-md-6">
-              <div class ="card">
-                <div><h5 class="card-header">
-                  Summary
-              </h5></div>
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>
-                      Status
-                    </th>
-                    <th>
-                      Total No.
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  
-                  <tr>
-                    <td>
-                      Open Actions
-                    </td>
-                    <td>{{items.4}}</td> 
-                  </tr>
-                  <tr>
-                    <td>
-                      Yet To Respond
-                    </td>
-                    <td>{{items.1}}</td> 
-                  </tr>
-                  <tr>
-                    <td>
-                      Pending Approval
-                    </td>
-                    <td>{{items.2}}</td> 
-                  </tr>
-                  <tr>
-                    <td>
-                    Closed
-                    </td>
-                    <td>{{items.3}}</td> 
-                  </tr>
-                  <tr>
-                    <td>
-                    Total
-                    </td>
-                    <td>{{items.5}}</td> 
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          
-            <br> 
-          </div>
-          </div>
-          {%endfor%}
-        </div> <!--Brings the button to the bottom-->
-          <div class ="card-footer">
-              
-            {%csrf_token%} 
-            <!-- temporary disabled
+            <!--Brings the button to the bottom-->
+            <div class="card-footer">
+
+              {%csrf_token%}
+              <!-- temporary disabled
           <button class="btn btn-outline-primary my-2 my-sm-0"  name ="GeneratePDF" type="submit" value="Click" style="float: right;">Download All</button>
           <button class="btn btn-outline-primary my-2 my-sm-0"  name ="/main" type="submit" value="Click" style="float: right;">Cancel</button> 
             -->
-          <p></p>
+              <p></p>
 
 
 
-          <br> 
-          </div>
-         
-      
-
-
-          
-
-        </form>
-
-
-            
-              </div>
+              <br>
             </div>
-          </div> 
 
 
-          <br>
-{% if table %}
-<style>
+
+
+
+
+            </form>
+
+
+
+          </div>
+        </div>
+    </div>
+
+
+    <br>
+    {% if table %}
+    <style>
       .card-columns {
         column-count: 5;
-     }
-</style>  
+      }
+    </style>
 
-<div class="card" style="width: 100%;">
-        <div class="card-header h5">
-            <div>Close-Out Sheets <div class="form-group"><input type="submit" name="allActions1" value="Download All" class="btn btn-outline-primary" style="float: right;"></div> </div>   
+    <div class="card" style="width: 100%;">
+      <div class="card-header h5">
+        <div>Close-Out Sheets <div class="form-group"><input type="submit" name="allActions1" value="Download All"
+              class="btn btn-outline-primary" style="float: right;"></div>
         </div>
-          <br>
-          <div class="col-md-12"> </div><br>
-          <ul class="list-unstyled card-columns">
-            {% for x in filename %}
-              <li class="list-group-item"><a href=/static/media/{{x}}> {{x}}</a></li>
-            {% endfor%}
-          </ul>
-
-         
-         
-</div>
-</h6>
-  </div>
-</div>
-{% endif %}            
-</body>
-
-
-{% endblock %}
-{% endblock %}
+      </div>
+      <br>
+      <div class="col-md-12"> </div><br>
+      <ul class="list-unstyled card-columns">
+        {% for x in filename %}
+        <li class="list-group-item"><a href=/static/media/{{x}}> {{x}}</a> </li> {% endfor%} </ul> </div> </h6> </div>
+            </div> {% endif %} </body> {% endblock %} {% endblock %}

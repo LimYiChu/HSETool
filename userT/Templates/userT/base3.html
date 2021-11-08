@@ -1,111 +1,114 @@
 {% load static %}
-<!doctype html >
-<html lang="en" >
-  <head >
-    
-    {%include "userT/inclscriptslinkbase3.html"%}
-    
-<title>Your Dashboard</title>
-</head>
-  
-<body>
-<!-- div encompasses whole page -->
-<div>
+<!doctype html>
+<html lang="en">
 
-<!--Top Nav Bar-->
+<head>
+
+  {%include "userT/inclscriptslinkbase3.html"%}
+
+  <title>Your Dashboard</title>
+</head>
+
+<body>
+  <!-- div encompasses whole page -->
+  <div>
+
+    <!--Top Nav Bar-->
 
     {%include "userT/incltopnavbar.html"%}
 
 
-<br>
-<div class="wrapper">
-    <div class="section">
-   <div class="hamburger">
-     <a href="#">
-       <i class="fas fa-bars" style="position: absolute; left: 40px; top:95px; font-size: 30px; color:black;"> Menu</i>
-     </a>
-   </div>
- 
- <script>
-    var hamburger = document.querySelector(".hamburger");
-	hamburger.addEventListener("click", function(){
-		document.querySelector("body").classList.toggle("active");
-	})
+    <br>
+    <div class="wrapper">
+      <div class="section">
+        <div class="hamburger">
+          <a href="#">
+            <i class="fas fa-bars" style="position: absolute; left: 40px; top:95px; font-size: 30px; color:black;">
+              Menu</i>
+          </a>
+        </div>
 
-  </script>
+        <script>
+          var hamburger = document.querySelector(".hamburger");
+          hamburger.addEventListener("click", function () {
+            document.querySelector("body").classList.toggle("active");
+          })
+        </script>
 
-  <!--sidebar left-->
-<div class="row" >
-    <div class="sidebar" style="margin-left:-225px" >
-                {%include "userT/inclsidebar.html"%}
-                <div class="sidebar-sticky col-md-2" style="background-color:rgb(255, 255, 255); border-right:rgb(255, 255, 255) solid 1px;">  
-                    {%block ToolTip%}
-                    {%endblock%}
-                  
-                    {%block RejectReason%}
-                    {%endblock%}
-                  </div> 
-    </div>  
-  
-    
+        <!--sidebar left-->
+        <div class="row">
+          <div class="sidebar" style="margin-left:-225px">
+            {%include "userT/inclsidebar.html"%}
+            <div class="sidebar-sticky col-md-2"
+              style="background-color:rgb(255, 255, 255); border-right:rgb(255, 255, 255) solid 1px;">
+              {%block ToolTip%}
+              {%endblock%}
 
-<!-- main content -->
+              {%block RejectReason%}
+              {%endblock%}
+            </div>
+          </div>
 
-<main role="main" class="col-lg" style="position: relative; " > 
 
-        {%block Actionee%}
 
-        {%endblock%}
-        
-        
-        {%block ApproverList%}
+          <!-- main content -->
 
-        {%endblock%}
-        {%block reppmt%}
+          <main role="main" class="col-lg" style="position: relative; ">
 
-        {%endblock%}
-        {%block Actioneelist%}
+            {%block Actionee%}
 
-        {%endblock%}
-        {%block maindashboard%}
+            {%endblock%}
 
-        {%endblock%}
-        {%block ActioneeDetails%}
 
-        {%endblock%}
+            {%block ApproverList%}
 
-        {%block ApproverDetails%}
+            {%endblock%}
+            {%block reppmt%}
 
-        {%endblock%}
+            {%endblock%}
+            {%block Actioneelist%}
 
-        {%block FileUpload%}
+            {%endblock%}
+            {%block maindashboard%}
 
-        {%endblock%}
-        
-        {%block RejectionComments%}
+            {%endblock%}
+            {%block ActioneeDetails%}
 
-        {% endblock %}
+            {%endblock%}
 
-        {%block incInitialRiskColour%}
+            {%block ApproverDetails%}
 
-        {%endblock%}
+            {%endblock%}
 
-        {%block Signatories%}
+            {%block FileUpload%}
 
-        {%endblock%}
+            {%endblock%}
 
-        
+            {%block RejectionComments%}
 
-        {%block Buttons%}
+            {% endblock %}
 
-        {%endblock%}
-        {%block ClosedOut%}
+            {%block incInitialRiskColour%}
 
-        {% endblock %}
-</main>
+            {%endblock%}
 
-</div>
-</div>
-</div>
+            {%block Signatories%}
+
+            {%endblock%}
+
+
+
+            {%block Buttons%}
+
+            {%endblock%}
+            {%block ClosedOut%}
+
+            {% endblock %}
+          </main>
+
+        </div>
+      </div>
+    </div>
 </body>
+
 </html>

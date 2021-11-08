@@ -33,7 +33,7 @@
   border-top: 50px solid transparent;
   /* Go big on the size, and let overflow hide */
   border-bottom: 50px solid transparent;
-  border-left: 30px solid rgb(169, 177, 170);
+  border-left: 30px solid #086996;
   position: absolute;
   top: 50%;
   margin-top: -50px;
@@ -60,22 +60,30 @@
 
 .breadcrumb li:first-child a {
   padding-left: 10px;
+  background: #086996;
+  color: white;
+}
+
+.breadcrumb li:first-child a:after {
+  border-left-color: #086996;
 }
 
 .breadcrumb li:nth-child(2) a {
-  background: rgb(169, 177, 170);
+  background: #086996;
+  color: white;
 }
 
 .breadcrumb li:nth-child(2) a:after {
-  border-left-color: rgb(169, 177, 170);
+  border-left-color: #086996;
 }
 
 .breadcrumb li:nth-child(3) a {
-  background: rgb(128, 231, 180);
+  background: #086996;
+  color: white;
 }
 
 .breadcrumb li:nth-child(3) a:after {
-  border-left-color: rgb(128, 231, 180);
+  border-left-color: #086996;
 }
 
 .breadcrumb li:nth-child(4) a {
@@ -106,13 +114,16 @@
 }
 
 .breadcrumb li a:hover {
-  background: #2ea9e2;
+  background: #93D3F0;
 }
 
 .breadcrumb li a:hover:after {
-  border-left-color: #2ea9e2 !important;
+  border-left-color: #93D3F0 !important;
 }
 
+.breadcrumb-item-active {
+  color: white;
+}
 
 .steps {
   margin: 40px;
