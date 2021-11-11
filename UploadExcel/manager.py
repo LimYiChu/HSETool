@@ -10,7 +10,7 @@ class QuerySet(models.QuerySet):
 
                     'id','StudyActionNo','StudyName__StudyName','Disipline',
                     'Subdisipline', 'Cause', 'Recommendations','DueDate',
-                    'InitialRisk'
+                    'InitialRisk','Response'
                 )
 
     #edward 20210729 changing icontains to iexact for Disc,SubDisc

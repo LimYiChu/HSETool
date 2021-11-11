@@ -1124,7 +1124,7 @@ def blgetSignatoryemailbyque2(lstdiscsuborg,queseries):
     for items in pairSignatories:
         items.pop(0) # basically removes the Actionee, Approver from pair and maintains name
     
-    abbrevatedemail=pairSignatories[queseries-1:queseries+1] # sends to current person who submits and the next person, dont know why this is -1 should be just queseries
+    abbrevatedemail=pairSignatories[queseries:queseries+1] # sends to current person who submits and the next person, dont know why this is -1 should be just queseries
     
     lstfinal = [''.join(ele) for ele in abbrevatedemail] #this is just list comprehensioin to return a list and not list of list
     
