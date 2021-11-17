@@ -9,91 +9,98 @@
 <!--hello world-->
 
 <head>
-
     <script type="text/javascript">
-
-
     </script>
 </head>
 
-<body onload="initiategoopiechartmainDB()">
+<div>
+  <body onload="initiategoopiechartmainDB()">
     <div style="display: none" id="jsondatapieActionee" data-json="{{ pieactioneenew}}"></div>
-    <div style="display: none" id="jsondatapieApprover" data-json="{{ pieapprovernew}}"></div>
-    <!--breadcrumbs-->
-    <h4><b>
+      <div style="display: none" id="jsondatapieApprover" data-json="{{ pieapprovernew}}"></div>
+      <!--breadcrumbs-->
+        <h4>
+          <b>
             {%include "userT/inclbcmaindashboard.html"%}
-        </b></h4>
-    <br>
-
-    <div class="col-md-12 center" style="left:20pt">
-        <div class="card" style="width: auto; overflow: scroll;">
-            <h5>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header" style="background-color: #ffffff;">
-
-                                <a href="/ActioneeList">Actionee Action - You have a total of {{totalactioneeaction}}
-                                    actions in your que.</a>
-
-                            </div>
-
-                            <div class="card-body ">
-                                <a href="/ActioneeList">
-                                    <div style="float:left;" id="piechart0"></div>
-                                    <div style="float:left;" id="piechart1"></div>
-                                    <!--DONT ADD WIDTH TO ELEMENT, resize from google chart-->
-                                    <div style="float:left;" id="piechart2"></div>
-                                    <div style="float:left;" id="piechart3"></div>
-                                    <div style="float:left;" id="piechart4"></div>
-                                    <div style="float:left;" id="piechart5"></div>
-                                    <div style="float:left;" id="piechart6"></div>
-                                    <div style="float:left;" id="piechart7"></div>
-                                    <div style="float:left;" id="piechart8"></div>
-                                    <div style="float:left;" id="piechart9"></div>
-                            </div>
-
+          </b>
+        </h4>
+<br>
+<!--YHS comment; this page is still required to be standarised i.e. font size, color, type. Did not work on this to avoid conflict work with Ishna-->
+  <!--17/11/21 YHS added incnicedashboard for the 4 buttons on top--> 
+  <div class="container-fluid">    
+  {%include "userT/inclnicedashboard.html"%}
+  <!--end YHS added incnicedashboard for the 4 buttons on top--> 
+    <div class="row">
+        <div class="col-md-9" style="left:20pt"> <!--17/11/21 YHS changed this to col-md-9 from col-md-12 to make way for the notification panel on the right of the page-->
+        <h5> <!--YHS - to realign whether this needs to be h5?-->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card2"> <!--17/11/21 YHS changed this card class to card2 css class to be consistent with the whole page-->
+                        <div class="card2-header" style="width: auto;" >
+                            <a href="/ActioneeList">Actionee Action - You have a total of {{totalactioneeaction}}
+                                actions in your que.</a>
                         </div>
-                        <!--<a class="h5" href="/ActioneeList">Go to All Your Actions</a>-->
-                        <!--Not used-->
+
+                        <div class="card2-body" style="width: auto; overflow:scroll;">
+                            <a href="/ActioneeList">
+                                <div style="float:left;" id="piechart0" ></div>
+                                <div style="float:left;" id="piechart1"></div>
+                                <!--DONT ADD WIDTH TO ELEMENT, resize from google chart-->
+                                <div style="float:left;" id="piechart2"></div>
+                                <div style="float:left;" id="piechart3"></div>
+                                <div style="float:left;" id="piechart4"></div>
+                                <div style="float:left;" id="piechart5"></div>
+                                <div style="float:left;" id="piechart6"></div>
+                                <div style="float:left;" id="piechart7"></div>
+                                <div style="float:left;" id="piechart8"></div>
+                                <div style="float:left;" id="piechart9"></div>
+                        </div>
 
                     </div>
+                    <!--<a class="h5" href="/ActioneeList">Go to All Your Actions</a>-->
+                    <!--Not used-->
+
                 </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header" style="background-color: #ffffff;">
-                                <a href="/ApproverList">
-                                    Approver Actions - You have a total of {{totalapproveraction}} actions in your que.
-                                </a>
-                            </div>
-                            <div class="card-body ">
-                                <a href="/ApproverList">
-
-                                    <div style="float:left;" id="apppiechart0"></div>
-                                    <div style="float:left;" id="apppiechart1"></div>
-                                    <!--DONT ADD WIDTH TO ELEMENT, resize from google chart-->
-                                    <div style="float:left;" id="apppiechart2"></div>
-                                    <div style="float:left;" id="apppiechart3"></div>
-                                    <div style="float:left;" id="apppiechart4"></div>
-                                    <div style="float:left;" id="apppiechart5"></div>
-                                    <div style="float:left;" id="apppiechart6"></div>
-                                    <div style="float:left;" id="apppiechart7"></div>
-                                    <div style="float:left;" id="apppiechart8"></div>
-                                    <div style="float:left;" id="apppiechart9"></div>
-                            </div>
-                            <!--<a class="h5" href="/ApproverList">Go to Your Pending Approvals</a>-->
-                            <!--Not Used-->
+            </div>
+<br>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card2 card-default"> <!--17/11/21 YHS changed this card class to card2 css class to be consistent with the whole page-->
+                        <div class="card2-header" style="width: auto;">
+                            <a href="/ApproverList">
+                                Approver Actions - You have a total of {{totalapproveraction}} actions in your que.
+                            </a>
                         </div>
+                        <div class="card2-body" style="width: auto; overflow:scroll;">
+                            <a href="/ApproverList">
+                                <div style="float:left;" id="apppiechart0"></div>
+                                <div style="float:left;" id="apppiechart1"></div>
+                                <!--DONT ADD WIDTH TO ELEMENT, resize from google chart-->
+                                <div style="float:left;" id="apppiechart2"></div>
+                                <div style="float:left;" id="apppiechart3"></div>
+                                <div style="float:left;" id="apppiechart4"></div>
+                                <div style="float:left;" id="apppiechart5"></div>
+                                <div style="float:left;" id="apppiechart6"></div>
+                                <div style="float:left;" id="apppiechart7"></div>
+                                <div style="float:left;" id="apppiechart8"></div>
+                                <div style="float:left;" id="apppiechart9"></div>
+                        </div>
+                        <!--<a class="h5" href="/ApproverList">Go to Your Pending Approvals</a>-->
+                        <!--Not Used-->
                     </div>
                 </div>
-            </h5>
+            </div>
+        </h5>
         </div>
+         <!--17/11/21 YHS added incnicedashboard for the right hand side notificaiton panel--> 
+        <div class="col-md-3">
+          {%include "userT/inclnicedashboardnotification.html"%}
+        </div>
+        <!--17/11/21 end--> 
     </div>
+  </div>
+</div>
+<br>
 
-    <br>
-
-    {%endblock%}
-
+{%endblock%}
+ 
 </body>
