@@ -5,6 +5,62 @@ import operator
 from UploadExcel.models import ActionItems
 from .models import *
 
+def blallactionscomdissubQ(routes,queseries,reducedfields):
+    '''Uses Q object for more efficient queries. pass in all routes from actinee or approver.
+    contextRoutes is a list of routes for a certain que. This function then loops through all routes within a certain queseries
+    Addtionally Pass in reduced fields so it does not retrieve all values and queseries . 
+    '''
+    allactions = []
+
+    if routes :
+        QObjectSeries =[]
+        for x, item in enumerate(routes):
+            organisation   = item.Organisation
+            discipline  = item.Disipline
+            subdiscipline  = item.Subdisipline
+
+            QObjectSeries.append(Q(**{'Disipline':discipline, 'Subdisipline': subdiscipline, 
+                                'Organisation': organisation, 'QueSeries' : queseries}))
+        filters = reduce(operator.or_,QObjectSeries)
+        allactions = ActionItems.mdlallActionItemsCount.mgr_GeneralItemsFiltersKwargsQReduced(filters,reducedfields)
+
+    return allactions
+
+def blActionCountbyStudiesStreamQ(contextRoutes,studies,que):
+    '''Need to change this to q object '''
+    streamscount = []
+    streamdisc  = []
+    for x, item in enumerate(contextRoutes):
+        blvarorganisation   = item.Organisation
+        blvardisipline  = item.Disipline
+        blvarSUbdisipline  = item.Subdisipline
+        blque               =   que
+       
+        streamscount.append(ActionItems.myActionItemsCount.mgr_myItemsCountbyStudies(studies,blvarorganisation,
+                                                                blvardisipline,
+                                                                blvarSUbdisipline,blque))
+        streamdisc.append (blvardisipline)
+    return streamscount, streamdisc
+
+def blfuncActionCountQ(routes,que):
+    '''Pass routes in and it counts everything in your routes . 
+    '''
+    count=0
+    allstreams = []
+    QObjectSeries =[]
+    if routes: 
+        for x, item in enumerate(routes):
+            organisation   = item.Organisation
+            discipline  = item.Disipline
+            subdiscipline  = item.Subdisipline
+            QObjectSeries.append(Q(**{'Disipline':discipline, 'Subdisipline': subdiscipline, 
+                                'Organisation': organisation, 'QueSeries' : que}))
+        
+        ORQobjroutes = reduce(operator.or_,QObjectSeries)
+        count += ActionItems.mdlallActionItemsCount.mgr_GeneralItemsCountbyFiltersKwargsQ(ORQobjroutes)
+    
+    return count
+
 def blQobjectQueSeries (queseries):
     '''Passes the QSeries item and makes it into OR call. Insteaed of multiple select  statment for each Que Series 
     the Q object strings multiple OR object'''

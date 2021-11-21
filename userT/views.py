@@ -271,27 +271,32 @@ def googlecharts88(request):
 # edward 20210713 end new chart
 
 def mainDashboard (request):
-
-    #get workshops
+    ''' My Dashboard view. Rewrite Nov 21. The starting point  or at main uses this view
+    1. Get all studies first. not using phases at this stage at this is more for an individual dashboard 
+    2. Get routes and separate them to actionee or approver routes
+    '''
+    usersemail=request.user.email
+    ActioneeActions = []
+    queActionee = 0
+    Actionee_R = []
+    Approver_R = []
+    totalactioneeaction = 0
     studies = blgetAllStudies()
+    #get all routes based on email and then get seprate actione and approver routes 
+    dict_allrou = blgetuserRoutes(usersemail)
+    Actionee_R =    dict_allrou.get('Actionee_Routes')
+    Approver_R =    dict_allrou.get('Approver_Routes')
+    
+    
+    reducedfileds= ['id','StudyActionNo','Disipline' ,'QueSeries', 'DueDate','InitialRisk']
+    #ActioneeActions = blallActionsComDisSub(Actionee_R,0)
+    ActioneeActions = blallactionscomdissubQ(Actionee_R,queActionee,reducedfileds)
+    totalactioneeaction = blfuncActionCountQ(Actionee_R,0)
 
-    #get all routes
-    dict_allRou = blgetuserRoutes(request.user.email)
+    rem_list = []   
+    ActioneeActionsrisk = bladdriskelements(list(ActioneeActions),[])
 
-    #Just get Actionee and Approver Routes, tied into model managers
-    Actionee_R =    dict_allRou.get('Actionee_Routes')
-    Approver_R =    dict_allRou.get('Approver_Routes')
-
-    ActionCount = blfuncActionCount(Actionee_R,0)
-    totalactioneeaction=sum(ActionCount)
-
-   #****chart parameters to pass in
-
-    QueOpen = [1,2,3,4,5,6,7,8,9]
-    QueClosed =99
-    # **** End Chart Parameters
-
-    #***Initilise list count
+    #***Initilise empty list to hold values
     stripCount =[]
     striplabels = []
     chartappdata=[]
@@ -304,33 +309,30 @@ def mainDashboard (request):
 
     for eachstudy in studies:
         StudyName = eachstudy.StudyName
-
         labels=[]
-
         countbyStudies, labels= blActionCountbyStudiesStream(Actionee_R,StudyName,0)
-        countbyStudiesClosed, labelsClosed= blActionCountbyStudiesStream(Actionee_R,StudyName,QueClosed)
-
         stripCount, striplabels ,  = stripAndmatch(countbyStudies,labels)
 
-        if stripCount != [] : # Just to get a better view in HTML instead of rendering spaces for empty charts
+        # Just to get a better view in HTML instead of rendering spaces for empty charts
+        if stripCount != [] : 
             googlechartlist = blprepGoogChartsbyStudies(striplabels,stripCount,StudyName)
             actioneefinallist.append(googlechartlist)
             googlechartlist =[]
 
         #complete sub routine for actionee and then go to approver
         for QueSeries, Routes in Approver_R.items():
-
+         
             listofCountManyApprovers,labelsapp =blActionCountbyStudiesStream(Routes,StudyName,QueSeries)
             sumoflistCount = sum(listofCountManyApprovers)
             appractioncount.append(sumoflistCount)
             if (sumoflistCount > 0):
                 labelsApprover.append('Level'+str(QueSeries))
                 dataApprover.append(sumoflistCount)
-
+                
                 chartappdata = blprepGoogChartsbyStudies(labelsApprover,dataApprover,StudyName)
                 sumoflistCount = 0
 
-
+        
         apprfinalist.append(chartappdata)
     
     
@@ -341,10 +343,7 @@ def mainDashboard (request):
     dataApprover = []
     labelsApprover =[]
     countbyStudies = []
-    
-
     approverjsonlist = blremoveemptylist(apprfinalist)
-    
 
     Context = {
         'totalapproveraction' : totalapproveraction,
@@ -358,41 +357,45 @@ def mainDashboard (request):
 
     return render(request, 'userT/maindashboard.html',Context) #ok checked by yhs in terms of capital letters.
 
+#Todelete if not used
+# def getActionDetails(request, id=None):
+#     Items = get_object_or_404(ActionItems,id=id)
+#     context = {
+#             "Items":Items
 
-def getActionDetails(request, id=None):
-    Items = get_object_or_404(ActionItems,id=id)
-    context = {
-            "Items":Items
+#     }
+#     return render(request, "userT/detailactions.html", context) #ok checked by yhs in terms of capital letters.
 
-    }
-    return render(request, "userT/detailactions.html", context) #ok checked by yhs in terms of capital letters.
 
-#below view is for list of actions under actionee ,
-# it returns a list of actions under object_list
 class ActioneeList (ListView):
-    template_name   =   'userT/actionlistactionee.html' #yhs changed to all small letters
+    '''This class is for Your Actions/Actionee list, basically uses email to get all actions within actionee routes 
+    And then assigns a colour on it. Returns the queryset and context into object_list(default django)'''
+
+    template_name   =   'userT/actionlistactionee.html'
 
     def get_queryset(self):
 
         userZemail = self.request.user.email
+        queactionee = 0
+        ActioneeRoutes =[]
+        ActioneeActions =[]
         ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
-        ActioneeActions = blallActionsComDisSub(ActioneeRoutes,0)
-        
-        rem_list = []
-        #rem_list = ['Consequence','FutureAction','Deviation','QueSeries','QueSeriesTarget','DateCreated']
-        finalactionitems = bladdriskcolourandoptimise(ActioneeActions,rem_list)
-
-        #print (finalactionitems)
-        return finalactionitems
+        reducedfileds= ['id','StudyActionNo','StudyName__StudyName','Disipline' ,'Subdisipline','Cause','Recommendations',
+        'QueSeries', 'DueDate','InitialRisk']
+        ActioneeActions = blallactionscomdissubQ(ActioneeRoutes,queactionee,reducedfileds)
+        finalactionitems = bladdriskelements(list(ActioneeActions),[])
+        return ActioneeActions
 
     def get_context_data(self, **kwargs):
+        
         context = super().get_context_data(**kwargs)
         context['riskmatrix'] = blgetRiskMatrixColour()
 
         return context
 
 class HistoryList (ListView):
-    template_name   =   'userT/historylist.html' #ok checked by yhs in terms of capital letters.
+    '''Populates what you have done under History under Your Actions'''
+    template_name   =   'userT/historylist.html' 
 
     def get_queryset(self):
         #historically only get queue for all approver levels that he person is the actionee instead of everything else
@@ -441,38 +444,53 @@ class HistoryList (ListView):
         # Need to make a list to feed into bladdriskcolourandoptimise as that function is expecting a list of dictionaries
         rejecteditemsbyhistory = [blgetActionItemsbyid(rejecteditemsid)]
         newrejecteditemsbyhist                        = bladdriskcolourandoptimise(rejecteditemsbyhistory)
-        #Last part , pass back to HTML and render in tab
-        #print (rejecteditemsbyhistory)
         context['rejectedhistory'] = rejecteditemsbyhistory
         context['approveractions'] = finalappractionitems
 
         return context
 
 class ApproverList (ListView):
-    template_name   =   'userT/actionlistapprover.html' #yhs changed to all small letters
+    
+    '''This is the view under Your actions and when you click Approver Actions. It gives all 
+    approver actions across multiple que series. Get routes that maps against que series and then use '''
+    template_name   =   'userT/actionlistapprover.html'
 
     def get_queryset(self):
+
         userZemail = self.request.user.email
         ApproverActions = []
+        ApproverActionsX = []
         dict_allRou = blgetuserRoutes(userZemail)
+        #gets approver routes by que series and slots QuerySet for routes according to key dict Approver Routes
         Approver_R =    dict_allRou.get('Approver_Routes')
-
-
+        reducedfileds= ['id','StudyActionNo','StudyName__StudyName','Disipline' ,'Subdisipline','Cause','Recommendations',
+        'QueSeries', 'DueDate','InitialRisk']
         for key, value in Approver_R.items():
-            #x = blfuncActioneeComDisSub(value,key)
-            allactionItems= blallActionsComDisSub(value,key)
-            ApproverActions.insert(key,allactionItems)
 
-
-        for items in ApproverActions:
-            #have to do a loop as its adding another level compared to actionee
-            #rem_list removed from equation as now its getting only relevant data
-            finalactionitems= bladdriskcolourandoptimise(items) #The way python works its not using this finally but editing ApproverActions directly
+            # allactionItems= blallActionsComDisSub(value,key)
+            # ApproverActions.insert(key,allactionItems)
+            
+            allactionItems= blallactionscomdissubQ(value,key,reducedfileds)    
+            finalactionitems = bladdriskelements(list(allactionItems),[])
+            ApproverActions.insert (key,allactionItems)
+        
+        #   print ("ApproverActions",ApproverActions)
+        # for items in ApproverActions:
+        #     #have to do a loop as its adding another level compared to actionee
+        #     #rem_list removed from equation as now its getting only relevant data
+        #     finalactionitems= bladdriskelements(items,[]) #The way python works its not using this finally but editing ApproverActions directly
+        
+        
 
         return ApproverActions
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['riskmatrix'] = blgetRiskMatrixColour()
+        
+        #change the codes to just make it read the count and say if there is a table uploaded
+        #Nov 21, need to apply to rest as well
+        #context['riskmatrix'] = blgetRiskMatrixColour()
+        context['riskmatrix'] = blgetriskmatrixtable()
+
         return context
 class DetailActioneeItems (DetailView):
     template_name   =   'userT/actiondetailactionee.html' #yhs changed to all small letters
@@ -1333,7 +1351,7 @@ def repoverallexcel (request):
     all_actionwithfk = blannotatefktomodel(all_actions)
     
     dfalllist = blgetActionStuckAtdict(all_actionwithfk) # getting a list of everything
-    # all_actionsopt = bladdriskcolourandoptiforflater(dfalllist, blank)
+    # all_actionsopt = bladdriskelements(dfalllist, blank)
     dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format
     dfallsorted = blsortdataframes(dfall,dfcompletecolumns) # sort dfall
 
@@ -1442,14 +1460,14 @@ def repPMTExcel (request,phase=""):
     #this annotate function needs to first because it doesnt like addtional items added to query set
     dictofallactions    = blannotatefktomodel(phasesactions)
     #this sequence is important otherwise doesnt work
-    phaseswithrisk = bladdriskcolourandoptiforflater(dictofallactions,[])
+    phaseswithrisk = bladdriskelements(dictofallactions,[])
     dictofallactions    = blgetdictActionStuckAt(phaseswithrisk)
     
     # # # edward 20210803 dataframes excel
     # all_actions =   ActionItems.objects.all().values()#'StudyActionNo','StudyName','ProjectPhase', 'Facility','Guidewords', 'Deviation', 'Cause', 'Consequence', 'Safeguard','InitialRisk','ResidualRisk', 'Disipline' ,'Recommendations','DueDate', 'Response','FutureAction')
     # rem_list2 = ['QueSeries','QueSeriesTarget','DateCreated'] #OPtimising data to be removed
     # blank=[]
-    # all_actionsopt = bladdriskcolourandoptiforflater(all_actions, blank)
+    # all_actionsopt = bladdriskelements(all_actions, blank)
     # dfall1 = pd.DataFrame.from_dict(all_actionsopt) # sort dfall
     # dfall = blsortdataframes(dfall1,dfallcolumns)
 
@@ -1463,7 +1481,7 @@ def repPMTExcel (request,phase=""):
     all_actions =   ActionItems.objects.all().values()
     all_actionsannotate = blannotatefktomodel(all_actions)
     blank=[]
-    all_actionsopt = bladdriskcolourandoptiforflater(all_actionsannotate, blank)
+    all_actionsopt = bladdriskelements(all_actionsannotate, blank)
     dfall1 = pd.DataFrame.from_dict(all_actionsopt) # sort dfall
     dfall = blsortdataframes(dfall1,dfallcolumns)
     #edward 20211001 pd rejected excel 
@@ -1476,7 +1494,7 @@ def repPMTExcel (request,phase=""):
     rejectedactions = blphasegetrejectedactionsQ (revisiongte,queseriesrejected,justenoughattributes,phase)
     rejecteddictofallactions    = blannotatefktomodel(rejectedactions)
     #this sequence is important otherwise doesnt work
-    rejectedallactionitems = bladdriskcolourandoptiforflater(rejecteddictofallactions,[])
+    rejectedallactionitems = bladdriskelements(rejecteddictofallactions,[])
     dfrejection = pd.DataFrame.from_dict(rejectedallactionitems)
     
     #for Disipline based view
@@ -1532,7 +1550,7 @@ def repPMTExcel (request,phase=""):
             # all_actions =   ActionItems.objects.all().values()
             # all_actionsannotate = blannotatefktomodel(all_actions)
             # blank=[]
-            # all_actionsopt = bladdriskcolourandoptiforflater(all_actionsannotate, blank)
+            # all_actionsopt = bladdriskelements(all_actionsannotate, blank)
             # dfall1 = pd.DataFrame.from_dict(all_actionsopt) # sort dfall
             # dfall = blsortdataframes(dfall1,dfallcolumns)
 

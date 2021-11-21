@@ -156,20 +156,28 @@ def blsortdataframes(dfall,sortedheader) : #use list for sortedheader, just plac
     return sortedfall
 
 
-def bladdriskcolourandoptiforflater (actionitems,removelist):
+def bladdriskelements (actionitems,removelist):
+    ''' Accepts dictionary only items and then extracts InitialRisk using dataframes,
+    then looks up RiskMatrix Model and gets a risk colour. It uses the Combined value in the RiskMatrix to map back to the Risk COlour
+    the second parameter is optional seprate funtinality for removing addtional fields. '''
     
-    dfRiskMatrix = pd.DataFrame(list(RiskMatrix.objects.all().values()))
-            
-    for items in actionitems:
-                [items.pop(key) for key in removelist] # Reducing the data going to html
-                #
-                RiskColour = dfRiskMatrix.loc[dfRiskMatrix['Combined'].isin([items.get('InitialRisk')]),'RiskColour'].tolist() #cant use .item() as its causing an error when not matching
-                
-                if RiskColour:
-                    items['RiskColour'] = RiskColour[0]
-                else: 
-                    items['RiskColour'] = False
-    
+    if actionitems:
+        dfRiskMatrix = pd.DataFrame(list(RiskMatrix.objects.all().values())) 
+        for items in actionitems:
+                    [items.pop(key) for key in removelist] 
+                    RiskValue = dfRiskMatrix.loc[dfRiskMatrix['Combined'].isin([items.get('InitialRisk')]),['RiskColour','Ranking']]
+                    if not RiskValue.empty:
+                        items['RiskColour'] = RiskValue['RiskColour'].item()
+                        items['RiskRanking'] = RiskValue['Ranking'].item()
+                    else: 
+                        items['RiskColour'] = False
+                        items['RiskRanking'] = False
+        
+        dfallactions = pd.DataFrame(actionitems)
+        dfallactionssortbyranking = dfallactions['RiskRanking'].value_counts()
+    else :
+        actionitems = []
+        
     return actionitems
 
 def bladdriskcolourandoptimise (actionitems,removelist=[]):
@@ -220,6 +228,16 @@ def blgetfieldCustomUser(emailid,field):
 def blsetfieldCustomUser(emailid,field,strvalue):
      CustomUser.mdlSetGetField.mgrSetField(emailid,field,strvalue)
 
+def blgetriskmatrixtable ():
+    
+    count = RiskMatrix.objects.all().count()
+
+    if count == 0 :
+        blntable = False
+    elif (count > 0) :
+        blntable = True
+    return blntable
+
 def blgetRiskMatrixColour():
     dictRiskMatrix = RiskMatrix.objects.all().values()
     datadict =[]
@@ -237,8 +255,6 @@ def blgetRiskMatrixAvailable():
         availability = True
     else:
         availability = False
-    
-    print(availability)
     return availability
 
 def blgetuserRoutes(useremail):
@@ -575,9 +591,7 @@ def blgetbyStdudiesCount(Studies,YetToRespondQue,pendingApprovalQue,closedAction
 def blconverttodictforpdf(lstofsignatories): #edward altered this instead of creating new bl because it is only used for closedoutsheet 20210706
     
     for items in lstofsignatories:
-        print(items)
-        # print(items[5])
-        # print(timezone.localtime())
+       
         # if items[5] is None : 
         #     print('TEST')
         time = items[5] 
@@ -1258,27 +1272,22 @@ def blActioneeComDisSubManyStr(contextRoutes,que):
     return firststream, secondstream, thirdstream
     #(Organisation__icontains=blvarorganisation).filter(Disipline__icontains=blvardisipline).filter(Subdisipline__icontains=blvarSUbdisipline)
 
-
-
 def blActionCountbyStudiesStream(contextRoutes,studies,que):
 
     streamscount = []
     streamdisc  = []
-    
-    
     for x, item in enumerate(contextRoutes):
         blvarorganisation   = item.Organisation
         blvardisipline  = item.Disipline
         blvarSUbdisipline  = item.Subdisipline
         blque               =   que
        
-        
         streamscount.append(ActionItems.myActionItemsCount.mgr_myItemsCountbyStudies(studies,blvarorganisation,
                                                                 blvardisipline,
                                                                 blvarSUbdisipline,blque))
         streamdisc.append (blvardisipline)
-    
     return streamscount, streamdisc
+
 def blallActionCountbyStudies(studies,quelist):
 
     count = 0
@@ -1291,7 +1300,8 @@ def blallActionCountbyStudies(studies,quelist):
 
 
 def blfuncActionCount(contextRoutes,que):
-   #just pass your routes it counts everything in your routes
+    '''Pass routes in and it counts everything in your routes . the old way of doing it , should change to the new way
+    '''
     
     allstreams = []
     for x, item in enumerate(contextRoutes):
@@ -1465,22 +1475,4 @@ def blstopcharttoday(content,testtotal,testclosed):
     return updatedcontent
 # edward 20210723 end new graphing to stop on current day
 
-#edward 20210803 excel
-
-def bladdriskcolourandoptiforflater2 (actionitems):
-    
-    dfRiskMatrix = pd.DataFrame(list(RiskMatrix.objects.all().values()))
-            
-    for items in actionitems:
-               
-                #[items.pop(key) for key in removelist] # Reducing the data going to html
-                #
-                RiskColour = dfRiskMatrix.loc[dfRiskMatrix['Combined'].isin([items.get('InitialRisk')]),'RiskColour'].tolist() #cant use .item() as its causing an error when not matching
-                
-                if RiskColour:
-                    items['RiskColour'] = RiskColour[0]
-                else: 
-                    items['RiskColour'] = False
-    
-    return actionitems
 
