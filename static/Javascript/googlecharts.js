@@ -169,7 +169,7 @@ function starterpiemaindashboard ()
               height: 500,
               width: 900,
               
-              chartArea:{left:20,top:100,width:'100%',height:'100%'},
+              chartArea:{left:20,top:100,width:'50%',height:'50%'},
               legend : {position: 'labeled', textStyle: {color: 'black', fontSize: 20}} //have to add this in otherwise charts seem small...like your dick
           };
           

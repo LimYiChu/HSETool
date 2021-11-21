@@ -9,7 +9,7 @@ class QuerySet(models.QuerySet):
                 Subdisipline__iexact=usersubdisipline).filter(QueSeries__iexact=que).values(
 
                     'id','StudyActionNo','StudyName__StudyName','Disipline',
-                    'Subdisipline', 'Cause', 'Recommendations','DueDate',
+                    'Subdisipline', 'Cause', 'Recommendations','DueDate', 'Response',
                     'InitialRisk'
                 )
 

@@ -44,8 +44,8 @@
 
                     <tbody>
                       {%for approverL in object_list%}
-                      {% for routes  in approverL %}
-                        {% for x  in routes %}
+                     
+                        {% for x  in approverL %}
                       <tr>
                         <td><a class="article-title" href="{% url  'ApproveFormMixin' x.id %}">{{ x.StudyActionNo }}</a></td>
                         <td>{{ x.StudyName__StudyName }}</td>
@@ -73,7 +73,7 @@
                        
                         <td>{{ x.Response }}</td>
                         {%endfor%}
-                        {%endfor%}
+                       
                       {%endfor%}
                     </tbody>
                   </table>

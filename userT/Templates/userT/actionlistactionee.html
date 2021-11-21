@@ -44,8 +44,8 @@
               {%include "userT/inclactioneeapprtableheader.html"%}
 
               <tbody>
-                {% for routes  in object_list %}
-                  {% for x  in routes %}
+                {% for x  in object_list %}
+                 
                 <tr>
                   <td><a class="article-title" href="{% url  'ActioneeFormMixin' x.id %}">{{ x.StudyActionNo }}</a></td>
                   <td>{{ x.StudyName__StudyName }}</td>
@@ -72,8 +72,6 @@
                   
 
                 
-                  
-                  {%endfor%}
                 {%endfor%}
                 </tbody>
             
