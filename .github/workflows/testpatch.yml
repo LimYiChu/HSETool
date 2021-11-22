@@ -32,17 +32,6 @@ jobs:
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="" --include="" --filter=""
-        path: /pdfschedule.sh
-        remote_path: /opt/bitnami/projects/HSETool/pdfschedule.sh
-        remote_host: 52.77.81.191
-        remote_port: 22
-        remote_user: bitnami
-        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
-
-    - name: test Sync files usert views
-      uses: burnett01/rsync-deployments@4.1
-      with:
-        switches: -avzr --delete --exclude="" --include="" --filter=""
         path: /userT/views.py
         remote_path: /opt/bitnami/projects/HSETool/userT/views.py
         remote_host: 52.77.81.191
@@ -76,8 +65,19 @@ jobs:
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="" --include="" --filter=""
-        path: /userT/management/commands/bulkpdfcloseouts.py
-        remote_path: /opt/bitnami/projects/HSETool/userT/management/commands/bulkpdfcloseouts.py
+        path: /userT/management/commands/stitchedpdf.py
+        remote_path: /opt/bitnami/projects/HSETool/userT/management/commands/stitchedpdf.py
+        remote_host: 52.77.81.191
+        remote_port: 22
+        remote_user: bitnami
+        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
+
+    - name: test Sync files usert businesslogic
+      uses: burnett01/rsync-deployments@4.1
+      with:
+        switches: -avzr --delete --exclude="" --include="" --filter=""
+        path: /userT/Templates/userT/closeoutsheet.html
+        remote_path: /opt/bitnami/projects/HSETool/userT/Templates/userT/closeoutsheet.html
         remote_host: 52.77.81.191
         remote_port: 22
         remote_user: bitnami
