@@ -24,6 +24,80 @@ from userT.pdfgenerator import *
 import shutil
 # edward 20210929 fk
 from django.db.models import F
+#20211122 edward stitchpdf
+import xlwings as xw
+import img2pdf
+from PIL import Image
+
+#20211122 edward stitchpdf
+def blgenstitchpdf(objactionitemsfk):
+    for items in objactionitemsfk: #objactionitems
+        # closed = (items['QueSeries'] == 99) 
+        closed = True
+        if closed == True :
+            items['StudyActionNo'] = items['StudyActionNo'].replace("/","_")
+            newcloseouttemplate = blsetcloseouttemplate (items['id'])
+            data_dict=items
+            discsub = blgetDiscSubOrgfromID(items['id']) 
+            Signatories = blgetSignotories(discsub) 
+            lstSignatoriesTimeStamp= blgettimestampuserdetails (items['id'], Signatories) 
+            studyactno = items["StudyActionNo"] # i renamed to studyactno
+            studyactnopdf = (studyactno + '.pdf')
+            signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
+            out_file = os.path.join("static/test/",studyactnopdf)
+            file = pdfgenerate(newcloseouttemplate,out_file,data_dict,signatoriesdict)
+            objFk =ActionItems.objects.get(id = items['id']) 
+            ObjAttach = objFk.attachments_set.all()
+            
+            for eachfile in ObjAttach: 
+                filename = os.path.basename(eachfile.Attachment.name)
+                attachmentorigin= bulkdlattachments + filename
+                attachment_name = studyactno + "_" + filename
+                shutil.copy(attachmentorigin ,"static/test/" + attachment_name)
+
+    pdfpath = "static/test/"
+
+    return pdfpath
+
+#20211122 edward stitchpdf
+def blimagetopdf(pdfpath,pdf_list_onlyjpg):
+    """
+
+    Edward
+    Converts .jpg image to .pdf files
+
+    """
+    #jpg
+    for jpgs in pdf_list_onlyjpg:
+        fullpath_jpgs = os.path.join(pdfpath,jpgs)
+        image = Image.open(fullpath_jpgs)
+        pdf_bytes = img2pdf.convert(image.filename)
+        pdf_filename = pdfpath + image.filename
+        pdf_filename_test = os.path.splitext(jpgs)[0]+'.pdf'
+        file = open(pdfpath + pdf_filename_test, "wb")
+        filewrite = file.write(pdf_bytes)
+        closeimage = image.close()
+        finalfileclose = file.close()
+        #return just file is enough actually
+    return finalfileclose 
+
+#20211122 edward stitchpdf
+def blexceltopdf(pdfpath,pdf_list_onlyexcel):
+    """
+    
+    Edward
+    Converts .xlxs to .pdf files
+
+    """
+    # excel 
+    for items in pdf_list_onlyexcel:
+        fullpathexcel = os.path.join(pdfpath,items)
+        pdf_filename_test = os.path.splitext(items)[0]+'.pdf'
+        test = xw.Book(fullpathexcel)
+        exceltopdf = test.to_pdf(pdfpath + pdf_filename_test)
+        closeexceltopdf = test.close()
+
+    return exceltopdf
 
 def bladdfktodict(data_dict,foreignkeys):
     # actiondetails = ActionItems.objects.get(id=ID)
@@ -83,14 +157,7 @@ def blmakedir(makedstdir):
     createddir = os.makedirs(makedstdir,exist_ok=True)
     return createddir
 
-# def blfkattachment(ObjAttach,attachments):
 
-#     for eachfile in ObjAttach: 
-#         filename = os.path.basename(eachfile.Attachment.name)
-#         attachmentorigin = attachments + filename
-
-#         return attachmentorigin
-#this function needs to be fixed
 def blbulkdownload(objactionitems,destinationfolders,createzipfilename): # changedstfolder destinationfolder
     # os.makedirs(makedstdir,exist_ok=True)
     # dir = 'static/media/temp/bulkpdf/'
@@ -697,65 +764,7 @@ def blgetvaliduserinroute (idAI,emailid,History=False):
     else :
         
         return False
-#obsolete code commented by edward on 20210707 after adding signature field & creating new bl function, to be deleted in one month
-# def blgettimestampuserdetails (id, Signatories): 
-#         #pass in all Signatories and ID of action
-#         #return Signatories with Time Stamp
-        
-#         #firstgetcurrentqueseries
-        
-#         lstDictQueSeries = ActionItems.objects.filter(id=id).values('QueSeries')
-#         currentQueSeries = lstDictQueSeries[0].get('QueSeries')
-        
-#         #next get all history that has got to do with ID from history tables
-#         #thinking that if you order by decending then you are done by getting latest first
-#         lstdictHistory = ActionItems.history.filter(id=id).filter(QueSeries=currentQueSeries).order_by('-history_date').values()
-        
-#         finallstoflst = []                                   
-#         for index, items in enumerate(Signatories):
-            
-#             #get each user detail first
-#             objuser = CustomUser.objects.filter(email=items[1]).values()
-           
-#             if objuser:
-#                 fullname =   objuser[0].get('fullname')
-#                 items.append(fullname)
-#                 designation =  objuser[0].get('designation')
-#                 items.append(designation)
 
-#             else:
-                    
-#                 items.append("No User Defined")
-            
-#             if index < currentQueSeries: 
-#                 #get all time stamps for all que series
-#                 #index basically denominates Que series level. if Current que series =2 then only actionee = 0 and Approver 1 has signed
-#                 lstdictHistory = ActionItems.history.filter(id=id).filter(QueSeries=index).order_by('-history_date').values()
-                
-#                 if lstdictHistory: #to fix testing bug
-#                     timestamp = lstdictHistory[0].get('history_date') # get just the first record assume decending is the way togo
-#                 else:
-#                     timestamp = []
-
-#                 items.append(timestamp)
-                
-#                 finallstoflst.append(items)
-                
-#                 items =[]
-            
-#             else:
-#                 #this simply says that i will give a time stamp for rest of levels to 0- no date and time
-                
-#                 items.append(0)
-#                 finallstoflst.append(items)
-#                 items =[]
-        
-    
-#           #que series will decide number of people whom have signed +1 because actionee is 0- Need a matching list index
-        
-#         return finallstoflst
-
-#edward new signatories for closeoutpreint 20210706
 def blgettimestampuserdetails (id, Signatories):
         #pass in all Signatories and ID of action
         #return Signatories with Time Stamp
@@ -1132,13 +1141,17 @@ def blgetSignatoryemailbyque(lstdiscsuborg,queseries):
 
 # edward 20210708 created new bl for signatory by queue 
 def blgetSignatoryemailbyque2(lstdiscsuborg,queseries):
+    """
+    Gets the Signatories by email que & sends email notification to the next person in the que when Action is Submitted or Approved
+    """
     
     pairSignatories = blgetSignotories(lstdiscsuborg) #just reusing what is already done 
 
     for items in pairSignatories:
         items.pop(0) # basically removes the Actionee, Approver from pair and maintains name
-    
-    abbrevatedemail=pairSignatories[queseries:queseries+1] # sends to current person who submits and the next person, dont know why this is -1 should be just queseries
+
+    # sends email notification to the next person in queue
+    abbrevatedemail=pairSignatories[queseries:queseries+1] 
     
     lstfinal = [''.join(ele) for ele in abbrevatedemail] #this is just list comprehensioin to return a list and not list of list
     
@@ -1316,21 +1329,7 @@ def blfuncActionCount(contextRoutes,que):
 
     return allstreams
 
-# def blallphasegetAction(que,phase=""):
-#     '''this function gets all actions and or phases . Pass phase and QueSeries to get count 
-#     of items in a list of QueSeries[open,closed etc]'''
-#     count = 0
 
-#     for eachQs in que:
-#         if phase!="":
-#             filters = {'QueSeries':eachQs,'ProjectPhase__ProjectPhase':phase}
-#         else:
-#             filters = {'QueSeries':eachQs}
-
-#         count += ActionItems.mdlallActionItemsCount.mgr_GeneralItemsCountbyFilters(filters) 
-   
-
-#     return count
 
 
 

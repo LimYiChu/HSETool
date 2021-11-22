@@ -1,4 +1,4 @@
-#edward scheduler
+#edward bulkpdf
 from userT.businesslogic import *
 from django.shortcuts import render
 from django.core.management.base import BaseCommand
@@ -7,7 +7,7 @@ class Command(BaseCommand):
     
     help = 'Creates bulk pdf in & stores them in a zip file' # run py manage.py -h for description of this function
 
-    def handle(self, *args,**options): #sends reminder email for pending actions in basket 
+    def handle(self, *args,**options):
         
         bulkpdfzipfoldername = tempfolder + ("bulkpdffiles" +".zip")
 
