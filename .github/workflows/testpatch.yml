@@ -39,7 +39,7 @@ jobs:
         remote_user: bitnami
         remote_key: ${{ secrets.LIGHTSAIL_KEY }}
 
-    - name: test Sync files usert businesslogic
+    - name: test Sync files usert businesslogic.py
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="" --include="" --filter=""
@@ -50,7 +50,7 @@ jobs:
         remote_user: bitnami
         remote_key: ${{ secrets.LIGHTSAIL_KEY }}
 
-    - name: test Sync files usert businesslogic
+    - name: test Sync files usert parameters.py
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="" --include="" --filter=""
@@ -61,7 +61,18 @@ jobs:
         remote_user: bitnami
         remote_key: ${{ secrets.LIGHTSAIL_KEY }}
 
-    - name: test Sync files usert businesslogic
+    - name: test Sync files usert businesslogicQ.py
+      uses: burnett01/rsync-deployments@4.1
+      with:
+        switches: -avzr --delete --exclude="" --include="" --filter=""
+        path: /userT/businesslogicQ.py
+        remote_path: /opt/bitnami/projects/HSETool/userT/businesslogicQ.py
+        remote_host: 52.77.81.191
+        remote_port: 22
+        remote_user: bitnami
+        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
+
+    - name: test Sync files usert stitchedpdf.py
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="" --include="" --filter=""
@@ -72,12 +83,23 @@ jobs:
         remote_user: bitnami
         remote_key: ${{ secrets.LIGHTSAIL_KEY }}
 
-    - name: test Sync files usert businesslogic
+    - name: test Sync files usert closeoutsheet.html
       uses: burnett01/rsync-deployments@4.1
       with:
         switches: -avzr --delete --exclude="" --include="" --filter=""
         path: /userT/Templates/userT/closeoutsheet.html
         remote_path: /opt/bitnami/projects/HSETool/userT/Templates/userT/closeoutsheet.html
+        remote_host: 52.77.81.191
+        remote_port: 22
+        remote_user: bitnami
+        remote_key: ${{ secrets.LIGHTSAIL_KEY }}
+
+    - name: test Sync files Trackem urls.py
+      uses: burnett01/rsync-deployments@4.1
+      with:
+        switches: -avzr --delete --exclude="" --include="" --filter=""
+        path: /Trackem/urls.py
+        remote_path: /opt/bitnami/projects/HSETool/Trackem/urls.py
         remote_host: 52.77.81.191
         remote_port: 22
         remote_user: bitnami
