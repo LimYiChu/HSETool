@@ -45,6 +45,11 @@ def pdfsendtoclient(input_pdf_path, data_dict):
     
 # 20211122 edward stitchingpdf
 def stitchingpdf(pdf_list_onlypdf,pdfpath):
+
+    """
+    Keeps the PDF AcroNodes intact while looping over all the PDFs that are generated
+    
+    """
     output = PdfWriter()
     num = 0
     output_acroform = None
@@ -92,6 +97,8 @@ def stitchingpdf(pdf_list_onlypdf,pdfpath):
         num +=1
     output.trailer[PdfName('Root')][PdfName('AcroForm')] = output_acroform
     final_output = output.write("static/test/mergepdffolder/testingmerge.pdf")
+
+    return final_output
 
 
 

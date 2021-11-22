@@ -208,69 +208,15 @@ def googlecharts88(request):
        subtotal.append(items['count']) #how to access dictionary object by
 
     content =  newlist
-    # print(content1)
-    # blstopcharttoday(content1)
 
-# edward 20210723 end new graphing to stop on current day
-# content2 using hardcoded data for testing
-    # content = [
-    #                 ['2021-06-08', 68, 68],
-    #                 ['2021-06-08', 68, 68],
-    #                 ['2021-07-08', 67, 68],
-    #                 # ['2021-07-09', 62, 65],
-    #                 # ['2021-07-15', 58, 58],
-    #                 # ['2021-07-16', 57, 58],
-    #                 # ['2021-07-20', 57, 58],
-    #                 # ['2021-07-24', 57, 58],
-    #                 ['2021-07-25', 54, 56],
-    #                 ['2021-07-30', 14, 20],
-    #                 # ['2021-08-26', 13, 14],
-    #                 # ['2021-10-15', 10, 12],
-    #                 # ['2021-10-16', 8, 10],
-    #                 # ['2021-10-17', 0, 5]
-    #             ]
     content1 = blstopcharttoday(content)
-
-    # strtoday = dt.today().strftime('%Y-%m-%d') #todays date as string
-    # today= dt.today()#.strftime('%Y-%m-%d') #todays date as string
-    # closed =(len(ActionItems.objects.filter(QueSeries=99))) #closed items
-    # TotalActionItems = (len(ActionItems.objects.all())) #total items
-    # actual = (TotalActionItems-closed) # use this to append the actual data
-    # currentdate = [today,' ',actual]
-    # empty=[]
-
-    # for items in content:
-    #     items[0] = datetime.datetime.strptime(items[0], '%Y-%m-%d').date() # datetime obj has problems bcs comparing down to the minute
-
-    # if not any(today in items for items in content) :
-    #     content.insert(0,currentdate)
-    #     print("InsertedDate", content)
-    # else :
-    #     content
-    # sortedcontent = sorted(content, key=itemgetter(0)) # itemgetter(0) sorts by first entry inside list of list (date in this case)
-    # print(sortedcontent)
-
-    # for items in sortedcontent:
-    #     items[0]=items[0].strftime('%Y-%m-%d')
-    #     if items[0]> strtoday:
-    #         items.pop(2)
-
-    # content = sortedcontent
-
-
-
 
     context = {
 
-        # 'contentplanned' :contentplanned,
-        # 'contentactual' : contentactual
         'content' : content1
 
-
-
-
     }
-    #return JsonResponse()
+
     return render(request, 'userT/googlecharts88.html',context) #ok checked by yhs
 # edward 20210713 end new chart
 
@@ -665,46 +611,7 @@ class ApproverConfirm(UpdateView):
 
         return queryset.get(id=self.kwargs['id'])
 
-#Guna using History Form Mixin - Need to delete below
-# class HistoryFormApprover(ApproveItemsMixin):
 
-#     template_name = "userT/historyformapprover.html"
-#     form_class = frmApproverConfirmation
-#     success_url = '/HistoryList/'
-
-#     def get_context_data(self,**kwargs):
-#         id = self.object.id #its actually the id and used as foreign key
-
-#         context = super().get_context_data(**kwargs)
-
-#         discsuborg = blgetDiscSubOrgfromID(id)
-#         ApproverLevel = blgetApproverLevel(discsuborg)
-
-#         # #sets the signatory directly in getting timestamp
-#         Signatories = blgetSignotories(discsuborg)
-#         #edward 20210707 trying to use consolidated version blgettimestampuserdetails
-#         lstSignatoriesTimeStamp= blgettimestampuserdetails (id, Signatories)
-#         object_list = self.object.attachments_set.all()
-
-#         context['object_list'] = object_list
-#         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(id)
-#         context['Approver'] = False
-#         context ['ApproverLevel'] = ApproverLevel
-#         context ['Signatories'] = lstSignatoriesTimeStamp
-
-#         return context
-#     def form_valid(self,form):
-
-#         if (self.request.POST.get('Pullback')):
-
-#             return super().form_valid(form)
-
-#         if (self.request.POST.get('Cancel')):
-# #
-#            return HttpResponseRedirect('/HistoryList/')
-
-#     def get_success_url(self):
-#         return reverse ('HistoryConfirm', kwargs={'id': self.object.id })
 
 class HistoryConfirm(UpdateView):
 
@@ -1217,31 +1124,6 @@ def rptbyUser(request, **kwargs):
     ActioneeCount = blfuncActionCount(Actionee_R,0)
     return render (request, 'userT/reports.html') #yhs checked
 
-# def GeneratePDF (request):
-#     filename = [] # for appending filename place before for loop
-#     if (request.POST.get('GeneratePDF')):
-#         x=ActionItems.objects.all()  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
-#         y= x.values()
-#         for item in y :
-#             i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file
-#             j = (i + '.pdf')  # easier to breakdown j
-#             del item["id"]
-#             data_dict=item
-#             x = 'static/multiple.pdf'
-#             out_file = 'static/media/' + j   # sending file to media folder inside static folder
-#             generated_pdf = pypdftk.fill_form(
-#                 pdf_path = x,
-#                 datas = data_dict,
-#                 out_file = out_file,
-#             )
-#             filename.append(str(generated_pdf)) #can only append str
-#             context={
-#                  'filename' : filename,
-#                  'table': True
-#             }
-
-#         return render(request, 'userT/GeneratePDF.html', context)
-#     return render(request, 'userT/GeneratePDF.html')
 
 def ReportingTable(request):
     sub = Subscribe()
@@ -1789,11 +1671,6 @@ def closeoutprint(request,**kwargs):
 def mergedcloseoutprint(request):
 
     " Sends bulkpdf files with attachments in their repective folders in a zipped file to Client "
-   
-    # bulkpdfzipfoldername = tempfolder + ("bulkpdffiles" +".zip")
-    # objactionitems = ActionItems.objects.filter(QueSeries = 99).values() # to be altered when move to bl
-    # objactionitemsfk = blannotatefktomodel(objactionitems)
-    # returnzipfile = blbulkdownload(objactionitemsfk,bulkpdfdir,bulkpdfcreatezipfilename) #to remove bulkpdfmakebulkpdfdir
 
     response = FileResponse(open(bulkpdfzip,'rb'))
     response['Content-Disposition'] = 'attachment; filename= Bulk Closeout Sheets.zip'
@@ -1957,73 +1834,12 @@ def delegatedadmin (request):
 #     Command()
 #     return HttpResponse('TEST')
 
-#edward 20211103 stitch pdf 
+#edward 20211122 stitch pdf 
 def stitchpdf(request):
 
-    destinationforstitch = 'static/test/'
-    objactionitems = ActionItems.objects.filter(QueSeries = 99).values() # to be altered when move to bl
-    objactionitemsfk = blannotatefktomodel(objactionitems)
-    for items in objactionitemsfk: #objactionitems
-        # closed = (items['QueSeries'] == 99)
-        closed = True
-        if closed == True :
-            items['StudyActionNo'] = items['StudyActionNo'].replace("/","_")
-            newcloseouttemplate = blsetcloseouttemplate (items['id'])
-            data_dict=items
-            discsub = blgetDiscSubOrgfromID(items['id']) 
-            Signatories = blgetSignotories(discsub) 
-            lstSignatoriesTimeStamp= blgettimestampuserdetails (items['id'], Signatories) 
-            studyactno = items["StudyActionNo"] # i renamed to studyactno
-            studyactnopdf = (studyactno + '.pdf')
-            signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
-            # makesubfolders = os.makedirs(destinationfolders + studyactno, exist_ok=True ) # renamed i to studyactno
-            # destination =destinationfolders + studyactno #dst to destination
-            out_file = os.path.join("static/test/",studyactnopdf)
-            #20210923 edward fk study phase
-            #updateddata_dict = blannotatefktomodel(data_dict)
-            file = pdfgenerate(newcloseouttemplate,out_file,data_dict,signatoriesdict)
-            #20210923 edward fk study phase
-            objFk =ActionItems.objects.get(id = items['id']) 
-            ObjAttach = objFk.attachments_set.all()
-            
-            for eachfile in ObjAttach: 
-                filename = os.path.basename(eachfile.Attachment.name)
-                attachmentorigin= bulkdlattachments + filename
-                attachment_name = studyactno + "_" + filename
-                shutil.copy(attachmentorigin ,"static/test/" + attachment_name)
+    " Sends stitched pdf to Client "
 
-    pdfpath = "static/test/" #need to os.path.join(folder that you want,files in folder that you want)
-    excel_list = os.listdir(pdfpath)
-    pdf_list = os.listdir(pdfpath)
-    pdf_list_onlypdf = [pdf for pdf in pdf_list if '.pdf' in pdf]
-    pdf_list_onlyjpg = [jpg for jpg in pdf_list if '.jpg' in jpg]   
-    pdf_list_onlyexcel = [excel for excel in excel_list if '.xlsx' in excel]
+    response = FileResponse(open(stitchedpdf,'rb'))
+    response['Content-Disposition'] = 'attachment; filename= Final Report.pdf'
     
-    # excel 
-    for items in pdf_list_onlyexcel:
-        fullpathexcel = os.path.join(pdfpath,items)
-        pdf_filename_test = os.path.splitext(items)[0]+'.pdf'
-        test = xw.Book(fullpathexcel)
-        exceltopdf = test.to_pdf(pdfpath + pdf_filename_test)
-        closeexceltopdf = test.close()
-
-    #jpg
-    for jpgs in pdf_list_onlyjpg:
-        fullpath_jpgs = os.path.join(pdfpath,jpgs)
-        image = Image.open(fullpath_jpgs)
-        pdf_bytes = img2pdf.convert(image.filename)
-        pdf_filename = pdfpath + image.filename
-        pdf_filename_test = os.path.splitext(jpgs)[0]+'.pdf'
-        file = open(pdfpath + pdf_filename_test, "wb")
-        file.write(pdf_bytes)
-        image.close()
-        file.close()
-        #print(pdf_filename_test)
-
-    
-    pdfgeneratorstitch = stitchingpdf(pdf_list_onlypdf,pdfpath) #working 
-   
-
-
-         
-    return HttpResponse('test')
+    return response
