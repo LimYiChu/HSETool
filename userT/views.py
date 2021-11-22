@@ -1952,3 +1952,74 @@ def delegatedadmin (request):
 # def scheduler (request):
 #     Command()
 #     return HttpResponse('TEST')
+
+#edward 20211103 stitch pdf 
+def stitchpdf(request):
+
+    destinationforstitch = 'static/test/'
+    objactionitems = ActionItems.objects.filter(QueSeries = 99).values() # to be altered when move to bl
+    objactionitemsfk = blannotatefktomodel(objactionitems)
+    for items in objactionitemsfk: #objactionitems
+        # closed = (items['QueSeries'] == 99)
+        closed = True
+        if closed == True :
+            items['StudyActionNo'] = items['StudyActionNo'].replace("/","_")
+            newcloseouttemplate = blsetcloseouttemplate (items['id'])
+            data_dict=items
+            discsub = blgetDiscSubOrgfromID(items['id']) 
+            Signatories = blgetSignotories(discsub) 
+            lstSignatoriesTimeStamp= blgettimestampuserdetails (items['id'], Signatories) 
+            studyactno = items["StudyActionNo"] # i renamed to studyactno
+            studyactnopdf = (studyactno + '.pdf')
+            signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
+            # makesubfolders = os.makedirs(destinationfolders + studyactno, exist_ok=True ) # renamed i to studyactno
+            # destination =destinationfolders + studyactno #dst to destination
+            out_file = os.path.join("static/test/",studyactnopdf)
+            #20210923 edward fk study phase
+            #updateddata_dict = blannotatefktomodel(data_dict)
+            file = pdfgenerate(newcloseouttemplate,out_file,data_dict,signatoriesdict)
+            #20210923 edward fk study phase
+            objFk =ActionItems.objects.get(id = items['id']) 
+            ObjAttach = objFk.attachments_set.all()
+            
+            for eachfile in ObjAttach: 
+                filename = os.path.basename(eachfile.Attachment.name)
+                attachmentorigin= bulkdlattachments + filename
+                attachment_name = studyactno + "_" + filename
+                shutil.copy(attachmentorigin ,"static/test/" + attachment_name)
+
+    pdfpath = "static/test/" #need to os.path.join(folder that you want,files in folder that you want)
+    excel_list = os.listdir(pdfpath)
+    pdf_list = os.listdir(pdfpath)
+    pdf_list_onlypdf = [pdf for pdf in pdf_list if '.pdf' in pdf]
+    pdf_list_onlyjpg = [jpg for jpg in pdf_list if '.jpg' in jpg]   
+    pdf_list_onlyexcel = [excel for excel in excel_list if '.xlsx' in excel]
+    
+    # excel 
+    for items in pdf_list_onlyexcel:
+        fullpathexcel = os.path.join(pdfpath,items)
+        pdf_filename_test = os.path.splitext(items)[0]+'.pdf'
+        test = xw.Book(fullpathexcel)
+        exceltopdf = test.to_pdf(pdfpath + pdf_filename_test)
+        closeexceltopdf = test.close()
+
+    #jpg
+    for jpgs in pdf_list_onlyjpg:
+        fullpath_jpgs = os.path.join(pdfpath,jpgs)
+        image = Image.open(fullpath_jpgs)
+        pdf_bytes = img2pdf.convert(image.filename)
+        pdf_filename = pdfpath + image.filename
+        pdf_filename_test = os.path.splitext(jpgs)[0]+'.pdf'
+        file = open(pdfpath + pdf_filename_test, "wb")
+        file.write(pdf_bytes)
+        image.close()
+        file.close()
+        #print(pdf_filename_test)
+
+    
+    pdfgeneratorstitch = stitchingpdf(pdf_list_onlypdf,pdfpath) #working 
+   
+
+
+         
+    return HttpResponse('test')
