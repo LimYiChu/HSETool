@@ -1,6 +1,10 @@
 import pdfrw
 from reportlab.pdfgen import canvas
 import io
+# 20211122 edward stitchingpdf
+from pdfrw import PdfWriter,PdfReader,PdfName
+import os
+
 def pdfgenerate(input_pdf_path, output_pdf_path, data_dict,signatories):
     template_pdf = pdfrw.PdfReader(input_pdf_path) # Read Input PDF
     template_pdf.Root.AcroForm.update(pdfrw.PdfDict(NeedAppearances=pdfrw.PdfObject('true')))# Set Appearences ( Make Text field visible )
@@ -38,7 +42,56 @@ def pdfsendtoclient(input_pdf_path, data_dict):
     return buffer          
     # 
     # pdfrw.PdfWriter().write(output_pdf_path, template_pdf)
-
+    
+# 20211122 edward stitchingpdf
+def stitchingpdf(pdf_list_onlypdf,pdfpath):
+    output = PdfWriter()
+    num = 0
+    output_acroform = None
+    for pdf in pdf_list_onlypdf:
+        fullpath = os.path.join(pdfpath,pdf)
+        input = PdfReader(fullpath,verbose=False)
+        output.addpages(input.pages)
+        if PdfName('AcroForm') in input[PdfName('Root')].keys():  # Not all PDFs have an AcroForm node
+            source_acroform = input[PdfName('Root')][PdfName('AcroForm')]
+            if PdfName('Fields') in source_acroform:
+                output_formfields = source_acroform[PdfName('Fields')]
+            else:
+                output_formfields = []
+            num2 = 0
+            for form_field in output_formfields:
+                key = PdfName('T')
+                old_name = form_field[key].replace('(','').replace(')','')  # Field names are in the "(name)" format
+                form_field[key] = 'FILE_{n}_FIELD_{m}_{on}'.format(n=num, m=num2, on=old_name)
+                num2 += 1
+            if output_acroform == None:
+                # copy the first AcroForm node
+                output_acroform = source_acroform
+            else:
+                for key in source_acroform.keys():
+                    acroform_key = output_acroform[key]
+                    # Add new AcroForms keys if output_acroform already existing
+                    if key not in output_acroform:
+                        output_acroform[key] = source_acroform[key]
+                # Add missing font entries in /DR node of source file
+                if (PdfName('DR') in source_acroform.keys()) and (PdfName('Font') in source_acroform[PdfName('DR')].keys()):
+                    #if PdfName('Font') not in output_acroform[PdfName('DR')].keys():
+                        # if output_acroform is missing entirely the /Font node under an existing /DR, simply add it
+                    output_acroform[PdfName('DR')][PdfName('Font')] = source_acroform[PdfName('DR')][PdfName('Font')]
+                # else:
+                ## COMMENTED THIS OUT BUT DO NOT REMOVE, client uploading attachment with acro form nodes not printed to pdf which has adverse effects on the keys (eg : pdf files not printed & in editable form)
+                #         # else add new fonts only
+                #     for font_key in source_acroform[PdfName('DR')][PdfName('Font')].keys():
+                #             if font_key not in output_acroform[PdfName('DR')][PdfName('Font')]:
+                #                 output_acroform[PdfName('DR')][PdfName('Font')][font_key] = source_acroform[PdfName('DR')][PdfName('Font')][font_key]
+            if PdfName('Fields') not in output_acroform:
+                output_acroform[PdfName('Fields')] = output_formfields[PdfName('Fields')]
+            else:
+                # Add new fields
+                output_formfields
+        num +=1
+    output.trailer[PdfName('Root')][PdfName('AcroForm')] = output_acroform
+    final_output = output.write("static/test/mergepdffolder/testingmerge.pdf")
 
 
 
