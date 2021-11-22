@@ -68,6 +68,10 @@ from django.forms.models import model_to_dict
 from django.db.models import F
 #edward 20211027 bulk pdf fix for large file dl
 from django.http import StreamingHttpResponse
+#edward 20211122 stitch pdf
+import xlwings as xw
+import img2pdf
+from PIL import Image
 
 
 
