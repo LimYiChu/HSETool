@@ -287,15 +287,17 @@ def mainDashboard (request):
     Actionee_R =    dict_allrou.get('Actionee_Routes')
     Approver_R =    dict_allrou.get('Approver_Routes')
     
-    
     reducedfileds= ['id','StudyActionNo','Disipline' ,'QueSeries', 'DueDate','InitialRisk']
     #ActioneeActions = blallActionsComDisSub(Actionee_R,0)
     ActioneeActions = blallactionscomdissubQ(Actionee_R,queActionee,reducedfileds)
     totalactioneeaction = blfuncActionCountQ(Actionee_R,0)
 
     rem_list = []   
-    ActioneeActionsrisk = bladdriskelements(list(ActioneeActions),[])
-
+    ActioneeActionsrisk = bladdriskelements(list(ActioneeActions))
+    riskrankingsummary =  blaggregateby(ActioneeActionsrisk,"RiskRanking")
+    duedateaggregated = blaggregateby(ActioneeActionsrisk,"DueDate")
+    duedatesummary = blduedateecountrelative(duedateaggregated)
+    
     #***Initilise empty list to hold values
     stripCount =[]
     striplabels = []
@@ -351,11 +353,14 @@ def mainDashboard (request):
         #'actioneefinallist' : actioneefinallist, #substituted with json data below
         #'apprfinalist' : apprfinalist, #substituted with json data below
         "pieactioneenew" : json.dumps([{"data":actioneefinallist}]),
-        "pieapprovernew" : json.dumps([{"data":approverjsonlist}])
+        "pieapprovernew" : json.dumps([{"data":approverjsonlist}]),
+        "riskrankingsummary":riskrankingsummary,
+        "duedatesummary":duedatesummary,
+
             }
     
 
-    return render(request, 'userT/maindashboard.html',Context) #ok checked by yhs in terms of capital letters.
+    return render(request, 'userT/maindashboard.html',Context) 
 
 #Todelete if not used
 # def getActionDetails(request, id=None):
@@ -383,7 +388,7 @@ class ActioneeList (ListView):
         reducedfileds= ['id','StudyActionNo','StudyName__StudyName','Disipline' ,'Subdisipline','Cause','Recommendations',
         'QueSeries', 'DueDate','InitialRisk']
         ActioneeActions = blallactionscomdissubQ(ActioneeRoutes,queactionee,reducedfileds)
-        finalactionitems = bladdriskelements(list(ActioneeActions),[])
+        finalactionitems = bladdriskelements(list(ActioneeActions))
         return ActioneeActions
 
     def get_context_data(self, **kwargs):
@@ -471,7 +476,7 @@ class ApproverList (ListView):
             # ApproverActions.insert(key,allactionItems)
             
             allactionItems= blallactionscomdissubQ(value,key,reducedfileds)    
-            finalactionitems = bladdriskelements(list(allactionItems),[])
+            finalactionitems = bladdriskelements(list(allactionItems))
             ApproverActions.insert (key,allactionItems)
         
         #   print ("ApproverActions",ApproverActions)
@@ -1460,7 +1465,7 @@ def repPMTExcel (request,phase=""):
     #this annotate function needs to first because it doesnt like addtional items added to query set
     dictofallactions    = blannotatefktomodel(phasesactions)
     #this sequence is important otherwise doesnt work
-    phaseswithrisk = bladdriskelements(dictofallactions,[])
+    phaseswithrisk = bladdriskelements(dictofallactions)
     dictofallactions    = blgetdictActionStuckAt(phaseswithrisk)
     
     # # # edward 20210803 dataframes excel
@@ -1481,7 +1486,7 @@ def repPMTExcel (request,phase=""):
     all_actions =   ActionItems.objects.all().values()
     all_actionsannotate = blannotatefktomodel(all_actions)
     blank=[]
-    all_actionsopt = bladdriskelements(all_actionsannotate, blank)
+    all_actionsopt = bladdriskelements(all_actionsannotate)
     dfall1 = pd.DataFrame.from_dict(all_actionsopt) # sort dfall
     dfall = blsortdataframes(dfall1,dfallcolumns)
     #edward 20211001 pd rejected excel 
@@ -1494,7 +1499,7 @@ def repPMTExcel (request,phase=""):
     rejectedactions = blphasegetrejectedactionsQ (revisiongte,queseriesrejected,justenoughattributes,phase)
     rejecteddictofallactions    = blannotatefktomodel(rejectedactions)
     #this sequence is important otherwise doesnt work
-    rejectedallactionitems = bladdriskelements(rejecteddictofallactions,[])
+    rejectedallactionitems = bladdriskelements(rejecteddictofallactions)
     dfrejection = pd.DataFrame.from_dict(rejectedallactionitems)
     
     #for Disipline based view

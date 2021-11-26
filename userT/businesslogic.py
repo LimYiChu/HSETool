@@ -155,8 +155,36 @@ def blsortdataframes(dfall,sortedheader) : #use list for sortedheader, just plac
     sortedfall = dfall.reindex(columns=sortedheader) #sorting the columns based on specified sortedheader list if you want alphabetically just use df.sort_index(axis=1)
     return sortedfall
 
+def blduedateecountrelative (dictofdates):
 
-def bladdriskelements (actionitems,removelist):
+    """Pass in dict of due dates and it checks due dates and returns a dict of count 
+    for isduedate, isduein1week, isduein2weeks. Uses Releativedelta and 1week=8days 2 weeks=15days added 
+    to check due date horizon"""
+    if dictofdates:
+        isdue = {duedate:count for duedate, count in dictofdates.items() if date.today()>duedate}
+        isduevalues = isdue.values()
+        isduecount = sum(isduevalues)
+
+        isduenextweek = {duedate:count for duedate, count in dictofdates.items() if date.today()+relativedelta(days=+8)>duedate}
+        isduenextweekvalues = isduenextweek.values()
+        isduein1weekcount = sum(isduenextweekvalues) - isduecount
+
+        isduein2weeks = {duedate:count for duedate, count in dictofdates.items() if date.today()+relativedelta(days=+15)>duedate}
+        isduein2weeksvalues = isduein2weeks.values()
+        isduein2weekscount = sum(isduein2weeksvalues) - isduecount - isduein1weekcount
+
+        return {"isdue":isduecount,"isduein1week":isduein1weekcount,"isduein2weeks":isduein2weekscount}
+
+def blaggregateby(actionitems,fieldtoaggregate):
+    """Actions items will be aggregated according to the required field. pass in action items and 
+    field (must be in the action items) and the function will aggregate or summarise with a count and return Dictionary object """
+    
+    if actionitems:
+        dfallactions = pd.DataFrame(actionitems)
+        dfallactionssortbyranking = dfallactions[fieldtoaggregate].value_counts()
+        return dfallactionssortbyranking.to_dict()
+
+def bladdriskelements (actionitems):
     ''' Accepts dictionary only items and then extracts InitialRisk using dataframes,
     then looks up RiskMatrix Model and gets a risk colour. It uses the Combined value in the RiskMatrix to map back to the Risk COlour
     the second parameter is optional seprate funtinality for removing addtional fields. '''
@@ -164,7 +192,7 @@ def bladdriskelements (actionitems,removelist):
     if actionitems:
         dfRiskMatrix = pd.DataFrame(list(RiskMatrix.objects.all().values())) 
         for items in actionitems:
-                    [items.pop(key) for key in removelist] 
+                    #[items.pop(key) for key in removelist] 
                     RiskValue = dfRiskMatrix.loc[dfRiskMatrix['Combined'].isin([items.get('InitialRisk')]),['RiskColour','Ranking']]
                     if not RiskValue.empty:
                         items['RiskColour'] = RiskValue['RiskColour'].item()
@@ -173,8 +201,7 @@ def bladdriskelements (actionitems,removelist):
                         items['RiskColour'] = False
                         items['RiskRanking'] = False
         
-        dfallactions = pd.DataFrame(actionitems)
-        dfallactionssortbyranking = dfallactions['RiskRanking'].value_counts()
+        
     else :
         actionitems = []
         
