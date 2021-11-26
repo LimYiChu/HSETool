@@ -42,8 +42,7 @@ urlpatterns = [
         path('loadriskmatrix/', login_required(UploadV.loadriskmatrix), name='loadriskmatrix' ),
         path('uploadexceldf/', login_required(UploadV.uploadexceldf), name='uploadexceldf' ),
         path('LoadRoutes/', login_required(UploadV.LoadRoutes), name='LoadRoutes' ),
-        path('login/',auth_views.LoginView.as_view(template_name='userT/login.html'),name='login'),
-        path('logout/',auth_views.LogoutView.as_view(template_name='userT/logout.html'),name='logout'),
+        
         
         path('admin/', admin.site.urls, name='adminT'),
        # path('routes/', UserView.yourRoutes.as_view(), name='yourRoutes' ),
@@ -81,7 +80,9 @@ urlpatterns = [
         #path('ApproverList/<int:id>/approve', UserView.ApproveItems.as_view(), name='ApproveForm' ),
         path('ApproverList/<int:pk>/approve', login_required(UserView.ApproveItemsMixin.as_view()), name='ApproveFormMixin' ),
 
-        #Following URLs are for reseting and changing password. Note that the reset password via email is yet to be set up. Right now please obtain the link in the terminal upon requesting password reset.
+        #Following URLs are for login, logout, reseting and changing password. 
+        path('login/',auth_views.LoginView.as_view(template_name='userT/login.html'),name='login'),
+        path('logout/',auth_views.LogoutView.as_view(template_name='userT/logout.html'),name='logout'),
         path('password_change/done/',auth_views.PasswordChangeDoneView.as_view(template_name='userT/password_change_done.html'),name='password_change_done'),
         path('password_change/',auth_views.PasswordChangeView.as_view(template_name='userT/password_change.html'),name='password_change'),
         path('password_reset/done/',auth_views.PasswordResetCompleteView.as_view(template_name='userT/password_reset_done.html'),name='password_reset_done'),

@@ -1,3 +1,4 @@
+<!--HOLD - This page is not used-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,20 +17,30 @@
     <div class="container">
         <div class="row justify-content-center">
             <fieldset class="form-group">
-                <div id="loginbox" style="margin-top: 100px" class="col-md-8 mx-auto">
+                <div id="loginbox" style="margin-top: 100px" class="col-md-6 mx-auto">
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title">Change Password</div>
+                            <div class="card-title">You are not logged in. Plese do so</div>
+
                         </div>
 
                         <div style="padding-top:30px" class="card-body">
+
+
+
                             <form method="POST" class="form-signin">{% csrf_token %}
 
-                                {{ form|crispy }}
 
-                                <p class="m-auto">Your password has been reset. You may go ahead and <a
-                                        href="{% url 'login' %}">sign in</a> now.</p>
+
+                                <p class="m-auto">You are not logged in. Plese do so <a
+                                        href="{% url 'login' %}">here</a>.
+                                </p>
+
+
+
+
                             </form>
+
 
                         </div>
                     </div>

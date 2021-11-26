@@ -1,69 +1,67 @@
-{% extends "userT/base1.html" %}
-{%load crispy_forms_tags %}
-{%block title%}Login {%endblock%}
-{% block content %}
-{% load static %}
+<!DOCTYPE html>
+<html lang="en">
 
-<fieldset class="form-group">
-    <div id="loginbox" style="margin-top:100px;" class="mainbox col-md-6 col-md-offset-3 col-md-6 col-md-offset-3;">            <!--change to central of screen       -->
-        <div class="panel panel-info" >
-            <div class="panel-heading" >
-                <div class="panel-title" >Login</div>
-               <!-- <div style="float:right; font-size: 80%; position: relative; top:-10px"><a href="#">Forgot password?</a></div>-->
-            </div>     
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login </title>
+    {%include "userT/inclscriptslinkbase3.html"%}
+</head>
 
-            <div style="padding-top:30px" class="panel-body" >
+<body>
 
-                <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
-                                                      
-                    <div >
-                       
-                     <img src="{% static 'Background1.jpg' %}" alt="background" width= 100% height = 100%>
-                    </div>
-                      <br>
-                      <br>
-                                            
-                      
-                            
-                                    <form method="post" action="{% url 'login' %}" >
-                                    {% csrf_token %}
-                                    
-                                        {{ form|crispy  }}
-                                    <br>
-<!--
+    {%load crispy_forms_tags %}
+    {% load static %}
+    <div class="container">
+        <fieldset class="form-group">
+            <div class="row justify-content-center">
+                <div id="loginbox" class="col-sm-6 mx-auto" style="margin-top: 100px;">
+                    <!--change to central of screen       -->
+                    <div class="card">
+                        <div class="card-header">Login</div>
+                        <!-- <div style="float:right; font-size: 80%; position: relative; top:-10px"><a href="#">Forgot password?</a></div>-->
+
+                        <div style="padding-top:30px" class="card-body">
+
+                            <div>
+                                <img src="{% static 'Background1.jpg' %}" alt="background" width=100% height=100%>
+                            </div>
+                            <br>
+                            <form method="post" action="{% url 'login' %}">
+                                {% csrf_token %}
+
+                                {{ form|crispy  }}
+                                <br>
+                                <!--
                                     <input name="email" class="form-control" placeholder="Email" type="email" id="email" required="true"><br>
                                     <input name="password" class="form-control" placeholder="Password" type="password" id="password" required="true"><br>
 -->
-                                   
-                                    <!--{% if form.errors %}
+
+                                <!--{% if form.errors %}
                                     <p style="color:red">Something went wrong, please check</p>
                                     {% endif %}
                                     -->
-                                    {% if next %}
-                                        {% if user.is_authenticated %}
-                                        <p style="color:red">You are still logged in. Go Check</p>
-                                        {% else %}
-                                        <p style="color:red">You are not logged in. Please login to view the content.</p>
-                                        {% endif %}
-                                    {% endif %}
-
-                                    <br>
-                                    <input class="btn btn-lg btn-primary btn-block" type="submit" value="Login">
-                                    <input type="hidden" name="next" value="{{ next }}">
-                                    <br>
-                                    
-
-     
-                                </form>
-                                
-                
-                    
-                </div> 
-                </div> <a href="{% url 'password_reset' %}"><button class="btn btn-warning btn-block my-2 my-sm-0"  name ="{% url 'password_reset' %}" type="submit" value="Click">Forgot Password</button> </a>
-            </div> 
+                                {% if next %}
+                                {% if user.is_authenticated %}
+                                <p style="color:red">You are still logged in. Go Check</p>
+                                {% else %}
+                                <p style="color:red">You are not logged in. Please login to view the content.</p>
+                                {% endif %}
+                                {% endif %}
+                                <br>
+                                <input class="btn btn-lg btn-primary btn-block" type="submit" value="Login">
+                                <input type="hidden" name="next" value="{{ next }}">
+                            </form>
+                        </div>
+                    </div>
+                    <br>
+                    <a href="{% url 'password_reset' %}"><button class="btn btn-warning btn-block my-2 my-sm-0"
+                            name="{% url 'password_reset' %}" type="submit" value="Click">Forgot Password</button></a>
+                </div>
             </div>
-</fieldset>
-  
+        </fieldset>
+    </div>
+</body>
 
-
-{% endblock %}
+</html>
