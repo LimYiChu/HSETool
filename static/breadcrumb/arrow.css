@@ -1,11 +1,10 @@
 .breadcrumb {
   list-style: none;
   overflow: hidden;
-  font: 18px Helvetica, Arial, Sans-Serif;
-  margin: 0px;
+  font: 1.25rem Helvetica, Arial, Sans-Serif;
+  margin-bottom: 0.5em;
   padding: 0;
   right: 40px;
-
 }
 
 .breadcrumb li {

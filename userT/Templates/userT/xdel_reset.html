@@ -10,7 +10,6 @@
 </head>
 
 <body>
-
     {%load crispy_forms_tags %}
 
     {% if form.errors %}
@@ -28,27 +27,24 @@
     <div class="container">
         <div class="row justify-content-center">
             <fieldset class="form-group">
-                <div id="loginbox" style="margin-top: 100px;" class="col-sm-10 mx-auto">
+                <div id="loginbox" style="margin-top: 100px" class="col-md-6 mx-auto">
                     <div class="card">
                         <div class="card-header">
                             <div class="card-title">Logged Out</div>
-
                         </div>
-                        <div style="padding-top:30px" class="card-body">
-
-
-
+                        <div style="padding-top:3 0px" class="card-body">
                             <div>
                                 <p>Thanks for using the software. You are successfully logged out now. </p>
                                 <br>
-                                <p class="m-auto">You may go ahead and <a href="{% url 'login' %}">sign in</a>.</p>
-
+                                <p>Please click the below button to login again.</p>
                             </div>
 
                             <div style="margin-bottom: 25px" class="input-group">
 
                                 <form method="post" action="{% url 'login' %}">
                                     {% csrf_token %}
+
+                                    <br>
                                 </form>
                             </div>
                         </div>

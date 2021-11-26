@@ -28,63 +28,54 @@ thead input {
 
 #download-excel {
   position: absolute;
-  right: 5px;
-  border: none;
-  padding: 5px;
-  border: 1px solid #007bff;
-}
-
-#download-excel :hover {
-  text-decoration: none;
-  color: white;
-  background-color: #007bff;
+  right: 0.5rem;
+  top: 1rem;
 }
 
 /* Style the tab */
-.tab-h5 {
+.tabset {
   overflow: hidden;
   display: -webkit-box;
   padding-top: 5px;
   padding-bottom: 10px;
 }
 
-.tab-h5-top button {
+.tabset button {
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.tab-top button {
   float: left;
   margin: 5px;
+  padding: 14px 16px;
   border: solid #ddd 3px;
   border-radius: 5px;
   outline: none;
-  cursor: pointer;
-  padding: 14px 16px;
-  transition: 0.3s;
 }
 
 /* Style the buttons that are used to open the tab content */
-.tab-h5 button {
+.tab-child button {
   background-color: white;
   -webkit-box-flex: 1;
   padding: 10px 15px 6px 15px;
-  white-space: nowrap;
-  overflow: hidden;
-  max-width: 300px;
-  min-width: 50px;
   border: solid #ddd 1px;
   border-bottom: none;
   border-radius: 5px 5px 0 0;
+  overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
-  transition: 0.3s;
-  cursor: pointer;
+  max-width: 300px;
+  min-width: 50px;
 }
 
 /* Change background color of buttons on hover */
-.tab-h5-top button.active,
-.tab-h5 button:hover {
+.tabset button:hover {
   background-color: #ddd;
 }
 
 /* Create an active/current tablink class */
-.tab-h5-top button.active,
-.tab-h5 button.active {
+.tabset button.active {
   background-color: #93D3F0;
   border: solid #086996 1px;
 }
@@ -124,4 +115,24 @@ div.sticky {
 
 .card-columns {
   column-count: 2;
+}
+
+.rejectcomment {
+  overflow-wrap: anywhere;
+}
+
+.parent-font {
+  font-size: 2rem;
+}
+
+.child-one-font {
+  font-size: 1.25rem;
+}
+
+.child-two-font {
+  font-size: 1.1rem;
+}
+
+.subtext-font {
+  font-size: 0.8rem;
 }
