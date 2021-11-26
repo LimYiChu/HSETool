@@ -13,15 +13,15 @@
                   </div>
                   <div class="text-end pt-1">
                       <p class="text-large mb-0 text-capitalize text-danger">High Risk Actions</p>
-                      <h4 class="mb-0">5</h4>
+                      <h4 class="mb-0">{{riskrankingsummary.High}}</h4>
                   </div>
                   <div class="text-end pt-1">
                     <p class="text-large mb-0 text-capitalize text-warning">Medium Risk Actions</p>
-                    <h4 class="mb-0">5</h4>
+                    <h4 class="mb-0">{{riskrankingsummary.Medium}}</h4>
                 </div>
                 <div class="text-end pt-1">
                   <p class="text-large mb-0 text-capitalize text-success">Low Risk Actions</p>
-                  <h4 class="mb-0">5</h4>
+                  <h4 class="mb-0">{{riskrankingsummary.Low}}</h4>
               </div>
               </div>
               <hr class="dark horizontal my-0">
@@ -39,15 +39,15 @@
                   </div>
                   <div class="text-end pt-1">
                     <p class="text-large mb-0 text-capitalize text-danger">Overdue Actions</p>
-                    <h4 class="mb-0">5</h4>
+                    <h4 class="mb-0">{{duedatesummary.isdue}}</h4>
                 </div>
                 <div class="text-end pt-1">
-                  <p class="text-large mb-0 text-capitalize text-warning">Actions Overdue Within Next Week</p>
-                  <h4 class="mb-0">5</h4>
+                  <p class="text-large mb-0 text-capitalize text-warning">Actions Overdue in 1 Week</p>
+                  <h4 class="mb-0">{{duedatesummary.isduein1week}}</h4>
               </div>
               <div class="text-end pt-1">
-                <p class="text-large mb-0 text-capitalize text-success">Remaining Actions</p>
-                <h4 class="mb-0">5</h4>
+                <p class="text-large mb-0 text-capitalize text-success">Actions Overdue in 2 Weeks</p>
+                <h4 class="mb-0">{{duedatesummary.isduein2weeks}}</h4>
             </div>
                   
               </div>
