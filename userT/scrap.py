@@ -1,3 +1,162 @@
+#20211125 from views.py edward
+#from reppmt
+ #edward 20210804 original excel commented out bcs replacing with dfexcel
+    # workbook = excelCompleteReport(request)
+    # response = HttpResponse(content_type='application/ms-excel') #
+    # response['Content-Disposition'] = 'attachment; filename=AllActionDetails.xlsx'
+    # workbook.save(response) # odd  way but it works - took too long to figure out as no resource on the web
+    #edward end 20210804 original excel commented out bcs replacing with dfexcel
+
+#20211125 from parameters.py edward
+#edward - old
+# new parameter file 
+#url-links
+# cclist = ["ehstools@prism-ehstools.awsapps.com"]#cclist to send a copy of email to ehstools email since there is no record of sent mail for emails sent by system
+# appurl = "https://sapuraphase4a.prism-ehstools.com"#for now, please change appurl for different clients
+# emailSender ="ehstools@prism-ehstools.awsapps.com"#used in views for email sender origin address
+
+# #file directories
+# #temp folder location (used for pdf closeoutprint & indiprint)
+# tempfolder = 'opt/bitnami/projects/HSETool/static/media/temp/'
+# tempfolder = 'static/media/temp/'
+
+# #static/media folder location (used for old pdf generate function in views called closeoutsheet)
+# staticmedia = 'opt/bitnami/projects/HSETool/static/media/'
+# staticmedia = 'static/media/'
+
+# #closeouttemplate location (used for pdf closeoutprint & indiprint)
+# closeouttemplate = '/opt/bitnami/projects/HSETool/closeouttemplate' # Guna same reason removed pdf since want to add approver level
+# closeouttemplate = 'closeouttemplate' # Guna Removed .pdf since i want too add approver level to it
+
+# #atrtemplatelocation (used for old pdf generate function in views called closeoutsheet)
+# atrtemplate = '/opt/bitnami/projects/HSETool/atrtemplateautofontreadonly.pdf'
+# atrtemplate = 'atrtemplateautofontreadonly.pdf'
+
+#closeoutsheet test for one page location
+#closeoutest = 'closeoutsheet.pdf' #commented because did not want to push single page template back to main (could result in mistake setting pdf to print to this template instead)
+#get host name from where it comes from inside settings
+
+#20211125 from Trackem/urls.py
+        #pdf path
+        #path('GeneratePDF/',login_required(UserView.pdftest),name='GeneratePDF'),
+        #path('ContactUs/',UserView.ContactUs,name='ContactUs'),
+        #Guna Commented below to remove at some point
+        #path('IndividualBreakdownByUsers/',login_required(UserView.IndividualBreakdownByUsers),name='IndividualBreakdownByUsers'),
+        #tenant
+        # path('our_team/', login_required(our_team), name='our_team'),
+        #path('PDFtest/', UserView.PDFtest, name='PDFtest'),
+        #edward added to enable clicking of all actions
+        #edward scheduler url
+        # path('scheduler/',login_required(UserView.scheduler),name='scheduler'),
+        #20211124 commented by Edward because obsolete function moved from views to scrap
+        #path('ReportingTable/',login_required(UserView.ReportingTable),name='ReportingTable'),
+        #path('Profile/',login_required(UserView.Profile),name='Profile'),
+        # path('emailreminders/',login_required(UserView.emailreminders),name='emailreminders'),
+        # path('EmailReminderAttachment/',login_required(UserView.EmailReminderAttachment),name='EmailReminderAttachment'),
+        #path('EmailReminder/',login_required(UserView.EmailReminder),name='EmailReminder'),
+
+
+#20211124 from views Edward
+# def ReportingTable(request): #edward 20211124 seems like an obselete function 
+#     sub = Subscribe()
+#     if request.method == 'POST':
+#         #Msg=EmailMessage()
+#         sub = Subscribe(request.POST)
+#         subject = 'Test for sending email overview'
+#         message = 'A summary table should present here'
+#         recepient = str (sub ['Email'].value())
+#         Msg=EmailMessage(subject, message, emailSender, [recepient])
+#         Msg.content_subtype="html"
+#         Msg.attach_file('C:\\Users\\yh_si\\Desktop\\HSETool-1\\static\\multiple.pdf')
+#         Msg.send()
+#         context ={
+#           'form':sub
+#         }
+#         return render(request, 'userT/reportingtable.html',context) #yhs changed to small letters
+#     return render (request, 'userT/reportingtable.html', {'form':sub}) #yhs changed to small letters
+
+
+# def Profile (request): #edward 20211124 seems like an obselete function 
+#     return render(request, 'userT/profile.html') #yhs changed to small letters
+# #def EmailReminder (request):
+# #    return render(request, 'userT/EmailReminder.html')
+
+# def emailreminders(request): #edward 20211124 seems like an obselete function, this was moved to management commands where it is called from crontab
+#     #sub = Subscribe()
+#     emaillist =[]
+#     #Get all Actions
+#     allactions = ActionItems.objects.all()
+#     if (request.POST.get('SendPending')):
+#         QueOpen = [0,1,2,3,4,5,6,7,8,9]
+#         QueClosed = [99]
+#         discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
+#         Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)
+#         subject = f"Pending Activities for {paremailphase} Risk Assessment Workshops"
+#         content=f"You have Pending Actions in your Queue. Please go to {paremailurl} to attend to the actions."
+#         for items in Indisets :
+#             if items[3]>0:
+#                 emaillist.append(items[0])
+#         blemailSendindividual(emailSender,emaillist,subject,content)
+#         #below is for the overdue, it is linked to button, just waiting for overdue function
+#     elif (request.POST.get('SendOverdue')):
+
+#         subject = f"Pending Activities for {paremailphase} Assessment Workshops"
+#         content=f"You have Overdue Actions in your Queue. Please go to {paremailurl} to attend to the actions."
+#         blemailSendindividual(emailSender,emaillist,subject,content)
+
+#         return render (request, 'userT/emailreminders.html')
+#     return render (request, 'userT/emailreminders.html')
+
+# def EmailReminder(request): #edward 20211124 seems like an obselete function 
+#     sub = Subscribe()
+#     if request.method == 'POST':
+
+#          #send email, the xyz is dummy data and not used
+
+
+#         sub = Subscribe(request.POST)
+#         recepient = str (sub ['Email'].value())
+
+#         dict_allRou = blgetuserRoutes(recepient)
+#         Actionee_R =    dict_allRou.get('Actionee_Routes')
+#         ActionCount = blfuncActionCount(Actionee_R,0)
+
+#         totalaction=sum(ActionCount)
+
+#         #Msg=EmailMessage()
+#         sub = Subscribe(request.POST)
+#         subject = 'Template for Action Pending Responses'
+#         message = 'Clients template. Your pending responses are ' + str(totalaction) + ' actions.'
+
+#         Msg=EmailMessage(subject, message, emailSender, [recepient])
+#         Msg.content_subtype="html"
+#         Msg.send()
+#         context ={
+#           'form':sub
+#         }
+#         return render(request, 'userT/EmailReminder.html',context)  #edward to check this.....
+#     return render (request, 'userT/emailreminders.html', {'form':sub})
+
+# def EmailReminderAttachment(request): # edward 20211124 this one seems like obselete function since it is attaching some file from HS computer
+#     sub = Subscribe()
+#     if request.method == 'POST':
+#         #Msg=EmailMessage()
+#         sub = Subscribe(request.POST)
+#         subject = 'Template for sending out weekly report'
+#         message = 'Clients weekly report template & attachment.'
+#         recepient = str (sub ['Email'].value())
+#         Msg=EmailMessage(subject, message, emailSender, [recepient])
+#         Msg.content_subtype="html"
+#         Msg.attach_file('C:\\Users\yh_si\Desktop\HSETool-1\static\weeklyreporttemplate.pdf')
+#         Msg.send()
+#         context ={
+#           'form':sub
+#         }
+#         return render(request, 'userT/EmailReminder.html',context)
+#     return render (request, 'userT/EmailReminder.html', {'form':sub}) #edward to check this
+
+#20211124 from views Edward
+
 #20211122 from views Edward
 # def blallphasegetAction(que,phase=""):
 #     '''this function gets all actions and or phases . Pass phase and QueSeries to get count 

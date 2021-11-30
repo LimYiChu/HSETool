@@ -29,45 +29,23 @@ import xlwings as xw
 import img2pdf
 from PIL import Image
 
-#20211122 edward stitchpdf
-def blgenstitchpdf(objactionitemsfk):
-    for items in objactionitemsfk: #objactionitems
-        # closed = (items['QueSeries'] == 99) 
-        closed = True
-        if closed == True :
-            items['StudyActionNo'] = items['StudyActionNo'].replace("/","_")
-            newcloseouttemplate = blsetcloseouttemplate (items['id'])
-            data_dict=items
-            discsub = blgetDiscSubOrgfromID(items['id']) 
-            Signatories = blgetSignotories(discsub) 
-            lstSignatoriesTimeStamp= blgettimestampuserdetails (items['id'], Signatories) 
-            studyactno = items["StudyActionNo"] # i renamed to studyactno
-            studyactnopdf = (studyactno + '.pdf')
-            signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
-            out_file = os.path.join("static/test/",studyactnopdf)
-            file = pdfgenerate(newcloseouttemplate,out_file,data_dict,signatoriesdict)
-            objFk =ActionItems.objects.get(id = items['id']) 
-            ObjAttach = objFk.attachments_set.all()
-            
-            for eachfile in ObjAttach: 
-                filename = os.path.basename(eachfile.Attachment.name)
-                attachmentorigin= bulkdlattachments + filename
-                attachment_name = studyactno + "_" + filename
-                shutil.copy(attachmentorigin ,"static/test/" + attachment_name)
 
-    pdfpath = "static/test/"
+# 20211130 edward phase 
+def blfilteractionsbyphase(finallistoflist):
+    phaseindisets = []
+    for items in finallistoflist:
+        for item in items:
+            # looks at pending submission, pending approval,closed,open actions to determine if there is anything > 0 (determined by phase, eg if you select phase T&I it will only show the values for each selected phase in range (3,6), then it will print items which contains those that are >0
+            if item in range(3,6) != 0: 
+                phaseindisets.append(items)
+    #print(phaseindisets)
+    return phaseindisets
 
-    return pdfpath
 
 #20211122 edward stitchpdf
 def blimagetopdf(pdfpath,pdf_list_onlyjpg):
-    """
-
-    Edward
-    Converts .jpg image to .pdf files
-
-    """
-    #jpg
+    """This function converts .jpg image to .pdf files using the img2pdf library"""
+    
     for jpgs in pdf_list_onlyjpg:
         fullpath_jpgs = os.path.join(pdfpath,jpgs)
         image = Image.open(fullpath_jpgs)
@@ -78,18 +56,13 @@ def blimagetopdf(pdfpath,pdf_list_onlyjpg):
         filewrite = file.write(pdf_bytes)
         closeimage = image.close()
         finalfileclose = file.close()
-        #return just file is enough actually
+        
     return finalfileclose 
 
 #20211122 edward stitchpdf
 def blexceltopdf(pdfpath,pdf_list_onlyexcel):
-    """
-    
-    Edward
-    Converts .xlxs to .pdf files
+    """This function converts .xlxs to .pdf files using xlwings library. This library only works on windows or macOS machines """
 
-    """
-    # excel 
     for items in pdf_list_onlyexcel:
         fullpathexcel = os.path.join(pdfpath,items)
         pdf_filename_test = os.path.splitext(items)[0]+'.pdf'
@@ -100,36 +73,21 @@ def blexceltopdf(pdfpath,pdf_list_onlyexcel):
     return exceltopdf
 
 def bladdfktodict(data_dict,foreignkeys):
-    # actiondetails = ActionItems.objects.get(id=ID)
-    # studyname = str(actiondetails.StudyName)
-    # projectphase = str(actiondetails.ProjectPhase)
-    # foreignkeys = {}
-    # for field in ActionItems._meta.fields:
-    #     if field.get_internal_type() == 'ForeignKey':
-    #         fieldname = field.name
-            
-    #         x = {field.name : eval(f"{fieldname}")}
-            
-    #         foreignkeys.update(x)
+    """This functions adds foreignkeys to Action Items data dictionary"""
+
     data_dict.update(foreignkeys) # updating original with study & phase 
 
     return data_dict
 # edward 20210915 bulk download 
 
-
 def blremoveemptylist (listoflist):
-    '''
-    pass in list of list and returns list with no empty list
-    '''
+    """This function passes in list of list and returns list with no empty list"""
     listfinal = [ele for ele in listoflist if ele != []]
 
     return listfinal
 def blannotatefktomodel(actionvalues):
-    """
-    Edward
-    pass queryset dictionary values() from ActionItems Table only and then Annotates (adds) the foriegn key 
-    StudyName and Project Phase to the Model
-    """
+    """This function passes queryset dictionary values() from ActionItems Table only and then Annotates (adds) the foriegn key StudyName and Project Phase to the Model"""
+   
     allactionsannotated =  actionvalues.annotate(StudyName=F(
                             'StudyName__StudyName')).annotate(ProjectPhase = F('ProjectPhase__ProjectPhase'))
     
@@ -146,14 +104,10 @@ def blmakelistforjson (data,featurenames):
         
     return data3
     
-
-
 # edward 20210915 bulk download 
 def blmakedir(makedstdir):
-    """
-    Creates a directory even if that directory already exists
+    """Creates a directory even if that directory already exists"""
 
-    """
     createddir = os.makedirs(makedstdir,exist_ok=True)
     return createddir
 
@@ -200,6 +154,7 @@ def blbulkdownload(objactionitems,destinationfolders,createzipfilename): # chang
 
 #edward 20210817 excel format
 def blexcelformat (dfallsorted,workbook,worksheet):
+    """This function sets the formatting for the excel workbook which is sent to client"""
     
     header_format = workbook.add_format({
         'bold': True,
@@ -218,8 +173,12 @@ def blexcelformat (dfallsorted,workbook,worksheet):
     return worksheet
 
 #edward 20210803 excel column formatting using dataframes
-def blsortdataframes(dfall,sortedheader) : #use list for sortedheader, just place what you want in order in parameters.py
-    sortedfall = dfall.reindex(columns=sortedheader) #sorting the columns based on specified sortedheader list if you want alphabetically just use df.sort_index(axis=1)
+def blsortdataframes(dfall,sortedheader) : 
+    """This function sorts dataframes in which order that the user wants. 
+    User passes in all the data in dfall & it uses a list for sortedheader to sort the data based on the order of headers in sortedheaders"""
+
+    #sorting the columns based on specified sortedheader list if you want alphabetically just use df.sort_index(axis=1)
+    sortedfall = dfall.reindex(columns=sortedheader) 
     return sortedfall
 
 def blduedateecountrelative (dictofdates):
@@ -254,7 +213,7 @@ def blaggregateby(actionitems,fieldtoaggregate):
 def bladdriskelements (actionitems):
     ''' Accepts dictionary only items and then extracts InitialRisk using dataframes,
     then looks up RiskMatrix Model and gets a risk colour. It uses the Combined value in the RiskMatrix to map back to the Risk COlour
-    the second parameter is optional seprate funtinality for removing addtional fields. '''
+    the second parameter is optional seprate funtinality for removing addtional fields. """
     
     if actionitems:
         dfRiskMatrix = pd.DataFrame(list(RiskMatrix.objects.all().values())) 
@@ -275,9 +234,9 @@ def bladdriskelements (actionitems):
     return actionitems
 
 def bladdriskcolourandoptimise (actionitems,removelist=[]):
-    ''' Accepts dictionary only items and then extracts InitialRisk using dataframes,
+    """ Accepts dictionary only items and then extracts InitialRisk using dataframes,
     then looks up RiskMatrix Model and gets a risk colour. It uses the Combined value in the RiskMatrix to map back to the Risk COlour
-    the second parameter is optional seprate funtinality for removing addtional fields. Next revision this should be separated '''
+    the second parameter is optional seprate funtinality for removing addtional fields. Next revision this should be separated """
     dfRiskMatrix = pd.DataFrame(list(RiskMatrix.objects.all().values()))
                 
     for dictitems in actionitems:
@@ -297,6 +256,7 @@ def bladdriskcolourandoptimise (actionitems,removelist=[]):
 def blgroupbyaggsum(databody,dataheader,groupby,sumby):
     
     dfindisets = pd.DataFrame(databody,columns=dataheader)
+    #print(dfindisets)
     #create dictionary comprehension from below commented codes to gives readers ease of read
     # aggsum = {}
     # for items in sumby:
@@ -307,8 +267,10 @@ def blgroupbyaggsum(databody,dataheader,groupby,sumby):
     dfindisetssummary=dfindisets.groupby('User').agg(aggsum)
     dfindisetssummary.columns = sumby #ineeficient way but original adds 'sum' to header name
     listaggregatedindi = dfindisetssummary.reset_index().values.tolist() # cheating the system by just adding a sequential index at the start
-    listaggregatedindiheader = dfindisetssummary.reset_index().columns.values.tolist()
+    
 
+    listaggregatedindiheader = dfindisetssummary.reset_index().columns.values.tolist()
+    
     return listaggregatedindi,listaggregatedindiheader
 
 def blgetfieldCustomUser(emailid,field):
@@ -371,6 +333,7 @@ def blgetuserRoutes(useremail):
     return dictRoutes #basically returning a dictionary object
 
 def blemailSendindividual(sender,recipient, subject,content,ccl = cclist):
+    """This email sends individual email notifications to each user"""
 
     subject = subject
     message = content
@@ -434,14 +397,12 @@ def blformulateRundown(lstplanned,lstactual):
     return finallstplanned
 #edward 20211021 passing in actions 
 def blgetActualRunDown(lstdatesandcount,closeditems): 
-    
-    #lstdatesandcount is passing in due dates and how many were meant to be closed
 
+    """This function gets the Actual Rundown Curve for All Actions that are closed.
+    Parameters lstdatesandcount is passing in due dates and how many were meant to be closed & closeditems are how many items that are closed ( Queseries = 99 )"""
     
     closed = 99 #queseries
     countX = 0
-    #closeditems = ActionItems.objects.filter(QueSeries=closed) #20211021 edward to be removed after one week from now 
-    #closeditems = actions.filter(QueSeries=closed)#change in views #20211021 edward to be removed after one week from now 
 
     actualclosed =[]
     finalclosed =[]
@@ -490,8 +451,9 @@ def blgetActualRunDown(lstdatesandcount,closeditems):
     # Inject Today
     #finalactual
     return finalactual
-#aggregates the duedate by counting each action item
+
 def blaggregatebydate (objActions):
+    """This function aggregates the duedate by counting each action item"""
 
     thedates = objActions.values('DueDate').annotate(count=Count('id')).values('DueDate', 'count').order_by('DueDate')
     
@@ -533,8 +495,8 @@ def blsetrejectionActionItems(ID,queseries):
     ActionItems.mdlQueSeries.mgrincrementRevision(ID)
 
 def blbuildSubmittedemail(ID,ActioneeApproverReject, RejectReason=""):
-    '''Pass in id of actions, and string of where its coming from i.e "Actionne", "Approver", "Reject" that have been submitted or approved and rejected and it returns list [Subject, Content]
-    Optional Parameter of reject reason can be passed in to state reason in content'''
+    """Pass in id of actions, and string of where its coming from i.e "Actionne", "Approver", "Reject" that have been submitted or approved and rejected and it returns list [Subject, Content]
+    Optional Parameter of reject reason can be passed in to state reason in content"""
 
     urlview = f"/pmtrepviewall/{ID}/view"
     urlviewApprover = f"/ApproverList/{ID}/approve" # Not used yet thinking of redoing url below for simplification
@@ -621,8 +583,8 @@ def blgetrejectedcount(discsuborg,revision):
     return lstfinallistcount
 
 def blaggregatebyDisc(discsuborg,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue):
-    '''Agregates by discpline across organisation. Takes in various QueSeries denoting Yettorespond, Approval 
-    Open Actions, Total Queue'''
+    """Agregates by discpline across organisation. Takes in various QueSeries denoting Yettorespond, Approval 
+    Open Actions, Total Queue"""
     
     lstofdiscdetails =[]
     lstcountbydisc =[]
@@ -867,9 +829,9 @@ def blgettimestampuserdetails (id, Signatories):
         #end of edward closeoutprint
 
 def blgetDiscSubOrgfromID (ID):
-    ''' just returns the company, disipline and sub (Triplet) for an object based on id of object in ActionItems
+    """ This function just returns the company, disipline and sub (Triplet) for an object based on id of object in ActionItems
     Org was placed at the last because other existing functions use Disc and Sub first. The return is a triplet of 
-    DiscSubOrg as a List '''
+    DiscSubOrg as a List """
     orgdiscsub= []
     obj=ActionItems.objects.get(id=ID)
     
@@ -968,18 +930,20 @@ def blgetIndiResponseCount(discsuborg,queseriesopen,queseriesclosed):
     
 def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed,phase=""): #Guna 20210703 to be consolidated
 
-    indiPendingSeries =[]
-    completePendingPair = []
+    indiPendingSeries =[] #emptylist
+    completePendingPair = [] #emptylist
     filler = 0
     #first loop through all routes disc/sub/org
     for itemtriplet in discsuborg:
         
         # totalopencount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesopen) 
         # totalclosedcount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesclosed)
+
+        # gets open action dependiong on phase
         totalopencount = blphasegetDiscSubOrgActionCountQ (itemtriplet,queseriesopen,phase) 
         totalclosedcount = blphasegetDiscSubOrgActionCountQ (itemtriplet,queseriesclosed,phase)
-
         lstofActioneeApprover = blgetSignotories(itemtriplet)
+       
 
        
         #indiPendingPair.append(itemtriplet)
@@ -990,7 +954,9 @@ def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed,phase=""): 
                 lstindique = [indique] #make que series into list otherwise doesn work, indique is 0 for Actionee-start of loop                
                 indiPendingSeries.append(indipair[1]) #append Name - #indipair gives all users in routes print indipair,indipendingseries
                 #pendingResponse = blgetDiscSubOrgActionCount ('Y',itemtriplet,lstindique) #just uses queseries and maps back to the
-                pendingResponse = blphasegetDiscSubOrgActionCountQ (itemtriplet,lstindique)
+
+                #edward 20211129 phase indi details
+                pendingResponse = blphasegetDiscSubOrgActionCountQ (itemtriplet,lstindique,phase)
 
                 #pendingresponse = blgetDiscSubOrgActionCount ('Y',itemtriplet,lstindique)
                 #for items in itemtriplet:
@@ -1011,11 +977,18 @@ def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed,phase=""): 
             completePendingPair.append (indiPendingSeries)
          
             indiPendingSeries = []
+            
 
     
 
-    finallistoflist = [x for x in completePendingPair if x]    
-    return finallistoflist
+    finallistoflist = [x for x in completePendingPair if x]   
+    
+    
+    finalisedlist = blfilteractionsbyphase(finallistoflist)
+    #print(finallistoflist) 
+
+    return finalisedlist
+
 def blgetActionStuckAt(allactions, lstoftableattributes,email=False):
     '''Pass a list of normmally all actions  and list of attributes to send back through 
     with where the action is stuck at'''
@@ -1053,9 +1026,9 @@ def blgetActionStuckAt(allactions, lstoftableattributes,email=False):
 #Guna new function for dict
 # Cant get edward dictionary to work below
 def blgetdictActionStuckAt(allactions):
-    '''Pass a dictionary object from .values(...) and get the action stuck at data. This is done by gettings triplet 
+    """Pass a dictionary object from .values(...) and get the action stuck at data. This is done by gettings triplet 
     and then mapping against signatories and then using queseries to decifer in that route
-    which signatory holds the actions. allactions passed in and modified directly and returned without making a copy of it. This will be the approach from here'''
+    which signatory holds the actions. allactions passed in and modified directly and returned without making a copy of it. This will be the approach from here"""
    
     for items in allactions:
         
@@ -1075,6 +1048,7 @@ def blgetdictActionStuckAt(allactions):
 #   edward 20210805 dictstuckat
 # to have a generic function to pass in table headers for excel to call in views
 def blgetActionStuckAtdict(allactions,email=False):
+    """This function gets where each action is currently at in terms of Actionee or Approver"""
 
     lstActionDetails = []
     lstgettriplet = []
@@ -1111,7 +1085,9 @@ def blgetActionStuckAtdict(allactions,email=False):
     return allactionswithlocation
 #edward 20210805 dictstuckat
 
-def blgetSignotories (lstorgdiscsub):
+
+def blgetSignotories (lstorgdiscsub): #blgetSignotoriesbyphase
+    """This function gets the List of Signatories on the App"""
     #in - list of company disc sub
     # - out Actionee & Approver approver names - basically the signatories
     
@@ -1151,7 +1127,7 @@ def blgetSignotories (lstorgdiscsub):
     
     return finallistoflist
 
-def blgetSignatoryemailbyque(lstdiscsuborg,queseries):
+def blgetSignatoryemailbyquereject(lstdiscsuborg,queseries):
     
     pairSignatories = blgetSignotories(lstdiscsuborg) #just reusing what is already done 
 
@@ -1167,10 +1143,8 @@ def blgetSignatoryemailbyque(lstdiscsuborg,queseries):
     return lstfinal
 
 # edward 20210708 created new bl for signatory by queue 
-def blgetSignatoryemailbyque2(lstdiscsuborg,queseries):
-    """
-    Gets the Signatories by email que & sends email notification to the next person in the que when Action is Submitted or Approved
-    """
+def blgetSignatoryemailbyque(lstdiscsuborg,queseries):
+    """This function gets the Signatories by email que & sends email notification to the next person in the que when Action is Submitted or Approved"""
     
     pairSignatories = blgetSignotories(lstdiscsuborg) #just reusing what is already done 
 
@@ -1197,7 +1171,7 @@ def blgetActioneeDiscSub(routes):
         discsub=[]
         
     finallistoflist = [x for x in listoflist if x]
-
+    
     return finallistoflist
 
 def blRejectedHistortyActionsbyId (useremail,queseriesat, Revision):
@@ -1472,17 +1446,19 @@ def stripAndmatch(lstcount,lstlabel):
     
 
 def blstopcharttoday(content,testtotal,testclosed):
-    " Function that stops the Rundown curve at todays date. edward 20211021 "
+    "This function stops the rundown curve at todays date"
     
     strtoday = dt.today().strftime('%Y-%m-%d') #todays date as string
     today= dt.today()#.strftime('%Y-%m-%d') #todays date as date object
 
-    actual = (testtotal-testclosed) # use this to append the actual data which is Total - Closed
+    # use this to append the actual data which is Total - Closed
+    actual = (testtotal-testclosed) 
     
-    currentdate = [today,' ',actual] # it is what it says it is
+    currentdate = [today,' ',actual]
 
     for items in content:
-        items[0] = datetime.datetime.strptime(items[0], '%Y-%m-%d').date() # convert from string to date object. datetime obj has problems bcs comparing down to the minute
+        # convert from string to date object. datetime obj has problems bcs comparing down to the minute
+        items[0] = datetime.datetime.strptime(items[0], '%Y-%m-%d').date() 
 
     if not any(today in items for items in content) : #using list comprehension in place of for loop to look for date inside the list of list 
         content.insert(0,currentdate) # insert at beginning of the list
@@ -1499,6 +1475,6 @@ def blstopcharttoday(content,testtotal,testclosed):
     
 
     return updatedcontent
-# edward 20210723 end new graphing to stop on current day
+
 
 

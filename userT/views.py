@@ -76,6 +76,7 @@ from PIL import Image
 
 
 def base3 (request):
+    """This function is to view base3.html while editing the html"""
     
     return render(request,'userT/base3.html')
 
@@ -221,10 +222,10 @@ def googlecharts88(request):
 # edward 20210713 end new chart
 
 def mainDashboard (request):
-    ''' My Dashboard view. Rewrite Nov 21. The starting point  or at main uses this view
+    """ My Dashboard view. Rewrite Nov 21. The starting point  or at main uses this view
     1. Get all studies first. not using phases at this stage at this is more for an individual dashboard 
     2. Get routes and separate them to actionee or approver routes
-    '''
+    """
     usersemail=request.user.email
     ActioneeActions = []
     queActionee = 0
@@ -323,8 +324,8 @@ def mainDashboard (request):
 
 
 class ActioneeList (ListView):
-    '''This class is for Your Actions/Actionee list, basically uses email to get all actions within actionee routes 
-    And then assigns a colour on it. Returns the queryset and context into object_list(default django)'''
+    """This class is for Your Actions/Actionee list, basically uses email to get all actions within actionee routes 
+    And then assigns a colour on it. Returns the queryset and context into object_list(default django)"""
 
     template_name   =   'userT/actionlistactionee.html'
 
@@ -349,7 +350,7 @@ class ActioneeList (ListView):
         return context
 
 class HistoryList (ListView):
-    '''Populates what you have done under History under Your Actions'''
+    """Populates what you have done under History under Your Actions"""
     template_name   =   'userT/historylist.html' 
 
     def get_queryset(self):
@@ -406,8 +407,8 @@ class HistoryList (ListView):
 
 class ApproverList (ListView):
     
-    '''This is the view under Your actions and when you click Approver Actions. It gives all 
-    approver actions across multiple que series. Get routes that maps against que series and then use '''
+    """This is the view under Your actions and when you click Approver Actions. It gives all 
+    approver actions across multiple que series. Get routes that maps against que series and then use """
     template_name   =   'userT/actionlistapprover.html'
 
     def get_queryset(self):
@@ -594,7 +595,7 @@ class ApproverConfirm(UpdateView):
             #edward next approver sent email when approved 20210708 manage to send but trying to figure out how to send just to approver who submit and the next approver
             integerqueseries = blgetFieldValue(ID,"QueSeries") # using this to find Approver QueSeries
             discsub = blgetDiscSubOrgfromID(ID)
-            Signatoryemails = blgetSignatoryemailbyque2(discsub,integerqueseries+1)
+            Signatoryemails = blgetSignatoryemailbyque(discsub,integerqueseries+1)
             ContentSubject  = blbuildSubmittedemail(ID,"Approver")#change the function call to try and have code standardised #blbuildApprovedemail(ID) # using new bl since approver email should be this has been approved instead of submitted
            
             success = blemailSendindividual(emailSender,Signatoryemails,ContentSubject[0], ContentSubject[1])
@@ -821,7 +822,7 @@ class RejectReason (CreateView):
 
             discsub = blgetDiscSubOrgfromID(ID)
 
-            Signatoryemails = blgetSignatoryemailbyque(discsub,intqueseries)
+            Signatoryemails = blgetSignatoryemailbyquereject(discsub,intqueseries)
             ContentSubject  =blbuildSubmittedemail(ID,"Reject",rejectreason)
             success = blemailSendindividual(emailSender,Signatoryemails,ContentSubject[0], ContentSubject[1]) #send email, the xyz is dummy data and not used
 
@@ -890,7 +891,7 @@ def multiplefiles (request, **kwargs):
         discsub = blgetDiscSubOrgfromID(ID)
 
         # Signatoryemails = blgetSignatoryemailbyque(discsub,newQueSeries+1)
-        Signatoryemails = blgetSignatoryemailbyque2(discsub,newQueSeries) # edward 20210709 altered this to use with new bl
+        Signatoryemails = blgetSignatoryemailbyque(discsub,newQueSeries) # edward 20210709 altered this to use with new bl
 
 
         ContentSubject  =blbuildSubmittedemail(ID,"Actionee")
@@ -1130,113 +1131,9 @@ def rptbyUser(request, **kwargs):
     return render (request, 'userT/reports.html') #yhs checked
 
 
-def ReportingTable(request):
-    sub = Subscribe()
-    if request.method == 'POST':
-        #Msg=EmailMessage()
-        sub = Subscribe(request.POST)
-        subject = 'Test for sending email overview'
-        message = 'A summary table should present here'
-        recepient = str (sub ['Email'].value())
-        Msg=EmailMessage(subject, message, emailSender, [recepient])
-        Msg.content_subtype="html"
-        Msg.attach_file('C:\\Users\\yh_si\\Desktop\\HSETool-1\\static\\multiple.pdf')
-        Msg.send()
-        context ={
-          'form':sub
-        }
-        return render(request, 'userT/reportingtable.html',context) #yhs changed to small letters
-    return render (request, 'userT/reportingtable.html', {'form':sub}) #yhs changed to small letters
-
-#def EmailReminder (request):
-#    return render(request, 'userT/EmailReminder.html')
-
-def emailreminders(request):
-    #sub = Subscribe()
-    emaillist =[]
-    #Get all Actions
-    allactions = ActionItems.objects.all()
-    if (request.POST.get('SendPending')):
-        QueOpen = [0,1,2,3,4,5,6,7,8,9]
-        QueClosed = [99]
-        discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() #get all disc sub
-        Indisets = blgetIndiResponseCount(discsuborg,QueOpen,QueClosed)
-        subject = f"Pending Activities for {paremailphase} Risk Assessment Workshops"
-        content=f"You have Pending Actions in your Queue. Please go to {paremailurl} to attend to the actions."
-        for items in Indisets :
-            if items[3]>0:
-                emaillist.append(items[0])
-        blemailSendindividual(emailSender,emaillist,subject,content)
-        #below is for the overdue, it is linked to button, just waiting for overdue function
-    elif (request.POST.get('SendOverdue')):
-
-        subject = f"Pending Activities for {paremailphase} Assessment Workshops"
-        content=f"You have Overdue Actions in your Queue. Please go to {paremailurl} to attend to the actions."
-        blemailSendindividual(emailSender,emaillist,subject,content)
-
-        return render (request, 'userT/emailreminders.html')
-    return render (request, 'userT/emailreminders.html')
-
-def EmailReminder(request):
-    sub = Subscribe()
-    if request.method == 'POST':
-
-         #send email, the xyz is dummy data and not used
-
-
-        sub = Subscribe(request.POST)
-        recepient = str (sub ['Email'].value())
-
-        dict_allRou = blgetuserRoutes(recepient)
-        Actionee_R =    dict_allRou.get('Actionee_Routes')
-        ActionCount = blfuncActionCount(Actionee_R,0)
-
-        totalaction=sum(ActionCount)
-
-        #Msg=EmailMessage()
-        sub = Subscribe(request.POST)
-        subject = 'Template for Action Pending Responses'
-        message = 'Clients template. Your pending responses are ' + str(totalaction) + ' actions.'
-
-        Msg=EmailMessage(subject, message, emailSender, [recepient])
-        Msg.content_subtype="html"
-        Msg.send()
-        context ={
-          'form':sub
-        }
-        return render(request, 'userT/EmailReminder.html',context)  #edward to check this.....
-    return render (request, 'userT/emailreminders.html', {'form':sub})
-
-def EmailReminderAttachment(request):
-    sub = Subscribe()
-    if request.method == 'POST':
-        #Msg=EmailMessage()
-        sub = Subscribe(request.POST)
-        subject = 'Template for sending out weekly report'
-        message = 'Clients weekly report template & attachment.'
-        recepient = str (sub ['Email'].value())
-        Msg=EmailMessage(subject, message, emailSender, [recepient])
-        Msg.content_subtype="html"
-        Msg.attach_file('C:\\Users\yh_si\Desktop\HSETool-1\static\weeklyreporttemplate.pdf')
-        Msg.send()
-        context ={
-          'form':sub
-        }
-        return render(request, 'userT/EmailReminder.html',context)
-    return render (request, 'userT/EmailReminder.html', {'form':sub}) #edward to check this
-
-
-
-
-def Profile (request):
-    return render(request, 'userT/profile.html') #yhs changed to small letters
-
 def repoverallexcel (request):
     #edward 20210929 excel
-    """ 
-    Provides the Download Complete Excel Feature in PMT Reporting
-
-    """
+    """Provides the Download Complete Excel Feature in PMT Reporting"""
     #have to try passing in all values of fk instead of specifying just one 
     all_actions =   ActionItems.objects.all().values()
     all_actionwithfk = blannotatefktomodel(all_actions)
@@ -1260,19 +1157,12 @@ def repoverallexcel (request):
     response.write(in_memory.read())
     #edward 20210929 excel end
 
-    #edward 20210804 original excel commented out bcs replacing with dfexcel
-    # workbook = excelCompleteReport(request)
-    # response = HttpResponse(content_type='application/ms-excel') #
-    # response['Content-Disposition'] = 'attachment; filename=AllActionDetails.xlsx'
-    # workbook.save(response) # odd  way but it works - took too long to figure out as no resource on the web
-    #edward end 20210804 original excel commented out bcs replacing with dfexcel
-
     return response
 
     
 def repPMTExcel (request,phase=""):
-    '''This is the original function called when user selects PMT Reporting from menu
-    It dumps all actions into this function'''
+    """This is the original function called when user selects PMT Reporting from menu
+    It dumps all actions into this function """
     
     #added for phases - Get all phases from Phases table for Html
     listofPhases= Phases.mdlSetGetField.mgrGetAllActionsAndFields()
@@ -1328,8 +1218,11 @@ def repPMTExcel (request,phase=""):
     forpie.append(googlechartliststudies)
     #***End Pie Guna
 
-
-    Indisets = blgetIndiResponseCount2(discsuborg,QueOpen,QueClosed)
+    #20211129 edward phase indi details & summary
+    # added phase here in Indisets to get phase specific items
+    Indisets = blgetIndiResponseCount2(discsuborg,QueOpen,QueClosed,phase) 
+    
+                
     # tableindiheader = ['User','Role','Organisation Route','Yet-to-Respond','Yet-to-Approve','Closed', 'Open Actions']
     tableindiheader = ['User','Role','Organisation Route','Pending Submission','Pending Approval','Closed', 'Open Actions'] #this has been changed by edward 20210706, used to be Yet-to-Respond & Yet-to-Approve
     
@@ -1337,7 +1230,7 @@ def repPMTExcel (request,phase=""):
     #edited by edward 20210706 to only show yet to approve & yet to respond
    
     listaggregatedindi,listaggregatedindiheader=blgroupbyaggsum(Indisets,tableindiheader,'User', ['Pending Submission','Pending Approval']) #this has been changed by edward 20210706, used to be Yet-to-Respond & Yet-to-Approve
-    
+    #print(listaggregatedindi)
     # allactions = ActionItems.objects.all()
     tableallheader = ['id','StudyActionNo','StudyName', 'ProjectPhase','Disipline' ,'Recommendations', 'Response','DueDate','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
     # lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
@@ -1674,8 +1567,7 @@ def closeoutprint(request,**kwargs):
 
 #edward 20211027 bulk pdf fix for large file dl
 def mergedcloseoutprint(request):
-
-    " Sends bulkpdf files with attachments in their repective folders in a zipped file to Client "
+    "Sends bulkpdf files with attachments in their repective folders in a zipped file to Client"
 
     response = FileResponse(open(bulkpdfzip,'rb'))
     response['Content-Disposition'] = 'attachment; filename= Bulk Closeout Sheets.zip'
@@ -1797,6 +1689,7 @@ class pmtrepviewall(UpdateView):
 
 #yhs testing to print individual pdf on actionee page
 def indiprint(request,**kwargs):
+    """This function prints individual Action Items into the """
     ID = (kwargs["id"])
     obj = ActionItems.objects.filter(id=ID).values().annotate(StudyName=F('StudyName__StudyName')).annotate(ProjectPhase = F('ProjectPhase__ProjectPhase')) # one for passing into PDF
     
@@ -1809,9 +1702,6 @@ def indiprint(request,**kwargs):
     out_file = tempfolder + Filename
 
     data_dict=obj[0]
-
-
-    
 
     #dont delete below as its a way to actualy read from memory
     #response = HttpResponse(content_type='application/pdf')
