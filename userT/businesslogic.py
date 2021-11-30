@@ -211,7 +211,7 @@ def blaggregateby(actionitems,fieldtoaggregate):
         return dfallactionssortbyranking.to_dict()
 
 def bladdriskelements (actionitems):
-    ''' Accepts dictionary only items and then extracts InitialRisk using dataframes,
+    """ Accepts dictionary only items and then extracts InitialRisk using dataframes,
     then looks up RiskMatrix Model and gets a risk colour. It uses the Combined value in the RiskMatrix to map back to the Risk COlour
     the second parameter is optional seprate funtinality for removing addtional fields. """
     
