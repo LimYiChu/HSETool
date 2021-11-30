@@ -4,8 +4,13 @@ import io
 # 20211122 edward stitchingpdf
 from pdfrw import PdfWriter,PdfReader,PdfName
 import os
+from .businesslogic import *
 
 def pdfgenerate(input_pdf_path, output_pdf_path, data_dict,signatories):
+    """ 
+    This function gets the data from the Action Items + Signatories in the form of data dictionary & prints them onto the form fields in the pdf template
+    This is primarily used for closeoutsheets once the Action is closed
+    """
     template_pdf = pdfrw.PdfReader(input_pdf_path) # Read Input PDF
     template_pdf.Root.AcroForm.update(pdfrw.PdfDict(NeedAppearances=pdfrw.PdfObject('true')))# Set Appearences ( Make Text field visible )
     # Loop all Annotations (edward added another for loop to print on all pages)
@@ -22,6 +27,10 @@ def pdfgenerate(input_pdf_path, output_pdf_path, data_dict,signatories):
 
 
 def pdfsendtoclient(input_pdf_path, data_dict):
+    """ 
+    This function gets the data from the Action Items in the form of data dictionary & prints them onto the form fields in the pdf template
+    This is primarily used for the Generate PDF function in pmtrepviewall page
+    """
     buffer = io.BytesIO()
     page = canvas.Canvas(buffer)
     
@@ -42,12 +51,54 @@ def pdfsendtoclient(input_pdf_path, data_dict):
     return buffer          
     # 
     # pdfrw.PdfWriter().write(output_pdf_path, template_pdf)
+
+#20211122 edward stitchpdf
+def pdfcloseoutwithattachments(objactionitemsfk):
+    """
+    This Function generates all the closeout reports with attachments into a single folder. 
+    It starts by getting all the actions that are closed (passed in as Que Series = 99 from (objactionitemsfk) & prints each of them into each corresponding closeoutsheet & puts all of them into a folder.
+    It then also  gets the attachment for each Action from the media folder & attaches the Action Item name in front of the attachments filename & then puts all of them into the folder that contains the closeoutsheets (refer to the above line) .
+    """
+    for items in objactionitemsfk: #objactionitems
+
+        #This section to be deleted once confirmed start
+        # closed = (items['QueSeries'] == 99) 
+        # closed = True
+        # if closed == True :
+        # This section to be deleted once confirmed end
+
+        #The following snippet gets all the actions that are closed (passed in as Que Series = 99 from (objactionitemsfk) & prints each of them into each corresponding closeoutsheet & puts all of them into a folder)
+        items['StudyActionNo'] = items['StudyActionNo'].replace("/","_")
+        newcloseouttemplate = blsetcloseouttemplate (items['id'])
+        data_dict=items
+        discsub = blgetDiscSubOrgfromID(items['id']) 
+        Signatories = blgetSignotories(discsub) 
+        lstSignatoriesTimeStamp= blgettimestampuserdetails (items['id'], Signatories) 
+        studyactno = items["StudyActionNo"] # i renamed to studyactno
+        studyactnopdf = (studyactno + '.pdf')
+        signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
+        out_file = os.path.join("static/test/",studyactnopdf)
+        file = pdfgenerate(newcloseouttemplate,out_file,data_dict,signatoriesdict)
+        objFk =ActionItems.objects.get(id = items['id']) 
+        ObjAttach = objFk.attachments_set.all()
+        
+        # The following snippet gets the attachment for each Action from the media folder & attaches the Action Item name in front of the attachments filename & then puts it into the folder that contains the closeoutsheets
+        for eachfile in ObjAttach: 
+            filename = os.path.basename(eachfile.Attachment.name)
+            attachmentorigin= bulkdlattachments + filename
+            attachment_name = studyactno + "_" + filename
+            shutil.copy(attachmentorigin ,"static/test/" + attachment_name)
+
+    pdfpath = "static/test/"
+
+    return pdfpath
     
 # 20211122 edward stitchingpdf
 def stitchingpdf(pdf_list_onlypdf,pdfpath):
 
     """
     Keeps the PDF AcroNodes intact while looping over all the PDFs that are generated
+    This is a temporary solution until we move to Adobe PDF API .
     
     """
     output = PdfWriter()

@@ -89,9 +89,6 @@ urlpatterns = [
         path('password_reset/',auth_views.PasswordResetView.as_view(template_name='userT/password_reset_form.html'),name='password_reset'),
         path('reset/done/',auth_views.PasswordResetCompleteView.as_view(template_name='userT/password_reset_complete.html'),name='password_reset_complete'),
         path('ContactUs/',login_required(UserView.ContactUs),name='ContactUs'),
-        
-
-        #path('ContactUs/',UserView.ContactUs,name='ContactUs'),
 
         #test googleapi
         path('googlecharts/',login_required(UserView.googlecharts),name='googlecharts'),
@@ -110,37 +107,23 @@ urlpatterns = [
         path('repoverallexcel/', login_required(UserView.repoverallexcel), name='repoverallexcel' ),
         path('discslice/', login_required(UserView.rptdiscSlice), name='discslice' ),
         path('rptbyuser/', login_required(UserView.rptbyUser), name='rptbyuser' ),
-        #pdf path
-        #path('GeneratePDF/',login_required(UserView.pdftest),name='GeneratePDF'),
+        
         #email path
-        path('ReportingTable/',login_required(UserView.ReportingTable),name='ReportingTable'),
-        path('Profile/',login_required(UserView.Profile),name='Profile'),
 
         path('reppmt/',login_required(UserView.repPMTExcel),name='reppmt'),
         #re_path(r'^reppmt/(?P<Phases>)/$',login_required(UserView.reppmtnew),name='reppmtphases'),#Phases REPPMT
         path('reppmt/<phase>',login_required(UserView.repPMTExcel),name='reppmtphases'),
 
         path('DisciplineBreakdown/',login_required(UserView.DisciplineBreakdown),name='DisciplineBreakdown'),
-        #path('EmailReminder/',login_required(UserView.EmailReminder),name='EmailReminder'),
-
-        path('emailreminders/',login_required(UserView.emailreminders),name='emailreminders'),
-        path('EmailReminderAttachment/',login_required(UserView.EmailReminderAttachment),name='EmailReminderAttachment'),
+        
         #StickyNote
         path('StickyNote/',login_required(UserView.StickyNote),name='StickyNote'),
         path('IndividualBreakdownByActions/',login_required(UserView.IndividualBreakdownByActions),name='IndividualBreakdownByActions'),
-        
-        #Guna Commented below to remove at some point
-        #path('IndividualBreakdownByUsers/',login_required(UserView.IndividualBreakdownByUsers),name='IndividualBreakdownByUsers'),
         
         #PDF close out
         path('closeoutsheet/',login_required(UserView.closeoutsheet),name='closeoutsheet'),
         path('closeoutsheet/<int:id>/print', login_required(UserView.closeoutprint), name='closeoutprint' ),
         
-        #tenant
-        # path('our_team/', login_required(our_team), name='our_team'),
-
-        #path('PDFtest/', UserView.PDFtest, name='PDFtest'),
-        #edward added to enable clicking of all actions
         path('pmtrepviewall/<int:id>/view', login_required(UserView.pmtrepviewall.as_view()), name='pmtrepviewall' ),
         #addon Excel Upload
         path('addonupload/', login_required(UploadV.AddonLoad), name='addonupload' ),
@@ -148,8 +131,7 @@ urlpatterns = [
         #yhs testing
         path('AllList/<int:id>/update/print', login_required(UserView.indiprint), name='indiprint' ),
         path('delegatedadmin/',login_required(UserView.delegatedadmin),name='delegatedadmin'),
-        #edward scheduler url
-        # path('scheduler/',login_required(UserView.scheduler),name='scheduler'),
+        
         #edward 20210823 pdf
         path('mergedcloseoutprint/', login_required(UserView.mergedcloseoutprint), name='mergedcloseouprint' ),
         # edward 20210827 base3
@@ -158,6 +140,8 @@ urlpatterns = [
         path('readsqltable/',login_required(UploadV.readsqltable), name='readsqltable'),
         #edward 20211122
         path('stitchpdf/', login_required(UserView.stitchpdf), name='stitchpdf' ),
+
+        
       ]
 
 if settings.DEBUG:

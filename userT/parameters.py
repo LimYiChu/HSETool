@@ -62,38 +62,10 @@ YetToRespondQue =[0]
 ApprovalQue = [1,2,3,4,5,6,7,8,9]
 TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
 
-
-#edward - old
-# new parameter file 
-#url-links
-# cclist = ["ehstools@prism-ehstools.awsapps.com"]#cclist to send a copy of email to ehstools email since there is no record of sent mail for emails sent by system
-# appurl = "https://sapuraphase4a.prism-ehstools.com"#for now, please change appurl for different clients
-# emailSender ="ehstools@prism-ehstools.awsapps.com"#used in views for email sender origin address
-
-# #file directories
-# #temp folder location (used for pdf closeoutprint & indiprint)
-# tempfolder = 'opt/bitnami/projects/HSETool/static/media/temp/'
-# tempfolder = 'static/media/temp/'
-
-# #static/media folder location (used for old pdf generate function in views called closeoutsheet)
-# staticmedia = 'opt/bitnami/projects/HSETool/static/media/'
-# staticmedia = 'static/media/'
-
-# #closeouttemplate location (used for pdf closeoutprint & indiprint)
-# closeouttemplate = '/opt/bitnami/projects/HSETool/closeouttemplate' # Guna same reason removed pdf since want to add approver level
-# closeouttemplate = 'closeouttemplate' # Guna Removed .pdf since i want too add approver level to it
-
-# #atrtemplatelocation (used for old pdf generate function in views called closeoutsheet)
-# atrtemplate = '/opt/bitnami/projects/HSETool/atrtemplateautofontreadonly.pdf'
-# atrtemplate = 'atrtemplateautofontreadonly.pdf'
-
-#closeoutsheet test for one page location
-#closeoutest = 'closeoutsheet.pdf' #commented because did not want to push single page template back to main (could result in mistake setting pdf to print to this template instead)
-#get host name from where it comes from inside settings
-
 # ***dataframes constants edward 20210804
 dfallcolumns=['StudyActionNo','StudyName','Disipline','Recommendations', 'Response','DueDate','InitialRisk','RiskColour']
 dfcompletecolumns=['StudyActionNo','StudyName','ProjectPhase','Facility','Guidewords','Deviation', 'Cause', 'Consequence', 'Safeguard','InitialRisk','ResidualRisk','Recommendations','DueDate', 'Response','FutureAction','Organisation','Disipline','Subdisipline','Actionee','Action with','Revision'] # 'RiskColour',
 dfcompletecolumns2=['StudyActionNo','StudyName','ProjectPhase','Facility','Guidewords','Deviation', 'Cause', 'Consequence', 'Safeguard','InitialRisk','ResidualRisk','Recommendations','DueDate', 'Response','FutureAction','Organisation','Disipline','Subdisipline']
 dfrejectedcolumns = ['StudyActionNo','StudyName','ProjectPhase','Facility','Cause','Safeguard','InitialRisk','ResidualRisk','Recommendations','Organisation','Disipline','Subdisipline','Guidewords','Revision','RiskColour']
 dfindisummcolumns = ["User","Pending Submission","Pending Approval"]
+
