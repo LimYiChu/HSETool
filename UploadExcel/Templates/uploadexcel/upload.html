@@ -1,110 +1,109 @@
 {% extends "userT/base3.html"%}
+{%block title%}Upload File{%endblock%}
 {%load crispy_forms_tags %}
 
 {% crispy form form.helper%}
 
-    {% block ToolTip %}
+{% block ToolTip %}
 
-  <!-- 20210828 edward UI added border color -->
-    <div class="postitnote sticky "  style="font-size:small; font-family:Lato; margin-right:5px;margin-left:0px; margin-top:10px; width:150pt"> 
-        <div class="col-md-1;margin-right:5px;margin-left:5px">
-           <table class="sticky table table-hover" > <!--set to maximum 20 rows per page-->
-            <thead class="thead">
-              <tr>
-                <th>
-                  ToolTip
-                </th>
-              
-              </tr>
-              
-          </thead>
-          <tbody>
-            
-    
-            <tr>
-            <td>Please select your Excel file for uploading. It is advisable to check the file for inconsistency prior to the upload process.</td>
-          
-            
-            </tr>
-            
-            </tbody>
-        </table>
-        
-      </div>
-      <br>
-      <br>
-    </div>
-      
-    {%endblock%}
+<!-- 20210828 edward UI added border color -->
+<div class="postitnote sticky "
+  style="font-size:small; font-family:Lato; margin-right:5px;margin-left:0px; margin-top:10px; width:150pt">
+  <div class="col-md-1;margin-right:5px;margin-left:5px">
+    <table class="sticky table table-hover">
+      <!--set to maximum 20 rows per page-->
+      <thead class="thead">
+        <tr>
+          <th>
+            ToolTip
+          </th>
 
-    {% block FileUpload%}
-    <div>
-<nav>
-  <!-- 20210828 edward UI added border color -->
-    <ol class="breadcrumb"  style="background-color: #ffffff; position:relative;  right: -40px; bottom: -25px;">
-        <li class="breadcrumb-item normal">
-          <a href="/main">Home</a>
-        </li>
-        <li class="breadcrumb-item-active">
-         <a aria-current="page">Upload Excel</a>
-        </li>
-        <li>
-          <!-- This supposed to be empty to maintain the parent - child RS in css -->
-        </li>
-    </ol>
-</nav>
-<br>
-<br>
+        </tr>
+
+      </thead>
+      <tbody>
 
 
+        <tr>
+          <td>Please select your Excel file for uploading. It is advisable to check the file for inconsistency prior to
+            the upload process.</td>
 
+
+        </tr>
+
+      </tbody>
+    </table>
+
+  </div>
+  <br>
+  <br>
 </div>
-
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-md-12" style="left:20pt">
-			<div class="card">
-				<h6 class="card-header">
-					Upload File
-				</h6>
-				<div class="card-body">
-					<p class="card-text">
-                        
-						<form method="POST" enctype = 'multipart/form-data' >  
-                            <fieldset class="form-group" > <!--Fieldset is ultimtely important and must be inside the form and encompass the buttons. 
-                                The buttons was removed from forms into direct HTml to give the btn-outline-primary class. In forms it does not work
-                            -->
-                            {% csrf_token %}  
-                            {%crispy form_upload form_upload.helper%}
-                            <div class="form-group"><input type="submit" name="Upload" value=" Upload Files " class="btn btn-outline-primary float-right "  id="submit-id-approve"/></div> 
-                            <div class="form-group"><input type="submit" name="Cancel" value="Cancel" class="btn btn-outline-primary float-right col-md-1"  id="submit-id-reject"/></div>
-                        </fieldset>
-                        </form>
-
-                        {% if messages %}
-                        <ul class="messages">
-                            {% for message in messages %}
-                            <p style="color:blue" class={{message.tags}}>{{ message }}</p>
-                            {% endfor %}
-                        </ul>
-                        {% endif %}
-
-					</p>
-
-				</div>
-				
-			</div>
-		</div>
-	</div>
-</div>
-</div>
-</div>
-    
-  
-
 
 {%endblock%}
 
+{% block FileUpload%}
+<div>
+  <nav>
+    <!-- 20210828 edward UI added border color -->
+    <ol class="breadcrumb" style="background-color: #ffffff; position:relative;  right: -40px; bottom: -25px;">
+      <li class="breadcrumb-item normal">
+        <a href="/main">Home</a>
+      </li>
+      <li class="breadcrumb-item-active">
+        <a aria-current="page">Upload Excel</a>
+      </li>
+      <li>
+        <!-- This supposed to be empty to maintain the parent - child RS in css -->
+      </li>
+    </ol>
+  </nav>
+  <br>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12" style="left:20pt">
+      <div class="card">
+        <h6 class="card-header parent-font">
+          Upload File
+        </h6>
+        <div class="card-body">
+          <p class="card-text">
+
+            <form method="POST" enctype='multipart/form-data'>
+              <fieldset class="form-group">
+                <!--Fieldset is ultimtely important and must be inside the form and encompass the buttons. 
+                                The buttons was removed from forms into direct HTml to give the btn-outline-primary class. In forms it does not work
+                            -->
+                {% csrf_token %}
+                {%crispy form_upload form_upload.helper%}
+                <div class="form-group"><input type="submit" name="Upload" value=" Upload Files "
+                    class="btn btn-outline-primary float-right " id="submit-id-approve" /></div>
+                <div class="form-group"><input type="submit" name="Cancel" value="Cancel"
+                    class="btn btn-outline-primary float-right col-md-1" id="submit-id-reject" /></div>
+              </fieldset>
+            </form>
+
+            {% if messages %}
+            <ul class="messages">
+              {% for message in messages %}
+              <p style="color:blue" class={{message.tags}}>{{ message }}</p>
+              {% endfor %}
+            </ul>
+            {% endif %}
+
+          </p>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
 
 
 
+
+{%endblock%}

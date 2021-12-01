@@ -1,4 +1,5 @@
 {% extends "userT/base3.html"%}
+{%block title%}History List{%endblock%}
 {% block Actioneelist%}
 <!doctype html>
 <html lang="en">
@@ -6,22 +7,21 @@
 
 <body onload="openReport(event, 'actioneeactions')">
   <!--breadcrumbs-->
-  <h4><b>
-      <nav>
-        <!-- 20210828 edward UI bg color -->
-        <ol class="breadcrumb" style="background-color: #ffffff;position:relative;  right:-40px; bottom: -25px;">
-          <li class="breadcrumb-item normal">
-            <a href="/main">Dashboard</a>
-          </li>
-          <li class="breadcrumb-item-active">
-            <a aria-current="page">History List</a>
-          </li>
-          <li>
-            <!-- This supposed to be empty to maintain the parent - child RS in css -->
-          </li>
-        </ol>
-      </nav>
-    </b></h4>
+  <nav>
+    <!-- 20210828 edward UI bg color -->
+    <ol class="breadcrumb" style="background-color: #ffffff;position:relative;  right:-40px; bottom: -25px;">
+      <li class="breadcrumb-item normal">
+        <a href="/main">Dashboard</a>
+      </li>
+      <li class="breadcrumb-item-active">
+        <a aria-current="page">History List</a>
+      </li>
+      <li>
+        <!-- This supposed to be empty to maintain the parent - child RS in css -->
+      </li>
+    </ol>
+  </nav>
+
   <br>
   <div class="col-md-12 center" style="left:20pt">
     <div class="card" style="width: auto; ">
@@ -29,7 +29,7 @@
         <div class="col-md-12">
           <div class="card" style="width: auto; overflow:scroll;">
             <!-- 20210828 edward UI bg color -->
-            <h4 class="card-header parent">
+            <h4 class="card-header parent-font">
               History List
             </h4>
             <!-- 20210828 edward UI bg color -->

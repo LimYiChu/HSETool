@@ -70,14 +70,26 @@ thead input {
 }
 
 /* Change background color of buttons on hover */
-.tabset button:hover {
+.tab-top button:hover {
   background-color: #ddd;
 }
 
+.tab-child button:hover {
+  background-image:
+    linear-gradient(to bottom, #ddd, white);
+}
+
 /* Create an active/current tablink class */
-.tabset button.active {
+.tab-top button.active {
   background-color: #93D3F0;
   border: solid #086996 1px;
+}
+
+.tab-child button.active {
+  background-image:
+    linear-gradient(to bottom, #93D3F0, white);
+  border: solid #ddd 1px;
+  border-bottom: none;
 }
 
 /* Style the tab content */
