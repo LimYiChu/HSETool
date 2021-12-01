@@ -2,13 +2,14 @@
 
 #smallcard {
     padding-top: 1.5rem;
-    padding-bottom: 1.5rem
+    padding-bottom: 1rem
 }
 
 #smallcard .card {
     border-radius: 0.75rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     text-align: right;
+    min-width: 291px;
 }
 
 #smallcard .card p,
@@ -20,6 +21,8 @@
 #smallcard .card-header,
 #smallcard .card-footer {
     padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-bottom: 1 px solid rgba(0, 0, 0, 0.125);
 }
 
 #smallcard .card-header div {
@@ -73,31 +76,34 @@
     color: black;
 }
 
-/* end of Bootstrap override */
+#smallcard .row {
+    justify-content: space-between;
+    /* flex-wrap: nowrap; */
+
+}
 
 #smallcard .responsive {
-
     position: relative;
-    width: 100%;
     padding-right: 15px;
     padding-left: 15px;
     margin-bottom: 1.5rem;
 }
 
-@media (min-width: 576px) {
-    .responsive {
-        -ms-flex: 0 0 50%;
-        flex: 0 0 50%;
-        max-width: 50%;
 
+@media (max-width:1500px) {
+    .row {
+        flex-wrap: wrap;
     }
 }
 
-@media (min-width: 1200px) {
+@media (min-width:1500px) {
+    .row {
+        flex-wrap: nowrap;
+    }
+
     .responsive {
-        -ms-flex: 0 0 25%;
-        flex: 0 0 25%;
-        max-width: 25%;
-        margin-bottom: 0;
+        width: 100%;
     }
 }
+
+/* end of Bootstrap override */
