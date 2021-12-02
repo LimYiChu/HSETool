@@ -26,9 +26,26 @@ import shutil
 from django.db.models import F
 #20211122 edward stitchpdf
 import xlwings as xw
-import img2pdf
-from PIL import Image
+#20211202 edward commented out this import because there is a problem with img2pdf library on linux
+# import img2pdf
+# from PIL import Image
 
+#20211201 edward 
+def bldfdiscsuborgphase(phase):
+    """This function gets the discsuborg for actions based on differing phases"""
+    
+    if phase == "":
+        ActionItem = ActionItems.objects.values('Disipline',
+                        'Subdisipline','Organisation')
+    else:
+        ActionItem= ActionItems.objects.filter(ProjectPhase__ProjectPhase=phase).values('Disipline',
+                        'Subdisipline','Organisation')
+                        
+    dfactionitem = pd.DataFrame(ActionItem)
+    dfactionitemfilter = dfactionitem.drop_duplicates()
+    dfactionitemlist = dfactionitemfilter.values.tolist()
+
+    return dfactionitemlist
 
 # 20211130 edward phase 
 def blfilteractionsbyphase(finallistoflist):
@@ -41,23 +58,23 @@ def blfilteractionsbyphase(finallistoflist):
     #print(phaseindisets)
     return phaseindisets
 
-
+#20211202 edward commented out this function because there is a problem with img2pdf library on linux
 #20211122 edward stitchpdf
-def blimagetopdf(pdfpath,pdf_list_onlyjpg):
-    """This function converts .jpg image to .pdf files using the img2pdf library"""
+# def blimagetopdf(pdfpath,pdf_list_onlyjpg):
+#     """This function converts .jpg image to .pdf files using the img2pdf library"""
     
-    for jpgs in pdf_list_onlyjpg:
-        fullpath_jpgs = os.path.join(pdfpath,jpgs)
-        image = Image.open(fullpath_jpgs)
-        pdf_bytes = img2pdf.convert(image.filename)
-        pdf_filename = pdfpath + image.filename
-        pdf_filename_test = os.path.splitext(jpgs)[0]+'.pdf'
-        file = open(pdfpath + pdf_filename_test, "wb")
-        filewrite = file.write(pdf_bytes)
-        closeimage = image.close()
-        finalfileclose = file.close()
+#     for jpgs in pdf_list_onlyjpg:
+#         fullpath_jpgs = os.path.join(pdfpath,jpgs)
+#         image = Image.open(fullpath_jpgs)
+#         pdf_bytes = img2pdf.convert(image.filename)
+#         pdf_filename = pdfpath + image.filename
+#         pdf_filename_test = os.path.splitext(jpgs)[0]+'.pdf'
+#         file = open(pdfpath + pdf_filename_test, "wb")
+#         filewrite = file.write(pdf_bytes)
+#         closeimage = image.close()
+#         finalfileclose = file.close()
         
-    return finalfileclose 
+#     return finalfileclose 
 
 #20211122 edward stitchpdf
 def blexceltopdf(pdfpath,pdf_list_onlyexcel):
@@ -927,14 +944,17 @@ def blgetIndiResponseCount(discsuborg,queseriesopen,queseriesclosed):
 
     finallistoflist = [x for x in completePendingPair if x]    
     return finallistoflist
-    
-def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed,phase=""): #Guna 20210703 to be consolidated
 
+#20211201 edward remove discsuborg    
+# def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed,phase=""): #Guna 20210703 to be consolidated
+def blgetIndiResponseCount2(dfdiscsuborgphase,queseriesopen,queseriesclosed,phase=""): #Guna 20210703 to be consolidated
+    
     indiPendingSeries =[] #emptylist
     completePendingPair = [] #emptylist
     filler = 0
+
     #first loop through all routes disc/sub/org
-    for itemtriplet in discsuborg:
+    for itemtriplet in dfdiscsuborgphase:
         
         # totalopencount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesopen) 
         # totalclosedcount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesclosed)
@@ -943,7 +963,10 @@ def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed,phase=""): 
         totalopencount = blphasegetDiscSubOrgActionCountQ (itemtriplet,queseriesopen,phase) 
         totalclosedcount = blphasegetDiscSubOrgActionCountQ (itemtriplet,queseriesclosed,phase)
         lstofActioneeApprover = blgetSignotories(itemtriplet)
-       
+
+        
+
+
 
        
         #indiPendingPair.append(itemtriplet)
@@ -984,10 +1007,10 @@ def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed,phase=""): 
     finallistoflist = [x for x in completePendingPair if x]   
     
     
-    finalisedlist = blfilteractionsbyphase(finallistoflist)
+    #finalisedlist = blfilteractionsbyphase(finallistoflist)
     #print(finallistoflist) 
 
-    return finalisedlist
+    return finallistoflist
 
 def blgetActionStuckAt(allactions, lstoftableattributes,email=False):
     '''Pass a list of normmally all actions  and list of attributes to send back through 

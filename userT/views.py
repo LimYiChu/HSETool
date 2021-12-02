@@ -70,8 +70,9 @@ from django.db.models import F
 from django.http import StreamingHttpResponse
 #edward 20211122 stitch pdf
 import xlwings as xw
-import img2pdf
-from PIL import Image
+#20211202 edward commented out this import because there is a problem with img2pdf library on linux
+# import img2pdf
+# from PIL import Image
 
 
 
@@ -313,14 +314,7 @@ def mainDashboard (request):
 
     return render(request, 'userT/maindashboard.html',Context) 
 
-#Todelete if not used
-# def getActionDetails(request, id=None):
-#     Items = get_object_or_404(ActionItems,id=id)
-#     context = {
-#             "Items":Items
 
-#     }
-#     return render(request, "userT/detailactions.html", context) #ok checked by yhs in terms of capital letters.
 
 
 class ActioneeList (ListView):
@@ -1166,9 +1160,15 @@ def repPMTExcel (request,phase=""):
     
     #added for phases - Get all phases from Phases table for Html
     listofPhases= Phases.mdlSetGetField.mgrGetAllActionsAndFields()
-    discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg()
+    #20211202 edward previous discsuborg was looping through the AR table, changed to temporarily use dfdiscsuborgphase which uses DF to sort actions by phase
+    discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() 
     discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
+    
     organisationnames = ActionRoutes.mdlAllCompany.mgr_getOrgnames()
+
+    #20211201 edward this one replaces discsuborg
+    dfdiscsuborgphase = bldfdiscsuborgphase(phase)
+
     #1st Pie Overall Actions Open/Closed
     forpie=[]
     PhaseOpenActions= blallphasegetAction(QueOpen,phase)
@@ -1218,9 +1218,8 @@ def repPMTExcel (request,phase=""):
     forpie.append(googlechartliststudies)
     #***End Pie Guna
 
-    #20211129 edward phase indi details & summary
-    # added phase here in Indisets to get phase specific items
-    Indisets = blgetIndiResponseCount2(discsuborg,QueOpen,QueClosed,phase) 
+    #20211201 edward remove discsuborg here because using discsuborg in bl
+    Indisets = blgetIndiResponseCount2(dfdiscsuborgphase,QueOpen,QueClosed,phase) 
     
                 
     # tableindiheader = ['User','Role','Organisation Route','Yet-to-Respond','Yet-to-Approve','Closed', 'Open Actions']
@@ -1230,15 +1229,11 @@ def repPMTExcel (request,phase=""):
     #edited by edward 20210706 to only show yet to approve & yet to respond
    
     listaggregatedindi,listaggregatedindiheader=blgroupbyaggsum(Indisets,tableindiheader,'User', ['Pending Submission','Pending Approval']) #this has been changed by edward 20210706, used to be Yet-to-Respond & Yet-to-Approve
-    #print(listaggregatedindi)
-    # allactions = ActionItems.objects.all()
     tableallheader = ['id','StudyActionNo','StudyName', 'ProjectPhase','Disipline' ,'Recommendations', 'Response','DueDate','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
-    # lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
     tableallheadermodified = ['Study Action No','Study Name', 'Project Phase','Discipline' ,'Recommendations', 'Response','Due Date','Initial Risk']
     
     #All actions and actions by Phases
     justenoughattributes =  ['id','StudyActionNo','Disipline' ,'Recommendations', 'QueSeries', 'Response','DueDate','InitialRisk']
-    #phasesactions =  ActionItems.mdlgetField.mgrGetAllActionswithPhases(True,justenoughattributes) #Todelete old code
 
     phasesactions =  blphasegetActionreducedfieldsQ(justenoughattributes,phase)
     #this annotate function needs to first because it doesnt like addtional items added to query set
@@ -1246,20 +1241,6 @@ def repPMTExcel (request,phase=""):
     #this sequence is important otherwise doesnt work
     phaseswithrisk = bladdriskelements(dictofallactions)
     dictofallactions    = blgetdictActionStuckAt(phaseswithrisk)
-    
-    # # # edward 20210803 dataframes excel
-    # all_actions =   ActionItems.objects.all().values()#'StudyActionNo','StudyName','ProjectPhase', 'Facility','Guidewords', 'Deviation', 'Cause', 'Consequence', 'Safeguard','InitialRisk','ResidualRisk', 'Disipline' ,'Recommendations','DueDate', 'Response','FutureAction')
-    # rem_list2 = ['QueSeries','QueSeriesTarget','DateCreated'] #OPtimising data to be removed
-    # blank=[]
-    # all_actionsopt = bladdriskelements(all_actions, blank)
-    # dfall1 = pd.DataFrame.from_dict(all_actionsopt) # sort dfall
-    # dfall = blsortdataframes(dfall1,dfallcolumns)
-
-    
-    # # # edward end 20210803 dataframes excel
-
-    #RejectDetails - gonna use a different way same way as actionne list
-    #just using revision way to get all rejected actions
     
     #edward 20211001 pd allactions
     all_actions =   ActionItems.objects.all().values()
@@ -1282,17 +1263,30 @@ def repPMTExcel (request,phase=""):
     dfrejection = pd.DataFrame.from_dict(rejectedallactionitems)
     
     #for Disipline based view
+    #20211201 edward 
     tabledischeader = ['Discipline', 'Yet to Respond' ,'Approval Stage', 'Closed','Open Actions','Total Actions']
-    lstbyDisc= blaggregatebyDisc(discsuborg,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue)
+    lstbyDisc= blaggregatebyDisc(dfdiscsuborgphase,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue)
 
 
     #get rejected summary actions get Reject Table
     tablerheaderejected = ['Discipline', 'Rejected Count']
-    listofrejecteditems = blgetrejectedcount(discsuborg,1) #Pass revision number => than whats required
+    listofrejecteditems = blgetrejectedcount(dfdiscsuborgphase,1) #Pass revision number => than whats required
 
 
     #for workshop based view
+    #20211201 edward
+    if phase == "":
+        ActionItem = ActionItems.objects.values('StudyName')
+    else:
+        ActionItem= ActionItems.objects.filter(ProjectPhase__ProjectPhase=phase).values('StudyName')
+    dfactionitem = pd.DataFrame(ActionItem)
+    dfactionitemfilter = dfactionitem.drop_duplicates()
+    
+    dfactionitemlist = dfactionitemfilter.values.tolist()
+    print('df',dfactionitem)
+
     allstudies = Studies.objects.all()
+    
     tablestudiesheader = ['Studies', 'Yet to Respond' ,'Approval Stage','Closed','Open Actions', 'Total Actions']
 
     lstbyWorkshop = blgetbyStdudiesCount(allstudies,YetToRespondQue,ApprovalQue,QueClosed,QueOpen,TotalQue)
@@ -1329,20 +1323,9 @@ def repPMTExcel (request,phase=""):
 
         if (request.POST.get('allActions')):
 
-            #edward 20210803 dataframes excel
-
-            # all_actions =   ActionItems.objects.all().values()
-            # all_actionsannotate = blannotatefktomodel(all_actions)
-            # blank=[]
-            # all_actionsopt = bladdriskelements(all_actionsannotate, blank)
-            # dfall1 = pd.DataFrame.from_dict(all_actionsopt) # sort dfall
-            # dfall = blsortdataframes(dfall1,dfallcolumns)
-
             in_memory = BytesIO()
-            #workbook = dfall.to_excel(in_memory)
 
-            #tableallheader.append("Current Actionee/Approver") #appends the last column that the list spits out #yhs changed from tableallheader to tableallheadermodified
-            #workbook = excelAllActions(lstofallactions,tableallheader,"All Action Items",1) #optional parameter passed to remove excel columns if required
+
             response = HttpResponse(content_type='application/ms-excel') #
             response['Content-Disposition'] = 'attachment; filename=byAllActions.xlsx'
             #workbook.save(response) # odd  way but it works - took too long to figure out as no resource on the web
@@ -1368,8 +1351,7 @@ def repPMTExcel (request,phase=""):
                 workbook = writer.book #gives excelwriter access to workbook
                 worksheet = writer.sheets['Rejected Actions'] #gives excelwriter access to worksheet
                 formattedexcel = blexcelformat(drejectedsorted,workbook,worksheet)
-           # workbook = dfrejection.to_excel(in_memory)
-            #just use memory and workbook is redundant
+       
             response = HttpResponse(content_type='application/ms-excel') #
             response['Content-Disposition'] = 'attachment; filename=byRejectedActions.xlsx'
             in_memory.seek(0)
@@ -1381,26 +1363,7 @@ def repPMTExcel (request,phase=""):
             
 
             workbook = excelAllActions(listaggregatedindi,listaggregatedindiheader,"Individual Summary")
-            # test = listaggregatedindi
-            
-            # headers = ["User","Pending Submission","Pending Approval"]
-            # for items in listaggregatedindi:
-            #         test = dict(zip(headers, items))
-            #         dfindisumm = pd.DataFrame.from_dict([test])
-            #         in_memory = BytesIO()
-            #         dfindisummsorted = blsortdataframes(dfindisumm,dfindisummcolumns)
 
-            #         with pd.ExcelWriter(in_memory)as writer: #using excelwriter library to edit worksheet
-            #             dfindisummsorted.to_excel(writer, sheet_name='Individual Summary',engine='xlsxwriter',header=False,startrow=1)
-            #             workbook = writer.book #gives excelwriter access to workbook
-            #             worksheet = writer.sheets['Individual Summary'] #gives excelwriter access to worksheet
-            #             formattedexcel = blexcelformat(dfindisummsorted,workbook,worksheet)
-            #             print(dfindisummsorted)
-
-            #         response = HttpResponse(content_type='application/ms-excel') #
-            #         response['Content-Disposition'] = 'attachment; filename=byIndividualSummary.xlsx'
-            #         in_memory.seek(0)
-            #         response.write(in_memory.read())
 
             response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
             response['Content-Disposition'] = 'attachment; filename=byIndividualSummary.xlsx'
@@ -1461,7 +1424,6 @@ def repPMTExcel (request,phase=""):
         'lstbyWorkshop' : lstbyWorkshop,
         'Indisets' : Indisets,
         #'lstofallactions' : lstofallactions,
-        #dict of all actions
         "dictofallactions" : dictofallactions,
         'tableindiheader' : tableindiheader,
         'tablestudiesheader' : tablestudiesheader,
