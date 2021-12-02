@@ -1,3 +1,365 @@
+#20211202 from views.py edward
+# def repPMTExcel (request,phase=""):
+#     """This is the original function called when user selects PMT Reporting from menu
+#     It dumps all actions into this function """
+    
+#     #added for phases - Get all phases from Phases table for Html
+#     listofPhases= Phases.mdlSetGetField.mgrGetAllActionsAndFields()
+#     #20211202 edward previous discsuborg was looping through the AR table, changed to temporarily use dfdiscsuborgphase which uses DF to sort actions by phase
+#     discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() 
+#     discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
+    
+#     organisationnames = ActionRoutes.mdlAllCompany.mgr_getOrgnames()
+
+#     #20211201 edward this one replaces discsuborg
+#     dfdiscsuborgphase = bldfdiscsuborgphase(phase)
+
+#     #1st Pie Overall Actions Open/Closed
+#     forpie=[]
+#     PhaseOpenActions= blallphasegetAction(QueOpen,phase)
+#     PhaseClosedActions = blallphasegetAction(QueClosed,phase)
+#     labelpie =['Open', 'Closed']
+#     titlepie = "Open/Closed Actions"
+#     googlechartlistoverphase= blprepGoogChartsbyStudies(labelpie,[PhaseOpenActions,PhaseClosedActions],titlepie )
+#     forpie.append(googlechartlistoverphase)
+    
+#     #2nd Pie Open action by organisation
+#     countorg =[] 
+#     titleorg = "Open Actions by Organisation"          
+#     for items in organisationnames:
+#             countorg.append(blgetCompanyActionCountPhase (items,QueOpen,phase))
+#     googlechartlistorganisation = blprepGoogChartsbyStudies(organisationnames,countorg,titleorg)
+#     forpie.append(googlechartlistorganisation)
+
+#    #3rd Pie Submitted actions by organisation
+#     titlesubmitted = "Submitted Actions by Organisation" 
+#     countsubmitted =[]         
+#     for items in organisationnames:
+#             countsubmitted.append(blgetCompanyActionCountPhase (items,ApprovalQue,phase))
+#     googlechartlistsubmitted = blprepGoogChartsbyStudies(organisationnames,countsubmitted,titlesubmitted)
+#     forpie.append(googlechartlistsubmitted)
+
+#     #4th Pie Open Actions for discipline
+#     countdiscsub= []
+#     labelsDisc =[]
+#     titledisc = "Open Actions by Discipline"
+    
+#     for itemPair in discsub:
+#         countdiscsub.append(blgetDiscSubActionCountPhase (itemPair,QueOpen,phase))
+#         labelsDisc.append(str(itemPair[0]))#+"/"+str(itemPair[1]))
+#     googlechartlistdiscipline = blprepGoogChartsbyStudies(labelsDisc,countdiscsub,titledisc)
+#     forpie.append(googlechartlistdiscipline) 
+
+#     #5th Pie  Overall Open actions by Studies
+#     labelsworkshop = Studies.objects.all()        
+#     countstudies = []
+#     labelsstudies = []
+#     titlestudies = "Open Actions by Studies"
+
+#     for study in labelsworkshop:
+#         countstudies.append(blallActionCountbyStudiesPhaseQ(study.StudyName,QueOpen,phase))
+#         labelsstudies.append(study.StudyName)
+#     googlechartliststudies = blprepGoogChartsbyStudies(labelsstudies,countstudies,titlestudies)
+#     forpie.append(googlechartliststudies)
+#     #***End Pie Guna
+
+    
+#     # added phase here in Indisets to get phase specific items
+#     #20211201 edward remove discsuborg here because using discsuborg in bl
+#     # Indisets = blgetIndiResponseCount2(discsuborg,QueOpen,QueClosed,phase) 
+#     Indisets = blgetIndiResponseCount2(dfdiscsuborgphase,QueOpen,QueClosed,phase) 
+    
+                
+#     # tableindiheader = ['User','Role','Organisation Route','Yet-to-Respond','Yet-to-Approve','Closed', 'Open Actions']
+#     tableindiheader = ['User','Role','Organisation Route','Pending Submission','Pending Approval','Closed', 'Open Actions'] #this has been changed by edward 20210706, used to be Yet-to-Respond & Yet-to-Approve
+    
+    
+#     #edited by edward 20210706 to only show yet to approve & yet to respond
+   
+#     listaggregatedindi,listaggregatedindiheader=blgroupbyaggsum(Indisets,tableindiheader,'User', ['Pending Submission','Pending Approval']) #this has been changed by edward 20210706, used to be Yet-to-Respond & Yet-to-Approve
+#     #print(listaggregatedindi)
+#     # allactions = ActionItems.objects.all()
+#     tableallheader = ['id','StudyActionNo','StudyName', 'ProjectPhase','Disipline' ,'Recommendations', 'Response','DueDate','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
+#     # lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
+#     tableallheadermodified = ['Study Action No','Study Name', 'Project Phase','Discipline' ,'Recommendations', 'Response','Due Date','Initial Risk']
+    
+#     #All actions and actions by Phases
+#     justenoughattributes =  ['id','StudyActionNo','Disipline' ,'Recommendations', 'QueSeries', 'Response','DueDate','InitialRisk']
+#     #phasesactions =  ActionItems.mdlgetField.mgrGetAllActionswithPhases(True,justenoughattributes) #Todelete old code
+
+#     phasesactions =  blphasegetActionreducedfieldsQ(justenoughattributes,phase)
+#     #this annotate function needs to first because it doesnt like addtional items added to query set
+#     dictofallactions    = blannotatefktomodel(phasesactions)
+#     #this sequence is important otherwise doesnt work
+#     phaseswithrisk = bladdriskelements(dictofallactions)
+#     dictofallactions    = blgetdictActionStuckAt(phaseswithrisk)
+    
+#     # # # edward 20210803 dataframes excel
+#     # all_actions =   ActionItems.objects.all().values()#'StudyActionNo','StudyName','ProjectPhase', 'Facility','Guidewords', 'Deviation', 'Cause', 'Consequence', 'Safeguard','InitialRisk','ResidualRisk', 'Disipline' ,'Recommendations','DueDate', 'Response','FutureAction')
+#     # rem_list2 = ['QueSeries','QueSeriesTarget','DateCreated'] #OPtimising data to be removed
+#     # blank=[]
+#     # all_actionsopt = bladdriskelements(all_actions, blank)
+#     # dfall1 = pd.DataFrame.from_dict(all_actionsopt) # sort dfall
+#     # dfall = blsortdataframes(dfall1,dfallcolumns)
+
+    
+#     # # # edward end 20210803 dataframes excel
+
+#     #RejectDetails - gonna use a different way same way as actionne list
+#     #just using revision way to get all rejected actions
+    
+#     #edward 20211001 pd allactions
+#     all_actions =   ActionItems.objects.all().values()
+#     all_actionsannotate = blannotatefktomodel(all_actions)
+#     blank=[]
+#     all_actionsopt = bladdriskelements(all_actionsannotate)
+#     dfall1 = pd.DataFrame.from_dict(all_actionsopt) # sort dfall
+#     dfall = blsortdataframes(dfall1,dfallcolumns)
+#     #edward 20211001 pd rejected excel 
+   
+#     revisiongte = 1
+#     queseriesrejected = 0
+   
+
+#     #Rejected details using Q Object
+#     rejectedactions = blphasegetrejectedactionsQ (revisiongte,queseriesrejected,justenoughattributes,phase)
+#     rejecteddictofallactions    = blannotatefktomodel(rejectedactions)
+#     #this sequence is important otherwise doesnt work
+#     rejectedallactionitems = bladdriskelements(rejecteddictofallactions)
+#     dfrejection = pd.DataFrame.from_dict(rejectedallactionitems)
+    
+#     #for Disipline based view
+#     #20211201 edward 
+#     tabledischeader = ['Discipline', 'Yet to Respond' ,'Approval Stage', 'Closed','Open Actions','Total Actions']
+#     lstbyDisc= blaggregatebyDisc(dfdiscsuborgphase,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue)
+
+
+#     #get rejected summary actions get Reject Table
+#     tablerheaderejected = ['Discipline', 'Rejected Count']
+#     listofrejecteditems = blgetrejectedcount(dfdiscsuborgphase,1) #Pass revision number => than whats required
+
+
+#     #for workshop based view
+#     #20211201 edward
+#     if phase == "":
+#         ActionItem = ActionItems.objects.values('StudyName')
+#     else:
+#         ActionItem= ActionItems.objects.filter(ProjectPhase__ProjectPhase=phase).values('StudyName')
+#     dfactionitem = pd.DataFrame(ActionItem)
+#     dfactionitemfilter = dfactionitem.drop_duplicates()
+    
+#     dfactionitemlist = dfactionitemfilter.values.tolist()
+#     print('df',dfactionitem)
+
+#     allstudies = Studies.objects.all()
+    
+#     tablestudiesheader = ['Studies', 'Yet to Respond' ,'Approval Stage','Closed','Open Actions', 'Total Actions']
+
+#     lstbyWorkshop = blgetbyStdudiesCount(allstudies,YetToRespondQue,ApprovalQue,QueClosed,QueOpen,TotalQue)
+    
+    
+#     #Changed to Q function and Phases
+#     tableduedateheader = ['Due Date','Actions to Close by']
+#     fieldsrequired = ['id','StudyActionNo', 'DueDate','QueSeries']
+#     actionitemsbyphase = blphasegetActionreducedfieldsQ(fieldsrequired,phase)
+#     lstbyDueDate= blaggregatebydate(blphasegetActionreducedfieldsQ(fieldsrequired,phase))
+   
+#     #20211021 edward rundown by phase 
+#     closed=99
+#     closeditems = actionitemsbyphase.filter(QueSeries=closed)
+#     totalactions = (len(actionitemsbyphase))
+#     closedactions = (len(closeditems))
+    
+#     subtotal =[]
+#     for items in lstbyDueDate:
+#        subtotal.append(items['count']) #how to access dictionary object by
+
+#     totalallDueDate = sum(subtotal)
+    
+#     lstplanned         =  blprepareGoogleChartsfromDict(lstbyDueDate)
+#     lstactual      = blgetActualRunDown(lstplanned,closeditems) # shows how many closed pass in here 
+    
+#     newlist = blformulateRundown(lstplanned,lstactual)
+#     #edward 20210727 rundown, 20211021 edward updated
+#     newliststop = blstopcharttoday(newlist,totalactions,closedactions)
+#     #edward end 20210727 rundown, 20211021 edward updated
+#     #20211021 edward rundown by phase 
+
+#     if request.method == 'POST':
+
+#         if (request.POST.get('allActions')):
+
+#             #edward 20210803 dataframes excel
+
+#             # all_actions =   ActionItems.objects.all().values()
+#             # all_actionsannotate = blannotatefktomodel(all_actions)
+#             # blank=[]
+#             # all_actionsopt = bladdriskelements(all_actionsannotate, blank)
+#             # dfall1 = pd.DataFrame.from_dict(all_actionsopt) # sort dfall
+#             # dfall = blsortdataframes(dfall1,dfallcolumns)
+
+#             in_memory = BytesIO()
+#             #workbook = dfall.to_excel(in_memory)
+
+#             #tableallheader.append("Current Actionee/Approver") #appends the last column that the list spits out #yhs changed from tableallheader to tableallheadermodified
+#             #workbook = excelAllActions(lstofallactions,tableallheader,"All Action Items",1) #optional parameter passed to remove excel columns if required
+#             response = HttpResponse(content_type='application/ms-excel') #
+#             response['Content-Disposition'] = 'attachment; filename=byAllActions.xlsx'
+#             #workbook.save(response) # odd  way but it works - took too long to figure out as no resource on the web
+        
+#             with pd.ExcelWriter(in_memory)as writer: #using excelwriter library to edit worksheet
+#                 dfall.to_excel(writer, sheet_name='All Actions',engine='xlsxwriter',header=None,startrow=1)
+#                 workbook = writer.book #gives excelwriter access to workbook
+#                 worksheet = writer.sheets['All Actions'] #gives excelwriter access to worksheet
+#                 formattedexcel = blexcelformat(dfall,workbook,worksheet)
+
+#             in_memory.seek(0)
+#             response.write(in_memory.read())
+#             #edward end 20210928 dataframes excel
+
+#             return response
+#         elif (request.POST.get('rejectedactions')):
+
+#             in_memory = BytesIO()
+#             drejectedsorted = blsortdataframes(dfrejection,dfrejectedcolumns)
+
+#             with pd.ExcelWriter(in_memory)as writer: #using excelwriter library to edit worksheet
+#                 drejectedsorted.to_excel(writer, sheet_name='Rejected Actions',engine='xlsxwriter',header=False,startrow=1)
+#                 workbook = writer.book #gives excelwriter access to workbook
+#                 worksheet = writer.sheets['Rejected Actions'] #gives excelwriter access to worksheet
+#                 formattedexcel = blexcelformat(drejectedsorted,workbook,worksheet)
+#            # workbook = dfrejection.to_excel(in_memory)
+#             #just use memory and workbook is redundant
+#             response = HttpResponse(content_type='application/ms-excel') #
+#             response['Content-Disposition'] = 'attachment; filename=byRejectedActions.xlsx'
+#             in_memory.seek(0)
+#             response.write(in_memory.read())
+
+#             return response
+
+#         elif (request.POST.get('indisummary')):
+            
+
+#             workbook = excelAllActions(listaggregatedindi,listaggregatedindiheader,"Individual Summary")
+#             # test = listaggregatedindi
+            
+#             # headers = ["User","Pending Submission","Pending Approval"]
+#             # for items in listaggregatedindi:
+#             #         test = dict(zip(headers, items))
+#             #         dfindisumm = pd.DataFrame.from_dict([test])
+#             #         in_memory = BytesIO()
+#             #         dfindisummsorted = blsortdataframes(dfindisumm,dfindisummcolumns)
+
+#             #         with pd.ExcelWriter(in_memory)as writer: #using excelwriter library to edit worksheet
+#             #             dfindisummsorted.to_excel(writer, sheet_name='Individual Summary',engine='xlsxwriter',header=False,startrow=1)
+#             #             workbook = writer.book #gives excelwriter access to workbook
+#             #             worksheet = writer.sheets['Individual Summary'] #gives excelwriter access to worksheet
+#             #             formattedexcel = blexcelformat(dfindisummsorted,workbook,worksheet)
+#             #             print(dfindisummsorted)
+
+#             #         response = HttpResponse(content_type='application/ms-excel') #
+#             #         response['Content-Disposition'] = 'attachment; filename=byIndividualSummary.xlsx'
+#             #         in_memory.seek(0)
+#             #         response.write(in_memory.read())
+
+#             response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
+#             response['Content-Disposition'] = 'attachment; filename=byIndividualSummary.xlsx'
+#             workbook.save(response)
+#             return response
+
+#         elif (request.POST.get('indiActions')):
+
+
+#             workbook = excelAllActions(Indisets,tableindiheader,"Individual Actions")
+
+#             response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
+#             response['Content-Disposition'] = 'attachment; filename=byIndividual.xlsx'
+#             workbook.save(response)
+#             return response
+
+#         elif (request.POST.get('allStudies')):
+
+#             workbook = excelAllActions(lstbyWorkshop,tablestudiesheader,"Workshop Actions")
+
+#             response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
+#             response['Content-Disposition'] = 'attachment; filename=byStudies.xlsx'
+#             workbook.save(response)
+#             return response
+
+#         elif (request.POST.get('bydiscipline')):
+
+
+#             workbook = excelAllActions(lstbyDisc,tabledischeader,"Discipline Actions")
+
+#             response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
+#             response['Content-Disposition'] = 'attachment; filename=byDiscipline.xlsx'
+#             workbook.save(response)
+#             return response
+
+#         elif (request.POST.get('byDueDate')):
+
+#             reallstDuedate = blquerysetdicttolist(lstbyDueDate) #need a list
+#             workbook = excelAllActions(reallstDuedate,tableduedateheader,"DueDates")
+
+#             response = HttpResponse(content_type='application/ms-excel') # mimetype is replaced by content_type for django 1.7
+#             response['Content-Disposition'] = 'attachment; filename=byDueDates.xlsx'
+#             workbook.save(response) # odd way but it works - took too long to figure out as no resource on the web
+#             return response    
+     
+    
+#     #This needs to be worked on more as there are other problems now if risk matrix is not loaded
+#     #riskmatrix = blgetRiskMatrixAvailable()
+#     context = {
+        
+#         'riskmatrix' : True,
+#         #'forpie' : forpie, #commented out Guna
+#         'lstbyDueDate' : lstbyDueDate,
+#         'tableduedateheader' : tableduedateheader,
+#         'totalallDueDate' : totalallDueDate, 
+#         #'rundowncontent': newliststop, #edward 20210727 rundown#commented out Guna
+#         'lstbyDisc' : lstbyDisc,
+#         'lstbyWorkshop' : lstbyWorkshop,
+#         'Indisets' : Indisets,
+#         #'lstofallactions' : lstofallactions,
+#         #dict of all actions
+#         "dictofallactions" : dictofallactions,
+#         'tableindiheader' : tableindiheader,
+#         'tablestudiesheader' : tablestudiesheader,
+#         'tabledischeader' : tabledischeader ,
+#         'tableallheader' : tableallheadermodified,
+#         'listaggregatedindi':listaggregatedindi,
+#         'listaggregatedindiheader':listaggregatedindiheader,
+#         'listofrejectedheader': tablerheaderejected,
+#         'listofrejecteditems': listofrejecteditems,
+#         "rejectedactions": rejectedallactionitems,
+#         "listofPhases": listofPhases,
+#         "phase": phase,
+#         "piechartsjson" : json.dumps([{"data":forpie}])
+#     }
+#     #moving tojson 26/09/2021 - Guna. Moving to json enables cleaner javascript and data passing between python and html and javascript
+    
+#     # #1st approach lace the dictionary wih features
+#     #featuresfields = ["Feature1", "Feature2"]
+#     #data3 = blmakelistforjson(forpie,featuresfields)
+#     # context["piechartsjson"]= json.dumps([{"data":data3}])
+    
+#     #Test for lineshart
+#     #dataforrundown = blmakelistforjson(newliststop,featuresfields)
+#     #2nd approach should have done it like this in the first place simple stratight. Leaving the above to see how to lace and extract
+#     context["rundownchartsjson"] = json.dumps([{"data":newliststop}]) #one line, going to leave the above approach so that it could be used elsewhere
+#     #end Json changes
+
+#     return render(request, 'userT/reppmtexcel.html', context)
+#20211130 from views.py edward
+#Todelete if not used
+# def getActionDetails(request, id=None):
+#     Items = get_object_or_404(ActionItems,id=id)
+#     context = {
+#             "Items":Items
+
+#     }
+#     return render(request, "userT/detailactions.html", context) #ok checked by yhs in terms of capital letters.
+
 #20211125 from views.py edward
 #from reppmt
  #edward 20210804 original excel commented out bcs replacing with dfexcel
