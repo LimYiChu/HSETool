@@ -42,7 +42,7 @@ def blActionCountbyStudiesStreamQ(contextRoutes,studies,que):
         streamdisc.append (blvardisipline)
     return streamscount, streamdisc
 
-def blfuncActionCountQ(routes,que):
+def blfuncActionCountQ(routes,que=[]):
     '''Pass routes in and it counts everything in your routes . 
     '''
     count=0
@@ -54,8 +54,9 @@ def blfuncActionCountQ(routes,que):
             discipline  = item.Disipline
             subdiscipline  = item.Subdisipline
             QObjectSeries.append(Q(**{'Disipline':discipline, 'Subdisipline': subdiscipline, 
-                                'Organisation': organisation, 'QueSeries' : que}))
-        
+                                'Organisation': organisation, })& blQobjectQueSeries(que) )
+
+            #filters = blQobjectQueSeries(que) & QObjectMiscAND
         ORQobjroutes = reduce(operator.or_,QObjectSeries)
         count += ActionItems.mdlallActionItemsCount.mgr_GeneralItemsCountbyFiltersKwargsQ(ORQobjroutes)
     
