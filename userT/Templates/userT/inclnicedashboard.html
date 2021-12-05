@@ -13,15 +13,15 @@
                             </div>
                             <div>
                                 <p class="text-danger">High Risk Actions</p>
-                                <h4>5</h4>
+                                <h4>{{riskrankingsummary.High}}</h4>
                             </div>
                             <div>
                                 <p class="text-warning">medium risk actions</p>
-                                <h4>5</h4>
+                                <h4>{{riskrankingsummary.Medium}}</h4>
                             </div>
                             <div>
                                 <p class="text-success">Low Risk Actions</p>
-                                <h4>5</h4>
+                                <h4>{{riskrankingsummary.Low}}</h4>
                             </div>
                         </div>
                         <hr>
@@ -39,16 +39,16 @@
                             </div>
                             <div>
                                 <p class="text-danger">Overdue Actions</p>
-                                <h4>5</h4>
+                                <h4>{{duedatesummary.isdue}}</h4>
                             </div>
                             <div>
-                                <p class="text-warning">Actions Overdue Within Next Week
+                                <p class="text-warning">Actions Overdue Within Next 1 Week
                                 </p>
-                                <h4>5</h4>
+                                <h4>{{duedatesummary.isduein1week}}</h4>
                             </div>
                             <div>
-                                <p class="text-success">Remaining Actions</p>
-                                <h4>5</h4>
+                                <p class="text-success">Actions Overdue Within Next 2 Weeks</p>
+                                <h4>{{duedatesummary.isduein2weeks}}</h4>
                             </div>
 
                         </div>
@@ -68,11 +68,11 @@
                             </div>
                             <div>
                                 <p>Actions Submitted</p>
-                                <h4>10</h4>
+                                <h4>{{submittedsummary.totalactionssubmitted}}</h4>
                             </div>
                             <div>
                                 <p>Actions Rejected</p>
-                                <h4>10</h4>
+                                <h4>{{submittedsummary.countrejected}}</h4>
                             </div>
                             <div>
                                 <p>Actions Approved and Closed</p>

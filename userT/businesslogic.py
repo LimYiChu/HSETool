@@ -687,15 +687,15 @@ def blconverttodictforpdf(lstofsignatories): #edward altered this instead of cre
     for items in lstofsignatories:
        
         # if items[5] is None : 
-        #     print('TEST')
+ 
         time = items[5] 
         if time == []    :
                 
             localtimeX = timezone.localtime() #edward changed this according to new bl function for signatures 20210706    
             fields = items[0]
-            #print(fields)
+        
             if ("actionee" in fields.lower()) :
-                #print(items[5])
+              
                 #localtimeX = timezone.localtime(items[5]) #edward changed this according to new bl function for signatures 20210706
                 #edward changed this to add actioneesignature according to new bl function for signatures 20210706
                 dict = {'actionee':items[0], 'actioneerole':items[3],'actioneename':items[2],'actioneesignature':items[4],
@@ -720,9 +720,9 @@ def blconverttodictforpdf(lstofsignatories): #edward altered this instead of cre
                 
             localtimeX = timezone.localtime(time) #edward changed this according to new bl function for signatures 20210706    
             fields = items[0]
-            #print(fields)
+        
             if ("actionee" in fields.lower()) :
-                #print(items[5])
+          
                 #localtimeX = timezone.localtime(items[5]) #edward changed this according to new bl function for signatures 20210706
                 #edward changed this to add actioneesignature according to new bl function for signatures 20210706
                 dict = {'actionee':items[0], 'actioneerole':items[3],'actioneename':items[2],'actioneesignature':items[4],
@@ -1200,8 +1200,21 @@ def blgetActioneeDiscSub(routes):
 
     return finallistoflist
 
-def blRejectedHistortyActionsbyId (useremail,queseriesat, Revision):
+def bldropduplicateandcount (queryset):
     
+    """Accepts queryset and then uses data frames , pandas to drop_duplicate and count unique
+    i.e the number of individual rows"""
+
+    dfdata = pd.DataFrame(queryset)
+    dataframeunique = dfdata.drop_duplicates()
+    countofrows = len(dataframeunique.index)
+    return countofrows
+ 
+
+def blRejectedHistortyActionsbyId (useremail,queseries, Revision):
+    """get rejected items from history table. Only accepts single queseries. Revision wise it accepts 
+    revision gte which means input can be 1 and it will filter for anything above 1.
+    """
     #get user from email id since history tables use user ID
     lstUserSeries =  CustomUser.objects.filter(email=useremail).values()
     currentUserID = lstUserSeries[0].get('id')
@@ -1209,7 +1222,7 @@ def blRejectedHistortyActionsbyId (useremail,queseriesat, Revision):
     #get all history values from history tables first
     userrejectedhistory = ActionItems.history.filter(history_user_id=currentUserID).filter(
                             
-                                Revision__gte=Revision).filter(QueSeries=queseriesat).order_by('-history_date').values('id')
+                                Revision__gte=Revision).filter(QueSeries=queseries).order_by('-history_date').values('id')
     
            
     return userrejectedhistory

@@ -240,7 +240,13 @@ def mainDashboard (request):
     reducedfileds= ['id','StudyActionNo','Disipline' ,'QueSeries', 'DueDate','InitialRisk']
     #ActioneeActions = blallActionsComDisSub(Actionee_R,0)
     ActioneeActions = blallactionscomdissubQ(Actionee_R,queActionee,reducedfileds)
-    totalactioneeaction = blfuncActionCountQ(Actionee_R,0)
+    totalactioneeaction = blfuncActionCountQ(Actionee_R,YetToRespondQue)
+    totalactionssubmitted = blfuncActionCountQ(Actionee_R,ApprovalQue)
+    
+    rejecteditemsid = blRejectedHistortyActionsbyId(usersemail,queActionee,1)
+    countrejected = bldropduplicateandcount(rejecteditemsid)
+   
+    submittedsummary = {'totalactionssubmitted':totalactionssubmitted,'countrejected':countrejected }
 
     rem_list = []   
     ActioneeActionsrisk = bladdriskelements(list(ActioneeActions))
@@ -306,10 +312,9 @@ def mainDashboard (request):
         "pieapprovernew" : json.dumps([{"data":approverjsonlist}]),
         "riskrankingsummary":riskrankingsummary,
         "duedatesummary":duedatesummary,
-
+        "submittedsummary": submittedsummary
             }
     
-
     return render(request, 'userT/maindashboard.html',Context) 
 
 #Todelete if not used
@@ -395,7 +400,7 @@ class HistoryList (ListView):
         finalappractionitems= bladdriskcolourandoptimise(approverflatdict)
 
         rejecteditemsid = blRejectedHistortyActionsbyId(userZemail,0,1)
-
+       
         # Need to make a list to feed into bladdriskcolourandoptimise as that function is expecting a list of dictionaries
         rejecteditemsbyhistory = [blgetActionItemsbyid(rejecteditemsid)]
         newrejecteditemsbyhist                        = bladdriskcolourandoptimise(rejecteditemsbyhistory)
@@ -429,7 +434,7 @@ class ApproverList (ListView):
             finalactionitems = bladdriskelements(list(allactionItems))
             ApproverActions.insert (key,allactionItems)
         
-        #   print ("ApproverActions",ApproverActions)
+       
         # for items in ApproverActions:
         #     #have to do a loop as its adding another level compared to actionee
         #     #rem_list removed from equation as now its getting only relevant data
@@ -1502,7 +1507,7 @@ def repPMTExcel (request,phase=""):
             #             workbook = writer.book #gives excelwriter access to workbook
             #             worksheet = writer.sheets['Individual Summary'] #gives excelwriter access to worksheet
             #             formattedexcel = blexcelformat(dfindisummsorted,workbook,worksheet)
-            #             print(dfindisummsorted)
+           
 
             #         response = HttpResponse(content_type='application/ms-excel') #
             #         response['Content-Disposition'] = 'attachment; filename=byIndividualSummary.xlsx'
@@ -1794,8 +1799,6 @@ class pmtrepviewall(UpdateView):
 
         return context
 
-
-#yhs testing to print individual pdf on actionee page
 def indiprint(request,**kwargs):
     ID = (kwargs["id"])
     obj = ActionItems.objects.filter(id=ID).values().annotate(StudyName=F('StudyName__StudyName')).annotate(ProjectPhase = F('ProjectPhase__ProjectPhase')) # one for passing into PDF
