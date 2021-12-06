@@ -21,7 +21,8 @@ def blphasegetStudyreducedfieldsQ(reducedfields,phase=""):
       
     #filters = blQobjectQueSeries(que) & QObjectMiscAND
     filters = QObjectMiscAND
-    StudiesPhase =  Studies.mdlallStudiesCount.mgr_GeneralItemsFiltersKwargsQReduced(filters,reducedfields)
+    StudiesPhase =  Studies.mdlallStudies.mgr_GeneralItemsFiltersKwargsQReduced(filters,reducedfields)
+    print(StudiesPhase)
     
     return StudiesPhase
 #20211203 edward 

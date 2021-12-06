@@ -159,7 +159,7 @@ class Studies (models.Model):
        verbose_name_plural = "Studies" #this if not done gives a view of Studiess
     #20211203 edward
     objects = models.Manager()
-    mdlallStudiesCount = mgrallActionCount()
+    mdlallStudies = mgrallActionCount()
 
     def __str__(self): 
        return '%s -- %s' %(self.StudyName, self.ProjectPhase)
