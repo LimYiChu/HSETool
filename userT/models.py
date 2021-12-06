@@ -144,13 +144,22 @@ class Phases (models.Model):
 
 class Studies (models.Model):
     StudyName = models.CharField(max_length=200, null=True)
-    ProjectPhase = models.CharField(max_length=200, null=True)
+    #20211203 edward changed this to backup
+    ProjectPhase_backup = models.CharField(max_length=200, null=True)
+    #20211203 edward changed this to backup end
     AttendanceList  = models.CharField(max_length=200, null=True)
     DateConducted = models.DateField(auto_now_add=True,null=True)
     Form = models.CharField(max_length=100, null=True)
-    objects = models.Manager()
+    #20211203 edward added foreignkey for phases here
+    ProjectPhase =   models.ForeignKey(Phases, on_delete=models.SET_NULL,null=True,blank=True)
+    #20211203 edward added foreignkey for phases here end
+
+    
     class Meta:
        verbose_name_plural = "Studies" #this if not done gives a view of Studiess
+    #20211203 edward
+    objects = models.Manager()
+    mdlallStudiesCount = mgrallActionCount()
 
     def __str__(self): 
        return '%s -- %s' %(self.StudyName, self.ProjectPhase)

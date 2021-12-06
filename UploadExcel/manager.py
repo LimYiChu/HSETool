@@ -2,6 +2,8 @@ from django.db.models import Q, F
 from django.db import models
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+
+
 class QuerySet(models.QuerySet):
     #edward 20210729 changing icontains to iexact for Org,Disc,SubDisc
     def get_myActions(self,userorganisation,userdisipline,usersubdisipline,que): 
@@ -117,6 +119,9 @@ class mgrallActionCount(models.Manager):
         return self.get_queryset().get_GeneralActionsCountbyFiltersKwargsQ(FiltersKwargs)
     def mgr_GeneralItemsFiltersKwargsQReduced(self,FiltersKwargs,ReducedValuesArgs):
         return self.get_queryset().get_GeneralActionsKwargsQArgsValues(FiltersKwargs,ReducedValuesArgs)
+
+
+    
 
 class mgrgetActionDiscSubCount(models.Manager):
     def get_queryset (self):

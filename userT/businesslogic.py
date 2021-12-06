@@ -634,12 +634,41 @@ def blallActionCountbyDisc(Disc,quelist):
         count += ActionItems.myActionItemsCount.mgr_allItemsCountbyDisc(Disc,que) 
    
     return count
+#20211203 edward
+def blgetbyStdudiesCountphase(Studies,YetToRespondQue,pendingApprovalQue,closedActionsQueSeries,OpenQue,TotalQue):
+    """This function is used for differentiating Studies by phase because the way the phases are coming in is by wayt of dictionary instead of a queryset (e.g. Studies.objects.all() )"""
+   
+    lstcountbyStudies = []
+    lstofstudiesdetails =[]
+    for Study in Studies:
+        #20211203 edward
+        studynameQ = (Study['StudyName'])
+        lstcountbyStudies.append (studynameQ)
+        
+        # lstcountbyStudies.append (blallActionCountbyStudies(studynameQ,YetToRespondQue))
+        # lstcountbyStudies.append (blallActionCountbyStudies(studynameQ,pendingApprovalQue))
+        # lstcountbyStudies.append (blallActionCountbyStudies(studynameQ,closedActionsQueSeries))
+        # lstcountbyStudies.append  (blallActionCountbyStudies(studynameQ,OpenQue))
+        # lstcountbyStudies.append  (blallActionCountbyStudies(studynameQ,TotalQue))
+
+        #Convert to QObject
+        lstcountbyStudies.append (blallActionCountbyStudiesPhaseQ(studynameQ,YetToRespondQue))
+        lstcountbyStudies.append (blallActionCountbyStudiesPhaseQ(studynameQ,pendingApprovalQue))
+        lstcountbyStudies.append (blallActionCountbyStudiesPhaseQ(studynameQ,closedActionsQueSeries))
+        lstcountbyStudies.append  (blallActionCountbyStudiesPhaseQ(studynameQ,OpenQue))
+        lstcountbyStudies.append  (blallActionCountbyStudiesPhaseQ(studynameQ,TotalQue))
+
+        lstofstudiesdetails.append(lstcountbyStudies)
+        lstcountbyStudies =[]
+    
+    return lstofstudiesdetails
+
 def blgetbyStdudiesCount(Studies,YetToRespondQue,pendingApprovalQue,closedActionsQueSeries,OpenQue,TotalQue):
    
     lstcountbyStudies = []
     lstofstudiesdetails =[]
     for Study in Studies:
-
+        #20211203 edward
         studynameQ = Study.StudyName
         lstcountbyStudies.append (studynameQ)
         

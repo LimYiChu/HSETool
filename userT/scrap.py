@@ -1,3 +1,48 @@
+#20211206 from views.py reppmtexcel edward
+    # #for workshop based view
+    # #20211201 edward
+    # # if phase == "":
+    # #     ActionItem = ActionItems.objects.values('StudyName')
+    # # else:
+    # #     ActionItem= ActionItems.objects.filter(ProjectPhase__ProjectPhase=phase).values('StudyName')
+    # # dfactionitem = pd.DataFrame(ActionItem)
+    # # dfactionitemfilter = dfactionitem.drop_duplicates()
+    
+    # # dfactionitemlist = dfactionitemfilter.values.tolist()
+
+    # #20211203 edward
+    # studiesattributes =['StudyName','ProjectPhase']
+    # phasestudies =  blphasegetStudyreducedfieldsQ(studiesattributes,phase)
+    # #print(phasestudies)
+    # # blankstudy=[]
+    # # for item in phasestudies:
+    # #     teststudies = (item['StudyName'])
+    # #     print(teststudies)
+    
+#20211206 from manager.py edward
+
+#20211206 edward get studies by phase
+# def mgr_GeneralItemsFiltersKwargsQReducedStudies(self,FiltersKwargs,ReducedValuesArgs):
+#     """This class is used just for getting Studies by phases"""
+#     return self.get_queryset().get_GeneralActionsKwargsQArgsValuesStudies(FiltersKwargs,ReducedValuesArgs)
+
+# #20211203 edward
+# def get_GeneralActionsKwargsQArgsValuesStudies(self,FilterKwargs,ArgsValues):
+#     """ This function is used to look in the Studies table, filter & select the values in the ProjectPhase_id column"""
+#     #print(ArgsValues)
+#     return self.filter(FilterKwargs).select_related("ProjectPhase").values(*ArgsValues)
+# #20211203 edward
+
+# #20211203 edward
+# class mgrallActionCountStudies(models.Manager):
+#     """This class is used just for getting Studies by phases"""
+#     def get_queryset (self):
+#         return QuerySet(self.model, using=self._db)
+#     def mgr_GeneralItemsFiltersKwargsQReducedStudies(self,FiltersKwargs,ReducedValuesArgs):
+#         return self.get_queryset().get_GeneralActionsKwargsQArgsValuesStudies(FiltersKwargs,ReducedValuesArgs)
+# #20211203 edward
+
+
 #20211202 from views.py edward
 # def repPMTExcel (request,phase=""):
 #     """This is the original function called when user selects PMT Reporting from menu
