@@ -5,6 +5,28 @@ import operator
 from UploadExcel.models import ActionItems
 from .models import *
 
+#20211203 edward 
+def blphasegetStudyreducedfieldsQ(reducedfields,phase=""):
+    """This function only looks through the Studies table. It filters studies by phase only in the Studies table.If phase is empty it retrives all studies. Reduced field parameter  
+    is used to return less data to html. Pass in list for reduced field e.g ['id','DueDate', 'QueSeries' etc]
+    .It uses QObject"""
+    count = 0
+    dictofQueSeries ={}
+    QObjectSeries = []
+    filterargs = Q()
+    QObjectMiscAND =Q()
+   
+    if phase != "":
+        QObjectMiscAND = (Q(**{'ProjectPhase__ProjectPhase':phase}))
+      
+    #filters = blQobjectQueSeries(que) & QObjectMiscAND
+    filters = QObjectMiscAND
+    StudiesPhase =  Studies.mdlallStudies.mgr_GeneralItemsFiltersKwargsQReduced(filters,reducedfields)
+    print(StudiesPhase)
+    
+    return StudiesPhase
+#20211203 edward 
+
 def blallactionscomdissubQ(routes,queseries,reducedfields):
     '''Uses Q object for more efficient queries. pass in all routes from actinee or approver.
     contextRoutes is a list of routes for a certain que. This function then loops through all routes within a certain queseries

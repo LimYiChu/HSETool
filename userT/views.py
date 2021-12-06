@@ -1241,6 +1241,7 @@ def repPMTExcel (request,phase=""):
     justenoughattributes =  ['id','StudyActionNo','Disipline' ,'Recommendations', 'QueSeries', 'Response','DueDate','InitialRisk']
 
     phasesactions =  blphasegetActionreducedfieldsQ(justenoughattributes,phase)
+    
     #this annotate function needs to first because it doesnt like addtional items added to query set
     dictofallactions    = blannotatefktomodel(phasesactions)
     #this sequence is important otherwise doesnt work
@@ -1277,24 +1278,15 @@ def repPMTExcel (request,phase=""):
     tablerheaderejected = ['Discipline', 'Rejected Count']
     listofrejecteditems = blgetrejectedcount(dfdiscsuborgphase,1) #Pass revision number => than whats required
 
-
-    #for workshop based view
-    #20211201 edward
-    if phase == "":
-        ActionItem = ActionItems.objects.values('StudyName')
-    else:
-        ActionItem= ActionItems.objects.filter(ProjectPhase__ProjectPhase=phase).values('StudyName')
-    dfactionitem = pd.DataFrame(ActionItem)
-    dfactionitemfilter = dfactionitem.drop_duplicates()
-    
-    dfactionitemlist = dfactionitemfilter.values.tolist()
-    print('df',dfactionitem)
-
+    #20211203 edward
+    studiesattributes =['StudyName','ProjectPhase']
+    phasestudies =  blphasegetStudyreducedfieldsQ(studiesattributes,phase)
+    #20211206 edward 
     allstudies = Studies.objects.all()
     
     tablestudiesheader = ['Studies', 'Yet to Respond' ,'Approval Stage','Closed','Open Actions', 'Total Actions']
 
-    lstbyWorkshop = blgetbyStdudiesCount(allstudies,YetToRespondQue,ApprovalQue,QueClosed,QueOpen,TotalQue)
+    lstbyWorkshop = blgetbyStdudiesCountphase(phasestudies,YetToRespondQue,ApprovalQue,QueClosed,QueOpen,TotalQue)
     
     
     #Changed to Q function and Phases
