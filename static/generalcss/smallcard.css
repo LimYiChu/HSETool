@@ -91,17 +91,17 @@
 
 
 @media (max-width:1500px) {
-    .row {
+    #smallcard .row {
         flex-wrap: wrap;
     }
 }
 
 @media (min-width:1500px) {
-    .row {
+    #smallcard .row {
         flex-wrap: nowrap;
     }
 
-    .responsive {
+    #smallcard .responsive {
         width: 100%;
     }
 }

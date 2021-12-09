@@ -7,6 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect, request
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
+from numpy import empty
 from .forms import *
 from UploadExcel.forms import *
 from django.contrib.auth import get_user_model
@@ -73,7 +74,9 @@ import xlwings as xw
 #20211202 edward commented out this import because there is a problem with img2pdf library on linux
 # import img2pdf
 # from PIL import Image
-
+#edward 20211207 
+from datetime import datetime as dtime
+from django.utils import timezone
 
 
 def base3 (request):
@@ -255,7 +258,12 @@ def mainDashboard (request):
     riskrankingsummary =  blaggregateby(ActioneeActionsrisk,"RiskRanking")
     duedateaggregated = blaggregateby(ActioneeActionsrisk,"DueDate")
     duedatesummary = blduedateecountrelative(duedateaggregated)
+
     
+    
+    
+
+
     #***Initilise empty list to hold values
     stripCount =[]
     striplabels = []
@@ -281,6 +289,7 @@ def mainDashboard (request):
 
         #complete sub routine for actionee and then go to approver
         for QueSeries, Routes in Approver_R.items():
+            
          
             listofCountManyApprovers,labelsapp =blActionCountbyStudiesStream(Routes,StudyName,QueSeries)
             sumoflistCount = sum(listofCountManyApprovers)
@@ -291,21 +300,107 @@ def mainDashboard (request):
                 
                 chartappdata = blprepGoogChartsbyStudies(labelsApprover,dataApprover,StudyName)
                 sumoflistCount = 0
+            
 
         
         apprfinalist.append(chartappdata)
+        #empties out the data for next loop otherwise it doubles the data to append on each study
+        chartappdata = []
+
+        dataApprover = []
+        labelsApprover =[]
+        countbyStudies = []
+
+        
+    # #20211207 edward current holding time
+
+    strdays = bltotalholdtime(ActioneeActions,Approver_R,reducedfileds,queActionee)
+    oneweekcount,twoweekcount = blexceedholdtime(ActioneeActions,Approver_R,queActionee,reducedfileds)
+    #print(ActioneeActions)
+    
+    #getting current timezone in date object format which is similar to history_date
+    # timezonenow = timezone.now()
+    # #blank list 
+    # blanklist=[]
+    # oneweeklist=[]
+    # twoweeklist=[]
+    # sevendays = datetime.timedelta(days=7)
+    # fourteendays = datetime.timedelta(days=14)
+    # print('exclusion',sevendays)
+    # #Approver
+    # #for loop to get the Approver Actions
+
+    # for items in ActioneeActions:
+    #         dictactualhistory = ActionItems.history.filter(id=items["id"]).filter(QueSeries=queActionee).order_by('-history_date').values()
+    #         for item in dictactualhistory:
+    #             print('history',item['id'],item['history_date'])
+    #             timeinbasket = timezonenow - item['history_date']
+
+    #         if timeinbasket > sevendays :
+    #             oneweeklist.append(items["id"])
+
+    #         if timeinbasket > fourteendays :
+    #             twoweeklist.append(items["id"])
+
+    # for QSeries, ApproRoutes in Approver_R.items():
+    #     ApproverActions= blallactionscomdissubQ(ApproRoutes,QSeries,reducedfileds)
+    
+    #     for items in ApproverActions:
+    #         #getting the id + the history date 
+    #         dictactualhistory = ActionItems.history.filter(id=items["id"]).order_by('history_date').values()
+    #         #using current time & subtracting the history date to get all the timestamp for each id & history date got from dictactualhistory
+    #         for item in dictactualhistory:
+    #             timeinbasket = timezonenow - item['history_date']
+    #         print('id',items["id"],'timeinbasket',timeinbasket)
+
+    #         #Actionee
+        
+            
+    #         if timeinbasket > sevendays :
+    #             oneweeklist.append(items["id"])
+
+    #         if timeinbasket > fourteendays :
+    #             twoweeklist.append(items["id"])
+                
+    # oneweekcount = len(oneweeklist)
+    # twoweekcount = len(twoweeklist)
+    # print('oneweekcount',oneweekcount)
+    # print('twoweekcount',twoweekcount)
+
+    
+    # #Actionee
+    # for items in ActioneeActions:
+    #     dictactualhistory = ActionItems.history.filter(id=items["id"]).filter(QueSeries=queActionee).order_by('-history_date').values()
+    #     for item in dictactualhistory:
+    #         print('history',item['id'],item['history_date'])
+    #         timeinbasket = timezonenow - item['history_date']
+    #         blanklist.append(timeinbasket)
+    # dfdates = pd.DataFrame(blanklist)
+
+    # if not dfdates.empty : 
+    #     print('dfdates : ',dfdates)
+    #     dfdatessum = dfdates.sum(axis=0)
+    #     print('sum : ',dfdatessum)
+    #     dftodict = dfdatessum.to_dict()
+    #     new_key = "total"
+    #     old_key = 0
+    #     dftodict[new_key] = dftodict.pop(old_key)
+    #     print('dftodict',dftodict)
+    #     strdays = str(dftodict['total'].days)
+    #     print('total days of all actions in approver basket  :',strdays)
+
+    #     #20211207 edward current holding time ends here
+
     
     
     totalapproveraction = sum (appractioncount)
-    #empties out the data for next loop otherwise it doubles the data to append on each study
-    chartappdata = []
-
-    dataApprover = []
-    labelsApprover =[]
-    countbyStudies = []
+   
     approverjsonlist = blremoveemptylist(apprfinalist)
-
+    
     Context = {
+        'oneweekcount':oneweekcount,
+        'twoweekcount':twoweekcount,
+        'strdays':strdays,
         'totalapproveraction' : totalapproveraction,
         'totalactioneeaction' : totalactioneeaction,
         #'actioneefinallist' : actioneefinallist, #substituted with json data below
