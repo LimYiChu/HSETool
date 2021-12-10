@@ -28,9 +28,10 @@ def blphasegetStudyreducedfieldsQ(reducedfields,phase=""):
 #20211203 edward 
 
 def blallactionscomdissubQ(routes,queseries,reducedfields):
-    '''Uses Q object for more efficient queries. pass in all routes from actinee or approver.
-    contextRoutes is a list of routes for a certain que. This function then loops through all routes within a certain queseries
-    Addtionally Pass in reduced fields so it does not retrieve all values and queseries . 
+    '''Uses Q object for more efficient queries. Pass in routes from actinee or approver.
+    routes is a list of routes defined when user logs in. 
+    This function then loops through all routes that logged in user holds actions based on que series
+    Addtionally Pass in reduced fields so it does not retrieve all values() and limits the data transfer . 
     '''
     allactions = []
 

@@ -1345,7 +1345,7 @@ def bldropduplicateandcount (queryset):
 
 def blRejectedHistortyActionsbyId (useremail,queseries, Revision):
     """get rejected items from history table. Only accepts single queseries. Revision wise it accepts 
-    revision gte which means input can be 1 and it will filter for anything above 1.
+    revision gte (greater than) which means input can be 1 and it will filter for anything above 1.
     """
     #get user from email id since history tables use user ID
     lstUserSeries =  CustomUser.objects.filter(email=useremail).values()
