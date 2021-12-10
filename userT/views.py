@@ -7,6 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect, request
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
+from numpy import empty
 from .forms import *
 from UploadExcel.forms import *
 from django.contrib.auth import get_user_model
@@ -73,7 +74,9 @@ import xlwings as xw
 #20211202 edward commented out this import because there is a problem with img2pdf library on linux
 # import img2pdf
 # from PIL import Image
-
+#edward 20211207 
+from datetime import datetime as dtime
+from django.utils import timezone
 
 
 def base3 (request):
@@ -255,7 +258,12 @@ def mainDashboard (request):
     riskrankingsummary =  blaggregateby(ActioneeActionsrisk,"RiskRanking")
     duedateaggregated = blaggregateby(ActioneeActionsrisk,"DueDate")
     duedatesummary = blduedateecountrelative(duedateaggregated)
+
     
+    
+    
+
+
     #***Initilise empty list to hold values
     stripCount =[]
     striplabels = []
@@ -281,6 +289,7 @@ def mainDashboard (request):
 
         #complete sub routine for actionee and then go to approver
         for QueSeries, Routes in Approver_R.items():
+            
          
             listofCountManyApprovers,labelsapp =blActionCountbyStudiesStream(Routes,StudyName,QueSeries)
             sumoflistCount = sum(listofCountManyApprovers)
@@ -291,21 +300,32 @@ def mainDashboard (request):
                 
                 chartappdata = blprepGoogChartsbyStudies(labelsApprover,dataApprover,StudyName)
                 sumoflistCount = 0
+            
+
+        apprfinalist.append(chartappdata)
+        #empties out the data for next loop otherwise it doubles the data to append on each study
+        chartappdata = []
+
+        dataApprover = []
+        labelsApprover =[]
+        countbyStudies = []
 
         
-        apprfinalist.append(chartappdata)
-    
+    #20211207 edward current holding time & days holding
+    strdays = bltotalholdtime(ActioneeActions,Approver_R,reducedfileds,queActionee)
+    oneweekcount,twoweekcount = blexceedholdtime(ActioneeActions,Approver_R,queActionee,reducedfileds)
+    #20211207 edward current holding time & days holding ends here
     
     totalapproveraction = sum (appractioncount)
-    #empties out the data for next loop otherwise it doubles the data to append on each study
-    chartappdata = []
-
-    dataApprover = []
-    labelsApprover =[]
-    countbyStudies = []
+   
     approverjsonlist = blremoveemptylist(apprfinalist)
 
+    
+    
     Context = {
+        'oneweekcount':oneweekcount,
+        'twoweekcount':twoweekcount,
+        'strdays':strdays,
         'totalapproveraction' : totalapproveraction,
         'totalactioneeaction' : totalactioneeaction,
         #'actioneefinallist' : actioneefinallist, #substituted with json data below
