@@ -43,16 +43,16 @@ def blexceedholdtime(ActioneeActions,Approver_R,queActionee,reducedfileds):
 
     #Actionee Actions 
     for items in ActioneeActions:
-            dictactualhistory = ActionItems.history.filter(id=items["id"]).filter(QueSeries=queActionee).order_by('history_date').values()
-            for item in dictactualhistory:
-                # todays date minus the last date that this item was in the history date field
-                timeinbasket = timezonenow - item['history_date']
-            #if timeinbasket more than seven then append that item id to a list 
-            if timeinbasket > sevendays :
-                oneweeklist.append(items["id"])
-            #if timeinbasket more than fourteen then append that item id to a list 
-            if timeinbasket > fourteendays :
-                twoweeklist.append(items["id"])
+        dictactualhistory = ActionItems.history.filter(id=items["id"]).filter(QueSeries=queActionee).order_by('history_date').values()
+        for item in dictactualhistory:
+            # todays date minus the last date that this item was in the history date field
+            timeinbasket = timezonenow - item['history_date']
+        #if timeinbasket more than seven then append that item id to a list 
+        if timeinbasket > sevendays :
+            oneweeklist.append(items["id"])
+        #if timeinbasket more than fourteen then append that item id to a list 
+        if timeinbasket > fourteendays :
+            twoweeklist.append(items["id"])
 
     #Approver Actions
     for QSeries, ApproRoutes in Approver_R.items():
