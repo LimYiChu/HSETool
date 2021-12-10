@@ -99,8 +99,16 @@ $(document).ready(function() {
       fixedHeader: true,
        "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
        //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
-  } );
-} );
+       //20211209 Ishna-YHS date format sorting for column 6
+       "columnDefs": [{
+        "render": function(data) { 
+            return moment(data).format('DD-MMM-YYYY ');
+        },
+        "targets": 6
+       }]
+       //20211209 Ishna-YHS date format sorting for column 6
+   });
+  });
 
 $(document).ready(function() {
    

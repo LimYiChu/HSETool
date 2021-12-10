@@ -63,6 +63,7 @@ import datetime
 from datetime import date as dt
 from operator import itemgetter
 from collections import OrderedDict
+from collections import Counter #Ishna 20211209
 #edward 20210924
 from django.forms.models import model_to_dict
 from django.db.models import F
@@ -229,33 +230,47 @@ def mainDashboard (request):
     """
     usersemail=request.user.email
     ActioneeActions = []
+    ApproverActions = []
     queActionee = 0
     Actionee_R = []
     Approver_R = []
+    newcounter = {}
     totalactioneeaction = 0
     studies = blgetAllStudies()
+
     #get all routes based on email and then get seprate actione and approver routes 
     dict_allrou = blgetuserRoutes(usersemail)
     Actionee_R =    dict_allrou.get('Actionee_Routes')
     Approver_R =    dict_allrou.get('Approver_Routes')
     
-    reducedfileds= ['id','StudyActionNo','Disipline' ,'QueSeries', 'DueDate','InitialRisk']
-    #ActioneeActions = blallActionsComDisSub(Actionee_R,0)
-    ActioneeActions = blallactionscomdissubQ(Actionee_R,queActionee,reducedfileds)
-    totalactioneeaction = blfuncActionCountQ(Actionee_R,YetToRespondQue)
-    totalactionssubmitted = blfuncActionCountQ(Actionee_R,ApprovalQue)
-    
-    rejecteditemsid = blRejectedHistortyActionsbyId(usersemail,queActionee,1)
-    countrejected = bldropduplicateandcount(rejecteditemsid)
-   
-    submittedsummary = {'totalactionssubmitted':totalactionssubmitted,'countrejected':countrejected }
-
-    rem_list = []   
+    reducedfields= ['id','StudyActionNo','Disipline' ,'QueSeries', 'DueDate','InitialRisk']
+    ActioneeActions = blallactionscomdissubQ(Actionee_R,queActionee,reducedfields)
     ActioneeActionsrisk = bladdriskelements(list(ActioneeActions))
-    riskrankingsummary =  blaggregateby(ActioneeActionsrisk,"RiskRanking")
+    riskrankingactioneeraw = blaggregateby(ActioneeActionsrisk,"RiskRanking")
+
+    #20211208 Ishna first box
+    for QSeries, ApproRoutes in Approver_R.items():
+        ApproverActions = blallactionscomdissubQ(ApproRoutes,QSeries,reducedfields)
+        ApproverActionsrisk = bladdriskelements(list(ApproverActions))
+        riskrankingapproverraw = blaggregateby(ApproverActionsrisk,"RiskRanking")
+        if riskrankingapproverraw is not None:
+            newcounter = Counter(riskrankingapproverraw) + Counter(newcounter)
+            riskrankingapprover = newcounter
+            riskrankingactionee = Counter(riskrankingactioneeraw)
+            riskrankingsummary = riskrankingapprover + riskrankingactionee
+    #20211208 Ishna first box
+
     duedateaggregated = blaggregateby(ActioneeActionsrisk,"DueDate")
     duedatesummary = blduedateecountrelative(duedateaggregated)
     
+    totalactioneeaction = blfuncActionCountQ(Actionee_R,YetToRespondQue)
+    totalactionssubmitted = blfuncActionCountQ(Actionee_R,ApprovalQue)
+    rejecteditemsid = blRejectedHistortyActionsbyId(usersemail,queActionee,1)
+    countrejected = bldropduplicateandcount(rejecteditemsid)
+    totalactionsapproved = blfuncActionCountQ(Actionee_R,QueClosed)
+    
+    submittedsummary = {'totalactionssubmitted':totalactionssubmitted,'countrejected':countrejected, 'totalactionsapproved' :totalactionsapproved }
+
     #***Initilise empty list to hold values
     stripCount =[]
     striplabels = []
@@ -1288,7 +1303,6 @@ def repPMTExcel (request,phase=""):
     dfactionitemfilter = dfactionitem.drop_duplicates()
     
     dfactionitemlist = dfactionitemfilter.values.tolist()
-    print('df',dfactionitem)
 
     allstudies = Studies.objects.all()
     
