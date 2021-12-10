@@ -302,7 +302,6 @@ def mainDashboard (request):
                 sumoflistCount = 0
             
 
-        
         apprfinalist.append(chartappdata)
         #empties out the data for next loop otherwise it doubles the data to append on each study
         chartappdata = []
@@ -312,14 +311,16 @@ def mainDashboard (request):
         countbyStudies = []
 
         
-    # #20211207 edward current holding time & days holding
+    #20211207 edward current holding time & days holding
     strdays = bltotalholdtime(ActioneeActions,Approver_R,reducedfileds,queActionee)
     oneweekcount,twoweekcount = blexceedholdtime(ActioneeActions,Approver_R,queActionee,reducedfileds)
-    #     #20211207 edward current holding time & days holding ends here
+    #20211207 edward current holding time & days holding ends here
     
     totalapproveraction = sum (appractioncount)
    
     approverjsonlist = blremoveemptylist(apprfinalist)
+
+    
     
     Context = {
         'oneweekcount':oneweekcount,

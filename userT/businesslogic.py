@@ -33,6 +33,7 @@ import xlwings as xw
 #edward 20211210 7 & 14 days
 
 def blexceedholdtime(ActioneeActions,Approver_R,queActionee,reducedfileds):
+    """This function gets the number of actions with holding time more than 1 or 2 weeks """
 
     timezonenow = timezone.now()
     oneweeklist=[]
@@ -42,9 +43,8 @@ def blexceedholdtime(ActioneeActions,Approver_R,queActionee,reducedfileds):
 
     #Actionee Actions 
     for items in ActioneeActions:
-            dictactualhistory = ActionItems.history.filter(id=items["id"]).filter(QueSeries=queActionee).order_by('-history_date').values()
+            dictactualhistory = ActionItems.history.filter(id=items["id"]).filter(QueSeries=queActionee).order_by('history_date').values()
             for item in dictactualhistory:
-                # print('history',item['id'],item['history_date'])
                 # todays date minus the last date that this item was in the history date field
                 timeinbasket = timezonenow - item['history_date']
             #if timeinbasket more than seven then append that item id to a list 
@@ -53,6 +53,7 @@ def blexceedholdtime(ActioneeActions,Approver_R,queActionee,reducedfileds):
             #if timeinbasket more than fourteen then append that item id to a list 
             if timeinbasket > fourteendays :
                 twoweeklist.append(items["id"])
+
     #Approver Actions
     for QSeries, ApproRoutes in Approver_R.items():
         ApproverActions= blallactionscomdissubQ(ApproRoutes,QSeries,reducedfileds)
@@ -63,15 +64,14 @@ def blexceedholdtime(ActioneeActions,Approver_R,queActionee,reducedfileds):
             #using current time & subtracting the history date to get all the timestamp for each id & history date got from dictactualhistory
             for item in dictactualhistory:
                 timeinbasket = timezonenow - item['history_date']
-            # print('id',items["id"],'timeinbasket',timeinbasket)
-            
+            #if items more than 7 days, appending the corresponding id to a list
             if timeinbasket > sevendays :
                 oneweeklist.append(items["id"])
-
+            #if items more than 14 days, appending the corresponding id to a list
             if timeinbasket > fourteendays :
                 twoweeklist.append(items["id"])
 
-    #just getting a count of how many items in the list             
+    #just getting a count of how many items (id) in the list             
     oneweekcount = len(oneweeklist)
     twoweekcount = len(twoweeklist)
 
@@ -80,8 +80,8 @@ def blexceedholdtime(ActioneeActions,Approver_R,queActionee,reducedfileds):
 
     #20211207 edward current holding time
 def bltotalholdtime(ActioneeActions,Approver_R,reducedfileds,queActionee):
+    """This function gets the cumulative holding time for all Actions in Actioneee or Approver basket"""
      #20211207 edward current holding time
-    #print(ActioneeActions)
     
     #getting current timezone in date object format which is similar to history_date
     timezonenow = timezone.now()
@@ -99,44 +99,38 @@ def bltotalholdtime(ActioneeActions,Approver_R,reducedfileds,queActionee):
             #using current time & subtracting the history date to get all the timestamp for each id & history date got from dictactualhistory
             for item in dictactualhistory:
                 timeinbasket = timezonenow - item['history_date']
-                print('id',items["id"],'timeinbasket',timeinbasket)
             #appending the last item for each id to the blanklist
             blanklist.append(timeinbasket)
     #sending the blanklist with the appended items to a dataframe
     dfdates = pd.DataFrame(blanklist)
 
     if not dfdates.empty : 
-        print('dfdates : ',dfdates)
+       
         dfdatessum = dfdates.sum(axis=0)
-        print('sum : ',dfdatessum)
         dftodict = dfdatessum.to_dict()
         new_key = "total"
         old_key = 0
         dftodict[new_key] = dftodict.pop(old_key)
-        print('dftodict',dftodict)
         strdays = str(dftodict['total'].days)
-        print('total days of all actions in approver basket  :',strdays)
     
     #Actionee
     for items in ActioneeActions:
         dictactualhistory = ActionItems.history.filter(id=items["id"]).filter(QueSeries=queActionee).order_by('-history_date').values()
         for item in dictactualhistory:
-            print('history',item['id'],item['history_date'])
             timeinbasket = timezonenow - item['history_date']
             blanklist.append(timeinbasket)
     dfdates = pd.DataFrame(blanklist)
 
     if not dfdates.empty : 
-        print('dfdates : ',dfdates)
+        
         dfdatessum = dfdates.sum(axis=0)
-        print('sum : ',dfdatessum)
+        
         dftodict = dfdatessum.to_dict()
         new_key = "total"
         old_key = 0
         dftodict[new_key] = dftodict.pop(old_key)
-        print('dftodict',dftodict)
         strdays = str(dftodict['total'].days)
-        print('total days of all actions in approver basket  :',strdays)
+        
 
         #20211207 edward current holding time ends here
         
