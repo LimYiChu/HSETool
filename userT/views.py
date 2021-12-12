@@ -249,7 +249,7 @@ def mainDashboard (request):
     reducedfields= ['id','StudyActionNo','Disipline' ,'QueSeries', 'DueDate','InitialRisk']
     ActioneeActions = blallactionscomdissubQ(Actionee_R,queActionee,reducedfields)
     ActioneeActionsrisk = bladdriskelements(list(ActioneeActions))
-    riskrankingactioneeraw = blaggregateby(ActioneeActionsrisk,"RiskRanking")
+    riskrankingsummary = blaggregateby(ActioneeActionsrisk,"RiskRanking")
 
     #20211208 Ishna first box
     for QSeries, ApproRoutes in Approver_R.items():
@@ -259,7 +259,7 @@ def mainDashboard (request):
         if riskrankingapproverraw is not None:
             newcounter = Counter(riskrankingapproverraw) + Counter(newcounter)
             riskrankingapprover = newcounter
-            riskrankingactionee = Counter(riskrankingactioneeraw)
+            riskrankingactionee = Counter(riskrankingsummary)
             riskrankingsummary = riskrankingapprover + riskrankingactionee
     #20211208 Ishna first box
 
