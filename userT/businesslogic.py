@@ -121,7 +121,11 @@ def bltotalholdtime(Approver_R,reducedfileds):
         new_key = "total"
         old_key = 0
         dftodict[new_key] = dftodict.pop(old_key)
-        strdays = str(dftodict['total'].days)
+        if dftodict['total'].days < 1:
+            strdays = "0"
+        else:
+            strdays = str(dftodict['total'].days)
+        
         
     # #Actionee
     # for items in ActioneeActions:
