@@ -322,8 +322,8 @@ def mainDashboard (request):
 
         
     #20211207 edward current holding time & days holding
-    strdays = bltotalholdtime(ActioneeActions,Approver_R,reducedfields,queActionee)
-    oneweekcount,twoweekcount = blexceedholdtime(ActioneeActions,Approver_R,queActionee,reducedfields)
+    strdays = bltotalholdtime(Approver_R,reducedfields)
+    oneweekcount,twoweekcount = blexceedholdtime(Approver_R,reducedfields)
     #20211207 edward current holding time & days holding ends here
     
     totalapproveraction = sum (appractioncount)
