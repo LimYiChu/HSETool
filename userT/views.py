@@ -71,7 +71,7 @@ from django.db.models import F
 #edward 20211027 bulk pdf fix for large file dl
 from django.http import StreamingHttpResponse
 #edward 20211122 stitch pdf
-import xlwings as xw
+# import xlwings as xw
 #20211202 edward commented out this import because there is a problem with img2pdf library on linux
 # import img2pdf
 # from PIL import Image
