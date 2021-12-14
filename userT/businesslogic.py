@@ -25,7 +25,7 @@ import shutil
 # edward 20210929 fk
 from django.db.models import F
 #20211122 edward stitchpdf
-import xlwings as xw
+# import xlwings as xw
 #20211202 edward commented out this import because there is a problem with img2pdf library on linux
 # import img2pdf
 # from PIL import Image
