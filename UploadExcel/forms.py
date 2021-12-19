@@ -74,11 +74,11 @@ class CommonLayout (Layout):
             css_class='row',#-dont know why i have to put this in so it aligns to left
             
             ),
-#needs these hidden fields otherwise it passes blank values into the model- need to see if can do some other way
+            #needs these hidden fields otherwise it passes blank values into the model
             Div (
                 
             Div (Field('Facility', type="hidden")),
-            Div (Field('DueDate', type="hidden")), #yhs added for testing duedate gone missing upon submission
+            Div (Field('DueDate', type="hidden")), 
             Div (Field('Disipline', type="hidden")),
             Div (Field('Subdisipline', type="hidden")),
             Div (Field('Organisation', type="hidden")),
@@ -114,6 +114,13 @@ class frmUpdateActioneeForm(forms.ModelForm):
     class Meta:
         model = ActionItems
         fields = '__all__'
+
+class frmApprover(frmUpdateActioneeForm):
+    def __init__(self, *args, **kwargs):
+        super(frmApprover, self).__init__(*args, **kwargs)
+        
+        self.fields['FutureAction'].widget.attrs['readonly'] = True
+        self.fields['Response'].widget.attrs['readonly'] = True
 
 class ApproverForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
