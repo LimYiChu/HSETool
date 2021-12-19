@@ -489,7 +489,7 @@ class DetailActioneeItems (DetailView):
 class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
     #paginate_by = 20
     template_name = "userT/actionupdateapproveaction.html" #yhs changed to all small letters
-    form_class = ApproverForm
+    form_class = frmApprover
     success_url = '/ApproverList/'
 
     def test_func(self,**kwargs):
@@ -759,12 +759,22 @@ class HistoryFormMixin(UserPassesTestMixin,UpdateView):
 class ActioneeItemsMixin(UserPassesTestMixin,UpdateView):
     template_name = "userT/actionupdateapproveaction.html" #yhs changed to all small letters
     form_class = frmUpdateActioneeForm
-
+    
     #delete
     # def get(self, request, *args, **kwargs):
     #     #uses pk key to automatically get objext
     #     self.object = self.get_object(queryset=ActionItems.objects.all())
     #     return super().get(request, *args, **kwargs)
+    
+    def get_form_class(self):
+        
+        form_class = (blgetFieldValue(self.kwargs.get("pk"),"StudyName__Form"))
+
+        if not form_class:
+            
+            form_class=frmUpdateActioneeForm
+        return form_class
+    
     def test_func(self,**kwargs):
 
         ingroup = self.request.user.groups.filter(name="Actionee").exists()
