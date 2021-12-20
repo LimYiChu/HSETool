@@ -270,6 +270,7 @@ def mainDashboard (request):
     totalactionssubmitted = blfuncActionCountQ(Actionee_R,ApprovalQue)
     rejecteditemsid = blRejectedHistortyActionsbyId(usersemail,queActionee,1)
     countrejected = bldropduplicateandcount(rejecteditemsid)
+    
     totalactionsapproved = blfuncActionCountQ(Actionee_R,QueClosed)
     
     submittedsummary = {'totalactionssubmitted':totalactionssubmitted,'countrejected':countrejected, 'totalactionsapproved' :totalactionsapproved }
@@ -329,7 +330,7 @@ def mainDashboard (request):
     totalapproveraction = sum (appractioncount)
    
     approverjsonlist = blremoveemptylist(apprfinalist)
-
+    
     
     
     Context = {

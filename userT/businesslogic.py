@@ -710,12 +710,17 @@ def blgetrejectedcount(discsuborg,revision):
 
     lstrejectcountbydisc =[]
     lstfinallistcount = []
+    test = discsuborg
+    
+    for items in test :
+        print(items)
+        testing = blgetSignotories(items)
+        print(testing)
     for items in discsuborg:
         
         lstrejectcountbydisc.append("/".join(items))
         lstrejectcountbydisc.append(ActionItems.mdlgetActionDiscSubCount.
                                         mgr_getDiscSubOrgRejectedItemsCount(items,revision)) 
-        
         
         lstfinallistcount.append(lstrejectcountbydisc)
         lstrejectcountbydisc = []
@@ -1353,7 +1358,7 @@ def bldropduplicateandcount (queryset):
     
     """Accepts queryset and then uses data frames , pandas to drop_duplicate and count unique
     i.e the number of individual rows"""
-
+    
     dfdata = pd.DataFrame(queryset)
     dataframeunique = dfdata.drop_duplicates()
     countofrows = len(dataframeunique.index)
@@ -1373,7 +1378,7 @@ def blRejectedHistortyActionsbyId (useremail,queseries, Revision):
                             
                                 Revision__gte=Revision).filter(QueSeries=queseries).order_by('-history_date').values('id')
     
-           
+    print(userrejectedhistory) 
     return userrejectedhistory
 def blgetActionItemsbyid(dictofids):
 
