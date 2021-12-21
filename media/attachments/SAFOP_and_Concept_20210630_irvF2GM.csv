@@ -1,0 +1,314 @@
+﻿No,Study Action Number,Study Name,Facility,Project Phase,Cause,Consequence,Safeguard,Initial Risk,Recommendations,Residual Risk,Organisations,Discipline,Sub-Discipline,Future Actions,Due Date,Guideword,Queseries,Deviation
+83,DDE-DLA/TRT-KGA-SAFOP-001,SAFOP Close Out Report,KGA,DDE,"C001 - KGA: Gas Engine Generator
+
+Insufficient battery capacity to power up GEG.
+
+GEG has 1 starter system (battery).
+DEG has 2 starter systems (battery and spring charged).","GEG may be unable to started/operated and may cause platform shutdown.
+
+Note:
+Battery is continuously charged during normal operation from the CSP.
+MOC has been raised for HESS NMB Phase 1 on similar supply design.",-,-,To re-look on supply of battery charging via UPS instead from Control and Synchronisation Panel (CSP).,-,PRW,Electrical,Electrical,,30/7/2021,No,,Power
+84,DDE-DLA/TRT-KGA-SAFOP-002,SAFOP Close Out Report,KGA,DDE,"C001 - KGA: Gas Engine Generator
+
+Protection for GEG being mislook during design stage.","Equipment damage.
+
+Note:
+Sufficient protection functions for the Generator protection have been specified.
+Sufficient time margin for coordination between breaker and relay has been considered.
+Coordination between MCCB and MCB will be carried out by LV switchrack vendor.",-,-,"To re-look on the protection functionality at the GPR and MCCB for the GEG, e.g. primary protection by GPR and secondary/backup protection by MCCB with sufficient coordination time (for ease of troubleshooting).",-,PRW,Electrical,Electrical,,30/7/2021,Inadequate,,Protection and control
+85,DDE-DLA/TRT-KGA-SAFOP-003,SAFOP Close Out Report,KGA,DDE,"C001 - KGA: Gas Engine Generator
+
+Protection for GEG being mislook during design stage.","Equipment damage.
+
+Note:
+Sufficient protection functions for the Generator protection have been specified.
+Sufficient time margin for coordination between breaker and relay has been considered.
+Coordination between MCCB and MCB will be carried out by LV switchrack vendor.",-,-,To review MCCB coordination with GPR setting with regards to the recommendation to re-look the GPR/MCCB coordination.,-,PRW,Electrical,Electrical,,30/7/2021,Inadequate,,Protection and control
+86,DDE-DLA/TRT-KGA-SAFOP-004,SAFOP Close Out Report,KGA,DDE,"C001 - KGA: Gas Engine Generator
+
+No rotor earth fault protection.",Generator not fully protected against abnormal conditions.,-,-,"To check on available function at the GPR which can address rotor earth fault (64R). To enable if available. However, if the function is not available, it is acceptable based on the operation philosophy of the GEG.",-,PRW,Electrical,Electrical,,30/7/2021,Inadequate,,Protection and control
+87,DDE-DLA/TRT-KGA-SAFOP-005,SAFOP Close Out Report,KGA,DDE,"C001 - KGA: Gas Engine Generator
+
+Moisture accumulated due to long period of cold standby.","High moisture cause flash over inside terminal box.
+
+Note:
+GEG is set to changeover every 2 weeks.
+GEG is supplied with anti-condensation heaters.
+Current operation has no issue.",-,-,To check with GEG manufacturer recommendation on the requirement of anti-condensation heater at terminal box for GEG.,-,PRW,Electrical,Electrical,,30/7/2021,High,,Environment - Humidity
+88,DDE-DLA/TRT-KGA-SAFOP-006,SAFOP Close Out Report,KGA,DDE,"C002 - KGA: Diesel Engine Generator
+
+Insufficient diesel tank capacity for prolonged manned operation.","Generator unable to operate hence loss of power to loads during manned operation.
+
+Note:
+Main diesel tank at the skid with 24 hours (TBC) operation capacity.
+There is also pedestal tank for diesel.",-,-,"To check if diesel tanks capacity is sufficient for manned operation (e.g. prolonged activities).
+
+",-,PRW,Electrical,Electrical,,30/7/2021,No,,Power
+89,DDE-DLA/TRT-KGA-SAFOP-007,SAFOP Close Out Report,KGA,DDE,"C003 - KGA: Overall Generation System
+
+GEG trips when the other GEG is on maintenance.
+
+Maintenance to the fuel gas heater.","Loss of supply to platform leading to shutdown.
+
+Note:
+DEG is required to start remotely.
+There is auto start on standby GEG when the running GEG trips.
+DEG can manual start remotely with permissive start signal from control room in CPP.
+There is lockout function at GPR.",-,-,To check on the logic details for the generator premissive starting logic. Generator shall be inhibited from starting onto faulted system.,-,PRW,Electrical,Electrical,,30/7/2021,No,,Power
+90,DDE-DLA/TRT-KGA-SAFOP-008,SAFOP Close Out Report,KGA,DDE,"C004 - KGA: Power Junction Box for External Supply
+
+No mechanical interlock, however, electrical interlock and LOTO facilities are specified.
+
+No synchronizing point at the PJB.",Electrical interlock may be defeated/bypassed.,-,-,To provide physical interlock which prevents unsynchronized connection of PDG to live busbar. Padlock facility at the MCCB should be acceptable in achieving the interlock requirement.,-,PRW,Electrical,Electrical,,30/7/2021,Not available,,Interlocking
+91,DDE-DLA/TRT-KGA-SAFOP-009,SAFOP Close Out Report,KGA,DDE,"C004 - KGA: Power Junction Box for External Supply
+
+Ignition source from the electrical circuit.",-,Suitable Ex rated equipment and accessories.,-,"To specify in design philosophy document, and incorporate into suitable document (to be discussed and agreed, e.g. notes in SLD) on the size of cable gland for PDG cable connection which is 70 mm2 (pre-rilled), at the PDG JB. Requirements to be reflected in the Vendor's General Arrangement drawings and gland plate details.
+
+",-,PRW,Electrical,Electrical,,30/7/2021,Distribution Board,,Fire / Explosion - Flashover
+92,DDE-DLA/TRT-KGA-SAFOP-010,SAFOP Close Out Report,KGA,DDE,"C006 - KGA: LV DOL Motor Feeder
+
+Fault at anti-condensation heater.",Trip of upstream incomer breaker if not protected or properly coordinated which will lead to total power loss.,-,-,"To check on the details of anti-condensation heater circuit protection. To provide suitable protection (e.g. RCCB) such that to prevent nuisance trip of upstream incomer breaker during fault at anti-condensation heater, and to protect personnel from shock or electrocution hazard.",-,PRW,Electrical,Electrical,,30/7/2021,Over,,Current
+93,DDE-DLA/TRT-KGA-SAFOP-011,SAFOP Close Out Report,KGA,DDE,"C006 - KGA: LV DOL Motor Feeder
+
+Live space heater during maintenance at motor.
+
+There is no safety switch for space heater. Only emergency stop is specified.",-,Safety switch for space heater isolation at RCU.,-,To confirm if isolation of space heater is available at the LV switchrack side. To ensure isolation of space heater supply is available.,-,PRW,Electrical,Electrical,,30/7/2021,Motor,,Electrocution - Direct Contact
+94,DDE-DLA/TRT-KGA-SAFOP-012,SAFOP Close Out Report,KGA,DDE,"C007 - KGA: LV MOV Feeder
+
+High starting current of MOV.",Nuisance trip during motor starting.,-,-,To correctly size the MCB suitable with MOV rating and its starting current to prevent nuisance trip of MCB during starting.,-,PRW,Electrical,Electrical,,30/7/2021,Over,,Current
+95,DDE-DLA/TRT-KGA-SAFOP-013,SAFOP Close Out Report,KGA,DDE,"C007 - KGA: LV MOV Feeder
+
+High starting current of MOV.",Nuisance trip during motor starting.,-,-,To review coordination by switchrack vendor.,-,PRW,Electrical,Electrical,,30/7/2021,Over,,Current
+96,DDE-DLA/TRT-KGA-SAFOP-014,SAFOP Close Out Report,KGA,DDE,"C008 - KGA: LV Heat Tracing DB Feeder
+
+MCB rating of 10A for heat tracing outgoing feeder for 13kW load.",Feeder trips due to breaker overload.,-,-,To update the SLD for heat tracing feeder MCB rating of 10A to be consistent with the heat tracing DB incomer breaker rating at downstream.,-,PRW,Electrical,Electrical,,30/7/2021,Low,,Rating
+97,DDE-DLA/TRT-KGA-SAFOP-015,SAFOP Close Out Report,KGA,DDE,"C008 - KGA: LV Heat Tracing DB Feeder
+
+Coordination between heat tracing DB and upstream breakers not yet available.",Nuisance trip during downstream earth fault.,-,-,To review MCB rating and coordination of MCBs proposed by Vendor.,-,PRW,Electrical,Electrical,,30/7/2021,Inadequate,,Protection and control
+98,DDE-DLA/TRT-KGA-SAFOP-016,SAFOP Close Out Report,KGA,DDE,"C009 - KGA: LV AC Lighting & Small Power DB
+
+MCB rating not coordinated.",Nuisance trip during fault at downstream.,-,-,To ensure rating of MCB are coordinated between upstream and downstream MCBs (e.g. DB incomer & LV switchrack outgoing feeder).,-,PRW,Electrical,Electrical,,30/7/2021,Inadequate,,Protection and control
+99,DDE-DLA/TRT-KGA-SAFOP-017,SAFOP Close Out Report,KGA,DDE,"C010 - KGA: 24V DC UPS
+
+Low battery autonomy for operation purpose.",Control supply to motorised MCCB autonomy time not standardized which may cause operational issues.,-,-,"To re-look on the battery autonomy standardization for the switchrack motorised MCCB at remote platform. i.e. change from 1 hour to 12 hours autonomy.
+
+Note:
+Using timer for different autonomy requirements.",-,PRW,Electrical,Electrical,,30/7/2021,No,,Power
+100,DDE-DLA/TRT-KGA-SAFOP-018,SAFOP Close Out Report,KGA,DDE,"C010 - KGA: 24V DC UPS
+
+Failure of timer to open relevant shorter autonomy feeders leading to lesser available battery autonomy.","Failure of timer will not be monitored, and required battery autonomy cannot be met.
+
+Note: battery discharge operation will trigger an alarm. Status of breaker is also monitored.",-,-,To check with UPS Vendor on any indication on timer failure. Failure of timer shall send an alarm for timely intervention.,-,PRW,Electrical,Electrical,,30/7/2021,Low,,Power
+101,DDE-DLA/TRT-KGA-SAFOP-019,SAFOP Close Out Report,KGA,DDE,"C010 - KGA: 24V DC UPS
+
+Fault at 24V DC DB bus which is single bus design, and single feeder.","Total power loss to essential loads.
+
+Note:
+The single bus, and single feeder for essential loads is similar design with existing installation. Concern on single failure mode at the single contactor.
+Opportunity for improvement for future projects: having separate bus or DB design, and redundant feeders. Loss of one bus will not cause total loss of essential loads.",-,-,"To provide redundant contactor incomer for the 12 hours and 96 hours autonomy bus. Alternatively, to replace contactor with motorised MCCB due to higher reliability.",-,PRW,Electrical,Electrical,,30/7/2021,No,,Power
+102,DDE-DLA/TRT-KGA-SAFOP-020,SAFOP Close Out Report,KGA,DDE,"C010 - KGA: 24V DC UPS
+
+Maintenance cannot be carried out during operation due to single feeder design to essential loads.",-,Shutdown period for maintenance.,-,To include in operation and maintenance document that any maintenance works shall only be done during unit/platform shutdown period.,-,HESS,Operations,Operations,,17/10/2021,Distribution Board,,OI Procedure - Checklist
+103,DDE-DLA/TRT-KGA-SAFOP-021,SAFOP Close Out Report,KGA,DDE,"C012 - KGA: Navigational Aids & AOL Layout
+
+Solar array panel for the marine lantern is located at cellar deck level which will have shading effects from nearby taller structures.",Long term damage to solar array panel due to hot spots from shading effects.,-,-,To check and verify on the solar array panel location for the marine lantern with respect to shading effects of nearby taller structures against the solar array panel performance.,-,PRW,Electrical,Electrical,,30/7/2021,Low,,Power
+104,DDE-DLA/TRT-KGA-SAFOP-022,SAFOP Close Out Report,DLA-TRC,DDE,"C016 - DLA/TRC: 24V DC Solar System
+
+No specific alarm for solar control failure.
+Only common alarm and battery alarm are available.",Failure of solar controller cannot be known directly at CPP. Operation will need to mobilize to the remote platform to identify the specific failure.,-,-,"To check the possibility for additional specific alarm (e.g. solar charge controller failure) instead of just common alarm to be sent to CPP. If feasible, to include the specific failure mode alarms (e.g. for solar charge controller failure).",-,PRW,Electrical,Electrical,,30/7/2021,No,,Protection and control
+105,DDE-DLA/TRT-KGA-SAFOP-023,SAFOP Close Out Report,DLA-TRC,DDE,"C016 - DLA/TRC: 24V DC Solar System
+
+Fault at the solar DC bus.
+
+Fault of DC DB feeder switch or MCCB.","Loss of one solar supply module will reduce total supply capacity by 33%.
+Total autonomy will be reduced.",-,-,"To calculate remaining battery supply autonomy available if 1 x 33% solar system is loss, and include the information in the solar sizing document.
+
+Note:
+By simple estimation, 3 days autonomy will still be available after loss of one solar system module.",-,PRW,Electrical,Electrical,,30/7/2021,Over,,Current
+106,DDE-DLA/TRT-KGA-SAFOP-024,SAFOP Close Out Report,DLA-TRC,DDE,"C016 - DLA/TRC: 24V DC Solar System
+
+Maintenance or faulted component replacement at one solar system module will require that module shutdown.","Loss of one solar supply module will reduce total supply capacity by 33%.
+Total autonomy will be reduced.",-,-,"To include in the operation and maintenance document on the need for module shutdown for maintenance, or faulted component replacement activities.",-,HESS,Operations,Operations,,17/10/2021,No,,Power
+107,DDE-DLA/TRT-KGA-SAFOP-025,SAFOP Close Out Report,DLA-TRC,DDE,"C017 - DLA/TRC: 24V DC Distribution Board
+
+Escape lighting cannot be differentiated from the normal lighting in the SLD.",Operational issues during maintenance activities.,-,-,To differentiate the escape lighting than the normal lighting on the SLD (via description). To clearly indicate which one is the escape or normal lighting.,-,PRW,Electrical,Electrical,,30/7/2021,Unclear - system,,Tagging
+108,DDE-DLA/TRT-KGA-SAFOP-026,SAFOP Close Out Report,DLA-TRC,DDE,"C017 - DLA/TRC: 24V DC Distribution Board
+
+Amber colour indication for spare incomer compared to red colour for other incomers",Confusion during operation which may cause delay in response during emergency.,-,-,To amend the incoming supply indication light for the spare incomer. To standardize the colour with to existing installation.,-,PRW,Electrical,Electrical,,30/7/2021,Wrong,,Indicator - Metering
+109,DDE-DLA/TRT-KGA-SAFOP-027,SAFOP Close Out Report,DLA-TRC,DDE,"C018 - DLA/TRC: AC/DC Inverter
+
+Details of protection not available.",Fault at heat tracing may cause incomer breaker to trip which lead to total power loss to DC DB.,-,-,To specify earth fault protection for the heat tracing inverter.,-,PRW,Electrical,Electrical,,30/7/2021,No,,Protection and control
+110,DDE-DLA/TRT-KGA-SAFOP-028,SAFOP Close Out Report,DLA-TRC,DDE,"C020 - DLA/TRC: 400/230 V LV Switchrack
+
+anti-condensation heater power consumption requirement not captured in the solar system and battery sizing consideration.","High consumption from anti-condensation heater may affect battery autonomy for operational loads.
+
+Note:
+anti-condensation heater is indicated as provision only in the drawing.
+LV switchrack in existing installation (e.g. Anggerik) does not have anti-condensation heater.",-,-,To verify on the anti-condensation heater power consumption impact against solar system & battery sizing/autonomy.,-,PRW,Electrical,Electrical,,30/7/2021,Low,,Power
+111,DDE-DLA/TRT-KGA-SAFOP-029,SAFOP Close Out Report,DLA-TRC,DDE,"C020 - DLA/TRC: 400/230 V LV Switchrack
+
+12127-ES-01 LV switchrack is not energized (dead) most of the time during operation. Flashover or short circuit may happen during energization due to water ingress or condensation inside the enclosure.",-,"Inspection for good condition prior to energization.
+
+Note:
+anti-condensation heater provision is available (pending verification on the anti-condensation heater details. anti-condensation heater can be operated prior to energization to minimize condensation effect.",-,"Subject to the anti-condensation heater provision for the LV switchrack, if anti-condensation heater cannot be provided, to include in the operation and maintenance document on the need to thoroughly inspect the 12127-ES-01 LV switchrack (e.g. for water ingress, condensation, etc.) prior to energization. To provide physical warning sign and notes on the LV switchrack on the need for thorough inspection prior to energization.",-,PRW,Electrical,Electrical,,30/7/2021,Distribution Board,,Fire/Explosion - Flashover
+112,DDE-DLA/TRT-KGA-SAFOP-030,SAFOP Close Out Report,DLA-TRC,DDE,"C021 - DLA/TRC: 24V DC Battery Charger
+
+DC charger is not energized (dead) most of the time during operation. Flashover or short circuit may happen during energization due to water ingress or condensation inside the enclosure.",-,Inspection for good condition prior to energization.,-,"To include in the operation and maintenance document on the need to thoroughly inspect the DC charger (e.g. for water ingress, condensation, etc.) prior to energization.
+",-,HESS,Operations,Operations,,17/10/2021,Distribution Board,,Fire/Explosion - Flashover
+113,DDE-DLA/TRT-KGA-SAFOP-031,SAFOP Close Out Report,DLA-TRC,DDE,"C021 - DLA/TRC: 24V DC Battery Charger
+
+DC charger is not energized (dead) most of the time during operation. Flashover or short circuit may happen during energization due to water ingress or condensation inside the enclosure.",-,Inspection for good condition prior to energization.,-,To provide physical warning sign and notes on the LV switchrack on the need for thorough inspection prior to energization.,-,PRW,Electrical,Electrical,,30/7/2021,Distribution Board,,Fire/Explosion - Flashover
+114,DDE-DLA/TRT-KGA-SAFOP-032,SAFOP Close Out Report,DLA-TRC,DDE,"C025 - DLA/TRC: Electrical Equipment Layout
+
+Shading effect of the pedestal crane on the solar array panels nearby the crane structure.","Solar array panels power performance will be affected. Insufficient solar power supply will trigger battery discharge operation.
+
+Shading effect may also affect lifetime of the solar array panels.
+
+Note:
+Shading effect is minimized during normal operation with the crane boom resting point will be away from the solar panel area.",-,-,To check and verify on the solar array panel location with respect to shading effects of nearby taller structures against the solar array panel performance.,-,PRW,Electrical,Electrical,,30/7/2021,Low,,Power
+115,DDE-DLA/TRT-KGA-SAFOP-033,SAFOP Close Out Report,DLA-TRC,DDE,"C025 - DLA/TRC: Electrical Equipment Layout
+
+Door of the enclosure may obstruct the escape route.",-,Escape route clearance.,-,To finalize the equipment layout with consideration of escape route and open enclosure door operation during maintenance activities at the area.,-,PRW,Electrical,Electrical,,30/7/2021,Substation,,Mechanical Hazard - Escape Route
+116,DDE-DLA/TRT-KGA-SAFOP-034,SAFOP Close Out Report,DLA-TRC,DDE,"C026 - DLA/TRC: Navigational Aids Layout
+
+Solar array panel for the marine lantern is located closer to pedestal crane structure which may get shading effect.",Long term damage to solar array panel due to hot spots from shading effects.,-,-,To check and verify on the solar array panel location for the marine lantern with respect to shading effects of nearby taller structures against the solar array panel performance.,-,PRW,Electrical,Electrical,,30/7/2021,Low,,Power
+117,DDE-DLA/TRT-KGA-SAFOP-035,SAFOP Close Out Report,CPP,DDE,"C031 - CPP: CPP Tie-in for Pig Receiver
+
+MOV starting.",16A MCB may trip during MOV starting operation.,-,-,To correctly size the MCB suitable with MOV rating and its starting current to prevent nuisance trip of MCB during starting.,-,PRW,Electrical,Electrical,,30/7/2021,Over,,Current
+118,DDE-DLA/TRT-KGA-SAFOP-036,SAFOP Close Out Report,CPP,DDE,"C031 - CPP: CPP Tie-in for Pig Receiver
+
+MOV starting.",16A MCB may trip during MOV starting operation.,-,-,To review coordination by switchrack vendor.,-,PRW,Electrical,Electrical,,30/7/2021,Over,,Current
+119,CONCEPT-KGA-HZD-001,NMB Phase 4A Concept Definition - HAZID Report,KGA,CONCEPTUAL,"Intermittent venting from the Cold Vent Tip during manual venting (initiated remotely at
+CPP), process upsets requiring emergency relief and pigging operations.","Potential flash fire on the Main Deck, if ignited, causing personnel injury/ fatality.","1. Cold Vent Tip location will be verified based on worst case wind scenario (e.g. blowback towards platform) for flammable gas and radiation.
+2. Ignition control
+3. Certification of electrical equipment based on Hazardous Area Classification and earthing on equipment and structures (All instrument for Kangsar WHP shall be Zone 1, Gas group IIA, Temperature T3, all electrical equipment will be zone 2 certified except GEG (24125-GY-01A/B) and DEG (24128-GY-01).
+4. Rescue facilities, i.e. Support Vessel/ Helicopter, life buoys",4B,"Gas Dispersion and Radiation Study for the Cold Vent Tip to be performed in Detailed Design to confirm the suitability of the Cold Vent Tip location. The study shall consider the following as  minimum:
+a. Unignited release - Flammable gas impact on designated sensitive receivers on the facility (e.g. crane cabin, manned areas etc);
+b. Ignited release - Radiation impact
+c. impact of mercury dispersion and/ or any other potential toxic gases.
+d. exhaust (including crane exhaust) as potential ignition sources",4A,PRW,EHS FEED,EHS-KGA,,9/7/2021,Hydrocarbons,,1.06. Hydrocarbon gas
+120,CONCEPT-KGA-HZD-002,NMB Phase 4A Concept Definition - HAZID Report,KGA,CONCEPTUAL,"SIPROD Vent - Emergency venting during SIPROD (process upset, emergency blowdown).",Potential high radiation levels at secondary muster area located on Mezzanine Deck below resulting in inability of personnel to muster during emergency scenario.,"1. Helideck acting as an inherent shield to protect Secondary muster area below on Mezzanine Deck from high radiation levels.
+2. Vent tip will be routed to safe location based on findings of SIPROD Vent Radiation and Dispersion Study. 
+3. Ignition control
+4. Certification of electrical equipment based on Hazardous Area Classification and earthing on equipment and structures (All instrument for Kangsar WHP shall be Zone 1, Gas group IIA, Temperature T3, all electrical equipment will be zone 2 certified except GEG (24125-GY-01A/B) and DEG (24128-GY-01).
+5. Rescue facilities, i.e. Support Vessel/ Helicopter, life buoys",5B,"Gas Dispersion and Radiation Study for the SIPROD Vent Tip to be performed in Detailed Design to confirm the suitability of the SIPROD Vent Tip location. The study shall consider the following as minimum:
+a. Unignited release - Flammable gas impact on designated sensitive received on the facility (e.g. crane cabin, manned areas etc);
+b. Ignited release - Radiation impact
+c. impact of mercury dispersion and/ or any other potential toxic gases.
+d. exhaust (including crane exhaust) as potential ignition sources",5A,PRW,EHS FEED,EHS-KGA,,9/7/2021,Hydrocarbons,,1.06. Hydrocarbon gas
+121,CONCEPT-KGA-HZD-003,NMB Phase 4A Concept Definition - HAZID Report,KGA,CONCEPTUAL,Internal corrosion,"1. Potential loss of containment (estimated volume is 2m3) leading to pool fire if ignited causing personnel injury/ fatality and asset damage. 
+
+2. Slips and falls on accumulated liquid releases
+","1. Material selection (stainless steel)
+2. Operating and maintenance procedures
+3. Ignition control
+4. Certification of electrical equipment based on Hazardous Area Classification and earthing on equipment and structures (All instrument for Kangsar WHP shall be Zone 1, Gas group IIA, Temperature T3, all electrical equipment will be zone 2 certified except GEG (24125-GY-01A/B) and DEG (24128-GY-01))
+5. Coaming provided for methanol tank 
+
+1. Material selection (stainless steel)
+2. Operating and maintenance procedures
+3. First Aid Kit
+4. Medivac",3B,Review the need for additional safeguards taking into consideration that the methanol tank may be left connected on platform; when  the platform is unmanned and in operations (producing).,3B,PRW,Instrument FEED,Instrument,,16/7/2021,Refined Hydrocarbons,,2.05. Methanol
+122,CONCEPT-KGA-HZD-005,NMB Phase 4A Concept Definition - HAZID Report,KGA,CONCEPTUAL,"Hardware and control systems failure (e.g. rotor, engine, indicators)",Helicopter ditch into the sea leading to personnel injury/ fatality,"1. Air Worthiness Inspection and Certification
+2. Helicopter Maintenance Programme
+3. Audit of Aviation Service Contractor
+4. Helicopter Operating Procedure (Automatic initiation of floatation of devices)
+5. Life jackets and life saving/ survival facilities in helicopter
+6. Emergency Response Plan (ERP)
+7. Rescue facilities, i.e. Support Vessel/ Helicopter, life buoys",5B,"Conduct a exhaust thermal plume and dispersion study to assess potential impact on helideck, considering a suitable (mean) ambient temperature. 
+
+Note: A preliminary assessment was conducted as part of the  concept selection study/ report to check if there was any significant impact to the helideck.",5B,PRW,EHS FEED,EHS-KGA,,9/7/2021,Dynamic Situation Hazards,,8.02. In air transport (flying)
+123,CONCEPT-KGA-HZD-008,NMB Phase 4A Concept Definition - HAZID Report,KGA,CONCEPTUAL,"Extreme waves height, current, tide surge and high swell",Damage to equipment on decks close to sea surface i.e. riser ESDV platform (future) and Helideck Premix Foam System,"1. Emergency Response Plan (ERP)
+2. Personal Protective Equipment (PPE) i.e. life
+jackets/ work vests
+3. Rescue facilities, i.e. Support Vessel, life buoys",A,"Review and verify that the design of riser ESDV platform (future) and Helideck Premix Foam System has been checked against the latest Metocean Data, in view of potential wave impact.",-,PRW,Structural FEED,Structural,,23/7/2021,Environmental Hazards,,9.02. Sea state / river currents
+124,CONCEPT-KGA-HZD-009,NMB Phase 4A Concept Definition - HAZID Report,KGA,CONCEPTUAL,Seabed movement causing lowering of deck elevation over a prolonged period of time,Reduced air gap of decks leading to sinking of platform over a prolonged period of time,-,A,Verify the air gap allowance considered in Kangsar design. ,-,PRW,Structural FEED,Structural,,23/7/2021,Environmental Hazards,,9.04. Subsidence
+125,CONCEPT-KGA-HZD-010,NMB Phase 4A Concept Definition - HAZID Report,KGA,CONCEPTUAL,Utilization of microwaves,Potential health effect due to telecom equipment operations,-,-,"Check the intensity of the microwaves in the vicinity of the Digital  Microwave Antenna on the Main Deck and the Mezzanine Deck. In the event that the intensity exceeds acceptable criteria, provide additional required safety features on the platform to prevent 
+personnel exposure to microwaves.",-,PRW,Telecom FEED,Telecom,,9/7/2021,Electromagnetic Radiation,,16.03. Microwaves
+126,CONCEPT-KGA-HZD-012,NMB Phase 4A Concept Definition - HAZID Report,KGA,CONCEPTUAL,SIPROD - Leakage of mud return line.,"1. Potential mud spill (minor release) to environment leading to marine pollution. 
+2. Potentially clogging of open drain points due to mud accumulation.",1. Rig shaker is located on the rig which is provided with coaming. No equipment with significant mud inventory located on the platform.,1C,Confirm means to protect/ seal off drain points on Main Deck from potential mud accumulation during drilling phase.,1C,PRW,Structural FEED,Structural,,23/7/2021,Toxic Solids,,22.08. Oil based muds
+127,CONCEPT-KGA-HZD-016,NMB Phase 4A Concept Definition - HAZID Report,KGA,CONCEPTUAL,Breakdown of In-field vessel due to failure of engine,"Loss of hydrocarbon containment leading to fire events, if ignited, in the event of boat collision with bracing causing personnel injury/ fatality.","1. Risers are located within the jacket structure as such it is not expected to be vulnerable to vessel impact (inherent safety design)
+2. Platform jacket legs, boat landings and fenders are designed for accidental impact from the drifting collision of infield Support Vessels, which could help in reducing the impact due to vessel collision
+3. Riser guard will be provided for future riser which is located outside of the platform jacket legs
+4.Fire and Gas Detection System
+5.Emergency Shutdown System
+6.Emergency Response Plan (ERP)
+7.Escape routes
+8.Muster area
+9. Life rafts
+10. Personal Protective Equipment (PPE), i.e. life jacket
+11. Rescue facilities, i.e. Support Vessel/ Helicopter, life buoys",5B,Review the safety gap between the conductors and jacket structure  in view of the increase in conductor size.,5B,PRW,EHS FEED,EHS-KGA,,30/7/2021,Dynamic Situation Hazards,,8.03. Boat Collision hazard to other vessels and offshore structures
+128,CONCEPT-DLA/DRT-HZD-001,NMB Phase 4A Concept Definition - HAZID Report,DLA-TRC,CONCEPTUAL,SIPROD - Breathing of vent system when there is manual draining into the portable drain tote tank,Potential ignition of vent resulting in high radiation levels causing personnel injuries,"1. Flame Arrestor
+2. Vent located away from manned location.",3B,"Ensure the portable drain tote tank vent is routed to safe location away from hazardous area, considering SIPROD operations.",3B,PRW,EHS FEED,EHS-DLA/TRT,,30/7/2021,Hydrocarbon,,1.06. Hydrocarbon gas
+129,CONCEPT-DLA/DRT-HZD-002,NMB Phase 4A Concept Definition - HAZID Report,DLA-TRC,CONCEPTUAL,SIPROD - Breathing of vent system when there is manual draining into the portable drain tote tank,Potential ignition of vent resulting in high radiation levels causing personnel injuries,"1. Flame Arrestor
+2. Vent located away from manned location.",3B,"Verify the location and orientation of the vent tip termination point and indicate on the layouts. Gas Dispersion and Radiation Study for the Vent Tip (SIPROD and Normal Operations) to be performed in Detailed Design to confirm the location suitability of. The study shall consider the following as minimum:
+a. Unignited release - Flammable gas impact on designated sensitive received on the facility (e.g. crane cabin, manned areas etc);
+b. Ignited release - Radiation impact
+c. impact of mercury dispersion and/ or any other potential toxic gases.
+d. exhaust (including crane exhaust) as potential ignition sources",3B,PRW,EHS FEED,EHS-DLA/TRT,,30/7/2021,Hydrocarbon,,1.06. Hydrocarbon gas
+130,CONCEPT-DLA/DRT-HZD-003,NMB Phase 4A Concept Definition - HAZID Report,DLA-TRC,CONCEPTUAL,"Lifting activities and accessories during well intervention activities: 
+- Possible dropped object/swing load impact on solar panels.
+- Crane mechanical failure
+- Crane and other lifting accessories (e.g. slings) wear and tear, corrosion
+- Overloading
+- Unfavourable weather & sea conditions
+- Crane operator / banksman error
+- Failure to secure loads
+- Snag load ","Potential personnel injury / fatality and asset / equipment damage, including possibility of boom collapse.
+2.Dropped object on live HC equipment / piping or subsea pipeline could lead to loss of HC containment resulting in fire/ explosion hazards (H-01 above). Potential personnel injury / multiple fatalities and asset damage.",1.Weather restriction for lifting operations,5B,"Conduct Topside and Pipeline Dropped Object Study to be conducted in Detailed Design. 
+
+Topside Dropped Object Study shall include, as minimum:
+a. lifting of well intervention related equipment Maximum load of 5 tonnes to be considered for assessment.
+b. swing load hazard towards solar panel on Main deck.
+
+Pipeline Dropped Object Study shall include, as minimum:
+a. Lifting of well intervention related equipment. Maximum load of 5 tonnes to be considered for assessment.",5B,PRW,EHS FEED,EHS-DLA/TRT,,30/7/2021,Hazard Associated With Differences In Height,,6.03. Overhead equipment
+131,CONCEPT-DLA/DRT-HZD-005,NMB Phase 4A Concept Definition - HAZID Report,DLA-TRC,CONCEPTUAL,"Passing / Errant vessels:
+- External/ Passing Vessel under power on collision course due to loss of control
+- Adverse weather condition",Potential platform structural damage and collapse. Structural failure could lead to escalation resulting in loss of hydrocarbon containment. Potential injury/ multiple fatality and asset damage / production loss.,"1.Navigational aids / Marine Lantern
+2.Radar Beacon (RACON)
+3.Safety Zone (500m Exclusion Zone)
+4.Marine radios for communication between platform and vessel
+5. Evacuation means :
+- Normal Operation 
+a. (Primary - Liferaft on Kangsar) 
+b. (Secondary - direct descent to sea)
+-During SIPROD 
+a. (Primary - Life boat on drilling rig)
+b. (Secondary - Liferaft on Kangsar) 
+c. (Tertiary - direct descent to sea).
+6. Standby Vessel provided as means of rescue
+7. ERP
+8.Medical Response / Medivac",5B,Review the shipping lane/traffic and assess risk of external vessel collision. ,5B,PRW,EHS FEED,EHS-DLA/TRT,,30/7/2021,Dynamic Situation Hazards,,8.03. Boat Collision hazard to other vessels and offshore structures
+132,CONCEPT-DLA/DRT-HZD-006,NMB Phase 4A Concept Definition - HAZID Report,DLA-TRC,CONCEPTUAL,SIPROD - Leakage of mud return line.,Release of mud to environment leading to marine pollution. Potentially clogging open drain points due to mud accumulation.,"Rig shaker is located on the rig which is provided with coaming.
+No equipment with significant mud inventory located on the platform.",1C,Confirm means to protect/ seal off drain points on Main Deck from potential mud accumulation during drilling phase.,1C,PRW,Structural FEED,Structural,,30/7/2021,Toxic Solid,,22.08. Oil based muds
+133,CONCEPT-KGA-HZP-001,NMB Phase 4A Concept Definition - HAZOP Report,KGA,CONCEPTUAL,001-XV-014 inadvertently opened during production,Partial production loss from 1 well.,Position indication of 001-XV-014,A,Develop SOP to include this details and functionality of 001-XV-014 (typical for all wells),-,PRW,Process FEED,Process,,15/10/2021,Flow,,No / Less
+134,CONCEPT-KGA-HZP-003,NMB Phase 4A Concept Definition - HAZOP Report,KGA,CONCEPTUAL,001-HIC-014 inadvertently opened before completing well warm up.,"Potential hydrate formation due to low temperature. Potential damage of choke valve, leading to production deferment from 1 well.",-,A,Develop a specific SOP related to operation of well warm-up (prior to opening choke valves),-,PRW,Process FEED,Process,,15/10/2021,Flow,,Reverse /Misdirected
+135,CONCEPT-KGA-HZP-005,NMB Phase 4A Concept Definition - HAZOP Report,KGA,CONCEPTUAL,001-HIC-014 inadvertently opened before completing well warm up.,"Potential hydrate formation due to low temperature. Potential damage of choke valve, leading to production deferment from 1 well.",-,A,Choke valve to be designed taking into consideration hydrate formation and potential damage due to hydrate.,-,PRW,Instrument FEED,Instrument,,15/10/2021,Flow,,Reverse /Misdirected
+136,CONCEPT-KGA-HZP-007,NMB Phase 4A Concept Definition - HAZOP Report,KGA,CONCEPTUAL,Presence of mercury in well fluid,Potential presence of mercury in GEG exhaust. Potential exposure to personnel leading to acute and chronic health impact,GEG exhaust location as per preliminary exhaust dispersion study conducted in feasibility study ,4B,Ensure GEG specifications during detailed design is in line with the design parameters from the exhaust dispersion study conducted in feasibility study ,4A,PRW,EHS FEED,EHS-KGA,,15/7/2021,Contamination,,Other than
+137,CONCEPT-KGA-HZP-008,NMB Phase 4A Concept Definition - HAZOP Report,KGA,CONCEPTUAL,Introduction of hydrocarbon into the topside process system and pipeline during cold start-up or after topside depressurisation ,Potential impact to pipeline integrity leading to loss of hydrocarbon containment. Potential fire if ignited leading to personnel impact. Note that the pipeline Minimum Design Metal Temperature (MDMT) is -20 °C,Well warm-up facility/ arrangement,5B,Investigate means to have a controlled start-up from wellhead taking into account the low temperature well fluids from reservoir (assuming worst case depressurising from CITHP) during cold start-up or after topside depressurisation which could potentially give impact to pipeline integrity (MDMT of -20 °C).,5B,PRW,Process FEED,Process,,9/7/2021,Start up/Operations / Maintenance,,Other than
+138,CONCEPT-KGA-HZP-011,NMB Phase 4A Concept Definition - HAZOP Report,KGA,CONCEPTUAL,Fuel Gas Filter Coalescer 24076-V-01A blocked,"Potential wax formation in the filter coalescer, leading to blocked element. Potential overpressure, leading to potential loss of HC containment. If ignited, potential multiple fatalities and asset damage",Heat tracing provided on the exterior of the vessel and on the condensate lines,5A,Ensure that the lowest temperature in the FG system does not drop below the maximum WAT.,4A,PRW,Process FEED,Process,,15/7/2021,Flow,,No / Less
+139,CONCEPT-KGA-HZP-012,NMB Phase 4A Concept Definition - HAZOP Report,KGA,CONCEPTUAL,Fuel Gas Filter Coalescer 24076-V-01A blocked,"Potential wax formation in the filter coalescer, leading to blocked element. Potential overpressure, leading to potential loss of HC containment. If ignited, potential multiple fatalities and asset damage",Heat tracing provided on the exterior of the vessel and on the condensate lines,5A,Ensure 076-PSV-221/231 sizing consideration includes potential overpressure due to blocked discharge scenario.,4A,PRW,Process FEED,Process,,30/7/2021,Flow,,No / Less
+140,CONCEPT-KGA-HZP-016,NMB Phase 4A Concept Definition - HAZOP Report,KGA,CONCEPTUAL,001-XV-AB inadvertently opened during production,"Potential overfilling of the drain drum leading to potential overpressure, leading to possible loss of HC containment. If ignited, potential multiple fatalities.",Position indication of 001-XV-AB,5B,Review priority of high level alarm for LP Vent/ Closed Drain Drum (24078-LICAH-122) to be set as High as there is no High High Trip provided for the LP Vent/ Closed Drain Drum.,5B,PRW,Instrument,Instrument,,9/7/2021,Level,,More
+141,CONCEPT-KGA-HZP-018,NMB Phase 4A Concept Definition - HAZOP Report,KGA,CONCEPTUAL,"2"" manual valve on diesel supply line from tote tank inadvertently closed during diesel loading operation",Potential inability to supply diesel to Diesel Storage Tank (24090-T-01) causing inconvenience,Diesel transfer is a manned operation carried out by competent personnel with both tote tank and Diesel Storage Tank located on the same deck (Main Deck).,-,Develop diesel storage tank filling procedure at the next phase of the project.,-,PRW,Process FEED,Process,,16/10/2021,Flow,,No / Less
+142,CONCEPT-KGA-HZP-020,NMB Phase 4A Concept Definition - HAZOP Report,KGA,CONCEPTUAL,Blocked flame arrestor on vent line,"Unable to safely depressurise the topside leading to potential escalation in the event of fire, resulting in multiple fatalities.",Rupture disc provided in parallel to flame arrestor set at 10.3 barg,5B,A detailed HAZOP to be carried out in the next phase of the project and include lessons learned from the Phase 2 SIPROD skid operations.,5B,SFSB,EHS FEED,EHS,,26/8/2021,Flow,,No / Less
+143,CONCEPT-KGA-HZP-024,NMB Phase 4A Concept Definition - HAZOP Report,KGA,CONCEPTUAL,Insufficient methanol in methanol tote tank (24017-PT-03),Loss of suction to Methanol Injection Pump leading to pump cavitations resulting in pump damage requiring repair and reinstatement.,"1. 017-PG-130 at pump discharge will give local indication of pump discharge pressure. Note: Not applicable for remote operation
+2. 017-PIT-150 at pump discharge will give indication of pressure discharge
+3. 017-FZALL-130 downstream of methanol injection pump which will trip the pump. ",A,Develop a SOP for methanol injection during start-up ,-,PRW,Process FEED,Process,,16/10/2021,Flow,,No / Less
+144,CONCEPT-DLA/DRT-HZP-001,NMB Phase 4A Concept Definition - HAZOP Report,DLA-TRC,CONCEPTUAL,Manual valve 001-AB on well warm up line inadvertently left open after start-up.,"Excessive liquid build-up at the stand-pipe leading to release of hydrocarbon liquids via open vent. If ignited, potential pool fire scenario leading to personnel injuries/ fatality.","1. Well warm-up is a manned operation
+2. RO'B' limits flow into the vent system",4B,Review the requirement and necessary arrangement for well  warm-up facility/ arrangement. ,4B,PRW,Process FEED,Process,,17/10/2021,Flow,,No / Less
+145,CONCEPT-DLA/DRT-HZP-002,NMB Phase 4A Concept Definition - HAZOP Report,DLA-TRC,CONCEPTUAL,001-HCV-C inadvertently opened before completing well warm up.,"Potential hydrate formation due to low temperature. Potential damage of choke valve, leading to production deferment from 1 well.",-,A,Develop SOP related to operation of well warm-up ,-,PRW,Process FEED,Process,,17/10/2021,Flow,,Reverse /Misdirected
+146,CONCEPT-DLA/DRT-HZP-004,NMB Phase 4A Concept Definition - HAZOP Report,DLA-TRC,CONCEPTUAL,001-HCV-C inadvertently opened before completing well warm up.,"Potential hydrate formation due to low temperature. Potential damage of choke valve, leading to production deferment from 1 well.",-,A,Ensure that choke valve design to takes into consideration potential damage from  hydrate formation.,-,PRW,Instrument FEED,Instrument,,17/10/2021,Flow,,Reverse /Misdirected
+147,CONCEPT-DLA/DRT-HZP-005,NMB Phase 4A Concept Definition - HAZOP Report,DLA-TRC,CONCEPTUAL,"Introduction of hydrocarbon into the topside process system and pipeline during cold start-up or after topside depressurisation (potentially -38 degC, considering flexible pipeline pressure at 16barg)","Potential impact to flexible pipeline integrity leading to loss of hydrocarbon containment. Potential fire if ignited leading to personnel impact.
+
+Note that the pipeline and topside Minimum Design Metal Temperature (MDMT) is -20 °C and - 50degC respectively.","Choke valve cycling as part of the start-up philosophy
+
+Note: Actual SOP related to Phase 4 well start-up is currently not in place.",5B,"Develop well start-up procedure for Phase 4, taking into consideration, among others, the minimum temperature experienced at start-up could be below the pipeline design  temperature.",5A,PRW,Process FEED,Process,,17/10/2021,Start up/Operations / Maintenance,,Other than
+148,CONCEPT-DLA/DRT-HZP-006,NMB Phase 4A Concept Definition - HAZOP Report,DLA-TRC,CONCEPTUAL,Presence of mercury in vent line,Potential exposure to personnel during blowdown/ well-warm up  leading to acute and chronic health impact,Vent tip routed to safe location,3B,"Conduct Vent Dispersion study to determine safe vent termination location considering the hazards of flammable gas, radiation and toxic gases (mercury, BTEX, h2s, etc). ",3A,PRW,EHS FEED,EHS-DLA/TRT,,9/7/2021,Contamination,,Other than
+149,CONCEPT-DLA/DRT-HZP-007,NMB Phase 4A Concept Definition - HAZOP Report,DLA-TRC,CONCEPTUAL,Over filling during draining of liquid to portable drain tote tank.,Potential spill over to deck/sea leading to environmental impact.,"Operating procedures based on level gauge provided on portable drain tote tank.
+",1C,Review and update OPS procedures with regards to potential wax formation in the open drain tote tank and means of handling. To develop a specific procedure if required.,1C,PRW,Process FEED,Process,,17/10/2021,Level,,More
+150,CONCEPT-DLA/DRT-HZP-G2,NMB Phase 4A Concept Definition - HAZOP Report,DLA-TRC,CONCEPTUAL,Leak/rupture of production manifold,"Release of HC gas and liquid to atmosphere resulting in formation of flammable gas cloud and environmental impact, potential fire/explosion event resulting in multiple personnel injury/fatality and asset damage.","1. 001-PIAL-110 low pressure alarm
+2. 001-PZALL-112A/B/C initiating platform ESD
+3. 001-PZALL-DH on individual well flowlines initiating platform USD during normal operations (ESD during SIPROD)
+",5B,Review SIPROD philosophy and evaluate the necessity of escalating USD to ESD,5B,PRW,Process FEED,Process,,13/7/2021,Pressure,,No/Less 

@@ -449,7 +449,7 @@ class ApproverList (ListView):
         #gets approver routes by que series and slots QuerySet for routes according to key dict Approver Routes
         Approver_R =    dict_allRou.get('Approver_Routes')
         reducedfileds= ['id','StudyActionNo','StudyName__StudyName','Disipline' ,'Subdisipline','Cause','Recommendations',
-        'QueSeries', 'DueDate','InitialRisk']
+        'QueSeries', 'DueDate','Response','InitialRisk']
         for key, value in Approver_R.items():
 
             # allactionItems= blallActionsComDisSub(value,key)
@@ -488,8 +488,8 @@ class DetailActioneeItems (DetailView):
 
 class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
     #paginate_by = 20
-    template_name = "userT/actionupdateapproveaction.html" #yhs changed to all small letters
-    form_class = ApproverForm
+    template_name = "userT/actionupdateapproveaction.html" 
+    form_class = frmApproverGeneral
     success_url = '/ApproverList/'
 
     def test_func(self,**kwargs):
@@ -758,7 +758,7 @@ class HistoryFormMixin(UserPassesTestMixin,UpdateView):
 #@user_passes_test(lambda u: u.groups.filter(name='Actionee').count() == 0, login_url='/main')
 class ActioneeItemsMixin(UserPassesTestMixin,UpdateView):
     template_name = "userT/actionupdateapproveaction.html" #yhs changed to all small letters
-    form_class = frmUpdateActioneeForm
+    form_class = frmActioneeGeneral
     
     #delete
     # def get(self, request, *args, **kwargs):
@@ -772,10 +772,9 @@ class ActioneeItemsMixin(UserPassesTestMixin,UpdateView):
 
         if form_classnew:
             from UploadExcel import forms
-            
             form_class= getattr(forms, form_classnew,None)
         else:
-            form_class = frmUpdateActioneeForm
+            form_class = self.form_class
             
         return form_class
     
@@ -1662,7 +1661,7 @@ def closeoutsheet(request): #new naming convention - all small letters
 
 class pmtrepviewall(UpdateView):
     template_name = "userT/reppmtviewall.html" #the html is missing object_list
-    form_class = ApproverForm
+    form_class = frmApproverGeneral
 
     def get_object(self,queryset=None):
         queryset=ActionItems.objects.all()
