@@ -5,9 +5,28 @@ import operator
 from UploadExcel.models import ActionItems
 from .models import *
 
-#20211220 edward get the rejected actions 
+#20211221 edward get the rejected count for Actionee
+def blActioneerejectedcountQ(Actionee_R):
+    """This function gets the count of rejected actions from Action Items table by going through Action Routes of Actionee"""
+    revision = 1
+    routes = Actionee_R
+    count=0
+    if routes :
+        QObjectSeries =[]
+        for x, item in enumerate(routes):
+            organisation   = item.Organisation
+            discipline  = item.Disipline
+            subdiscipline  = item.Subdisipline
+            QObjectSeries.append(Q(**{'Disipline':discipline, 'Subdisipline': subdiscipline, 
+                                'Organisation': organisation,'Revision__gte':revision }))
+            #print(QObjectSeries)
+    for items in QObjectSeries:
+        count += ActionItems.mdlallActionItemsCount.mgr_GeneralItemsCountbyFiltersKwargsQ(items)
+    return count
+
+#20211220 edward get the rejected actions count PMT Reporting
 def blnewgetrejecteditemsQ(dfdiscsuborg,revision,phase,reducedfields):
-    """This function gets the Action Items that were rejected from Action Items table"""
+    """This function gets the Action Items that were rejected from Action Items table for PMT Reporting """
     count = 0  
     TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
     QObjectMiscAND =Q()
@@ -23,9 +42,9 @@ def blnewgetrejecteditemsQ(dfdiscsuborg,revision,phase,reducedfields):
     RejectedActions =  ActionItems.mdlallActionItemsCount.mgr_GeneralItemsFiltersKwargsQReduced(QObjectMiscAND,reducedfields)
     return RejectedActions
 
-#20211220 edward get the rejected Actions count 
+#20211220 edward get the rejected Actions count PMT Reporting
 def blnewgetrejecteditemsQcount(dfdiscsuborg,revision,phase):
-    """This function gets the count of rejected actions from Action Items table"""
+    """This function gets the count of rejected actions from Action Items table for PMT Reporting """
     count = 0  
     TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
     QObjectMiscAND =Q()
@@ -39,6 +58,7 @@ def blnewgetrejecteditemsQcount(dfdiscsuborg,revision,phase):
 
     filters = blQobjectQueSeries(TotalQue) & QObjectMiscAND
     count += ActionItems.mdlallActionItemsCount.mgr_GeneralItemsCountbyFiltersKwargsQ(QObjectMiscAND)
+    
     return count
 
 #20211203 edward 
@@ -70,7 +90,7 @@ def blallactionscomdissubQ(routes,queseries,reducedfields):
     Addtionally Pass in reduced fields so it does not retrieve all values() and limits the data transfer . 
     '''
     allactions = []
-
+    
     if routes :
         QObjectSeries =[]
         for x, item in enumerate(routes):

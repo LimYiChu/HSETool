@@ -276,9 +276,9 @@ def mainDashboard (request):
     totalactionsapproved = blfuncActionCountQ(Actionee_R,QueClosed)
     
     #20211221 edward 3rd box fix 
-    rejectedactionscount = blActrejectedactionscount(usersemail)
+    rejectedactionscount = blActioneerejectedcountQ(Actionee_R)
     #20211221 edward 3rd box fix 
-
+   
     submittedsummary = {'totalactionssubmitted':totalactionssubmitted,'countrejected':rejectedactionscount, 'totalactionsapproved' :totalactionsapproved }
 
     #***Initilise empty list to hold values

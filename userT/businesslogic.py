@@ -29,19 +29,6 @@ from django.db.models import F
 #20211202 edward commented out this import because there is a problem with img2pdf library on linux
 # import img2pdf
 # from PIL import Image
-
-#20211221 edward rejected actions count for Actionee
-def blActrejectedactionscount (usersemail):
-    lstUserSeries =  CustomUser.objects.filter(email=usersemail).values()
-    discsuborglist=[]
-    for items in lstUserSeries:
-        discsuborglist.append(items['disipline'])
-        discsuborglist.append(items['subdisipline'])
-        discsuborglist.append(items['organisation'])
-    # print(discsuborglist)
-    rejectedactionscount = blnewgetrejecteditemsQcount(discsuborglist,1,phase="")
-    # print(rejectedactionscount)
-    return rejectedactionscount
     
 #edward 20211210 7 & 14 days
 # def blexceedholdtime(ActioneeActions,Approver_R,queActionee,reducedfileds):
