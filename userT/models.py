@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from .manager import *
 #user= settings.AUTH_USER_MODEL
 from UploadExcel.models import *
+from simple_history.models import HistoricalRecords
 
 from django.contrib.auth.models import ( 
     AbstractBaseUser, BaseUserManager
@@ -195,9 +196,9 @@ class ActionRoutes(models.Model):
     Approver6       =   models.CharField(max_length=100, null=True,blank=True)
     Approver7       =   models.CharField(max_length=100, null=True,blank=True)
     Approver8       =   models.CharField(max_length=100, null=True,blank=True)
-
     ProjectPhase =   models.ForeignKey(Phases, on_delete=models.SET_NULL,null=True,blank=True)
-
+    
+    history = HistoricalRecords()
     objects = models.Manager()
     ActioneeRo = ActioneeManager()
     ApproverRo = ApproverManager()

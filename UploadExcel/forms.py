@@ -71,10 +71,10 @@ class CommonLayout (Layout):
             #Div (Field('Consequence',rows=8, readonly=True,  style="font-family: Great Vibes;font-size: 60px"),  css_class='col-md-12'), #- Left this commented as it shows how to add style to text box directly
             Div (Field('Consequence',rows=8, readonly=True), css_class='col-md-12'),
             Div (Field('Recommendations',rows=8, readonly=True), css_class='col-md-12'),
-            css_class='row',#-dont know why i have to put this in so it aligns to left
+            css_class='row',# aligns to left
             
             ),
-            #needs these hidden fields otherwise it passes blank values into the model
+        
             Div (
                 
             Div (Field('Facility', type="hidden")),
@@ -87,15 +87,15 @@ class CommonLayout (Layout):
     
             ),
         )
-        
-class frmUpdateActioneeForm(forms.ModelForm):
+
+class frmActioneeGeneral(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super(frmUpdateActioneeForm, self).__init__(*args, **kwargs)
+        super(frmActioneeGeneral, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_show_labels = True
         self.fields['FutureAction'].label = strFutActApprNotes
         self.helper.form_method = 'POST'
-        self.fields['Response'].required = True #yhs added. now response is compulsory. need to test if upload empty sheets. what will happen?
+        self.fields['Response'].required = True 
         #self.helper.add_input(Submit('Upload', 'Next...', css_class='btn btn-outline-dark float-right col-md-1'))
         #self.helper.add_input(Submit('Cancel', 'Cancel', css_class='btn btn-outline-dark float-right col-md-1'))
 
@@ -115,12 +115,12 @@ class frmUpdateActioneeForm(forms.ModelForm):
         model = ActionItems
         fields = '__all__'
 
-class frmApprover(frmUpdateActioneeForm):
+class frmApproverGeneral(frmActioneeGeneral):
+    
     def __init__(self, *args, **kwargs):
-        super(frmApprover, self).__init__(*args, **kwargs)
-        
-        self.fields['FutureAction'].widget.attrs['readonly'] = True
+        super(frmApproverGeneral, self).__init__(*args, **kwargs)
         self.fields['Response'].widget.attrs['readonly'] = True
+        self.fields['FutureAction'].widget.attrs['readonly'] = True
 
 class ApproverForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -138,9 +138,7 @@ class ApproverForm(forms.ModelForm):
             Div (Field('Response',readonly=True) ,css_class='col-md-12'), 
             #Div (Field('Attachment',disable=True),  css_class='col-md-12'),
             Div (Field('FutureAction', readonly=True), css_class='col-md-12'),
-            #Div (Field('FutureAction'), css_class='col-md-12'),
-            #Div (Field('QueSeries', readonly=True), css_class='col-md-3'),
-           #-somehow not working Div (Field('DueDate', readonly=True), css_class='col-md-2'),
+            
             css_class='row',
           
            ),
