@@ -30,6 +30,19 @@ from django.db.models import F
 # import img2pdf
 # from PIL import Image
 
+#20211221 edward rejected actions count for Actionee
+def blActrejectedactionscount (usersemail):
+    lstUserSeries =  CustomUser.objects.filter(email=usersemail).values()
+    discsuborglist=[]
+    for items in lstUserSeries:
+        discsuborglist.append(items['disipline'])
+        discsuborglist.append(items['subdisipline'])
+        discsuborglist.append(items['organisation'])
+    # print(discsuborglist)
+    rejectedactionscount = blnewgetrejecteditemsQcount(discsuborglist,1,phase="")
+    # print(rejectedactionscount)
+    return rejectedactionscount
+    
 #edward 20211210 7 & 14 days
 # def blexceedholdtime(ActioneeActions,Approver_R,queActionee,reducedfileds):
 def blexceedholdtime(Approver_R,reducedfileds):
@@ -712,10 +725,9 @@ def blgetrejectedcount(discsuborg,revision):
     lstfinallistcount = []
     test = discsuborg
     
-    for items in test :
-        print(items)
-        testing = blgetSignotories(items)
-        print(testing)
+    #print(test)
+        
+        
     for items in discsuborg:
         
         lstrejectcountbydisc.append("/".join(items))
@@ -724,8 +736,11 @@ def blgetrejectedcount(discsuborg,revision):
         
         lstfinallistcount.append(lstrejectcountbydisc)
         lstrejectcountbydisc = []
+    
 
     return lstfinallistcount
+
+
 
 def blaggregatebyDisc(discsuborg,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue):
     """Agregates by discpline across organisation. Takes in various QueSeries denoting Yettorespond, Approval 
@@ -1115,7 +1130,7 @@ def blgetIndiResponseCount2(dfdiscsuborgphase,queseriesopen,queseriesclosed,phas
         
         # totalopencount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesopen) 
         # totalclosedcount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesclosed)
-
+        
         # gets open action dependiong on phase
         totalopencount = blphasegetDiscSubOrgActionCountQ (itemtriplet,queseriesopen,phase) 
         totalclosedcount = blphasegetDiscSubOrgActionCountQ (itemtriplet,queseriesclosed,phase)

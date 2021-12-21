@@ -5,6 +5,42 @@ import operator
 from UploadExcel.models import ActionItems
 from .models import *
 
+#20211220 edward get the rejected actions 
+def blnewgetrejecteditemsQ(dfdiscsuborg,revision,phase,reducedfields):
+    """This function gets the Action Items that were rejected from Action Items table"""
+    count = 0  
+    TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
+    QObjectMiscAND =Q()
+    
+    if phase!="":
+        QObjectMiscAND = Q(**{'Disipline':dfdiscsuborg[0], 'Subdisipline': dfdiscsuborg[1], 'Organisation': dfdiscsuborg[2],
+                        'ProjectPhase__ProjectPhase':phase,'Revision__gte':revision})
+    else:
+        QObjectMiscAND = Q(**{'Disipline':dfdiscsuborg[0], 'Subdisipline': dfdiscsuborg[1],
+                        'Organisation': dfdiscsuborg[2],'Revision__gte':revision })
+
+    #filters = blQobjectQueSeries(TotalQue) & QObjectMiscAND
+    RejectedActions =  ActionItems.mdlallActionItemsCount.mgr_GeneralItemsFiltersKwargsQReduced(QObjectMiscAND,reducedfields)
+    return RejectedActions
+
+#20211220 edward get the rejected Actions count 
+def blnewgetrejecteditemsQcount(dfdiscsuborg,revision,phase):
+    """This function gets the count of rejected actions from Action Items table"""
+    count = 0  
+    TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
+    QObjectMiscAND =Q()
+    
+    if phase!="":
+        QObjectMiscAND = Q(**{'Disipline':dfdiscsuborg[0], 'Subdisipline': dfdiscsuborg[1], 'Organisation': dfdiscsuborg[2],
+                        'ProjectPhase__ProjectPhase':phase,'Revision__gte':revision})
+    else:
+        QObjectMiscAND = Q(**{'Disipline':dfdiscsuborg[0], 'Subdisipline': dfdiscsuborg[1],
+                        'Organisation': dfdiscsuborg[2],'Revision__gte':revision })
+
+    filters = blQobjectQueSeries(TotalQue) & QObjectMiscAND
+    count += ActionItems.mdlallActionItemsCount.mgr_GeneralItemsCountbyFiltersKwargsQ(QObjectMiscAND)
+    return count
+
 #20211203 edward 
 def blphasegetStudyreducedfieldsQ(reducedfields,phase=""):
     """This function only looks through the Studies table. It filters studies by phase only in the Studies table.If phase is empty it retrives all studies. Reduced field parameter  
@@ -22,7 +58,7 @@ def blphasegetStudyreducedfieldsQ(reducedfields,phase=""):
     #filters = blQobjectQueSeries(que) & QObjectMiscAND
     filters = QObjectMiscAND
     StudiesPhase =  Studies.mdlallStudies.mgr_GeneralItemsFiltersKwargsQReduced(filters,reducedfields)
-    print(StudiesPhase)
+    
     
     return StudiesPhase
 #20211203 edward 
@@ -112,7 +148,7 @@ def blphasegetDiscSubOrgActionCountQ(discsuborg,quelist,phase=""):
 
     filters = blQobjectQueSeries(quelist) & QObjectMiscAND
     count += ActionItems.mdlallActionItemsCount.mgr_GeneralItemsCountbyFiltersKwargsQ(filters)
-
+    
     return count
     
 def blallphasegetAction(que,phase=""):
@@ -164,7 +200,7 @@ def blphasegetrejectedactionsQ(revision,queseries,reducedfields,phase="",):
     #filters = blQobjectQueSeries(que) & QObjectMiscAND
     
     ActionsPhase =  ActionItems.mdlallActionItemsCount.mgr_GeneralItemsFiltersKwargsQReduced(QObjectMiscAND,reducedfields)
-
+    
     return ActionsPhase
 
 def blgetCompanyActionCountPhase(company,quelist,phase="") :
