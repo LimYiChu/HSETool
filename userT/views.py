@@ -489,7 +489,7 @@ class DetailActioneeItems (DetailView):
 class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
     #paginate_by = 20
     template_name = "userT/actionupdateapproveaction.html" #yhs changed to all small letters
-    form_class = frmApprover
+    form_class = ApproverForm
     success_url = '/ApproverList/'
 
     def test_func(self,**kwargs):
@@ -766,13 +766,17 @@ class ActioneeItemsMixin(UserPassesTestMixin,UpdateView):
     #     self.object = self.get_object(queryset=ActionItems.objects.all())
     #     return super().get(request, *args, **kwargs)
     
-    def get_form_class(self):
+    def get_form_class(self,**kwargs):
         
-        form_class = (blgetFieldValue(self.kwargs.get("pk"),"StudyName__Form"))
+        form_classnew = (blgetFieldValue(self.kwargs.get("pk"),"StudyName__Form"))
 
-        if not form_class:
+        if form_classnew:
+            from UploadExcel import forms
             
-            form_class=frmUpdateActioneeForm
+            form_class= getattr(forms, form_classnew,None)
+        else:
+            form_class = frmUpdateActioneeForm
+            
         return form_class
     
     def test_func(self,**kwargs):
