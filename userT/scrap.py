@@ -1,4 +1,4 @@
-#20211221 from businesslogic.py edward
+#20211221 from businesslogic.py edward 1
 #20211221 edward rejected actions count for Actionee by going through custom user
 # def blActrejectedactionscount (usersemail):
 #     lstUserSeries =  CustomUser.objects.filter(email=usersemail).values()
