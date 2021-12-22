@@ -43,7 +43,7 @@ class UploadField(forms.Form):
             Div()
             ),
         )
-    
+
 class CommonLayout (Layout):
     
     def __init__(self, *args, **kwargs):
@@ -87,6 +87,21 @@ class CommonLayout (Layout):
     
             ),
         )
+class frmBase (forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+     super().__init__(
+            
+            Div(
+            Div(Field('StudyActionNo',readonly=True),   css_class='col-md-2'), #style="font-family: Dancing Script",
+            Div (Field('StudyName',readonly=True,disabled=True),  css_class='col-md-3 read-only'),
+            Div (Field('ProjectPhase', readonly=True,disabled=True), css_class='col-md-3'), #,disabled=True
+            Div (Field('InitialRisk', readonly=True), css_class='col-md-2'),
+            Div (Field('ResidualRisk', readonly=True), css_class='col-md-2'),
+            Div (Field('StudyName',readonly=True,type="hidden")),
+            Div (Field('ProjectPhase',readonly=True,type="hidden")),
+            css_class='row',
+                      
+           ),)
 
 class frmActioneeGeneral(forms.ModelForm):
     def __init__(self, *args, **kwargs):
