@@ -251,6 +251,8 @@ def mainDashboard (request):
     ActioneeActionsrisk = bladdriskelements(list(ActioneeActions))
     riskrankingsummary = blaggregateby(ActioneeActionsrisk,"RiskRanking")
 
+    
+
     #20211208 Ishna first box
     for QSeries, ApproRoutes in Approver_R.items():
         ApproverActions = blallactionscomdissubQ(ApproRoutes,QSeries,reducedfields)
@@ -270,9 +272,14 @@ def mainDashboard (request):
     totalactionssubmitted = blfuncActionCountQ(Actionee_R,ApprovalQue)
     rejecteditemsid = blRejectedHistortyActionsbyId(usersemail,queActionee,1)
     countrejected = bldropduplicateandcount(rejecteditemsid)
+    
     totalactionsapproved = blfuncActionCountQ(Actionee_R,QueClosed)
     
-    submittedsummary = {'totalactionssubmitted':totalactionssubmitted,'countrejected':countrejected, 'totalactionsapproved' :totalactionsapproved }
+    #20211221 edward 3rd box fix 
+    rejectedactionscount = blActioneerejectedcountQ(Actionee_R)
+    #20211221 edward 3rd box fix 
+   
+    submittedsummary = {'totalactionssubmitted':totalactionssubmitted,'countrejected':rejectedactionscount, 'totalactionsapproved' :totalactionsapproved }
 
     #***Initilise empty list to hold values
     stripCount =[]
@@ -329,7 +336,7 @@ def mainDashboard (request):
     totalapproveraction = sum (appractioncount)
    
     approverjsonlist = blremoveemptylist(apprfinalist)
-
+    
     
     
     Context = {
@@ -1320,6 +1327,22 @@ def repPMTExcel (request,phase=""):
     #get rejected summary actions get Reject Table
     tablerheaderejected = ['Discipline', 'Rejected Count']
     listofrejecteditems = blgetrejectedcount(dfdiscsuborgphase,1) #Pass revision number => than whats required
+    #print(listofrejecteditems)
+
+    #20211221 edward new test for Actions & count
+    # Keeping it here for future reference
+    blankrejectlist = []
+    for items in dfdiscsuborgphase:
+        testrejectactions = blnewgetrejecteditemsQ(items,1,phase,reducedfields=['Disipline','Subdisipline','Organisation','Revision'])
+        blankrejectlist.append(testrejectactions)
+    #print(blankrejectlist)
+    blanklist=[]
+    for items in dfdiscsuborgphase:
+        testing = blnewgetrejecteditemsQcount(items,1,phase)
+        blanklist.append(testing)
+    totalrejecteditems = sum(blanklist)
+    #print(totalrejecteditems)
+    #20211221 edward new test for Actions & count
 
     #20211203 edward
     studiesattributes =['StudyName','ProjectPhase']

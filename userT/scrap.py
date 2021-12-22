@@ -1,3 +1,17 @@
+#20211221 from businesslogic.py edward 1
+#20211221 edward rejected actions count for Actionee by going through custom user
+# def blActrejectedactionscount (usersemail):
+#     lstUserSeries =  CustomUser.objects.filter(email=usersemail).values()
+#     discsuborglist=[]
+#     for items in lstUserSeries:
+#         discsuborglist.append(items['disipline'])
+#         discsuborglist.append(items['subdisipline'])
+#         discsuborglist.append(items['organisation'])
+#     # print(discsuborglist)
+#     rejectedactionscount = blnewgetrejecteditemsQcount(discsuborglist,1,phase="")
+#     # print(rejectedactionscount)
+#     return rejectedactionscount
+
 #20211206 from views.py reppmtexcel edward
     # #for workshop based view
     # #20211201 edward

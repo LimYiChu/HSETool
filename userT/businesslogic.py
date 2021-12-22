@@ -29,7 +29,7 @@ from django.db.models import F
 #20211202 edward commented out this import because there is a problem with img2pdf library on linux
 # import img2pdf
 # from PIL import Image
-
+    
 #edward 20211210 7 & 14 days
 # def blexceedholdtime(ActioneeActions,Approver_R,queActionee,reducedfileds):
 def blexceedholdtime(Approver_R,reducedfileds):
@@ -710,17 +710,24 @@ def blgetrejectedcount(discsuborg,revision):
 
     lstrejectcountbydisc =[]
     lstfinallistcount = []
+    test = discsuborg
+    
+    #print(test)
+        
+        
     for items in discsuborg:
         
         lstrejectcountbydisc.append("/".join(items))
         lstrejectcountbydisc.append(ActionItems.mdlgetActionDiscSubCount.
                                         mgr_getDiscSubOrgRejectedItemsCount(items,revision)) 
         
-        
         lstfinallistcount.append(lstrejectcountbydisc)
         lstrejectcountbydisc = []
+    
 
     return lstfinallistcount
+
+
 
 def blaggregatebyDisc(discsuborg,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue):
     """Agregates by discpline across organisation. Takes in various QueSeries denoting Yettorespond, Approval 
@@ -1110,7 +1117,7 @@ def blgetIndiResponseCount2(dfdiscsuborgphase,queseriesopen,queseriesclosed,phas
         
         # totalopencount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesopen) 
         # totalclosedcount = blgetDiscSubOrgActionCount ('Y',itemtriplet,queseriesclosed)
-
+        
         # gets open action dependiong on phase
         totalopencount = blphasegetDiscSubOrgActionCountQ (itemtriplet,queseriesopen,phase) 
         totalclosedcount = blphasegetDiscSubOrgActionCountQ (itemtriplet,queseriesclosed,phase)
@@ -1353,7 +1360,7 @@ def bldropduplicateandcount (queryset):
     
     """Accepts queryset and then uses data frames , pandas to drop_duplicate and count unique
     i.e the number of individual rows"""
-
+    
     dfdata = pd.DataFrame(queryset)
     dataframeunique = dfdata.drop_duplicates()
     countofrows = len(dataframeunique.index)
@@ -1373,7 +1380,7 @@ def blRejectedHistortyActionsbyId (useremail,queseries, Revision):
                             
                                 Revision__gte=Revision).filter(QueSeries=queseries).order_by('-history_date').values('id')
     
-           
+    print(userrejectedhistory) 
     return userrejectedhistory
 def blgetActionItemsbyid(dictofids):
 
