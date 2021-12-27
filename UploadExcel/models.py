@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.utils.tree import Node
 from .manager import *
 from simple_history.models import HistoricalRecords
 from datetime import datetime
@@ -49,6 +50,12 @@ class ActionItems(models.Model):
     Deviation       =  models.TextField(null=True,blank=True)
     Revision        =   models.IntegerField(blank=True,null=True,default=0)
     DateCreated     =  models.DateField(auto_now_add=True, null=True,blank=True)
+
+    #20211223 edward Hazid fields
+    NodeNo = models.IntegerField(blank=True,null=True,default=0)
+    NodeDescription = models.TextField(null=True,blank=True)
+    PreventiveSafeguard = models.TextField(null=True,blank=True)
+    MitigativeSafeguard = models.TextField(null=True,blank=True)
     
     class Meta:
         indexes = [

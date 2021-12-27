@@ -1,3 +1,68 @@
+#20211227 edward from businesslogic.py 
+
+#this was the image to pdf converter which was causing errors in linux
+#20211202 edward commented out this function because there is a problem with img2pdf library on linux
+#20211122 edward stitchpdf
+# def blimagetopdf(pdfpath,pdf_list_onlyjpg):
+#     """This function converts .jpg image to .pdf files using the img2pdf library"""
+    
+#     for jpgs in pdf_list_onlyjpg:
+#         fullpath_jpgs = os.path.join(pdfpath,jpgs)
+#         image = Image.open(fullpath_jpgs)
+#         pdf_bytes = img2pdf.convert(image.filename)
+#         pdf_filename = pdfpath + image.filename
+#         pdf_filename_test = os.path.splitext(jpgs)[0]+'.pdf'
+#         file = open(pdfpath + pdf_filename_test, "wb")
+#         filewrite = file.write(pdf_bytes)
+#         closeimage = image.close()
+#         finalfileclose = file.close()
+        
+#     return finalfileclose 
+
+#this was taken from bltotalholdtime for Actionee
+    # #Actionee
+    # for items in ActioneeActions:
+    #     dictactualhistory = ActionItems.history.filter(id=items["id"]).filter(QueSeries=queActionee).order_by('-history_date').values()
+    #     historyrecentimeactionee = dictactualhistory[0].get('history_date')
+        
+    #     # for item in dictactualhistory:
+    #     timeinbasket = timezonenow - historyrecentimeactionee
+    #     blanklist.append(timeinbasket)
+    # dfdates = pd.DataFrame(blanklist)
+    # print(dfdates)
+
+    # if not dfdates.empty : 
+        
+    #     dfdatessum = dfdates.sum(axis=0)
+        
+    #     dftodict = dfdatessum.to_dict()
+    #     new_key = "total"
+    #     old_key = 0
+    #     dftodict[new_key] = dftodict.pop(old_key)
+    #     strdays = str(dftodict['total'].days)
+        
+
+        #20211207 edward current holding time ends here
+
+#this was taken from blexceedholdtime for Actionee
+    # #Actionee Actions 
+    # for items in ActioneeActions:
+    #     dictactualhistory = ActionItems.history.filter(id=items["id"]).filter(QueSeries=queActionee).order_by('-history_date').values()
+    #     print('dacthistory',dictactualhistory)
+    #     historyrecentimeactionee = dictactualhistory[0].get('history_date')
+    #     # print('test',test)
+    #     # for item in dictactualhistory:
+            
+    #     #     # todays date minus the last date that this item was in the history date field
+    #     timeinbasket = timezonenow - historyrecentimeactionee
+    #     #print('timeinbasketoutsideforloop',item["id"],timeinbasket)
+    #     #if timeinbasket more than seven then append that item id to a list 
+    #     if timeinbasket > sevendays :
+    #         oneweeklist.append(items["id"])
+    #     #if timeinbasket more than fourteen then append that item id to a list 
+    #     if timeinbasket > fourteendays :
+    #         twoweeklist.append(items["id"])
+
 #20211221 from businesslogic.py edward 1
 #20211221 edward rejected actions count for Actionee by going through custom user
 # def blActrejectedactionscount (usersemail):

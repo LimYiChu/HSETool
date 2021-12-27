@@ -19,9 +19,12 @@ def blActioneerejectedcountQ(Actionee_R):
             subdiscipline  = item.Subdisipline
             QObjectSeries.append(Q(**{'Disipline':discipline, 'Subdisipline': subdiscipline, 
                                 'Organisation': organisation,'Revision__gte':revision }))
-            #print(QObjectSeries)
-    for items in QObjectSeries:
-        count += ActionItems.mdlallActionItemsCount.mgr_GeneralItemsCountbyFiltersKwargsQ(items)
+            
+
+    filters = reduce(operator.or_,QObjectSeries)
+    print(filters)
+    #for items in QObjectSeries:
+    count += ActionItems.mdlallActionItemsCount.mgr_GeneralItemsCountbyFiltersKwargsQ(filters)
     return count
 
 #20211220 edward get the rejected actions count PMT Reporting

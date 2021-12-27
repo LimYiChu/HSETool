@@ -29,6 +29,7 @@ from django.db.models import F
 #20211202 edward commented out this import because there is a problem with img2pdf library on linux
 # import img2pdf
 # from PIL import Image
+
     
 #edward 20211210 7 & 14 days
 # def blexceedholdtime(ActioneeActions,Approver_R,queActionee,reducedfileds):
@@ -40,24 +41,6 @@ def blexceedholdtime(Approver_R,reducedfileds):
     twoweeklist=[]
     sevendays = datetime.timedelta(days=7)
     fourteendays = datetime.timedelta(days=14)
-
-    # #Actionee Actions 
-    # for items in ActioneeActions:
-    #     dictactualhistory = ActionItems.history.filter(id=items["id"]).filter(QueSeries=queActionee).order_by('-history_date').values()
-    #     print('dacthistory',dictactualhistory)
-    #     historyrecentimeactionee = dictactualhistory[0].get('history_date')
-    #     # print('test',test)
-    #     # for item in dictactualhistory:
-            
-    #     #     # todays date minus the last date that this item was in the history date field
-    #     timeinbasket = timezonenow - historyrecentimeactionee
-    #     #print('timeinbasketoutsideforloop',item["id"],timeinbasket)
-    #     #if timeinbasket more than seven then append that item id to a list 
-    #     if timeinbasket > sevendays :
-    #         oneweeklist.append(items["id"])
-    #     #if timeinbasket more than fourteen then append that item id to a list 
-    #     if timeinbasket > fourteendays :
-    #         twoweeklist.append(items["id"])
 
     #Approver Actions
     for QSeries, ApproRoutes in Approver_R.items():
@@ -126,31 +109,6 @@ def bltotalholdtime(Approver_R,reducedfileds):
         else:
             strdays = str(dftodict['total'].days)
         
-        
-    # #Actionee
-    # for items in ActioneeActions:
-    #     dictactualhistory = ActionItems.history.filter(id=items["id"]).filter(QueSeries=queActionee).order_by('-history_date').values()
-    #     historyrecentimeactionee = dictactualhistory[0].get('history_date')
-        
-    #     # for item in dictactualhistory:
-    #     timeinbasket = timezonenow - historyrecentimeactionee
-    #     blanklist.append(timeinbasket)
-    # dfdates = pd.DataFrame(blanklist)
-    # print(dfdates)
-
-    # if not dfdates.empty : 
-        
-    #     dfdatessum = dfdates.sum(axis=0)
-        
-    #     dftodict = dfdatessum.to_dict()
-    #     new_key = "total"
-    #     old_key = 0
-    #     dftodict[new_key] = dftodict.pop(old_key)
-    #     strdays = str(dftodict['total'].days)
-        
-
-        #20211207 edward current holding time ends here
-        
         return strdays
 
 #20211201 edward 
@@ -181,36 +139,20 @@ def blfilteractionsbyphase(finallistoflist):
     #print(phaseindisets)
     return phaseindisets
 
-#20211202 edward commented out this function because there is a problem with img2pdf library on linux
-#20211122 edward stitchpdf
-# def blimagetopdf(pdfpath,pdf_list_onlyjpg):
-#     """This function converts .jpg image to .pdf files using the img2pdf library"""
-    
-#     for jpgs in pdf_list_onlyjpg:
-#         fullpath_jpgs = os.path.join(pdfpath,jpgs)
-#         image = Image.open(fullpath_jpgs)
-#         pdf_bytes = img2pdf.convert(image.filename)
-#         pdf_filename = pdfpath + image.filename
-#         pdf_filename_test = os.path.splitext(jpgs)[0]+'.pdf'
-#         file = open(pdfpath + pdf_filename_test, "wb")
-#         filewrite = file.write(pdf_bytes)
-#         closeimage = image.close()
-#         finalfileclose = file.close()
-        
-#     return finalfileclose 
 
-#20211122 edward stitchpdf
-def blexceltopdf(pdfpath,pdf_list_onlyexcel):
-    """This function converts .xlxs to .pdf files using xlwings library. This library only works on windows or macOS machines """
 
-    for items in pdf_list_onlyexcel:
-        fullpathexcel = os.path.join(pdfpath,items)
-        pdf_filename_test = os.path.splitext(items)[0]+'.pdf'
-        test = xw.Book(fullpathexcel)
-        exceltopdf = test.to_pdf(pdfpath + pdf_filename_test)
-        closeexceltopdf = test.close()
+# #20211122 edward stitchpdf
+# def blexceltopdf(pdfpath,pdf_list_onlyexcel):
+#     """This function converts .xlxs to .pdf files using xlwings library. This library only works on windows or macOS machines """
 
-    return exceltopdf
+#     for items in pdf_list_onlyexcel:
+#         fullpathexcel = os.path.join(pdfpath,items)
+#         pdf_filename_test = os.path.splitext(items)[0]+'.pdf'
+#         test = xw.Book(fullpathexcel)
+#         exceltopdf = test.to_pdf(pdfpath + pdf_filename_test)
+#         closeexceltopdf = test.close()
+
+#     return exceltopdf
 
 def bladdfktodict(data_dict,foreignkeys):
     """This functions adds foreignkeys to Action Items data dictionary"""
@@ -1061,6 +1003,7 @@ def blgetFieldValue(ID,field):
     
     qs = ActionItems.mdlgetField.mgrGetField(ID,field)
     strintvalue = qs[0].get(field)
+    
     
     return strintvalue
      
