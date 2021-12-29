@@ -78,6 +78,8 @@ from django.http import StreamingHttpResponse
 #edward 20211207 
 from datetime import datetime as dtime
 from django.utils import timezone
+#20211227 edward importing formstudies
+from UploadExcel.formstudies import *
 
 
 def base3 (request):
@@ -496,8 +498,23 @@ class DetailActioneeItems (DetailView):
 class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
     #paginate_by = 20
     template_name = "userT/actionupdateapproveaction.html" 
-    form_class = frmApproverGeneral
+    form_class = frmoriginalbaseapprover
     success_url = '/ApproverList/'
+
+    #20211227 edward forms
+    def get_form_class(self,**kwargs):
+        
+        form_classnew = (blgetFieldValue(self.kwargs.get("pk"),"StudyName__Form"))
+        form_classapprover = f"{form_classnew}approver"  
+        
+        if form_classnew:
+            #from UploadExcel import forms
+            from UploadExcel import formstudies
+            form_class= getattr(formstudies, form_classapprover,None)
+        else:
+            form_class = self.form_class
+            
+        return form_class
 
     def test_func(self,**kwargs):
 
@@ -765,21 +782,23 @@ class HistoryFormMixin(UserPassesTestMixin,UpdateView):
 #@user_passes_test(lambda u: u.groups.filter(name='Actionee').count() == 0, login_url='/main')
 class ActioneeItemsMixin(UserPassesTestMixin,UpdateView):
     template_name = "userT/actionupdateapproveaction.html" #yhs changed to all small letters
-    form_class = frmActioneeGeneral
+    form_class = frmoriginalbase
     
     #delete
     # def get(self, request, *args, **kwargs):
     #     #uses pk key to automatically get objext
     #     self.object = self.get_object(queryset=ActionItems.objects.all())
     #     return super().get(request, *args, **kwargs)
-    
+
+    #20211227 edward editing froms to formstudies
     def get_form_class(self,**kwargs):
         
         form_classnew = (blgetFieldValue(self.kwargs.get("pk"),"StudyName__Form"))
 
         if form_classnew:
-            from UploadExcel import forms
-            form_class= getattr(forms, form_classnew,None)
+            #from UploadExcel import forms
+            from UploadExcel import formstudies
+            form_class= getattr(formstudies, form_classnew,None)
         else:
             form_class = self.form_class
             
@@ -1684,7 +1703,23 @@ def closeoutsheet(request): #new naming convention - all small letters
 
 class pmtrepviewall(UpdateView):
     template_name = "userT/reppmtviewall.html" #the html is missing object_list
-    form_class = frmApproverGeneral
+    form_class = frmoriginalbaseapprover
+
+    #20211227 edward forms
+    def get_form_class(self,**kwargs):
+        
+        form_classnew = (blgetFieldValue(self.kwargs.get("id"),"StudyName__Form")) 
+        form_classapprover = f"{form_classnew}approver"
+        
+        if form_classnew:
+            #from UploadExcel import forms
+            from UploadExcel import formstudies
+            form_class= getattr(formstudies, form_classapprover,None)
+        else:
+            form_class = self.form_class
+        print(form_class)   
+        return form_class
+
 
     def get_object(self,queryset=None):
         queryset=ActionItems.objects.all()

@@ -1,3 +1,113 @@
+#20211229 edward from forms.py
+
+#20211229 edward using Inheritance on hold 
+
+# class frmtestBase(forms.ModelForm):
+    
+#     def __init__(self, *args, **kwargs):
+#         super(frmtestBase, self).__init__(*args, **kwargs)
+#         self.helper = FormHelper(self)
+#         self.helper.form_show_labels = True
+#         self.fields['FutureAction'].label = strFutActApprNotes
+#         self.helper.form_method = 'POST'
+#         self.fields['Response'].required = True 
+#         #self.helper.add_input(Submit('Upload', 'Next...', css_class='btn btn-outline-dark float-right col-md-1'))
+#         #self.helper.add_input(Submit('Cancel', 'Cancel', css_class='btn btn-outline-dark float-right col-md-1'))
+
+#         self.helper.layout = Layout(
+        
+        
+#         Div(
+#             Div(Field('StudyActionNo',readonly=True),   css_class='col-md-2'), #style="font-family: Dancing Script",
+#             Div (Field('StudyName',readonly=True,disabled=True),  css_class='col-md-3 read-only'),
+#             Div (Field('ProjectPhase', readonly=True,disabled=True), css_class='col-md-3'), #,disabled=True
+#             Div (Field('InitialRisk', readonly=True), css_class='col-md-2'),
+#             Div (Field('ResidualRisk', readonly=True), css_class='col-md-2'),
+#             Div (Field('StudyName',readonly=True,type="hidden")),
+#             Div (Field('ProjectPhase',readonly=True,type="hidden")),
+#             css_class='row',
+                      
+#            ),)
+#     class Meta:
+#         model = ActionItems
+#         fields = '__all__'
+
+# class frmtestUpgradedBase(frmtestBase):
+#     def __init__(self, *args, **kwargs):
+#         super(frmtestUpgradedBase,self).__init__(*args,**kwargs)
+        
+#         self.helper = FormHelper()
+
+#20211227 edward from businesslogic.py 
+#20211122 edward stitchpdf
+# import xlwings as xw
+#20211202 edward commented out this import because there is a problem with img2pdf library on linux
+# import img2pdf
+# from PIL import Image
+
+#this was the image to pdf converter which was causing errors in linux
+#20211202 edward commented out this function because there is a problem with img2pdf library on linux
+#20211122 edward stitchpdf
+# def blimagetopdf(pdfpath,pdf_list_onlyjpg):
+#     """This function converts .jpg image to .pdf files using the img2pdf library"""
+    
+#     for jpgs in pdf_list_onlyjpg:
+#         fullpath_jpgs = os.path.join(pdfpath,jpgs)
+#         image = Image.open(fullpath_jpgs)
+#         pdf_bytes = img2pdf.convert(image.filename)
+#         pdf_filename = pdfpath + image.filename
+#         pdf_filename_test = os.path.splitext(jpgs)[0]+'.pdf'
+#         file = open(pdfpath + pdf_filename_test, "wb")
+#         filewrite = file.write(pdf_bytes)
+#         closeimage = image.close()
+#         finalfileclose = file.close()
+        
+#     return finalfileclose 
+
+#this was taken from bltotalholdtime for Actionee
+    # #Actionee
+    # for items in ActioneeActions:
+    #     dictactualhistory = ActionItems.history.filter(id=items["id"]).filter(QueSeries=queActionee).order_by('-history_date').values()
+    #     historyrecentimeactionee = dictactualhistory[0].get('history_date')
+        
+    #     # for item in dictactualhistory:
+    #     timeinbasket = timezonenow - historyrecentimeactionee
+    #     blanklist.append(timeinbasket)
+    # dfdates = pd.DataFrame(blanklist)
+    # print(dfdates)
+
+    # if not dfdates.empty : 
+        
+    #     dfdatessum = dfdates.sum(axis=0)
+        
+    #     dftodict = dfdatessum.to_dict()
+    #     new_key = "total"
+    #     old_key = 0
+    #     dftodict[new_key] = dftodict.pop(old_key)
+    #     strdays = str(dftodict['total'].days)
+        
+
+        #20211207 edward current holding time ends here
+
+#this was taken from blexceedholdtime for Actionee
+    # #Actionee Actions 
+    # for items in ActioneeActions:
+    #     dictactualhistory = ActionItems.history.filter(id=items["id"]).filter(QueSeries=queActionee).order_by('-history_date').values()
+    #     print('dacthistory',dictactualhistory)
+    #     historyrecentimeactionee = dictactualhistory[0].get('history_date')
+    #     # print('test',test)
+    #     # for item in dictactualhistory:
+            
+    #     #     # todays date minus the last date that this item was in the history date field
+    #     timeinbasket = timezonenow - historyrecentimeactionee
+    #     #print('timeinbasketoutsideforloop',item["id"],timeinbasket)
+    #     #if timeinbasket more than seven then append that item id to a list 
+    #     if timeinbasket > sevendays :
+    #         oneweeklist.append(items["id"])
+    #     #if timeinbasket more than fourteen then append that item id to a list 
+    #     if timeinbasket > fourteendays :
+    #         twoweeklist.append(items["id"])
+
 #20211221 from businesslogic.py edward 1
 #20211221 edward rejected actions count for Actionee by going through custom user
 # def blActrejectedactionscount (usersemail):
