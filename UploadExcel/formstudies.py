@@ -81,7 +81,7 @@ class layouthazid(Layout):
         super().__init__(
             Div (
             Div (Field('NodeNo', rows=1 ,readonly=True), css_class='col-md-2'),
-            Div (Field('NodeDescription', rows=1 ,readonly=True), css_class='col-md-2'),
+            Div (Field('NodeDescription', rows=1 ,readonly=True), css_class='col-md-10'),
             Div (Field('Cause', rows=8 ,readonly=True), css_class='col-md-12'),
             Div (Field('PreventiveSafeguard' ,readonly=True), css_class='col-md-12'),
             Div (Field('MitigativeSafeguard' ,readonly=True), css_class='col-md-12'),
