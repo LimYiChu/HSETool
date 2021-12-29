@@ -7,7 +7,7 @@ from .models import *
 
 #20211221 edward get the rejected count for Actionee
 def blActioneerejectedcountQ(Actionee_R):
-    """This function gets the count of rejected actions from Action Items table by going through Action Routes of Actionee"""
+    """This function gets the count of rejected actions from Action Items table by going through Action Routes of Actionee."""
     revision = 1
     routes = Actionee_R
     count=0
@@ -19,12 +19,11 @@ def blActioneerejectedcountQ(Actionee_R):
             subdiscipline  = item.Subdisipline
             QObjectSeries.append(Q(**{'Disipline':discipline, 'Subdisipline': subdiscipline, 
                                 'Organisation': organisation,'Revision__gte':revision }))
-            
 
-    filters = reduce(operator.or_,QObjectSeries)
-    print(filters)
-    #for items in QObjectSeries:
-    count += ActionItems.mdlallActionItemsCount.mgr_GeneralItemsCountbyFiltersKwargsQ(filters)
+        filters = reduce(operator.or_,QObjectSeries)
+        count += ActionItems.mdlallActionItemsCount.mgr_GeneralItemsCountbyFiltersKwargsQ(filters)
+        
+    
     return count
 
 #20211220 edward get the rejected actions count PMT Reporting

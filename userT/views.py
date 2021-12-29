@@ -498,20 +498,19 @@ class DetailActioneeItems (DetailView):
 class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
     #paginate_by = 20
     template_name = "userT/actionupdateapproveaction.html" 
-    form_class = frmApproverGeneral
+    form_class = frmoriginalbaseapprover
     success_url = '/ApproverList/'
 
     #20211227 edward forms
     def get_form_class(self,**kwargs):
         
-        form_classnew = (blgetFieldValue(self.kwargs.get("pk"),"StudyName__Form")) + "approver"
-        #print(form_classnew)
-        #formapprover = blapproverformkw(form_classnew)   
+        form_classnew = (blgetFieldValue(self.kwargs.get("pk"),"StudyName__Form"))
+        form_classapprover = f"{form_classnew}approver"  
         
         if form_classnew:
             #from UploadExcel import forms
             from UploadExcel import formstudies
-            form_class= getattr(formstudies, form_classnew,None)
+            form_class= getattr(formstudies, form_classapprover,None)
         else:
             form_class = self.form_class
             
@@ -1704,22 +1703,21 @@ def closeoutsheet(request): #new naming convention - all small letters
 
 class pmtrepviewall(UpdateView):
     template_name = "userT/reppmtviewall.html" #the html is missing object_list
-    form_class = frmoriginalbase
+    form_class = frmoriginalbaseapprover
 
     #20211227 edward forms
     def get_form_class(self,**kwargs):
         
-        form_classnew = (blgetFieldValue(self.kwargs.get("id"),"StudyName__Form")) + "approver" #change to f string
-        print(form_classnew)
-        #formapprover = blapproverformkw(form_classnew)   
+        form_classnew = (blgetFieldValue(self.kwargs.get("id"),"StudyName__Form")) 
+        form_classapprover = f"{form_classnew}approver"
         
         if form_classnew:
             #from UploadExcel import forms
             from UploadExcel import formstudies
-            form_class= getattr(formstudies, form_classnew,None)
+            form_class= getattr(formstudies, form_classapprover,None)
         else:
             form_class = self.form_class
-            
+        print(form_class)   
         return form_class
 
 

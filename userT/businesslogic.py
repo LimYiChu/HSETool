@@ -24,12 +24,6 @@ from userT.pdfgenerator import *
 import shutil
 # edward 20210929 fk
 from django.db.models import F
-#20211122 edward stitchpdf
-# import xlwings as xw
-#20211202 edward commented out this import because there is a problem with img2pdf library on linux
-# import img2pdf
-# from PIL import Image
-
     
 #edward 20211210 7 & 14 days
 # def blexceedholdtime(ActioneeActions,Approver_R,queActionee,reducedfileds):
@@ -1323,7 +1317,6 @@ def blRejectedHistortyActionsbyId (useremail,queseries, Revision):
                             
                                 Revision__gte=Revision).filter(QueSeries=queseries).order_by('-history_date').values('id')
     
-    print(userrejectedhistory) 
     return userrejectedhistory
 def blgetActionItemsbyid(dictofids):
 
