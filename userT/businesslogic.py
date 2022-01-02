@@ -866,21 +866,52 @@ def blgetvaliduserinroute (idAI,emailid,History=False):
         
         return False
 
+def blgettimehistorytables (id, Signatories,ApproverLevel, QueSeries=0,):
+    """Gets time stamp based on queseries and whom signed from history tables. Overwrites name and time stamp from action routes
+    with actualy people whom have signed """
+    def setSignatoriesItems (setofsignatories,historyindex):
+                setofsignatories [1] = lstdictHistory[historyindex].history_user.email
+                setofsignatories [2] = lstdictHistory[historyindex].history_user.fullname
+                setofsignatories [3] = lstdictHistory[historyindex].history_user.designation
+                setofsignatories [4] = lstdictHistory[historyindex].history_user.signature
+                setofsignatories [5] = lstdictHistory[historyindex].history_date
+   
+    for index, items in enumerate(Signatories):
+        #only loop through historical records within queries a
+        if index >= QueSeries:
+            break
+        elif index < QueSeries:
+            #the queseries must be the next one on the signatory since once you sign you increment the queries , so index +1
+            filterkwargs = {'id':id, 'QueSeries': index+1}
+            lstdictHistory = ActionItems.history.filter(**filterkwargs).select_related("history_user").order_by('-history_date')
+            
+            #Took a day to get this logic. So the idea is if queseries is just first record
+            #if its queseries = 3 and you want actionee it has to be second record
+            if  QueSeries - index == 1:
+                setSignatoriesItems(items,0)
+                continue
+
+            if  QueSeries - index > 1:
+                setSignatoriesItems(items,1)
+               
+            
+
 def blgettimestampuserdetails (id, Signatories):
-        #pass in all Signatories and ID of action
-        #return Signatories with Time Stamp
+       
+        """Get time stamp for each approver from hstory tables. It uses Routes table intially. but
+        needs to change to check if there is routing table change"""
         
-        #firstgetcurrentqueseries
-        
-        lstDictQueSeries = ActionItems.objects.filter(id=id).values('QueSeries')
-        currentQueSeries = lstDictQueSeries[0].get('QueSeries')
-        
+        # lstDictQueSeries = ActionItems.objects.filter(id=id).values('QueSeries')
+        # currentQueSeries = lstDictQueSeries[0].get('QueSeries')
+        currentQueSeries = blgetFieldValue(id,'QueSeries')
         #next get all history that has got to do with ID from history tables
         #thinking that if you order by decending then you are done by getting latest first
         lstdictHistory = ActionItems.history.filter(id=id).filter(QueSeries=currentQueSeries).order_by('-history_date').values()
         # edward appending blank string as filler 20210707   
         filler= ''
-        finallstoflst = []                                   
+        finallstoflst = [] 
+
+        #get details from signatory as in signature, full name etc for all entries in the ActionRoutes                                  
         for index, items in enumerate(Signatories):
             
             #get each user detail first
@@ -897,7 +928,7 @@ def blgettimestampuserdetails (id, Signatories):
             else:
                     
                 items.append("No User Defined")
-            
+            #appends Time stamp for the right queseries
             if index < currentQueSeries: 
                 #get all time stamps for all que series
                 #index basically denominates Que series level. if Current que series =2 then only actionee = 0 and Approver 1 has signed
@@ -1205,8 +1236,8 @@ def blgetActionStuckAtdict(allactions,email=False):
 #edward 20210805 dictstuckat
 
 
-def blgetSignotories (lstorgdiscsub): #blgetSignotoriesbyphase
-    """This function gets the List of Signatories on the App"""
+def blgetSignotories (lstorgdiscsub): 
+    """This function gets the List of Signatories from ActionRoutes Tables"""
     #in - list of company disc sub
     # - out Actionee & Approver approver names - basically the signatories
     
