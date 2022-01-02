@@ -495,9 +495,7 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
     def test_func(self,**kwargs):
 
         ingroup =  self.request.user.groups.filter(name="Approver").exists()
-
         IdAI = self.kwargs.get("pk")
-
         emailID = self.request.user.email
         inroute = blgetvaliduserinroute(IdAI,emailID)
 
@@ -506,6 +504,7 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
             return True
         else :
             return False
+
     def handle_no_permission(self):
         #if no permission from test_func return to main
         return HttpResponseRedirect('/main')
@@ -522,28 +521,21 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
 
     def form_valid(self,form):
 
-            #if form is valid just increment q series by 1 so it goes to Approver que so it goes to next queSeries
         if (self.request.POST.get('Reject')):
                 #If reject que series should be 0, but need another intermediate screen for comments
                 #form.instance.QueSeries = 0
 
-                #Need to do below with HTTPResponseredirect because normal reverse seems to give an str error
-                #reverse simply redirects to url path so can call class RejectReason below since cant really call it from fucntion call directly
-                #makes sense since really django wants to work with views coming from URL paths- simply a structured way of doing stuff
             context = {
                         'StudyActionNo' : form.instance.StudyActionNo
                 }
             return HttpResponseRedirect(reverse ('RejectReason', kwargs={'forkeyid': form.instance.id})) #this is key as wanted another screen on the first reject
 
         if (self.request.POST.get('Cancel')):
-#
            return HttpResponseRedirect('/ApproverList/')
 
         if (self.request.POST.get('Approve')):
-                #  need another intermediate screen for approval no comments
-
-
             return super().form_valid(form)
+
         if (self.request.POST.get('Pullback')):
 
             return super().form_valid(form)
@@ -561,14 +553,15 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
         discsub = blgetDiscSubOrgfromID(idAI)
         Signatories = blgetSignotories(discsub)
 
-        #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
-        #edward 20210707 trying to use consolidated version blgettimestampuserdetails
-        lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories) #it changes the signatories directly
-        # edward added set approver target for approver 20210701 patch 2.5b
-        # edward 20210703 pushing approver set queue target to main
+        lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories) #it changes the Signatories directly
+
+        currentQueSeries = blgetFieldValue(idAI,'QueSeries')
+        blgettimehistorytables(idAI,Signatories,0,currentQueSeries)
+        
+        #add approver level target in case it doesnt get set at the start
         ApproverLevel = blgetApproverLevel(discsub)
-        blsetApproverLevelTarget(idAI,ApproverLevel) #sets approver level target
-        # end of edward added set approver target for approver 20210701 patch 2.5b
+        blsetApproverLevelTarget(idAI,ApproverLevel)
+       
         object_list = self.object.attachments_set.all()
 
         context['object_list'] = object_list
