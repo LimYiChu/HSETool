@@ -1,3 +1,24 @@
+$(document).ready(function()
+
+{
+  $(".btn").click(function()
+  {
+    $.ajax({
+
+      url: "../loadajax2",
+      type : 'get',
+      data : {
+        button_text: $(this).text()
+      },
+      success: function (response){
+        $(".btn").text(response.seconds)   
+      }
+
+
+    })
+    alert(this.id)})
+
+})
 function phasesurl (id,phase)
 
 {

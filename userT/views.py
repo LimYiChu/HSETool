@@ -57,9 +57,8 @@ from userT.parameters import *
 #from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import UserPassesTestMixin
 
-# edward 20210713 added json import
 import json
-#edward 20210722 added datetime
+
 import datetime
 from datetime import date as dt
 from operator import itemgetter
@@ -80,7 +79,7 @@ from datetime import datetime as dtime
 from django.utils import timezone
 #20211227 edward importing formstudies
 from UploadExcel.formstudies import *
-
+from time import time
 
 def base3 (request):
     """This function is to view base3.html while editing the html"""
@@ -95,34 +94,33 @@ class actionlist(generics.ListCreateAPIView):
     pass
 
 
-def loadsignature (request):
+def loadajax (request):
 
-    form1 = frmMultipleFiles()
-    obj = CustomUser.objects.get(id=11)
-    form2 = CustomUserSignature(instance=obj)
+   
 
-
-    if (request.POST.get('Upload')):
+    if (request.is_ajax ()):
         #ID= form2.instance.id
-        FORM2=CustomUserSignature(request.POST)
+        print (request.GET.get('button_text'))
+        t=time()
+        print ("INHEREERERERE")
+        return JsonResponse({'seconds':t},status=200)
+    else :
 
+        return render(request, 'userT/loadajax.html')
 
-        #CustomUser.mdlSetField.mgrSetField(ID,"signature",Signature)
+def loadajax2 (request):
 
+   
 
-        #Signature=request.POST.get('signature')
+    if (request.is_ajax ()):
+        #ID= form2.instance.id
+        print (request.GET.get('button_text'))
+        t=50
+        print ("INHEREERERERE22222222222")
+        return JsonResponse({'seconds':1000},status=200)
+    else :
 
-        #x=CustomUser.objects.get(id=form2.instance.id)
-        #formuser = CustomUserSignature(request.POST, instance=x)
-        #formuser.save()
-
-    context = {
-        'form1' : form1,
-        'form2': form2
-
-    }
-
-    return render(request, 'userT/loadsignatures.html',context) #yhs checked small letters
+        return render(request, 'userT/loadajax.html')
 
 
 class anyView(viewsets.ModelViewSet):
@@ -580,7 +578,7 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
         lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories) #it changes the Signatories directly
 
         currentQueSeries = blgetFieldValue(idAI,'QueSeries')
-        blgettimehistorytables(idAI,Signatories,0,currentQueSeries)
+        blgettimehistorytables(idAI,Signatories,currentQueSeries)
         
         #add approver level target in case it doesnt get set at the start
         ApproverLevel = blgetApproverLevel(discsub)

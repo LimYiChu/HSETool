@@ -866,16 +866,18 @@ def blgetvaliduserinroute (idAI,emailid,History=False):
         
         return False
 
-def blgettimehistorytables (id, Signatories,ApproverLevel, QueSeries=0,):
+def blgettimehistorytables (id, Signatories, QueSeries=0):
     """Gets time stamp based on queseries and whom signed from history tables. Overwrites name and time stamp from action routes
     with actualy people whom have signed """
     def setSignatoriesItems (setofsignatories,historyindex):
+           
                 setofsignatories [1] = lstdictHistory[historyindex].history_user.email
                 setofsignatories [2] = lstdictHistory[historyindex].history_user.fullname
                 setofsignatories [3] = lstdictHistory[historyindex].history_user.designation
                 setofsignatories [4] = lstdictHistory[historyindex].history_user.signature
                 setofsignatories [5] = lstdictHistory[historyindex].history_date
    
+    
     for index, items in enumerate(Signatories):
         #only loop through historical records within queries a
         if index >= QueSeries:
@@ -888,6 +890,7 @@ def blgettimehistorytables (id, Signatories,ApproverLevel, QueSeries=0,):
             #Took a day to get this logic. So the idea is if queseries is just first record
             #if its queseries = 3 and you want actionee it has to be second record
             if  QueSeries - index == 1:
+                
                 setSignatoriesItems(items,0)
                 continue
 
