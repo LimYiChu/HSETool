@@ -14,7 +14,11 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        
+        migrations.AddField(
+            model_name='actionitems',
+            name='StudyName_fk',
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='userT.studies'),
+        ),
         migrations.AddField(
             model_name='attachments',
             name='Action',
@@ -25,7 +29,11 @@ class Migration(migrations.Migration):
             name='Action',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='UploadExcel.actionitems'),
         ),
-        
+        migrations.AddField(
+            model_name='historicalactionitems',
+            name='StudyName_fk',
+            field=models.ForeignKey(blank=True, db_constraint=False, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='+', to='userT.studies'),
+        ),
         migrations.AddField(
             model_name='historicalactionitems',
             name='history_user',

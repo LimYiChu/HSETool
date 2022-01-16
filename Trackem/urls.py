@@ -102,7 +102,8 @@ urlpatterns = [
         re_path(r'Comments/(?P<forkeyid>\d+)$', login_required(UserView.RejectReason.as_view()), name='RejectReason' ),
         re_path(r'multiplefiles/(?P<forkeyid>\d+)$', login_required(UserView.multiplefiles), name='multiplefiles' ),
         
-        path('loadsignature/', login_required(UserView.loadsignature), name='loadsignature' ),
+        path('loadajax/', login_required(UserView.loadajax), name='loadajax' ),
+        path('loadajax2/', login_required(UserView.loadajax2), name='loadajax2' ),
         #following url for reporting
         path('actionstatus/', login_required(UserView.rptoverallStatus), name='actionstatus' ),
         path('repoverallexcel/', login_required(UserView.repoverallexcel), name='repoverallexcel' ),
