@@ -568,17 +568,20 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
 
         if (self.request.POST.get('Next')):
             return super().form_valid(form)
-
+#20220117 edward signatories
     def get_context_data(self,**kwargs):
         idAI = self.kwargs.get("pk")
         context = super().get_context_data(**kwargs)
         discsub = blgetDiscSubOrgfromID(idAI)
         Signatories = blgetSignotories(discsub)
-
+        
+        print('before',Signatories)
         lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories) #it changes the Signatories directly
-
+        
+        print(lstSignatoriesTimeStamp)
         currentQueSeries = blgetFieldValue(idAI,'QueSeries')
-        blgettimehistorytables(idAI,Signatories,currentQueSeries)
+        blgettimehistorytables(idAI,lstSignatoriesTimeStamp,currentQueSeries)
+        print("after",Signatories)
         
         #add approver level target in case it doesnt get set at the start
         ApproverLevel = blgetApproverLevel(discsub)
@@ -1554,11 +1557,19 @@ def closeoutprint(request,**kwargs):
 
     discsub = blgetDiscSubOrgfromID(ID)
     Signatories = blgetSignotories(discsub)
+    
+    #20220117 edward 
+    currentQueSeries = blgetFieldValue(ID,'QueSeries')
+    #testing = blgettimehistorytables(ID,Signatories,currentQueSeries)
+    
 
     lstSignatoriesTimeStamp= blgettimestampuserdetails (ID, Signatories) #edward changed this to use new bl for signature 20210706
 
+    currentQueSeries = blgetFieldValue(ID,'QueSeries')
+    blgettimehistorytables(ID,lstSignatoriesTimeStamp,currentQueSeries)
+    
     signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
-
+    
     #20210923 edward fk to data_dict
     studyname = str(actiondetails.StudyName)
     projectphase = str(actiondetails.ProjectPhase)
@@ -1726,6 +1737,11 @@ class pmtrepviewall(UpdateView):
         #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
         #edward 20210707 trying to use consolidated version blgettimestampuserdetails
         lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories) #it changes the signatories directly
+
+        #20220117 edward signatories
+        currentQueSeries = blgetFieldValue(idAI,'QueSeries')
+        blgettimehistorytables(idAI,lstSignatoriesTimeStamp,currentQueSeries)
+
         object_list = self.object.attachments_set.all() #-this one gets the the attachments and puts it into Object_List, edward added attachments
         rejectcomments = self.object.comments_set.all() #edward added new way of getting rejectcomments
         #edward added attachments
