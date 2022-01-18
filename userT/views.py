@@ -117,7 +117,9 @@ def loadajax2 (request):
         print (request.GET.get('button_text'))
         t=50
         print ("INHEREERERERE22222222222")
-        return JsonResponse({'seconds':1000},status=200)
+
+        ActionItems.obects.all
+        return JsonResponse({'buttontext': "Hi i am new"},status=200)
     else :
 
         return render(request, 'userT/loadajax.html')
@@ -211,7 +213,7 @@ def googlecharts88(request):
 
     subtotal =[]
     for items in lstbyDueDate:
-       subtotal.append(items['count']) #how to access dictionary object by
+       subtotal.append(items['count']) 
 
     content =  newlist
 
@@ -223,8 +225,8 @@ def googlecharts88(request):
 
     }
 
-    return render(request, 'userT/googlecharts88.html',context) #ok checked by yhs
-# edward 20210713 end new chart
+    return render(request, 'userT/googlecharts88.html',context) 
+
 
 def mainDashboard (request):
     """ My Dashboard view. Rewrite Nov 21. The starting point  or at main uses this view
@@ -1703,12 +1705,12 @@ class pmtrepviewall(UpdateView):
         form_classapprover = f"{form_classnew}approver"
         
         if form_classnew:
-            #from UploadExcel import forms
+            
             from UploadExcel import formstudies
             form_class= getattr(formstudies, form_classapprover,None)
         else:
             form_class = self.form_class
-        print(form_class)   
+         
         return form_class
 
 
@@ -1721,11 +1723,13 @@ class pmtrepviewall(UpdateView):
         context = super().get_context_data(**kwargs)
         discsub = blgetDiscSubOrgfromID(idAI)
         Signatories = blgetSignotories(discsub)
-
-
-        #There is an error going on here or so to speak as its calling ActioneeItemsMixin as well odd error and cant narrow it down
+        
         #edward 20210707 trying to use consolidated version blgettimestampuserdetails
-        lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories) #it changes the signatories directly
+        lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories)
+       
+        currentQueSeries = blgetFieldValue(idAI,'QueSeries')
+        blgettimehistorytables(idAI,lstSignatoriesTimeStamp,currentQueSeries)
+
         object_list = self.object.attachments_set.all() #-this one gets the the attachments and puts it into Object_List, edward added attachments
         rejectcomments = self.object.comments_set.all() #edward added new way of getting rejectcomments
         #edward added attachments

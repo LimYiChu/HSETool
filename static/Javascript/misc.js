@@ -11,12 +11,12 @@ $(document).ready(function()
         button_text: $(this).text()
       },
       success: function (response){
-        $(".btn").text(response.seconds)   
+        $(".btn").text(response.buttontext)   
       }
 
 
     })
-    alert(this.id)})
+    })
 
 })
 function phasesurl (id,phase)
