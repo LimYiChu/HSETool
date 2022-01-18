@@ -869,6 +869,7 @@ def blgetvaliduserinroute (idAI,emailid,History=False):
 def blgettimehistorytables (id, Signatories, QueSeries=0):
     """Gets time stamp based on queseries and whom signed from history tables. Overwrites name and time stamp from action routes
     with actualy people whom have signed """
+    print ("Signatories", Signatories)
     def setSignatoriesItems (setofsignatories,historyindex):
            
                 setofsignatories [1] = lstdictHistory[historyindex].history_user.email
@@ -876,28 +877,35 @@ def blgettimehistorytables (id, Signatories, QueSeries=0):
                 setofsignatories [3] = lstdictHistory[historyindex].history_user.designation
                 setofsignatories [4] = lstdictHistory[historyindex].history_user.signature
                 setofsignatories [5] = lstdictHistory[historyindex].history_date
-   
     
     for index, items in enumerate(Signatories):
-        #only loop through historical records within queries a
+        
+        #If queseries shows not signed exit the signatories part
         if index >= QueSeries:
             break
-        elif index < QueSeries:
+        elif (index < QueSeries) and (len(Signatories)-1 != index):
             #the queseries must be the next one on the signatory since once you sign you increment the queries , so index +1
             filterkwargs = {'id':id, 'QueSeries': index+1}
             lstdictHistory = ActionItems.history.filter(**filterkwargs).select_related("history_user").order_by('-history_date')
             
-            #Took a day to get this logic. So the idea is if queseries is just first record
+            #Took a day to get this logic. So the idea is its the first record in history table
+            #and turns to a second record if its 2 steps away
             #if its queseries = 3 and you want actionee it has to be second record
-            if  QueSeries - index == 1:
+            if  QueSeries - index == 1 :
                 
                 setSignatoriesItems(items,0)
                 continue
 
             if  QueSeries - index > 1:
                 setSignatoriesItems(items,1)
-               
+
+        elif QueSeries == 99 and (len(Signatories)-1 == index):
+            filterkwargs = {'id':id, 'QueSeries': 99}
+            lstdictHistory = ActionItems.history.filter(**filterkwargs).select_related("history_user").order_by('-history_date')
+            setSignatoriesItems(items,0)
+                
             
+    return Signatories
 
 def blgettimestampuserdetails (id, Signatories):
        
