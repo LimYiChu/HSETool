@@ -28,7 +28,7 @@ thead input {
 
 #download-excel {
   position: absolute;
-  right: 0.5rem;
+  right: 1.5em;
   top: 1rem;
 }
 
@@ -43,25 +43,10 @@ thead input {
 .tabset button {
   transition: 0.3s;
   cursor: pointer;
-}
-
-.tab-top button {
-  float: left;
-  margin: 5px;
-  padding: 14px 16px;
-  border: solid #ddd 3px;
-  border-radius: 5px;
-  outline: none;
-}
-
-/* Style the buttons that are used to open the tab content */
-.tab-child button {
-  background-color: white;
-  -webkit-box-flex: 1;
-  padding: 10px 15px 6px 15px;
   border: solid #ddd 1px;
   border-bottom: none;
   border-radius: 5px 5px 0 0;
+  padding: 10px 15px 6px 15px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -69,23 +54,38 @@ thead input {
   min-width: 50px;
 }
 
-/* Change background color of buttons on hover */
-.tab-top button:hover {
-  background-color: #ddd;
+.tab-top {
+  position: absolute;
+  right: 0px;
+  top: -6.5em;
+
 }
 
-.tab-child button:hover {
+.tab-top button {
+  float: left;
+  padding: 10px 25px;
+  outline: none;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab-child button {
+  background-color: white;
+  -webkit-box-flex: 1;
+
+}
+
+/* Change background color of buttons on hover */
+
+
+.tabset button:hover {
   background-image:
     linear-gradient(to bottom, #ddd, white);
 }
 
 /* Create an active/current tablink class */
-.tab-top button.active {
-  background-color: #93D3F0;
-  border: solid #086996 1px;
-}
 
-.tab-child button.active {
+
+.tabset button.active {
   background-image:
     linear-gradient(to bottom, #93D3F0, white);
   border: solid #ddd 1px;

@@ -1,4 +1,5 @@
 {% extends "userT/base3.html"%}
+{% load static %}
 {%block title%}Reporting{%endblock%}
 {% block reppmt%}
 
@@ -16,7 +17,7 @@
   <!--breadcrumbs-->
   <nav>
     <!-- 20210828 edward UI -->
-    <ol class="breadcrumb" style="background-color: #ffffff; position:relative;  right:-40px;bottom: -25px;">
+    <ol class="breadcrumb" style="background-color: transparent; position:relative;  right:-40px;bottom: -25px;">
       <li class="breadcrumb-item normal">
         <a href="/main">Dashboard</a>
       </li>
@@ -32,10 +33,20 @@
 
   <div class="col-md-12 center" style="left:20pt">
     <div class="card" style="width: auto;">
+
       <div class="row">
         <div class="col-md-12">
-          <div class="card">
-            <div style="float:left" class="tabset tab-top parent-font">
+          <div class="card-header parent-font" style="border-bottom: none;">
+            PMT Reporting
+          </div>
+          <a class="article-title" href="{% url  'repoverallexcel' %}">
+            <button type="button" class="btn btn-outline-primary btn-sm;" id="download-excel">
+              Download Complete Excel
+              <i class="bi bi-file-earmark-spreadsheet"></i>
+            </button>
+          </a>
+          <div class="card" style="border-top: none;">
+            <div style="float:left" class="tabset tab-top child-one-font">
               <button id="allphases" onclick="openReport(event, 'PHASES');phasesurl(this.id,'')">All Phases
               </button>
 
@@ -46,12 +57,7 @@
               {%endfor%}
             </div>
 
-            <a class="article-title" href="{% url  'repoverallexcel' %}">
-              <button type="button" class="btn btn-outline-primary btn-sm;" id="download-excel">
-                Download Complete Excel
-                <i class="bi bi-file-earmark-spreadsheet"></i>
-              </button>
-            </a>
+
 
             <div class="tabset tab-child child-one-font">
               <button class="tablinks" onclick="openReport(event, 'All Actions')">All Actions</button>
@@ -169,40 +175,44 @@
 
                 <div id="Studies/Workshops" class="tabcontent"
                   style="border-left:0pc; border-right:0px;border-bottom:0px; overflow:scroll;">
-                  <table id="table3" class="table table-striped table-hover display" style="width:100%">
-                    <thead class="thead-dark">
-                      <tr class="filters">
-                        {%for items in tablestudiesheader%}
-                        <th>
-                          {{items}}
-                        </th>
-                        {%endfor%}
 
+                  <div class="row">
+                    <div class="col" id="original-table">
+                      <table id="table3" class="table table-striped table-hover display" style="width:100%;">
+                        <thead class="thead-dark">
+                          <tr class="filters">
+                            {%for items in tablestudiesheader%}
+                            <th>
+                              {{items}}
+                            </th>
+                            {%endfor%}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for items in lstbyWorkshop%}
 
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for items in lstbyWorkshop%}
+                          <tr class="open-studies" onclick="fadein(event, 'original-table', 'studydetails')">
+                            <td class="firstcell">{{items.0}}</td>
+                            <td>{{items.1}}</td>
 
-                      <tr>
-                        <td>{{items.0}}</td>
-                        <td>{{items.1}}</td>
+                            <td>{{items.2}}</td>
+                            <td>{{items.3}}</td>
+                            <td>{{items.4}}</td>
+                            <td>{{items.5}}</td>
+                          </tr>
+                          {%endfor%}
+                        </tbody>
+                      </table>
+                    </div>
 
-                        <td>{{items.2}}</td>
-                        <td>{{items.3}}</td>
-                        <td>{{items.4}}</td>
-                        <td>{{items.5}}</td>
-                      </tr>
-                      {%endfor%}
+                    {%include "userT/inclnestedtable.html"%}
+                  </div>
 
-                    </tbody>
-
-                  </table>
 
                   <div>
                     <br>
                     <div class="form-group"><input type="submit" name="allStudies" value="Download Excel"
-                        class="btn btn-outline-primary btn-md float-right " style="width:150pt" /></div>
+                        class="btn btn-outline-primary btn-md float-right " style="width:150pt"></div>
                   </div>
                   <br>
                 </div>
@@ -307,38 +317,42 @@
                 <!--By Users-->
                 <div id="IndividualSummary" class="tabcontent"
                   style="border-left:0pc; border-right:0px;border-bottom:0px; overflow:scroll;">
-                  <div style="float:left col-md-12">
-                    <table id="table5" class="table table-striped table-hover display" style="width:100%">
-                      <thead class="thead-dark">
-                        <tr class="filters">
-                          {%for items in listaggregatedindiheader%}
-                          <th>
-                            {{items}}
-                          </th>
+                  <div class="row">
+                    <div class="col" id="original-table2">
+                      <table id="table5" class="table table-striped table-hover display" style="width:100%">
+                        <thead class="thead-dark">
+                          <tr class="filters">
+                            {%for items in listaggregatedindiheader%}
+                            <th>
+                              {{items}}
+                            </th>
+                            {%endfor%}
+
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          {%for items in listaggregatedindi%}
+
+
+                          <tr onclick="fadein(event,'original-table2', 'studydetails2')">
+
+                            <td width="25%">{{items.0}}</td>
+                            <td>{{items.1}}</td>
+                            <td>{{items.2}}</td>
+
+
+
+                          </tr>
                           {%endfor%}
 
-                        </tr>
-                      </thead>
 
-                      <tbody>
-                        {%for items in listaggregatedindi%}
-
-
-                        <tr>
-
-                          <td width="25%">{{items.0}}</td>
-                          <td>{{items.1}}</td>
-                          <td>{{items.2}}</td>
-
-
-
-                        </tr>
-                        {%endfor%}
-
-
-                      </tbody>
-                    </table>
+                        </tbody>
+                      </table>
+                    </div>
+                    {%include "userT/inclnestedtable2.html"%}
                   </div>
+
                   <div>
                     <br>
                     <div class="form-group"><input type="submit" name="indisummary" value="Download Excel"
@@ -404,7 +418,8 @@
                   {% for x  in rejectedactions %}
 
                   <tr>
-                    <td><a class="article-title" href="{% url  'pmtrepviewall' x.id %}">{{ x.StudyActionNo }}</a></td>
+                    <td><a class="article-title" href="{% url  'pmtrepviewall' x.id %}">{{ x.StudyActionNo }}</a>
+                    </td>
                     <td>{{ x.StudyName }}</td>
                     <td>{{ x.Disipline }} / {{ x.Subdisipline }}</td>
 
@@ -451,7 +466,8 @@
           </div>
         </div>
         <div id="PHASES" class="tabcontent"
-          style="border-left:0pc; border-right:0px;border-bottom:0px; overflow:scroll;"></div>
+          style="border-left:0pc; border-right:0px;border-bottom:0px; overflow:scroll;">
+        </div>
 </body>
 </div>
 </div>

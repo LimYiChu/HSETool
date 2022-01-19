@@ -13,13 +13,15 @@
 
     {%load crispy_forms_tags %}
     {% load static %}
-    <div class="container">
-        <fieldset class="form-group">
-            <div class="row justify-content-center">
-                <div id="loginbox" class="col-sm-6 mx-auto" style="margin-top: 100px;">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-sm-4 mx-auto" style="margin-top: 100px;">
+                <fieldset class="form-group">
                     <!--change to central of screen       -->
                     <div class="card">
-                        <div class="card-header">Login</div>
+                        <div class="card-header header-blue">
+                            <div class="title">Login</div>
+                        </div>
                         <!-- <div style="float:right; font-size: 80%; position: relative; top:-10px"><a href="#">Forgot password?</a></div>-->
 
                         <div style="padding-top:30px" class="card-body">
@@ -50,7 +52,7 @@
                                 {% endif %}
                                 {% endif %}
                                 <br>
-                                <input class="btn btn-lg btn-primary btn-block" type="submit" value="Login">
+                                <input class="btn btn-lg btn-primary btn-block button-blue" type="submit" value="Login">
                                 <input type="hidden" name="next" value="{{ next }}">
                             </form>
                         </div>
@@ -58,9 +60,9 @@
                     <br>
                     <a href="{% url 'password_reset' %}"><button class="btn btn-warning btn-block my-2 my-sm-0"
                             name="{% url 'password_reset' %}" type="submit" value="Click">Forgot Password</button></a>
-                </div>
+                </fieldset>
             </div>
-        </fieldset>
+        </div>
     </div>
 </body>
 

@@ -19,6 +19,25 @@ $(document).ready(function()
     })
 
 })
+function fadein(event, tableclick, tablepopup) {
+  var x = document.getElementById(tableclick);
+  var y = document.getElementById(tablepopup);
+  alert(event.currentTarget.innerText)
+  x.style.animation = 'mymoveout .5s ease';
+  y.style.animation = 'slide-in .5s ease';
+  y.style.display = "block";
+}
+
+function fadeout(tableclick,tablepopup) {
+  var x = document.getElementById(tableclick);
+  var y = document.getElementById(tablepopup);
+  x.style.animation = 'mymovein 2.5s ease';
+  y.style.animtion = 'slide-out .5s ease';
+  setTimeout(() => {
+    y.style.display = 'none';
+  }, 500);
+}
+
 function phasesurl (id,phase)
 
 {
