@@ -69,11 +69,11 @@ $(document).ready(function() {
       } );
   } );
 
-  var table = $('#table1').DataTable( {
-      orderCellsTop: true,
-      fixedHeader: true,
-       "lengthMenu": [[-1, 10, 25, 50, 100], ["All", 10, 25, 50, 100]],
-       //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
+    var table = $('#table1').DataTable( {
+        orderCellsTop: true,
+        fixedHeader: true,
+        "lengthMenu": [[-1, 10, 25, 50, 100], ["All", 10, 25, 50, 100]],
+        //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
   } );
 } );
 
@@ -99,6 +99,7 @@ $(document).ready(function() {
       fixedHeader: true,
        "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
        //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
+       
        //20211209 Ishna-YHS date format sorting for column 6
        "columnDefs": [{
         "render": function(data) { 
@@ -108,16 +109,15 @@ $(document).ready(function() {
        }]
        //20211209 Ishna-YHS date format sorting for column 6
    });
-  });
+});
 
 $(document).ready(function() {
-   
     // Setup - add a text input to each footer cell
     $('#table3 thead tr').clone(true).appendTo( '#table3 thead' );
     $('#table3 thead tr:eq(1) th').each( function (i) {
         var title = $(this).text();
         $(this).html( '<input type="text" placeholder="Search" />' );
-  
+
         $( 'input', this ).on( 'keyup change', function () {
             if ( table.column(i).search() !== this.value ) {
                 table
@@ -127,16 +127,16 @@ $(document).ready(function() {
             }
         } );
     } );
-  
+
     var table = $('#table3').DataTable( {
         orderCellsTop: true,
         fixedHeader: true,
-         "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
-         //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
+            "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
+            //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
     } );
-  } );
-  
-  $(document).ready(function() {
+} );
+
+$(document).ready(function() {
     // Setup - add a text input to each footer cell
     $('#table4 thead tr').clone(true).appendTo( '#table4 thead' );
     $('#table4 thead tr:eq(1) th').each( function (i) {
@@ -159,9 +159,9 @@ $(document).ready(function() {
          "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
          //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
     } );
-  } );
+} );
   
-  $(document).ready(function() {
+$(document).ready(function() {
     // Setup - add a text input to each footer cell
     
     $('#table5 thead tr').clone(true).appendTo( '#table5 thead' );
@@ -185,9 +185,9 @@ $(document).ready(function() {
          "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
          //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
     } );
-  } );
+} );
 
-  $(document).ready(function() {
+$(document).ready(function() {
     // Setup - add a text input to each footer cell
     $('#table6 thead tr').clone(true).appendTo( '#table6 thead' );
     $('#table6 thead tr:eq(1) th').each( function (i) {
@@ -210,9 +210,9 @@ $(document).ready(function() {
          "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
          //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
     } );
-  } );
+} );
   
-  $(document).ready(function() {
+$(document).ready(function() {
     // Setup - add a text input to each footer cell
     $('#table7 thead tr').clone(true).appendTo( '#table7 thead' );
     $('#table7 thead tr:eq(1) th').each( function (i) {
@@ -235,5 +235,30 @@ $(document).ready(function() {
          "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
          //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
     } );
-  } );
+} );
 
+$(document).ready(function() {
+    // Setup - add a text input to each footer cell
+    $('#studydetailstable thead tr').clone(true).appendTo( '#studydetailstable thead' );
+    $('#studydetailstable thead tr:eq(1) th').each( function (i) {
+        var title = $(this).text();
+        $(this).html( '<input type="text" placeholder="Search" />' );
+ 
+        $( 'input', this ).on( 'keyup change', function () {
+            if ( table.column(i).search() !== this.value ) {
+                table
+                    .column(i)
+                    .search( this.value )
+                    .draw();
+            }
+        } );
+    } );
+    
+    var table = $('#studydetailstable').DataTable( {
+        orderCellsTop: true,
+        fixedHeader: true,
+         "lengthMenu": [[-1, 10, 25, 50, 100], ["All", 10, 25, 50, 100]],
+         //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
+        
+    } );
+} );
