@@ -197,6 +197,11 @@ class frmApproverConfirmation(forms.ModelForm):
             Div (Field('Guidewords', type="hidden")), #yhs added due to additional field from client
             Div (Field('Deviation', type="hidden")),
             Div (Field('Revision', type="hidden")), 
+            #20220120 edward passing in these fields so it goes through when approver approves
+            Div (Field('NodeNo', type="hidden")), 
+            Div (Field('PreventiveSafeguard', type="hidden")), 
+            Div (Field('MitigativeSafeguard', type="hidden")), 
+            Div (Field('NodeDescription', type="hidden")), 
         )
     class Meta:
         model = ActionItems

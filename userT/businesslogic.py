@@ -1,3 +1,4 @@
+from ast import Index
 from .businesslogicQ import *
 import django_filters
 from django.http import HttpResponse
@@ -871,27 +872,22 @@ def blgettimehistorytables (id, Signatories, QueSeries=0):
     """Gets time stamp based on queseries and whom signed from history tables. Overwrites name and time stamp from action routes
     with actualy people whom have signed """
     def setSignatoriesItems (setofsignatories,historyindex):
-           
                 setofsignatories [1] = lstdictHistory[historyindex].history_user.email
                 setofsignatories [2] = lstdictHistory[historyindex].history_user.fullname
                 setofsignatories [3] = lstdictHistory[historyindex].history_user.designation
                 setofsignatories [4] = lstdictHistory[historyindex].history_user.signature
                 setofsignatories [5] = lstdictHistory[historyindex].history_date
-                print(setofsignatories)
     
     for index, items in enumerate(Signatories):
-        #print(index)
         #only loop through historical records within queries a
         if index >= QueSeries:
             break
-        if index < QueSeries and index == 99:
-            ('test')
+        elif (index < QueSeries) and len(Signatories) -1 != index : 
+            
             #the queseries must be the next one on the signatory since once you sign you increment the queries , so index +1
             filterkwargs = {'id':id, 'QueSeries': index+1} # bombs when put in values 3 or 99 
-            #for count, ele in enumarate() -> there is no count for after last approver 
             
             lstdictHistory = ActionItems.history.filter(**filterkwargs).select_related("history_user").order_by('-history_date')
-            # print(lstdictHistory)
             
             #Took a day to get this logic. So the idea is if queseries is just first record
             #if its queseries = 3 and you want actionee it has to be second record
@@ -904,17 +900,13 @@ def blgettimehistorytables (id, Signatories, QueSeries=0):
             if  QueSeries - index > 1:
                 setSignatoriesItems(items,1)
         
-        if index and QueSeries == 99: #and operator means that both value is true then it will go through
-            print(index)
-            filterkwargs = {'id':id, 'QueSeries': index+1} # bombs when put in values 3 or 99 
-            #for count, ele in enumarate() -> there is no count for after last approver 
+        elif QueSeries == 99 and (len(Signatories)-1 == index): #and operator means that both value is true then it will go through
             
+            filterkwargs = {'id':id, 'QueSeries': 99} # bombs when put in values 3 or 99 
             lstdictHistory = ActionItems.history.filter(**filterkwargs).select_related("history_user").order_by('-history_date')
-            # print(lstdictHistory)
-        
-            
-                   
-                
+            setSignatoriesItems(items,0)
+           
+         
     return Signatories
                
             
@@ -1029,17 +1021,24 @@ def blgetApproverLevel (lstorgdiscsub):
     
     return ApproverLevel
 def blsetcloseouttemplate (ID):
+    """This function sets the template which should be used for the pdf closeout report based on the number of approvers & the type of studies using forms method"""
     
     discsuborg = blgetDiscSubOrgfromID(ID)
     ApproverLevel = int(blgetApproverLevel(discsuborg)) -1# its not really a mistake as it was used now everywhere in que serires target
-    
-    
+
+    #20220119 edward fromstudies
+    form_classnew = (blgetFieldValue(ID,"StudyName__Form"))
+    form_classapprover = f"{form_classnew}approver" #just standardized it as approver as approver closes it, extra line but keeps the logic since after approver only can be closed
     #Particularly for SFSB in production and to get it to work of test
     #this needs to change and supposed to be based on some modular parameters 
-    if ApproverLevel==5 or ApproverLevel == 7:
-        newcloseouttemplate = f'{closeouttemplate}{ApproverLevel}{".pdf"}'
-    else:
-        newcloseouttemplate = f'{closeouttemplate}{".pdf"}'
+
+    # 20220120 how to make this modular? how do i avoid this when the variable name is set -- edward
+    # 20220120  going to leave it for now in case of demo to be recorded in VS to revisit -- edward
+    if form_classapprover == 'frmoriginalbaseapprover':
+        newcloseouttemplate = f'{closeouttemplate}{ApproverLevel}{".pdf"}' if ApproverLevel==5 or ApproverLevel == 7 else  f'{closeouttemplate}{".pdf"}'
+    #frmhazid
+    elif form_classapprover == 'frmhazidapprover' :
+        newcloseouttemplate = f'{hazidcloseouttemplate}{ApproverLevel}{".pdf"}' if ApproverLevel==5 or ApproverLevel == 7  else  f'{hazidcloseouttemplate}{".pdf"}'  
 
     return newcloseouttemplate
 

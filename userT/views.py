@@ -504,8 +504,8 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
         
         form_classnew = (blgetFieldValue(self.kwargs.get("pk"),"StudyName__Form"))
         form_classapprover = f"{form_classnew}approver"  
-        
-        if form_classnew:
+        #20220120 edward changed this to form_classapprover
+        if form_classapprover:
             #from UploadExcel import forms
             from UploadExcel import formstudies
             form_class= getattr(formstudies, form_classapprover,None)
@@ -1541,6 +1541,8 @@ def StickyNote(request):
 
 #this part need to be tidied up. For time's sake i just copy from def (repPMTExcel). by YHS
 def closeoutprint(request,**kwargs):
+    """This function prints the individual closed reports to PDFs"""
+
 
     ID = (kwargs["id"])
 
@@ -1558,13 +1560,12 @@ def closeoutprint(request,**kwargs):
     discsub = blgetDiscSubOrgfromID(ID)
     Signatories = blgetSignotories(discsub)
     
-    #20220117 edward 
-    currentQueSeries = blgetFieldValue(ID,'QueSeries')
-    #testing = blgettimehistorytables(ID,Signatories,currentQueSeries)
+    
     
 
     lstSignatoriesTimeStamp= blgettimestampuserdetails (ID, Signatories) #edward changed this to use new bl for signature 20210706
 
+    # #20220117 edward 
     currentQueSeries = blgetFieldValue(ID,'QueSeries')
     blgettimehistorytables(ID,lstSignatoriesTimeStamp,currentQueSeries)
     
@@ -1712,8 +1713,8 @@ class pmtrepviewall(UpdateView):
         
         form_classnew = (blgetFieldValue(self.kwargs.get("id"),"StudyName__Form")) 
         form_classapprover = f"{form_classnew}approver"
-        
-        if form_classnew:
+        #20220120 edward changed this to form_classapprover
+        if form_classapprover:
             #from UploadExcel import forms
             from UploadExcel import formstudies
             form_class= getattr(formstudies, form_classapprover,None)
