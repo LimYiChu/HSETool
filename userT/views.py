@@ -506,8 +506,8 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
         
         form_classnew = (blgetFieldValue(self.kwargs.get("pk"),"StudyName__Form"))
         form_classapprover = f"{form_classnew}approver"  
-        
-        if form_classnew:
+        #20220120 edward changed this to form_classapprover
+        if form_classapprover:
             #from UploadExcel import forms
             from UploadExcel import formstudies
             form_class= getattr(formstudies, form_classapprover,None)
@@ -570,17 +570,20 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
 
         if (self.request.POST.get('Next')):
             return super().form_valid(form)
-
+#20220117 edward signatories
     def get_context_data(self,**kwargs):
         idAI = self.kwargs.get("pk")
         context = super().get_context_data(**kwargs)
         discsub = blgetDiscSubOrgfromID(idAI)
         Signatories = blgetSignotories(discsub)
-
+        
+        print('before',Signatories)
         lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories) #it changes the Signatories directly
-
+        
+        print(lstSignatoriesTimeStamp)
         currentQueSeries = blgetFieldValue(idAI,'QueSeries')
-        blgettimehistorytables(idAI,Signatories,currentQueSeries)
+        blgettimehistorytables(idAI,lstSignatoriesTimeStamp,currentQueSeries)
+        print("after",Signatories)
         
         #add approver level target in case it doesnt get set at the start
         ApproverLevel = blgetApproverLevel(discsub)
@@ -1540,6 +1543,8 @@ def StickyNote(request):
 
 #this part need to be tidied up. For time's sake i just copy from def (repPMTExcel). by YHS
 def closeoutprint(request,**kwargs):
+    """This function prints the individual closed reports to PDFs"""
+
 
     ID = (kwargs["id"])
 
@@ -1556,11 +1561,18 @@ def closeoutprint(request,**kwargs):
 
     discsub = blgetDiscSubOrgfromID(ID)
     Signatories = blgetSignotories(discsub)
+    
+    
+    
 
     lstSignatoriesTimeStamp= blgettimestampuserdetails (ID, Signatories) #edward changed this to use new bl for signature 20210706
 
+    # #20220117 edward 
+    currentQueSeries = blgetFieldValue(ID,'QueSeries')
+    blgettimehistorytables(ID,lstSignatoriesTimeStamp,currentQueSeries)
+    
     signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
-
+    
     #20210923 edward fk to data_dict
     studyname = str(actiondetails.StudyName)
     projectphase = str(actiondetails.ProjectPhase)
@@ -1703,9 +1715,9 @@ class pmtrepviewall(UpdateView):
         
         form_classnew = (blgetFieldValue(self.kwargs.get("id"),"StudyName__Form")) 
         form_classapprover = f"{form_classnew}approver"
-        
-        if form_classnew:
-            
+        #20220120 edward changed this to form_classapprover
+        if form_classapprover:
+            #from UploadExcel import forms
             from UploadExcel import formstudies
             form_class= getattr(formstudies, form_classapprover,None)
         else:

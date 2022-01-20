@@ -39,6 +39,8 @@ for items in ALLOWED_HOSTS :
         bulkdlattachments = '/opt/bitnami/projects/HSETool/media/attachments/'
         bulkpdfzip = '/opt/bitnami/projects/HSETool/static/media/temp/bulkpdffiles.zip'   
         stitchedpdf = '/opt/bitnami/projects/HSETool/static/test/mergepdffolder/testingmerge.pdf' 
+        #20220120 edward
+        hazidcloseouttemplate = '/opt/bitnami/projects/HSETool/hazidcloseouttemplate'#closeouttemplate location (used for pdf closeoutprint & indiprint)
 
     else :
         tempfolder = 'static/media/temp/'
@@ -50,7 +52,9 @@ for items in ALLOWED_HOSTS :
         bulkpdfcreatezipfilename = "static/media/temp/" + "bulkpdffiles" #can be just slash   
         bulkdlattachments = 'media/attachments/'  
         bulkpdfzip = 'static/media/temp/bulkpdffiles.zip'  
-        stitchedpdf =  'static/test/mergepdffolder/testingmerge.pdf'                                                                                                                                         
+        stitchedpdf =  'static/test/mergepdffolder/testingmerge.pdf' 
+        #20220120 edward
+        hazidcloseouttemplate = 'hazidcloseouttemplate'                                                                                                                                      
  
 
 #Paramters to simply views.py . Commonly used parameters in Views.py to be parked here and standardised
