@@ -1,3 +1,20 @@
+ #20220124
+ # if form_class :
+    #     newcloseouttemplate = f'{closeouttemplate}{form_class}{ApproverLevel}{".pdf"}' if ApproverLevel == 5 or ApproverLevel == 7  else  f'{closeouttemplate}{form_class}{".pdf"}'  
+    # else: 
+    #     newcloseouttemplate = f'{closeouttemplate}{ApproverLevel}{".pdf"}' if ApproverLevel == 5 or ApproverLevel == 7 else  f'{closeouttemplate}{".pdf"}' 
+    
+# 20220121 edward from views.py
+#closeoutprint
+    #dont delete below as its a way to actualy read from memory can be used elsewhere 
+    #response = HttpResponse(content_type='application/pdf')
+    #response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
+    #bufferfile = pdfsendtoclient ('atrtemplateautofontreadonly.pdf',data_dict)
+    #edward changed file location to parameters
+
+   #return FileResponse(bufferfile, as_attachment=True, filename=out_file)
+
+
 #20211229 edward from forms.py
 
 #20211229 edward using Inheritance on hold 

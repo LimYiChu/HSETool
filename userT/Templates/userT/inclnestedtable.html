@@ -2,21 +2,26 @@
     <span class="close-btn" onclick="fadeout('original-table', 'studydetails')">&times;</span>
     <table id="studydetailstable" class="table table-striped table-hover display">
         <thead class="thead-dark">
-            <tr>
+            <tr class="filters">
 
-                <th>Study Action No</th>
-                <th>Status</th>
-                <th>Current Level</th>
-                <th>Person Responsible</th>
+                <th>test</th>
+                {%for details in nestedheader%}
+                    <th>{{details}}</th>
+                
+                {%endfor%}
             </tr>
         </thead>
         <tbody>
             <tr>
 
-                <td>CRV 001</td>
-                <td>Open</td>
-                <td>Actionee</td>
-                <td>actionee@demo.com</td>
+                {%for details in dfstudieslist%}
+                {%for items in details%}
+                
+                  
+                  <td>{{items.0}}</td>
+                  <td>{{items.1}}</td>
+                  {%endfor%}
+                  {%endfor%}
             </tr>
             <tr>
 

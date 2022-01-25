@@ -81,6 +81,43 @@ from django.utils import timezone
 from UploadExcel.formstudies import *
 from time import time
 
+
+def studiesjs(request):
+
+    # testing = ActionItems.objects.select_related().filter(StudyName__StudyName = 'RA - T and I activities during Monsoon').values('StudyActionNo')  
+    # print(testing)
+    # context = {'testing' : testing}
+    if request.is_ajax and request.method == "GET":
+        data = request.GET.get("data", None)
+
+        all_actions =   ActionItems.objects.all().values()
+        all_actionwithfk = blannotatefktomodel(all_actions)
+        dfalllist = blgetActionStuckAtdict(all_actionwithfk) # getting a list of everything
+        dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format
+        dfallnestedstudysorted = blsortdataframes(dfall,dfstudiescolumns) # sort dfall
+        dfsortbystudy = dfallnestedstudysorted[dfallnestedstudysorted["StudyName"] == data ] #this value should be modular like phases, need to look up ajax more to get this to work
+        #print(data)
+        print(dfsortbystudy)
+        dfstudieslist = dfsortbystudy.values.tolist()
+        print(dfstudieslist)
+        #print(dfstudieslist)
+        
+        #'dfstudieslist':json.dumps([{"data" :dfstudieslist}])
+        nestedheader = ['Study Action No', 'Study Name' ,'Action With']
+        context =   {
+                    'dfstudieslist':dfstudieslist,
+                    'nestedheader' : nestedheader
+                    }
+        #print('context',context)
+    #'nestedheader' : nestedheader
+    # JsonResponse(context,status=200)
+    #return render(request, 'userT/inclnestedtable.html', context)
+        return JsonResponse(context,status=200)
+    else:
+        return render(request, 'userT/inclnestedtable.html')
+     
+    
+
 def base3 (request):
     """This function is to view base3.html while editing the html"""
     
@@ -118,8 +155,25 @@ def loadajax2 (request):
         t=50
         print ("INHEREERERERE22222222222")
 
-        ActionItems.obects.all
+        
         return JsonResponse({'buttontext': "Hi i am new"},status=200)
+    else :
+
+        return render(request, 'userT/loadajax.html')
+
+def loadajax3 (request):
+
+   
+
+    if (request.is_ajax ()):
+        #ID= form2.instance.id
+        print (request.GET.get('button_text'))
+       
+        context =   {
+                    'abc':"abc",
+                    'xyz' : "xyz"
+                    }
+        return JsonResponse({'context':context},status=200)
     else :
 
         return render(request, 'userT/loadajax.html')
@@ -505,10 +559,8 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
     def get_form_class(self,**kwargs):
         
         form_classnew = (blgetFieldValue(self.kwargs.get("pk"),"StudyName__Form"))
-        form_classapprover = f"{form_classnew}approver"  
-        #20220120 edward changed this to form_classapprover
-        if form_classapprover:
-            #from UploadExcel import forms
+        if form_classnew:
+            form_classapprover = f"{form_classnew}approver"  
             from UploadExcel import formstudies
             form_class= getattr(formstudies, form_classapprover,None)
         else:
@@ -1321,7 +1373,9 @@ def repPMTExcel (request,phase=""):
     dfall1 = pd.DataFrame.from_dict(all_actionsopt) # sort dfall
     dfall = blsortdataframes(dfall1,dfallcolumns)
     #edward 20211001 pd rejected excel 
-   
+    
+    
+
     revisiongte = 1
     queseriesrejected = 0
    
@@ -1364,12 +1418,29 @@ def repPMTExcel (request,phase=""):
     phasestudies =  blphasegetStudyreducedfieldsQ(studiesattributes,phase)
     #20211206 edward 
     allstudies = Studies.objects.all()
+
+    
+    
     
     tablestudiesheader = ['Studies', 'Yet to Respond' ,'Approval Stage','Closed','Open Actions', 'Total Actions']
 
     lstbyWorkshop = blgetbyStdudiesCountphase(phasestudies,YetToRespondQue,ApprovalQue,QueClosed,QueOpen,TotalQue)
     
+    #20220120 edward
+    # print('listworkshop',lstbyWorkshop)
+    # all_actions =   ActionItems.objects.all().values()
+    # all_actionwithfk = blannotatefktomodel(all_actions)
+    # dfalllist = blgetActionStuckAtdict(all_actionwithfk) # getting a list of everything
+    # dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format
+    # dfallnestedstudysorted = blsortdataframes(dfall,dfstudiescolumns) # sort dfall
+    # #print(dfallnestedstudysorted)
+    # selectstudy = dfallnestedstudysorted[dfallnestedstudysorted["StudyName"] == 'RA - T and I activities during Monsoon' ] #this value should be modular like phases, need to look up ajax more to get this to work
+    # print(selectstudy)
     
+   
+    
+    
+
     #Changed to Q function and Phases
     tableduedateheader = ['Due Date','Actions to Close by']
     fieldsrequired = ['id','StudyActionNo', 'DueDate','QueSeries']
@@ -1413,11 +1484,12 @@ def repPMTExcel (request,phase=""):
                 workbook = writer.book #gives excelwriter access to workbook
                 worksheet = writer.sheets['All Actions'] #gives excelwriter access to worksheet
                 formattedexcel = blexcelformat(dfall,workbook,worksheet)
+                
 
             in_memory.seek(0)
             response.write(in_memory.read())
             #edward end 20210928 dataframes excel
-
+            
             return response
         elif (request.POST.get('rejectedactions')):
 
@@ -1513,7 +1585,10 @@ def repPMTExcel (request,phase=""):
         "rejectedactions": rejectedallactionitems,
         "listofPhases": listofPhases,
         "phase": phase,
-        "piechartsjson" : json.dumps([{"data":forpie}])
+        "piechartsjson" : json.dumps([{"data":forpie}]),
+        
+        
+        
     }
     #moving tojson 26/09/2021 - Guna. Moving to json enables cleaner javascript and data passing between python and html and javascript
     
@@ -1545,12 +1620,9 @@ def StickyNote(request):
 def closeoutprint(request,**kwargs):
     """This function prints the individual closed reports to PDFs"""
 
-
     ID = (kwargs["id"])
-
     actiondetails = ActionItems.objects.get(id=ID)
     datafrommodels= model_to_dict(actiondetails) #20210927 changed from using obj[0] to this method of converting to dictionary
-    
     ObjAttach = actiondetails.attachments_set.all()  #get attcahments from foreign key
 
     studyActionNo =  actiondetails.StudyActionNo #move to bl
@@ -1561,31 +1633,21 @@ def closeoutprint(request,**kwargs):
 
     discsub = blgetDiscSubOrgfromID(ID)
     Signatories = blgetSignotories(discsub)
-    
-    
-    
-
     lstSignatoriesTimeStamp= blgettimestampuserdetails (ID, Signatories) #edward changed this to use new bl for signature 20210706
 
-    # #20220117 edward 
+    #20220117 edward historical Signatories
     currentQueSeries = blgetFieldValue(ID,'QueSeries')
     blgettimehistorytables(ID,lstSignatoriesTimeStamp,currentQueSeries)
-    
     signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
     
     #20210923 edward fk to data_dict
     studyname = str(actiondetails.StudyName)
     projectphase = str(actiondetails.ProjectPhase)
     foreignkeydict = {'StudyName':studyname,'ProjectPhase':projectphase}
-
-    # updateddata_dict = bladdfktodict(data_dict,ID)
     updateddata_dict = bladdfktodict(data_dict,foreignkeydict)
     newcloseouttemplate = blsetcloseouttemplate (ID)
-
     file = pdfgenerate(newcloseouttemplate,out_file,updateddata_dict,signatoriesdict)
-
     in_memory = BytesIO()
-
     zip = ZipFile(in_memory,mode="w")
 
     for eachfile in ObjAttach:
@@ -1598,18 +1660,8 @@ def closeoutprint(request,**kwargs):
 
     response = HttpResponse(content_type="application/zip")
     response["Content-Disposition"] = "attachment; filename=" + studyActionNo+ ".zip"
-
     in_memory.seek(0)
     response.write(in_memory.read())
-
-
-    #dont delete below as its a way to actualy read from memory can be used elsewhere
-    #response = HttpResponse(content_type='application/pdf')
-    #response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
-    #bufferfile = pdfsendtoclient ('atrtemplateautofontreadonly.pdf',data_dict)
-    #edward changed file location to parameters
-
-   #return FileResponse(bufferfile, as_attachment=True, filename=out_file)
 
     return response
 
@@ -1714,12 +1766,13 @@ class pmtrepviewall(UpdateView):
     def get_form_class(self,**kwargs):
         
         form_classnew = (blgetFieldValue(self.kwargs.get("id"),"StudyName__Form")) 
-        form_classapprover = f"{form_classnew}approver"
         #20220120 edward changed this to form_classapprover
-        if form_classapprover:
-            #from UploadExcel import forms
+        if form_classnew:
+            form_classapprover = f"{form_classnew}approver"
             from UploadExcel import formstudies
             form_class= getattr(formstudies, form_classapprover,None)
+            
+            
         else:
             form_class = self.form_class
          
@@ -1742,11 +1795,9 @@ class pmtrepviewall(UpdateView):
         currentQueSeries = blgetFieldValue(idAI,'QueSeries')
         blgettimehistorytables(idAI,lstSignatoriesTimeStamp,currentQueSeries)
 
-        object_list = self.object.attachments_set.all() #-this one gets the the attachments and puts it into Object_List, edward added attachments
-        rejectcomments = self.object.comments_set.all() #edward added new way of getting rejectcomments
-        #edward added attachments
+        object_list = self.object.attachments_set.all() 
+        rejectcomments = self.object.comments_set.all() 
         context['object_list'] = object_list #attachments are foreign key
-        # context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(idAI) #edward-> its another way of getting ForeignKey elements using filters
         context['Rejectcomments'] = rejectcomments
         context ['Signatories'] = lstSignatoriesTimeStamp
 

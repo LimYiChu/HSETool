@@ -871,7 +871,7 @@ def blgetvaliduserinroute (idAI,emailid,History=False):
 def blgettimehistorytables (id, Signatories, QueSeries=0):
     """Gets time stamp based on queseries and whom signed from history tables. Overwrites name and time stamp from action routes
     with actualy people whom have signed """
-    print ("Signatories", Signatories)
+    
     def setSignatoriesItems (setofsignatories,historyindex):
                 setofsignatories [1] = lstdictHistory[historyindex].history_user.email
                 setofsignatories [2] = lstdictHistory[historyindex].history_user.fullname
@@ -1020,24 +1020,23 @@ def blgetApproverLevel (lstorgdiscsub):
     return ApproverLevel
 def blsetcloseouttemplate (ID):
     """This function sets the template which should be used for the pdf closeout report based on the number of approvers & the type of studies using forms method"""
-    
+
+    #20220119 edward formstudies
     discsuborg = blgetDiscSubOrgfromID(ID)
-    ApproverLevel = int(blgetApproverLevel(discsuborg)) -1# its not really a mistake as it was used now everywhere in que serires target
+    ApproverLevel = int(blgetApproverLevel(discsuborg)) -1
+    form_class = (blgetFieldValue(ID,"StudyName__Form"))
 
-    #20220119 edward fromstudies
-    form_classnew = (blgetFieldValue(ID,"StudyName__Form"))
-    form_classapprover = f"{form_classnew}approver" #just standardized it as approver as approver closes it, extra line but keeps the logic since after approver only can be closed
-    #Particularly for SFSB in production and to get it to work of test
-    #this needs to change and supposed to be based on some modular parameters 
-
-    # 20220120 how to make this modular? how do i avoid this when the variable name is set -- edward
-    # 20220120  going to leave it for now in case of demo to be recorded in VS to revisit -- edward
-    if form_classapprover == 'frmoriginalbaseapprover':
-        newcloseouttemplate = f'{closeouttemplate}{ApproverLevel}{".pdf"}' if ApproverLevel==5 or ApproverLevel == 7 else  f'{closeouttemplate}{".pdf"}'
-    #frmhazid
-    elif form_classapprover == 'frmhazidapprover' :
-        newcloseouttemplate = f'{hazidcloseouttemplate}{ApproverLevel}{".pdf"}' if ApproverLevel==5 or ApproverLevel == 7  else  f'{hazidcloseouttemplate}{".pdf"}'  
-
+    if form_class :
+        if ApproverLevel==5 or ApproverLevel == 7 :
+            newcloseouttemplate = f'{closeouttemplate}{form_class}{ApproverLevel}{".pdf"}'
+        else:
+            newcloseouttemplate = f'{closeouttemplate}{form_class}{".pdf"}'  
+    else: 
+        if ApproverLevel==5 or ApproverLevel == 7 :
+            newcloseouttemplate = f'{closeouttemplate}{ApproverLevel}{".pdf"}'
+        else:
+            newcloseouttemplate = f'{closeouttemplate}{".pdf"}'  
+    
     return newcloseouttemplate
 
 def blsetApproverLevelTarget(ID,ApproverLevel):
@@ -1209,10 +1208,11 @@ def blgetdictActionStuckAt(allactions):
              # basically its looks at que series and then matches it against the list of entire signatories above
             lststuckAt = lstofActioneeAppr[items['QueSeries']]#basically just uses QueSeries to tell us where its stuck at
             items['StuckAt'] = "/".join(lststuckAt)
+        
             
         else:     
             items['StuckAt'] = "Closed"
-   
+          
     return allactions
 
 #   edward 20210805 dictstuckat
