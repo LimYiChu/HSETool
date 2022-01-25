@@ -12,7 +12,7 @@ $(document).ready(function()
       },
       success: function (response){
         $(".btn").text(response.context) 
-        alert(response.context)  
+        // alert(response.context)  
       }
 
 
@@ -28,7 +28,7 @@ function fadein(event, tableclick, tablepopup) {
   var x = document.getElementById(tableclick);
   var y = document.getElementById(tablepopup);
   var data = event.currentTarget.firstElementChild.innerText
-  alert(data)
+  // alert(data)
   x.style.animation = 'mymoveout .5s ease';
   y.style.animation = 'slide-in .5s ease';
   y.style.display = "block";
@@ -42,9 +42,9 @@ function fadein(event, tableclick, tablepopup) {
       },
       success: function (response){
         // $(".btn").text(response.buttontext)   
-        alert("xyz")
-        alert(response.dfstudieslist)
-        alert(response.nestedheader)
+        // alert("xyz")
+        // alert(response.dfstudieslist)
+        // alert(response.nestedheader)
       }
     })
     }
