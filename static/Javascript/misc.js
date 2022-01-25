@@ -5,13 +5,14 @@ $(document).ready(function()
   {
     $.ajax({
 
-      url: "../loadajax2",
+      url: "../loadajax3",
       type : 'get',
       data : {
         button_text: $(this).text()
       },
       success: function (response){
-        $(".btn").text(response.buttontext)   
+        $(".btn").text(response.context) 
+        alert(response.context)  
       }
 
 
@@ -19,14 +20,34 @@ $(document).ready(function()
     })
 
 })
+
+
+
+
 function fadein(event, tableclick, tablepopup) {
   var x = document.getElementById(tableclick);
   var y = document.getElementById(tablepopup);
-  alert(event.currentTarget.innerText)
+  var data = event.currentTarget.firstElementChild.innerText
+  alert(data)
   x.style.animation = 'mymoveout .5s ease';
   y.style.animation = 'slide-in .5s ease';
   y.style.display = "block";
-}
+
+    $.ajax({
+
+      url: "/studiesjs",
+      type : 'GET',
+      data : {
+        "data": data
+      },
+      success: function (response){
+        // $(".btn").text(response.buttontext)   
+        alert("xyz")
+        alert(response.dfstudieslist)
+        alert(response.nestedheader)
+      }
+    })
+    }
 
 function fadeout(tableclick,tablepopup) {
   var x = document.getElementById(tableclick);
