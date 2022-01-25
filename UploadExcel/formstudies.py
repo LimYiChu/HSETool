@@ -22,17 +22,17 @@ class layoutheader(Layout):
         #self.fields['FutureAction'].label = strFutActApprNotes
         super().__init__( 
             Div(
-            Div(Field('StudyActionNo',readonly=True),   css_class='col-md-2'), #style="font-family: Dancing Script",
-            Div (Field('StudyName',readonly=True,disabled=True),  css_class='col-md-3 read-only'),
-            Div (Field('ProjectPhase', readonly=True,disabled=True), css_class='col-md-3'), #,disabled=True
-            Div (Field('InitialRisk', readonly=True), css_class='col-md-2'),
-            Div (Field('ResidualRisk', readonly=True), css_class='col-md-2'),
+            Div(Field('StudyActionNo',readonly=True),   css_class='col-md-4'), #style="font-family: Dancing Script",
+            Div (Field('StudyName',readonly=True,disabled=True),  css_class='col-md-8 read-only'),
+            Div (Field('ProjectPhase', readonly=True,disabled=True), css_class='col-md-4'), #,disabled=True
+            Div (Field('InitialRisk', readonly=True), css_class='col-md-4'),
+            Div (Field('ResidualRisk', readonly=True), css_class='col-md-4'),
             css_class='row',           
            ),
             Div (
-            Div (Field('Guidewords', rows=1 ,readonly=True), css_class='col-md-5'),
-            Div (Field('Deviation', rows=1 ,readonly=True), css_class='col-md-5'),
-            Div (Field('Revision', rows=1 ,readonly=True), css_class='col-md-2'),
+            Div (Field('Guidewords', rows=1 ,readonly=True), css_class='col-md-4'),
+            Div (Field('Deviation', rows=1 ,readonly=True), css_class='col-md-4'),
+            Div (Field('Revision', rows=1 ,readonly=True), css_class='col-md-4'),
             css_class='row',# aligns to left
             ),
             )
@@ -80,8 +80,8 @@ class layouthazid(Layout):
     def __init__(self, *args, **kwargs):
         super().__init__(
             Div (
-            Div (Field('NodeNo', rows=1 ,readonly=True), css_class='col-md-2'),
-            Div (Field('NodeDescription', rows=1 ,readonly=True), css_class='col-md-10'),
+            Div (Field('NodeNo', rows=1 ,readonly=True), css_class='col-md-4'),
+            Div (Field('NodeDescription', rows=1 ,readonly=True), css_class='col-md-8'),
             Div (Field('Cause', rows=8 ,readonly=True), css_class='col-md-12'),
             Div (Field('PreventiveSafeguard' ,readonly=True), css_class='col-md-12'),
             Div (Field('MitigativeSafeguard' ,readonly=True), css_class='col-md-12'),
