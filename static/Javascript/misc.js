@@ -12,7 +12,7 @@ $(document).ready(function()
       },
       success: function (response){
         $(".btn").text(response.context) 
-        alert(response.context)  
+        // alert(response.context)  
       }
 
 
@@ -28,7 +28,7 @@ function fadein(event, tableclick, tablepopup) {
   var x = document.getElementById(tableclick);
   var y = document.getElementById(tablepopup);
   var data = event.currentTarget.firstElementChild.innerText
-  alert(data)
+  
   x.style.animation = 'mymoveout .5s ease';
   y.style.animation = 'slide-in .5s ease';
   y.style.display = "block";
@@ -42,12 +42,81 @@ function fadein(event, tableclick, tablepopup) {
       },
       success: function (response){
         // $(".btn").text(response.buttontext)   
-        alert("xyz")
-        alert(response.dfstudieslist)
-        alert(response.nestedheader)
-      }
-    })
-    }
+        // alert("xyz")
+var dfstudieslist = response.dfstudieslist
+var nestedheader = response.nestedheader
+
+var newarray = new Array() ;
+
+newarray.push(nestedheader);
+
+for (let i = 0; i < dfstudieslist.length; i++) {
+  newarray.push(dfstudieslist[i])
+};
+
+var $table = $("#studydetailstable");
+$table.html(""); //needed to clear previous data from table upon second click
+
+//creating header
+var columnCount = newarray[0].length;
+var $thead = $('<thead>').addClass("thead-dark").appendTo($table);
+var $row = $($thead[0].insertRow(-1));
+for (var i = 0; i < columnCount; i++) {
+    var $headerCell = $("<th />");
+    $headerCell.html(newarray[0][i]);
+    $row.append($headerCell);
+}
+
+//creating body
+var $tbody = $('<tbody>').appendTo($table);
+for (var i = 1; i < newarray.length; i++) {
+  $row = $($tbody[0].insertRow(-1));
+  for (var j = 0; j < columnCount; j++) {
+      var $cell = $("<td />");
+      $cell.html(newarray[i][j]);
+      $row.append($cell);
+  }
+}
+
+//add dynamic table to existing div
+var $dvTable = $("#studydetails");
+$dvTable.append($table);
+
+
+// Setup - add a text input to each header cell
+$('#studydetailstable thead tr').clone(true).appendTo( '#studydetailstable thead' );
+$('#studydetailstable thead tr:eq(1) th').each( function (i) {
+    var title = $(this).text();
+    $(this).html( '<input type="text" placeholder="Search" />' );
+
+    $( 'input', this ).on( 'keyup change', function () {
+        // alert(this.value)
+        
+      if ( table.column(i).search() !== this.value ) {
+            table
+                .column(i)
+                .search( this.value )
+                .draw();
+                
+        }
+    } );
+} );
+
+var table = $('#studydetailstable').DataTable( {
+    'destroy': true,
+    orderCellsTop: true,
+    fixedHeader: true,
+     "lengthMenu": [[-1, 10, 25, 50, 100], ["All", 10, 25, 50, 100]],
+     //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
+    
+} );
+
+        
+     
+    } 
+
+      })
+}
 
 function fadeout(tableclick,tablepopup) {
   var x = document.getElementById(tableclick);

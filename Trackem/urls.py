@@ -105,6 +105,8 @@ urlpatterns = [
         path('loadajax/', login_required(UserView.loadajax), name='loadajax' ),
         path('loadajax2/', login_required(UserView.loadajax2), name='loadajax2' ),
         path('loadajax3/', login_required(UserView.loadajax3), name='loadajax3' ),
+        #20220131 ishna datatables reusable code trial
+        path('datatables/', login_required(UserView.datatables), name='datatables' ),
         #20220120 edward
         path('studiesjs/',login_required(UserView.studiesjs), name='studiesjs' ),
 

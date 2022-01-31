@@ -237,28 +237,30 @@ $(document).ready(function() {
     } );
 } );
 
-$(document).ready(function() {
-    // Setup - add a text input to each footer cell
-    $('#studydetailstable thead tr').clone(true).appendTo( '#studydetailstable thead' );
-    $('#studydetailstable thead tr:eq(1) th').each( function (i) {
-        var title = $(this).text();
-        $(this).html( '<input type="text" placeholder="Search" />' );
+// $(document).ready(function() {
+//     // Setup - add a text input to each footer cell
+//     $('#studydetailstable2 thead tr').clone(true).appendTo( '#studydetailstable2 thead' );
+//     $('#studydetailstable2 thead tr:eq(1) th').each( function (i) {
+//         var title = $(this).text();
+//         $(this).html( '<input type="text" placeholder="Search" />' );
  
-        $( 'input', this ).on( 'keyup change', function () {
-            if ( table.column(i).search() !== this.value ) {
-                table
-                    .column(i)
-                    .search( this.value )
-                    .draw();
-            }
-        } );
-    } );
+//         $( 'input', this ).on( 'keyup change', function () {
+//             alert('helloworld')
+//             if ( table.column(i).search() !== this.value ) {
+                
+//                 table
+//                     .column(i)
+//                     .search( this.value )
+//                     .draw();
+//             }
+//         } );
+//     } );
     
-    var table = $('#studydetailstable').DataTable( {
-        orderCellsTop: true,
-        fixedHeader: true,
-         "lengthMenu": [[-1, 10, 25, 50, 100], ["All", 10, 25, 50, 100]],
-         //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
+//     var table = $('#studydetailstable2').DataTable( {
+//         orderCellsTop: true,
+//         fixedHeader: true,
+//          "lengthMenu": [[-1, 10, 25, 50, 100], ["All", 10, 25, 50, 100]],
+//          //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
         
-    } );
-} );
+//     } );
+// } );
