@@ -81,6 +81,9 @@ from django.utils import timezone
 from UploadExcel.formstudies import *
 from time import time
 
+def datatables (request):
+    
+  return render(request, 'userT/datatables.html')
 
 def studiesjs(request):
 
@@ -97,18 +100,20 @@ def studiesjs(request):
         dfallnestedstudysorted = blsortdataframes(dfall,dfstudiescolumns) # sort dfall
         dfsortbystudy = dfallnestedstudysorted[dfallnestedstudysorted["StudyName"] == data ] #this value should be modular like phases, need to look up ajax more to get this to work
         #print(data)
-        print(dfsortbystudy)
+        # print(dfsortbystudy)
         dfstudieslist = dfsortbystudy.values.tolist()
-        print(dfstudieslist)
+        dfstudiesdict = dfsortbystudy.to_dict()
+        # print(dfstudiesdict)
         #print(dfstudieslist)
         
         #'dfstudieslist':json.dumps([{"data" :dfstudieslist}])
         nestedheader = ['Study Action No', 'Study Name' ,'Action With']
         context =   {
                     'dfstudieslist':dfstudieslist,
-                    'nestedheader' : nestedheader
+                    'nestedheader' : nestedheader,
+                    'dfstudiesdict': dfstudiesdict
                     }
-        #print('context',context)
+        # print('context',context)
     #'nestedheader' : nestedheader
     # JsonResponse(context,status=200)
     #return render(request, 'userT/inclnestedtable.html', context)
