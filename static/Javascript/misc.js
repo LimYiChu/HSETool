@@ -24,99 +24,74 @@ $(document).ready(function()
 
 
 
-function fadein(event, tableclick, tablepopup) {
-  var x = document.getElementById(tableclick);
-  var y = document.getElementById(tablepopup);
-  var data = event.currentTarget.firstElementChild.innerText
-  
-  x.style.animation = 'mymoveout .5s ease';
-  y.style.animation = 'slide-in .5s ease';
-  y.style.display = "block";
-
-    $.ajax({
-
-      url: "/studiesjs",
-      type : 'GET',
-      data : {
-        "data": data
-      },
-      success: function (response){
-        // $(".btn").text(response.buttontext)   
-        // alert("xyz")
-var dfstudieslist = response.dfstudieslist
-var nestedheader = response.nestedheader
-
-var newarray = new Array() ;
-
-newarray.push(nestedheader);
-
-for (let i = 0; i < dfstudieslist.length; i++) {
-  newarray.push(dfstudieslist[i])
-};
-
-var $table = $("#studydetailstable");
-$table.html(""); //needed to clear previous data from table upon second click
-
-//creating header
-var columnCount = newarray[0].length;
-var $thead = $('<thead>').addClass("thead-dark").appendTo($table);
-var $row = $($thead[0].insertRow(-1));
-for (var i = 0; i < columnCount; i++) {
-    var $headerCell = $("<th />");
-    $headerCell.html(newarray[0][i]);
-    $row.append($headerCell);
-}
-
-//creating body
-var $tbody = $('<tbody>').appendTo($table);
-for (var i = 1; i < newarray.length; i++) {
-  $row = $($tbody[0].insertRow(-1));
-  for (var j = 0; j < columnCount; j++) {
-      var $cell = $("<td />");
-      $cell.html(newarray[i][j]);
-      $row.append($cell);
-  }
-}
-
-//add dynamic table to existing div
-var $dvTable = $("#studydetails");
-$dvTable.append($table);
-
-
-// Setup - add a text input to each header cell
-$('#studydetailstable thead tr').clone(true).appendTo( '#studydetailstable thead' );
-$('#studydetailstable thead tr:eq(1) th').each( function (i) {
-    var title = $(this).text();
-    $(this).html( '<input type="text" placeholder="Search" />' );
-
-    $( 'input', this ).on( 'keyup change', function () {
-        // alert(this.value)
-        
-      if ( table.column(i).search() !== this.value ) {
-            table
-                .column(i)
-                .search( this.value )
-                .draw();
+function fadein(event, tableclick, tablepopup) { 
+  var x = document.getElementById(tableclick); 
+  var y = document.getElementById(tablepopup); 
+  var data = event.currentTarget.firstElementChild.innerText 
+  // alert(data) 
+  x.style.animation = 'mymoveout .5s ease'; 
+  y.style.animation = 'slide-in .5s ease'; 
+  y.style.display = "block"; 
+          $.ajax({  
+            url: "/studiesjs",  
+            type : 'GET',  
+            data : {  
+            "data": data  
+            },  
+            success: function (response){  
+            // $(".btn").text(response.buttontext)   
+            // alert("xyz")  
+            var dfstudieslist = response.dfstudieslist  
+            var nestedheader = response.nestedheader  
+            var dfstudiesdict = response.dfstudiesdict 
+            alert(dfstudieslist)
+            $(document).ready(function() {
+              $('table.raretable').each(function () {
+                var datatableid = '#' + $(this).attr('id');
+                $(datatableid + ' thead tr').clone(true).appendTo(datatableid + ' thead');
+                $(datatableid + ' thead tr:eq(1) th').each(function (i) {
+                    var title = $(this).text();
+                    $(this).html('<input type="text" placeholder="Search" />');
+                });
+              
+              $(datatableid).DataTable( { 
                 
-        }
-    } );
-} );
+                  data: dfstudieslist,                    
+                  "bDestroy":true, 
+                  columns: [ 
+                      { title: "Study Action No" ,"name" : "Study" }, 
+                      { title: "Study Name" }, 
+                      { title: "Action With" }, 
+                      { title: "test","name":"test", "visible": true },     
+                  ], 
+                  initComplete: function () {
+                    // Apply the search
+                    this.api().columns().every(function () {
+                        var that = this;
+                        $('input', this.header()).on('keyup change clear',
+                            function () {
+                                if (that.search() !== this.value) {
+                                    that
+                                        .search(this.value)
+                                        .draw();
+                                }
+                            });
+                    });
+                },
+                  "columnDefs": [ 
+                    { "targets" : [3], 
+                       "mRender": function ( data,row) { 
+                         return '<a href="/pmtrepviewall'+ '/' + data +'/view'+'">'+ data + '</a>'; 
+                       }}, 
+                  ] 
+              }); 
+            }); 
+          });
+          } 
+          }) 
+} 
 
-var table = $('#studydetailstable').DataTable( {
-    'destroy': true,
-    orderCellsTop: true,
-    fixedHeader: true,
-     "lengthMenu": [[-1, 10, 25, 50, 100], ["All", 10, 25, 50, 100]],
-     //"dom": '<"top"ifl>rt<"bottom"ip><"clear">',
-    
-} );
-
-        
-     
-    } 
-
-      })
-}
+ 
 
 function fadeout(tableclick,tablepopup) {
   var x = document.getElementById(tableclick);
