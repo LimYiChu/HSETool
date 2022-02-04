@@ -162,62 +162,6 @@
         </tbody>
     </table>
 </body>
-<script>
-    $(document).ready(function () {
-        $('table.display').DataTable();
 
-        var elmId = $(".show").attr("id");
-        alert(elmId);
-
-        //////////// footer search https://datatables.net/examples/api/multi_filter.html method //////////
-
-        // Setup - add a text input to each header cell
-        $('table.display thead th').each(function () {
-            var title = $(this).text();
-            $(this).html('<input type="text" placeholder="Search ' + title + '" />');
-
-        });
-
-        // // DataTable
-        // var table = $('table.display').DataTable({
-        //     initComplete: function () {
-        //         // Apply the search
-        //         this.api().columns().every(function () {
-
-        //             var that = this;
-
-
-        //             $('input', this.header()).on('keyup change clear', function () {
-        //                 if (that.search() !== this.value) {
-        //                     that
-        //                         .search(this.value)
-        //                         .draw();
-        //                 }
-        //             });
-        //         });
-        //     }
-        // });
-
-        /////////////// HS datatables.js method ///////////
-
-        // $('table.display thead tr').clone(true).appendTo('table.display thead');
-        // $('table.display thead tr:eq(1) th').each(function (i) {
-        //     var title = $(this).text();
-        //     $(this).html('<input type="text" placeholder="Search" />');
-
-        //     $('input', this).on('keyup change', function () {
-        //         // alert(this.value)
-
-        //         if (table.column(i).search() !== this.value) {
-        //             table
-        //                 .column(i)
-        //                 .search(this.value)
-        //                 .draw();
-
-        //         }
-        //     });
-        // });
-    });
-</script>
 
 </html>
