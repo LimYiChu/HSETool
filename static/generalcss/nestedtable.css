@@ -19,8 +19,7 @@
     background: white;
 }
 
-#studydetails,
-#studydetails2 {
+.popup {
     display: none;
     background-color: rgba(231, 231, 231, 0.589);
     padding-top: 50px;
@@ -30,15 +29,14 @@
     transform: translateX(100%); */
 }
 
-#original-table,
-#original-table2 {
+.tableclick {
     /* flex-grow: 1; */
     animation-fill-mode: forwards;
     animation: none;
 }
 
-#studydetailstable,
-#studydetailstable2 {
+
+.tablew100 {
     width: 100% !important;
 
 }
