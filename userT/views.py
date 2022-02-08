@@ -87,9 +87,6 @@ def datatables (request):
 
 def studiesjs(request):
 
-    # testing = ActionItems.objects.select_related().filter(StudyName__StudyName = 'RA - T and I activities during Monsoon').values('StudyActionNo')  
-    # print(testing)
-    # context = {'testing' : testing}
     if request.is_ajax and request.method == "GET":
         data = request.GET.get("data", None)
 
@@ -99,24 +96,17 @@ def studiesjs(request):
         dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format
         dfallnestedstudysorted = blsortdataframes(dfall,dfstudiescolumns) # sort dfall
         dfsortbystudy = dfallnestedstudysorted[dfallnestedstudysorted["StudyName"] == data ] #this value should be modular like phases, need to look up ajax more to get this to work
-        #print(data)
-        # print(dfsortbystudy)
+
         dfstudieslist = dfsortbystudy.values.tolist()
         dfstudiesdict = dfsortbystudy.to_dict()
-        # print(dfstudiesdict)
-        #print(dfstudieslist)
         
-        #'dfstudieslist':json.dumps([{"data" :dfstudieslist}])
-        nestedheader = ['Study Action No', 'Study Name' ,'Action With']
+        nestedheader = ['Study Action No', 'Study Name' ,'Action With','Action Link']
         context =   {
-                    'dfstudieslist':dfstudieslist,
+                    'dflist':dfstudieslist,
                     'nestedheader' : nestedheader,
                     'dfstudiesdict': dfstudiesdict
                     }
-        # print('context',context)
-    #'nestedheader' : nestedheader
-    # JsonResponse(context,status=200)
-    #return render(request, 'userT/inclnestedtable.html', context)
+     
         return JsonResponse(context,status=200)
     else:
         return render(request, 'userT/inclnestedtable.html')
