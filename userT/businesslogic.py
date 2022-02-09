@@ -1658,5 +1658,44 @@ def blstopcharttoday(content,testtotal,testclosed):
 
     return updatedcontent
 
+#20220209 edward 
+def blgetActionStuckAtdictnestedindisumm(allactions,email=False):
+    """This function gets where each action is currently at in terms of Actionee or Approver"""
+
+    lstActionDetails = []
+    lstgettriplet = []
+    
+    for items in allactions : 
+
+        # for x in lstoftableattributes: 
+        #     lstActionDetails.append(x)
+
+        strdis=items['Disipline'] # edward just using K-VP to identify & get the items
+        strsubdis=items['Subdisipline']
+        strorg=items['Organisation']
+
+        lstgettriplet = [strdis,strsubdis,strorg] 
+        lstofActioneeAppr = blgetSignotories (lstgettriplet)
+        
+        if items['QueSeries'] != 99 and (lstofActioneeAppr !=[]): #edward - looks at key QueSeries & its value pairs 
+            lststuckAt = lstofActioneeAppr[items['QueSeries']] #edward - uses QSeries to see which level in AR it is
+            print(lststuckAt)
+            #lstActionDetails.append("/".join(lststuckAt)) # edward using similar method as blgetActionstuckat to combine 
+            items['Action with'] = lststuckAt[1] # edward sort of appending this value to a key
+        else:
+            items['Action with'] = ("Closed") # if its 99 just have a tag closed 
+
+        
+        Actionee = ActionRoutes.mdlgetActioneeAppr.mgr_getactioneefromtriplet(lstgettriplet) # getting Actionee for each Item
+        items['Actionee'] = ((Actionee[0])['Actionee']) # just getting the Actionee from QuerySet
+
+        
+        
+        lstActionDetails =[]
+        allactionswithlocation = allactions
+        
+            
+    return allactionswithlocation
+
 
 

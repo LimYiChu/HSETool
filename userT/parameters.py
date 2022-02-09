@@ -74,4 +74,5 @@ dfrejectedcolumns = ['StudyActionNo','StudyName','ProjectPhase','Facility','Caus
 dfindisummcolumns = ["User","Pending Submission","Pending Approval"]
 #20220120 edward 
 dfstudiescolumns = ['StudyActionNo','StudyName','Action with','id']
+dfdisciplinecolumns = ['StudyActionNo','StudyName','discsuborg','id']
 
