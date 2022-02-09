@@ -1,6 +1,6 @@
 $(document).ready(function() {
     // Setup - add a text input to each footer cell
-    $('table.display').each(function () {
+    $('table.fixedtable').each(function () {
     var datatableid = '#' + $(this).attr('id');
     $(datatableid + ' thead tr').clone(true).appendTo(datatableid + ' thead'); //clone headers
     $(datatableid + ' thead tr:eq(1) th').each(function (i) {
@@ -50,7 +50,7 @@ function fadein(event, tableclick, tablepopup) {
                           "sTitle": nestedheader[i], 
                  }); 
               }; 
-            
+          
             $(document).ready(function() { 
               $('table.nestedtable').each(function () {
                 var datatableid = '#' + $(this).attr('id');

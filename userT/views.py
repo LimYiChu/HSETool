@@ -85,31 +85,31 @@ def datatables (request):
     
   return render(request, 'userT/datatables.html')
 
-def studiesjs(request):
+# def studiesjs(request):
 
-    if request.is_ajax and request.method == "GET":
-        data = request.GET.get("data", None)
+#     if request.is_ajax and request.method == "GET":
+#         data = request.GET.get("data", None)
+#         print(data)
+#         all_actions =   ActionItems.objects.all().values()
+#         all_actionwithfk = blannotatefktomodel(all_actions)
+#         dfalllist = blgetActionStuckAtdict(all_actionwithfk) # getting a list of everything
+#         dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format
+#         dfallnestedstudysorted = blsortdataframes(dfall,dfstudiescolumns) # sort dfall
+#         dfsortbystudy = dfallnestedstudysorted[dfallnestedstudysorted["StudyName"] == data ] #this value should be modular like phases, need to look up ajax more to get this to work
 
-        all_actions =   ActionItems.objects.all().values()
-        all_actionwithfk = blannotatefktomodel(all_actions)
-        dfalllist = blgetActionStuckAtdict(all_actionwithfk) # getting a list of everything
-        dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format
-        dfallnestedstudysorted = blsortdataframes(dfall,dfstudiescolumns) # sort dfall
-        dfsortbystudy = dfallnestedstudysorted[dfallnestedstudysorted["StudyName"] == data ] #this value should be modular like phases, need to look up ajax more to get this to work
-
-        dfstudieslist = dfsortbystudy.values.tolist()
-        dfstudiesdict = dfsortbystudy.to_dict()
+#         dfstudieslist = dfsortbystudy.values.tolist()
+#         dfstudiesdict = dfsortbystudy.to_dict()
         
-        nestedheader = ['Study Action No', 'Study Name' ,'Action With','Action Link']
-        context =   {
-                    'dflist':dfstudieslist,
-                    'nestedheader' : nestedheader,
-                    'dfstudiesdict': dfstudiesdict
-                    }
+#         nestedheader = ['Study Action No', 'Study Name' ,'Action With','Action Link']
+#         context =   {
+#                     'dflist':dfstudieslist,
+#                     'nestedheader' : nestedheader,
+#                     'dfstudiesdict': dfstudiesdict
+#                     }
      
-        return JsonResponse(context,status=200)
-    else:
-        return render(request, 'userT/inclnestedtable.html')
+#         return JsonResponse(context,status=200)
+#     else:
+#         return render(request, 'userT/inclnestedstudytable.html')
      
     
 

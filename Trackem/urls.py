@@ -29,7 +29,9 @@ from UploadExcel.admin import delegatedadmin_site
 import debug_toolbar
 # from Tenant.views import our_team
 from rest_framework import routers
-# TESTING THAT ONLY THIS GOES THROUGH demonstration for HS
+#20220209 edward nestedviews
+from userT import nestedviews 
+
 router = routers.DefaultRouter()
 router.register ('ActionItems', UserView.anyView)
 urlpatterns = [
@@ -107,9 +109,7 @@ urlpatterns = [
         path('loadajax3/', login_required(UserView.loadajax3), name='loadajax3' ),
         #20220131 ishna datatables reusable code trial
         path('datatables/', login_required(UserView.datatables), name='datatables' ),
-        #20220120 edward
-        path('studiesjs/',login_required(UserView.studiesjs), name='studiesjs' ),
-
+        
         #following url for reporting
         path('actionstatus/', login_required(UserView.rptoverallStatus), name='actionstatus' ),
         path('repoverallexcel/', login_required(UserView.repoverallexcel), name='repoverallexcel' ),
@@ -148,7 +148,12 @@ urlpatterns = [
         path('readsqltable/',login_required(UploadV.readsqltable), name='readsqltable'),
         #edward 20211122
         path('stitchpdf/', login_required(UserView.stitchpdf), name='stitchpdf' ),
-
+        #20220120 edward
+        # path('studiesjs/',login_required(UserView.studiesjs), name='studiesjs' ),
+        #20220209 edward nestedviews
+        path('nestedstudy/',login_required(nestedviews.nestedstudy), name='nestedstudy' ),
+        path('nestedindisumm/',login_required(nestedviews.nestedindisumm), name='nestedindisumm' ),
+        path('nesteddiscipline/',login_required(nestedviews.nesteddiscipline), name='nesteddiscipline' ),
         
       ]
 
