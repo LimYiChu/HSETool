@@ -30,7 +30,7 @@ function fadein(event, tableclick, tablepopup) {
     var x = document.getElementById(tableclick);  
     var y = document.getElementById(tablepopup);  
     var data = event.currentTarget.firstElementChild.innerText  
-    // alert(data)  
+    
     x.style.animation = 'mymoveout .5s ease';  
     y.style.animation = 'slide-in .5s ease';  
     y.style.display = "block";  
@@ -54,11 +54,13 @@ function fadein(event, tableclick, tablepopup) {
             $(document).ready(function() { 
               $('table.nestedtable').each(function () {
                 var datatableid = '#' + $(this).attr('id');
-  
+                
                 if ( $.fn.dataTable.isDataTable(datatableid) ) {
                   $(datatableid).DataTable().destroy();
                   $(datatableid).empty();
                 }
+                
+                $('.caption').html(data);
                 
                 var table = $(datatableid).DataTable( {  
                     data: dflist,      
