@@ -142,7 +142,7 @@ def nesteddiscipline(request):
         all_actionwithfk = blannotatefktomodel(all_actions)
         dfalllist = blgetActionStuckAtdictnestedindisumm(all_actionwithfk) # getting a list of everything
         dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format
-        dfall['discsuborg']=dfall['Disipline'].astype(str)+'/'+dfall['Subdisipline']+'/'+dfall['Organisation'] # combining discsuborg
+        dfall['discsuborg']=dfall['Disipline']+'/'+dfall['Subdisipline']+'/'+dfall['Organisation'] # combining discsuborg
         dfallnestedstudysorted = blsortdataframes(dfall,dfdisciplinecolumns) # sort dfall
         dfsortbydiscipline = dfallnestedstudysorted[dfallnestedstudysorted["discsuborg"] == data ] #this value should be modular like phases, need to look up ajax more to get this to work
         dfdisclist =  dfsortbydiscipline.values.tolist()
