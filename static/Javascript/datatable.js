@@ -26,14 +26,15 @@ $(document).ready(function() {
 } );
 })
 
-function fadein(event, tableclick, tablepopup) {  
-    var x = document.getElementById(tableclick);  
-    var y = document.getElementById(tablepopup);  
+function fadein(event, that, tablepopup) {    
+    var $x = $($(that).closest('div .divclick'));
+    var $y = $($(that).closest('div .divclick').siblings('.popup'));  
+    $x.css("animaton", "mymoveout .5s ease");
+    $y.css("animation", "slide-in .5s ease");
+    $y.css("display", "block");
+
     var data = event.currentTarget.firstElementChild.innerText  
     
-    x.style.animation = 'mymoveout .5s ease';  
-    y.style.animation = 'slide-in .5s ease';  
-    y.style.display = "block";  
             $.ajax({   
               url: "/" + tablepopup,   
               type : 'GET',   
@@ -51,7 +52,6 @@ function fadein(event, tableclick, tablepopup) {
                  }); 
               }; 
           
-            $(document).ready(function() { 
               $('table.nestedtable').each(function () {
                 var datatableid = '#' + $(this).attr('id');
                 
@@ -67,9 +67,9 @@ function fadein(event, tableclick, tablepopup) {
                                    
                   "aoColumns": dynamicheaders, 
                   "columnDefs": [  
-                    { "targets" : [3],  
-                        "mRender": function ( data,row) {  
-                          return '<a href="/pmtrepviewall'+ '/' + data +'/view'+'">'+ "Go to Action" + '</a>';  
+                    { "targets" : [0],  
+                        "mRender": function ( data,row,column) {  
+                          return '<a href="/pmtrepviewall'+ '/' + column[3] +'/view'+'">'+ data + '</a>';  
                         }},  
                   ],
                   "bDestroy":true, 
@@ -91,18 +91,33 @@ function fadein(event, tableclick, tablepopup) {
                 } );
                 
               });  
-            }); 
-  
+            
             }  
           })  
 }
   
-function fadeout(tableclick,tablepopup) {
-    var x = document.getElementById(tableclick);
-    var y = document.getElementById(tablepopup);
-    x.style.animation = 'mymovein 2.5s ease';
-    y.style.animtion = 'slide-out .5s ease';
+function fadeout(that) {
+
+    var $x = $($(that).closest('div .popup').siblings('.divclick'));
+    var $y = $($(that).closest('div .popup'))
+    $x.css("animaton", "mymovein 2.5s ease")
+    $y.css("animation", "slide-out .5s ease");
     setTimeout(() => {
-      y.style.display = 'none';
+      $y.css("display", "none");
     }, 500);
 }
+
+$( document ).ready(function() {
+  $( '.tablinks' ).click(function() {
+    var $x = $('.divclick');
+    var $y = $('.popup');
+    if($y.css('display') !== 'none')
+    { 
+      $x.css("animaton", "mymovein 2.5s ease")
+      $y.css("animation", "slide-out .5s ease");
+      setTimeout(() => {
+        $y.css("display", "none");
+      }, 500);
+    }
+  });
+});

@@ -30,7 +30,7 @@ import debug_toolbar
 # from Tenant.views import our_team
 from rest_framework import routers
 #20220209 edward nestedviews
-from userT import nestedviews 
+from userT import viewsnested 
 
 router = routers.DefaultRouter()
 router.register ('ActionItems', UserView.anyView)
@@ -151,9 +151,9 @@ urlpatterns = [
         #20220120 edward
         # path('studiesjs/',login_required(UserView.studiesjs), name='studiesjs' ),
         #20220209 edward nestedviews
-        path('nestedstudy/',login_required(nestedviews.nestedstudy), name='nestedstudy' ),
-        path('nestedindisumm/',login_required(nestedviews.nestedindisumm), name='nestedindisumm' ),
-        path('nesteddiscipline/',login_required(nestedviews.nesteddiscipline), name='nesteddiscipline' ),
+        path('nestedstudy/',login_required(viewsnested.nestedstudy), name='nestedstudy' ),
+        path('nestedindisumm/',login_required(viewsnested.nestedindisumm), name='nestedindisumm' ),
+        path('nesteddiscipline/',login_required(viewsnested.nesteddiscipline), name='nesteddiscipline' ),
         
       ]
 
