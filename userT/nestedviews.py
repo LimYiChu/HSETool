@@ -88,15 +88,19 @@ def nestedstudy(request):
 
         all_actions =   ActionItems.objects.all().values()
         all_actionwithfk = blannotatefktomodel(all_actions)
-        dfalllist = blgetActionStuckAtdict(all_actionwithfk) # getting a list of everything
+        all_actionsopt = bladdriskelements(all_actionwithfk)
+        dfalllist = blgetActionStuckAtdict(all_actionsopt) # getting a list of everything
         dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format
+        dfall['discsuborg']=dfall['Disipline']+'/'+dfall['Subdisipline']+'/'+dfall['Organisation']
         dfallnestedstudysorted = blsortdataframes(dfall,dfstudiescolumns) # sort dfall
         dfsortbystudy = dfallnestedstudysorted[dfallnestedstudysorted["StudyName"] == data ] #this value should be modular like phases, need to look up ajax more to get this to work
+        print(all_actionsopt)
         
         dfstudieslist = dfsortbystudy.values.tolist()
         dfstudiesdict = dfsortbystudy.to_dict()
+        print(dfsortbystudy)
         
-        nestedheader = ['Study Action No', 'Study Name' ,'Action With','Action Link']
+        nestedheader = ['Study Action No', 'DueDate' ,'Action With','Discipline','Initial Risk']
         context =   {
                     'dflist':dfstudieslist,
                     'nestedheader' : nestedheader,
@@ -117,12 +121,13 @@ def nestedindisumm(request):
         all_actionwithfk = blannotatefktomodel(all_actions)
         dfalllist = blgetActionStuckAtdictnestedindisumm(all_actionwithfk) # getting a list of everything
         dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format
-        dfallindisummsorted = blsortdataframes(dfall,dfstudiescolumns) # sort dfall
+        dfall['discsuborg']=dfall['Disipline']+'/'+dfall['Subdisipline']+'/'+dfall['Organisation'] # combining discsuborg
+        dfallindisummsorted = blsortdataframes(dfall,dfindinestedcolumns) # sort dfall
         dfsortbyindi = dfallindisummsorted[dfallindisummsorted["Action with"] == data ] #this value should be modular like phases, need to look up ajax more to get this to work
-      
+        print(dfsortbyindi)
         dfindisummlist = dfsortbyindi.values.tolist()
- 
-        nestedheader = ['Study Action No', 'Study Name' ,'Action With','Action Link']
+  # 'Study Action No', 'Study Name' ,'Action With'
+        nestedheader = ['StudyActionNo','DueDate','Study Name','Discipline','Initial Risk']
         context =   {
                     'dflist':dfindisummlist,
                     'nestedheader' : nestedheader,
@@ -147,7 +152,7 @@ def nesteddiscipline(request):
         dfsortbydiscipline = dfallnesteddisciplinesorted[dfallnesteddisciplinesorted["discsuborg"] == data ] #this value should be modular like phases, need to look up ajax more to get this to work
         dfdisclist =  dfsortbydiscipline.values.tolist()
         
-        nestedheader = ['Study Action No', 'Study Name' ,'Discipline' ,'Action Link']
+        nestedheader = ['Study Action No', 'Study Name' ,'Due Date','Action with' ]
         context =   {
                     'dflist':dfdisclist,
                     'nestedheader' : nestedheader,

@@ -67,9 +67,9 @@ function fadein(event, tableclick, tablepopup) {
                                    
                   "aoColumns": dynamicheaders, 
                   "columnDefs": [  
-                    { "targets" : [3],  
-                        "mRender": function ( data,row) {  
-                          return '<a href="/pmtrepviewall'+ '/' + data +'/view'+'">'+ "Go to Action" + '</a>';  
+                    { "targets" : [0],  
+                        "mRender": function ( data,row,column) {  
+                          return '<a href="/pmtrepviewall'+ '/' + column[5]+'/view'+'">'+ data + '</a>';  
                         }},  
                   ],
                   "bDestroy":true, 
