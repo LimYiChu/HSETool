@@ -81,6 +81,7 @@ from django.utils import timezone
 from UploadExcel.formstudies import *
 from time import time
 
+
 def nestedstudy(request):
 
     if request.is_ajax and request.method == "GET":
@@ -94,18 +95,24 @@ def nestedstudy(request):
         dfall['discsuborg']=dfall['Disipline']+'/'+dfall['Subdisipline']+'/'+dfall['Organisation']
         dfallnestedstudysorted = blsortdataframes(dfall,dfstudiescolumns) # sort dfall
         dfsortbystudy = dfallnestedstudysorted[dfallnestedstudysorted["StudyName"] == data ] #this value should be modular like phases, need to look up ajax more to get this to work
-        print(all_actionsopt)
         
         dfstudieslist = dfsortbystudy.values.tolist()
         dfstudiesdict = dfsortbystudy.to_dict()
-        print(dfsortbystudy)
         
+        lstofcount = blnestedchart(dfsortbystudy)
+        countclosed = lstofcount[0]
+        countopen = lstofcount[1]
+       
         nestedheader = ['Study Action No', 'DueDate' ,'Action With','Discipline','Initial Risk']
-        context =   {
-                    'dflist':dfstudieslist,
-                    'nestedheader' : nestedheader,
-                    'dfstudiesdict': dfstudiesdict
-                    }
+
+        context = {
+        'dflist':dfstudieslist,
+        'nestedheader' : nestedheader,
+        'dfstudiesdict': dfstudiesdict,
+        'donutclose' : countclosed,
+        'donutopen' : countopen,
+
+        }
      
         return JsonResponse(context,status=200)
     else:
@@ -119,14 +126,14 @@ def nestedindisumm(request):
 
         all_actions =   ActionItems.objects.all().values()
         all_actionwithfk = blannotatefktomodel(all_actions)
-        dfalllist = blgetActionStuckAtdictnestedindisumm(all_actionwithfk) # getting a list of everything
+        all_actionswithrisk = bladdriskelements(all_actionwithfk)
+        dfalllist = blgetActionStuckAtdictnestedindisumm(all_actionswithrisk) # getting a list of everything
         dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format
         dfall['discsuborg']=dfall['Disipline']+'/'+dfall['Subdisipline']+'/'+dfall['Organisation'] # combining discsuborg
         dfallindisummsorted = blsortdataframes(dfall,dfindinestedcolumns) # sort dfall
         dfsortbyindi = dfallindisummsorted[dfallindisummsorted["Action with"] == data ] #this value should be modular like phases, need to look up ajax more to get this to work
-        print(dfsortbyindi)
         dfindisummlist = dfsortbyindi.values.tolist()
-  # 'Study Action No', 'Study Name' ,'Action With'
+        print(dfsortbyindi)
         nestedheader = ['StudyActionNo','DueDate','Study Name','Discipline','Initial Risk']
         context =   {
                     'dflist':dfindisummlist,
@@ -145,17 +152,23 @@ def nesteddiscipline(request):
 
         all_actions =   ActionItems.objects.all().values()
         all_actionwithfk = blannotatefktomodel(all_actions)
-        dfalllist = blgetActionStuckAtdictnestedindisumm(all_actionwithfk) # getting a list of everything
+        dfalllist = blgetActionStuckAtdict(all_actionwithfk) # getting a list of everything
         dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format
         dfall['discsuborg']=dfall['Disipline']+'/'+dfall['Subdisipline']+'/'+dfall['Organisation'] # combining discsuborg
         dfallnesteddisciplinesorted = blsortdataframes(dfall,dfdisciplinecolumns) # sort dfall
         dfsortbydiscipline = dfallnesteddisciplinesorted[dfallnesteddisciplinesorted["discsuborg"] == data ] #this value should be modular like phases, need to look up ajax more to get this to work
         dfdisclist =  dfsortbydiscipline.values.tolist()
-        
+
+        lstofcount = blnestedchart(dfsortbydiscipline)
+        countclosed = lstofcount[0]
+        countopen = lstofcount[1]
+
         nestedheader = ['Study Action No', 'Study Name' ,'Due Date','Action with' ]
         context =   {
                     'dflist':dfdisclist,
                     'nestedheader' : nestedheader,
+                    'donutclose' : countclosed,
+                    'donutopen' : countopen,
                     }
      
         return JsonResponse(context,status=200)
