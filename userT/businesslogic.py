@@ -29,10 +29,10 @@ from django.db.models import F
 #20220217 edward nested charts
 def blnestedchart(dfsorted):
     """ This function gets the count of how many closed & open actions for the nested charts"""
-
-    dfsorted.loc[dfsorted['Action with'] == 'Closed','Closed Action'] = 'Closed'
-    dfsorted.loc[dfsorted['Action with'].str.contains('Closed') == False,'Open Action'] = 'Open'
-    dfcloseopen = blsortdataframes(dfsorted,dfdonutcolumns)
+    dfcopysorted = dfsorted.copy()
+    dfcopysorted.loc[dfcopysorted['Action with'] == 'Closed','Closed Action'] = 'Closed' 
+    dfcopysorted.loc[dfcopysorted['Action with'].str.contains('Closed') == False,'Open Action'] = 'Open'
+    dfcloseopen = blsortdataframes(dfcopysorted,dfdonutcolumns)
     dfcloseopenlist = dfcloseopen.values.tolist()
     flat_list = [item for sublist in dfcloseopenlist for item in sublist]
     dfcountclosed = flat_list.count('Closed')
