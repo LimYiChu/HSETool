@@ -148,3 +148,7 @@ div.sticky {
 .subtext-font {
   font-size: 0.8rem;
 }
+
+table.sticky thead th {
+  min-width: 51px !important;
+}

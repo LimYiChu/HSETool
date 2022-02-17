@@ -26,6 +26,11 @@ $(document).ready(function() {
 } );
 })
 
+function launchtable(that, event, tablepopup) {
+  fadein(that);
+  ajaxcall(event,tablepopup);
+}
+
 function fadein(that) {    
 var $x = $($(that).closest('div .divclick'));
 var $y = $($(that).closest('div .divclick').siblings('.popup'));  
@@ -73,47 +78,33 @@ $('table.nestedtable').each(function () {
   
   var table = $(datatableid).DataTable( {  
       data: dflist,      
-             
+                      
     "aoColumns": dynamicheaders, 
     "columnDefs": [  
-      {
-        
-        
-
-     "targets" : [0],
+      { "targets" : [0],  
           "mRender": function ( data,row,column) {  
             return '<a href="/pmtrepviewall'+ '/' + column[5]+'/view'+'">'+ data + '</a>';  
-            
           }},  
-          
-          
-          
     ],
     "bDestroy":true, 
     orderCellsTop: true,
     "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
-
     "createdRow": function( row, data, dataIndex,column ) {
 
-        if ( data[6] == 'Red'){
-          return $(column[4]).addClass( 'table-danger' )}
+      if ( data[6] == 'Red'){
+        return $(column[4]).addClass( 'table-danger' )}
 
-        else if ( data[6] == 'Yellow'){
-          return $(column[4]).addClass( 'table-warning' )}
+      else if ( data[6] == 'Yellow'){
+        return $(column[4]).addClass( 'table-warning' )}
 
-        else if ( data[6] == 'Green'){
-          return $(column[4]).addClass( 'table-success' );
-        
-    
-    }
-    },
-    
+      else if ( data[6] == 'Green'){
+        return $(column[4]).addClass( 'table-success' );
+      
+  
+  }
+  },
   });  
-
   
-  
-  // $(datatableid).children("td").first().css({"background-color":"#C94BCB"}); // Choose your color!
-
   $(datatableid + ' thead tr').clone(false).appendTo(datatableid + ' thead'); //clone headers
   $(datatableid + ' thead tr:eq(1) th').each(function (i) {
   $(this).html( '<input type="text" placeholder="Search" class="column_search" />' );
@@ -129,31 +120,51 @@ $('table.nestedtable').each(function () {
 });  
 }
 
-
 function donutchart(response) {
 google.charts.load("current", {packages:["corechart"]});
 google.charts.setOnLoadCallback(drawChart);
-function drawChart() {
- 
-  var donutclose = response.donutclose
-  var donutopen = response.donutopen
 
-  var data = google.visualization.arrayToDataTable([
-    ['Status', 'Number'],
-    donutclose,
-    donutopen,
-  ]);
+  function drawChart() {
   
-  var options = {
-    title: 'My Daily Activities',
-    pieHole: 0.4,
-  };
+    var donutclose = response.donutclose
+    var donutopen = response.donutopen
 
-  var chart = new google.visualization.PieChart(document.getElementById('donutchart1'));
-  chart.draw(data, options);
-}
-}
+    var data = google.visualization.arrayToDataTable([
+      ['Status', 'Number'],
+      donutclose,
+      donutopen,
+    ]);
 
+    var options = {
+      width: 500,
+      height: 200,
+      backgroundColor: '#f3f2f2',
+      pieHole: 0.4,
+      pieSliceText: 'value',
+      tooltip: {text: 'value'},
+      chartArea : { width:'100%',height:'90%', left: '50%'},
+      legend : {position:'left'}
+    };
+    // var div = document.getElementsByClassName('donutchart');
+    // var g = document.createElement('div');
+    // g.id = 'chart1';
+    // div.append(g);
+    // var $div = $('.donutchart')
+    
+    // var $div = $('.donutchart').html('')
+    // $("<div/>").attr('id','chart1').appendTo($div);
+
+    // $('.donutchart').each(function () {
+    //   var donutchart = '#' + $(this).attr('id');
+    // var div = document.getElementById(donutchart)
+
+    var chart = new google.visualization.PieChart(document.getElementById('chart1'));
+    var chart2 = new google.visualization.PieChart(document.getElementById('chart2'));
+    chart.draw(data, options);
+    chart2.draw(data, options);
+    // })
+  }
+}
 
 function fadeout(that) {
 
@@ -168,7 +179,7 @@ function fadeout(that) {
 
 $( document ).ready(function() {
   $( '.tablinks' ).each(function() {
-    $(this).on("click", function(){   //add .each maybe?
+    $(this).on("click", function(){   
     var $x = $('.divclick');
     var $y = $('.popup');
     if($y.css('display') !== 'none')

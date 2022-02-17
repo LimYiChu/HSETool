@@ -191,7 +191,7 @@
                         <tbody>
                           {% for items in lstbyWorkshop%}
 
-                          <tr onclick="fadein(this); ajaxcall(event,'nestedstudy');">
+                          <tr class="clickable" onclick="launchtable(this, event, 'nestedstudy');">
                             <td class="firstcell"><a class="article-title">{{items.0}}</a></td>
 
                             <td> {{items.1}} </td>
@@ -236,7 +236,8 @@
                         </thead>
                         <tbody>
                           {% for items in lstbyDisc%}
-                            <tr onclick="fadein(this); ajaxcall(event,'nesteddiscipline');">
+                          <tr class="clickable" onclick="launchtable(this, event, 'nesteddiscipline');">
+
                             <td class="firstcell"><a class="article-title">{{items.0}}</a></td>
                             <td>{{items.1}}</td>
 
@@ -341,7 +342,7 @@
                           {%for items in listaggregatedindi%}
 
 
-                          <tr onclick="fadein(this); ajaxcall(event,'nestedindisumm');">
+                          <tr class="clickable" onclick="launchtable(this, event, 'nestedindisumm');">
                             <td width="25%" class="firstcell"><a class="article-title">{{items.0}}</a></td>
 
                             <td>{{items.1}}</td>
