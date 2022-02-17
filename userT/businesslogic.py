@@ -25,6 +25,25 @@ from userT.pdfgenerator import *
 import shutil
 # edward 20210929 fk
 from django.db.models import F
+
+#20220217 edward nested charts
+def blnestedchart(dfsorted):
+    """ This function gets the count of how many closed & open actions for the nested charts"""
+
+    dfsorted.loc[dfsorted['Action with'] == 'Closed','Closed Action'] = 'Closed'
+    dfsorted.loc[dfsorted['Action with'].str.contains('Closed') == False,'Open Action'] = 'Open'
+    dfcloseopen = blsortdataframes(dfsorted,dfdonutcolumns)
+    dfcloseopenlist = dfcloseopen.values.tolist()
+    flat_list = [item for sublist in dfcloseopenlist for item in sublist]
+    dfcountclosed = flat_list.count('Closed')
+    dfcountopen = flat_list.count('Open')
+    lstofcount =[]
+    countclosed = ['Closed', dfcountclosed]
+    countopen = ['Open', dfcountopen]
+    lstofcount.append(countclosed)
+    lstofcount.append(countopen)
+    
+    return lstofcount
     
 #edward 20211210 7 & 14 days
 # def blexceedholdtime(ActioneeActions,Approver_R,queActionee,reducedfileds):

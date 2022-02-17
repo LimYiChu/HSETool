@@ -105,8 +105,11 @@ urlpatterns = [
         re_path(r'multiplefiles/(?P<forkeyid>\d+)$', login_required(UserView.multiplefiles), name='multiplefiles' ),
         
         path('loadajax/', login_required(UserView.loadajax), name='loadajax' ),
-        path('loadajax2/', login_required(UserView.loadajax2), name='loadajax2' ),
-        path('loadajax3/', login_required(UserView.loadajax3), name='loadajax3' ),
+
+        #20220217 edward commented bcs moved loadajax 2 & 3 to scrap -- tp be deleted a week from now
+        # path('loadajax2/', login_required(UserView.loadajax2), name='loadajax2' ),
+        # path('loadajax3/', login_required(UserView.loadajax3), name='loadajax3' ),
+        
         #20220131 ishna datatables reusable code trial
         path('datatables/', login_required(UserView.datatables), name='datatables' ),
         

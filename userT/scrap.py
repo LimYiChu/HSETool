@@ -1,3 +1,63 @@
+ #20220217 edward from views.py 
+
+ # def loadajax2 (request):
+
+   
+
+#     if (request.is_ajax ()):
+#         #ID= form2.instance.id
+#         print (request.GET.get('button_text'))
+#         t=50
+#         print ("INHEREERERERE22222222222")
+
+        
+#         return JsonResponse({'buttontext': "Hi i am new"},status=200)
+#     else :
+
+#         return render(request, 'userT/loadajax.html')
+
+# def loadajax3 (request):
+
+   
+
+#     if (request.is_ajax ()):
+#         #ID= form2.instance.id
+#         print (request.GET.get('button_text'))
+       
+#         context =   {
+#                     'abc':"abc",
+#                     'xyz' : "xyz"
+#                     }
+#         return JsonResponse({'context':context},status=200)
+#     else :
+
+#         return render(request, 'userT/loadajax.html')
+ # def studiesjs(request):
+
+#     if request.is_ajax and request.method == "GET":
+#         data = request.GET.get("data", None)
+#         print(data)
+#         all_actions =   ActionItems.objects.all().values()
+#         all_actionwithfk = blannotatefktomodel(all_actions)
+#         dfalllist = blgetActionStuckAtdict(all_actionwithfk) # getting a list of everything
+#         dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format
+#         dfallnestedstudysorted = blsortdataframes(dfall,dfstudiescolumns) # sort dfall
+#         dfsortbystudy = dfallnestedstudysorted[dfallnestedstudysorted["StudyName"] == data ] #this value should be modular like phases, need to look up ajax more to get this to work
+
+#         dfstudieslist = dfsortbystudy.values.tolist()
+#         dfstudiesdict = dfsortbystudy.to_dict()
+        
+#         nestedheader = ['Study Action No', 'Study Name' ,'Action With','Action Link']
+#         context =   {
+#                     'dflist':dfstudieslist,
+#                     'nestedheader' : nestedheader,
+#                     'dfstudiesdict': dfstudiesdict
+#                     }
+     
+#         return JsonResponse(context,status=200)
+#     else:
+#         return render(request, 'userT/inclnestedstudytable.html')
+
  #20220124
  # if form_class :
     #     newcloseouttemplate = f'{closeouttemplate}{form_class}{ApproverLevel}{".pdf"}' if ApproverLevel == 5 or ApproverLevel == 7  else  f'{closeouttemplate}{form_class}{".pdf"}'  

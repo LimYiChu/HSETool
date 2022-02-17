@@ -83,35 +83,7 @@ from time import time
 
 def datatables (request):
     
-  return render(request, 'userT/datatables.html')
-
-# def studiesjs(request):
-
-#     if request.is_ajax and request.method == "GET":
-#         data = request.GET.get("data", None)
-#         print(data)
-#         all_actions =   ActionItems.objects.all().values()
-#         all_actionwithfk = blannotatefktomodel(all_actions)
-#         dfalllist = blgetActionStuckAtdict(all_actionwithfk) # getting a list of everything
-#         dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format
-#         dfallnestedstudysorted = blsortdataframes(dfall,dfstudiescolumns) # sort dfall
-#         dfsortbystudy = dfallnestedstudysorted[dfallnestedstudysorted["StudyName"] == data ] #this value should be modular like phases, need to look up ajax more to get this to work
-
-#         dfstudieslist = dfsortbystudy.values.tolist()
-#         dfstudiesdict = dfsortbystudy.to_dict()
-        
-#         nestedheader = ['Study Action No', 'Study Name' ,'Action With','Action Link']
-#         context =   {
-#                     'dflist':dfstudieslist,
-#                     'nestedheader' : nestedheader,
-#                     'dfstudiesdict': dfstudiesdict
-#                     }
-     
-#         return JsonResponse(context,status=200)
-#     else:
-#         return render(request, 'userT/inclnestedstudytable.html')
-     
-    
+  return render(request, 'userT/datatables.html')   
 
 def base3 (request):
     """This function is to view base3.html while editing the html"""
@@ -140,38 +112,7 @@ def loadajax (request):
 
         return render(request, 'userT/loadajax.html')
 
-def loadajax2 (request):
 
-   
-
-    if (request.is_ajax ()):
-        #ID= form2.instance.id
-        print (request.GET.get('button_text'))
-        t=50
-        print ("INHEREERERERE22222222222")
-
-        
-        return JsonResponse({'buttontext': "Hi i am new"},status=200)
-    else :
-
-        return render(request, 'userT/loadajax.html')
-
-def loadajax3 (request):
-
-   
-
-    if (request.is_ajax ()):
-        #ID= form2.instance.id
-        print (request.GET.get('button_text'))
-       
-        context =   {
-                    'abc':"abc",
-                    'xyz' : "xyz"
-                    }
-        return JsonResponse({'context':context},status=200)
-    else :
-
-        return render(request, 'userT/loadajax.html')
 
 
 class anyView(viewsets.ModelViewSet):
@@ -1359,6 +1300,7 @@ def repPMTExcel (request,phase=""):
     #this sequence is important otherwise doesnt work
     phaseswithrisk = bladdriskelements(dictofallactions)
     dictofallactions    = blgetdictActionStuckAt(phaseswithrisk)
+    
     
     #edward 20211001 pd allactions
     all_actions =   ActionItems.objects.all().values()
