@@ -87,19 +87,16 @@ def dynamicstudies(request):
     if request.is_ajax and request.method == "GET":
         data = request.GET.get("data", None)
 
-        all_actions =   ActionItems.objects.all().values()
-        all_actionwithfk = blannotatefktomodel(all_actions)
-        all_actionsopt = bladdriskelements(all_actionwithfk)
-        dfalllist = blgetActionStuckAtdict(all_actionsopt) # getting a list of everything
-        dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format
+        actionsbystudy = blgetactionsitemsbystudiesQ(studies=data,reducedfields="") #getting actions based on studies filter
+        actionswithrisk = bladdriskelements(actionsbystudy) 
+        actionsstuckat = blgetActionStuckAtdict(actionswithrisk) # getting a list of everything
+
+        dfall = pd.DataFrame.from_dict(actionsstuckat) #puts it into df columns format
         dfall['discsuborg']=dfall['Disipline']+'/'+dfall['Subdisipline']+'/'+dfall['Organisation']
         dfalldynamicstudiessorted = blsortdataframes(dfall,dfstudiescolumns) # sort dfall
-        dfsortbystudy = dfalldynamicstudiessorted[dfalldynamicstudiessorted["StudyName"] == data ] #this value should be modular like phases, need to look up ajax more to get this to work
+        dfstudieslist = dfalldynamicstudiessorted.values.tolist()
         
-        dfstudieslist = dfsortbystudy.values.tolist()
-        dfstudiesdict = dfsortbystudy.to_dict()
-        
-        lstofcount = bldynamicchart(dfsortbystudy)
+        lstofcount = bldynamicchart(dfalldynamicstudiessorted)
         countclosed = lstofcount[0]
         countopen = lstofcount[1]
        
@@ -108,10 +105,8 @@ def dynamicstudies(request):
         context = {
         'dflist':dfstudieslist,
         'headerlist' : headerlist,
-        'dfstudiesdict': dfstudiesdict,
         'donutclose' : countclosed,
         'donutopen' : countopen,
-
         }
      
         return JsonResponse(context,status=200)
