@@ -191,7 +191,7 @@
                         <tbody>
                           {% for items in lstbyWorkshop%}
 
-                          <tr class="clickable" onclick="launchtable(this, event, 'nestedstudy');">
+                          <tr class="clickable" onclick="launchtable(this, event, 'dynamicstudies');">
                             <td class="firstcell"><a class="article-title">{{items.0}}</a></td>
 
                             <td> {{items.1}} </td>
@@ -206,7 +206,7 @@
                       </table>
                     </div>
 
-                    {%include "userT/inclnestedstudytable.html"%}
+                    {%include "userT/incldynamicstudies.html"%}
                   </div>
 
 
@@ -236,7 +236,7 @@
                         </thead>
                         <tbody>
                           {% for items in lstbyDisc%}
-                          <tr class="clickable" onclick="launchtable(this, event, 'nesteddiscipline');">
+                          <tr class="clickable" onclick="launchtable(this, event, 'dynamicdiscipline');">
 
                             <td class="firstcell"><a class="article-title">{{items.0}}</a></td>
                             <td>{{items.1}}</td>
@@ -251,7 +251,7 @@
                         </tbody>
                       </table>
                     </div>
-                    {%include "userT/inclnesteddisciplinetable.html"%}
+                    {%include "userT/incldynamicdiscipline.html"%}
                   </div>
 
                   <div>
@@ -342,7 +342,7 @@
                           {%for items in listaggregatedindi%}
 
 
-                          <tr class="clickable" onclick="launchtable(this, event, 'nestedindisumm');">
+                          <tr class="clickable" onclick="launchtable(this, event, 'dynamicindisumm');">
                             <td width="25%" class="firstcell"><a class="article-title">{{items.0}}</a></td>
 
                             <td>{{items.1}}</td>
@@ -357,7 +357,7 @@
                         </tbody>
                       </table>
                     </div>
-                    {%include "userT/inclnestedindisummtable.html"%}
+                    {%include "userT/incldynamicindisumm.html"%}
                   </div>
 
                   <div>

@@ -29,8 +29,8 @@ from UploadExcel.admin import delegatedadmin_site
 import debug_toolbar
 # from Tenant.views import our_team
 from rest_framework import routers
-#20220209 edward nestedviews
-from userT import viewsnested 
+#20220209 edward dynamic tables
+from userT import viewsajax 
 
 router = routers.DefaultRouter()
 router.register ('ActionItems', UserView.anyView)
@@ -153,10 +153,10 @@ urlpatterns = [
         path('stitchpdf/', login_required(UserView.stitchpdf), name='stitchpdf' ),
         #20220120 edward
         # path('studiesjs/',login_required(UserView.studiesjs), name='studiesjs' ),
-        #20220209 edward nestedviews
-        path('nestedstudy/',login_required(viewsnested.nestedstudy), name='nestedstudy' ),
-        path('nestedindisumm/',login_required(viewsnested.nestedindisumm), name='nestedindisumm' ),
-        path('nesteddiscipline/',login_required(viewsnested.nesteddiscipline), name='nesteddiscipline' ),
+        #20220209 edward dynamic tables
+        path('dynamicstudies/',login_required(viewsajax.dynamicstudies), name='dynamicstudies' ),
+        path('dynamicindisumm/',login_required(viewsajax.dynamicindisumm), name='dynamicindisumm' ),
+        path('dynamicdiscipline/',login_required(viewsajax.dynamicdiscipline), name='dynamicdiscipline' ),
         
       ]
 
