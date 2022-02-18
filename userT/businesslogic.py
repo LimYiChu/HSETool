@@ -27,8 +27,8 @@ import shutil
 from django.db.models import F
 
 #20220217 edward nested charts
-def blnestedchart(dfsorted):
-    """ This function gets the count of how many closed & open actions for the nested charts"""
+def bldynamicchart(dfsorted):
+    """ This function gets the count of how many closed & open actions for the dynamic charts"""
     dfcopysorted = dfsorted.copy()
     dfcopysorted.loc[dfcopysorted['Action with'] == 'Closed','Closed Action'] = 'Closed' 
     dfcopysorted.loc[dfcopysorted['Action with'].str.contains('Closed') == False,'Open Action'] = 'Open'
@@ -1678,8 +1678,8 @@ def blstopcharttoday(content,testtotal,testclosed):
     return updatedcontent
 
 #20220209 edward 
-def blgetActionStuckAtdictnestedindisumm(allactions,email=False):
-    """This function gets where each action is currently at in terms of Actionee or Approver, this is without the attached Actionee/Approver in front. To be used in nested tables for data coming in by ajax comparison"""
+def blgetActionStuckAtdictdynamicindisumm(allactions,email=False):
+    """This function gets where each action is currently at in terms of Actionee or Approver, this is without the attached Actionee/Approver in front. To be used in dynamic tables for data coming in by ajax comparison"""
 
     lstActionDetails = []
     lstgettriplet = []

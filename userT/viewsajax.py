@@ -82,7 +82,7 @@ from UploadExcel.formstudies import *
 from time import time
 
 
-def nestedstudy(request):
+def dynamicstudies(request):
 
     if request.is_ajax and request.method == "GET":
         data = request.GET.get("data", None)
@@ -93,21 +93,21 @@ def nestedstudy(request):
         dfalllist = blgetActionStuckAtdict(all_actionsopt) # getting a list of everything
         dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format
         dfall['discsuborg']=dfall['Disipline']+'/'+dfall['Subdisipline']+'/'+dfall['Organisation']
-        dfallnestedstudysorted = blsortdataframes(dfall,dfstudiescolumns) # sort dfall
-        dfsortbystudy = dfallnestedstudysorted[dfallnestedstudysorted["StudyName"] == data ] #this value should be modular like phases, need to look up ajax more to get this to work
+        dfalldynamicstudiessorted = blsortdataframes(dfall,dfstudiescolumns) # sort dfall
+        dfsortbystudy = dfalldynamicstudiessorted[dfalldynamicstudiessorted["StudyName"] == data ] #this value should be modular like phases, need to look up ajax more to get this to work
         
         dfstudieslist = dfsortbystudy.values.tolist()
         dfstudiesdict = dfsortbystudy.to_dict()
         
-        lstofcount = blnestedchart(dfsortbystudy)
+        lstofcount = bldynamicchart(dfsortbystudy)
         countclosed = lstofcount[0]
         countopen = lstofcount[1]
        
-        nestedheader = ['Study Action No', 'DueDate' ,'Action With','Discipline','Initial Risk']
+        headerlist = ['Study Action No', 'DueDate' ,'Action With','Discipline','Initial Risk']
 
         context = {
         'dflist':dfstudieslist,
-        'nestedheader' : nestedheader,
+        'headerlist' : headerlist,
         'dfstudiesdict': dfstudiesdict,
         'donutclose' : countclosed,
         'donutopen' : countopen,
@@ -116,10 +116,10 @@ def nestedstudy(request):
      
         return JsonResponse(context,status=200)
     else:
-        return render(request, 'userT/inclnestedstudytable.html')
+        return render(request, 'userT/incldynamicstudies.html')
 
 
-def nestedindisumm(request):
+def dynamicindisumm(request):
     
     if request.is_ajax and request.method == "GET":
         data = request.GET.get("data", None)
@@ -127,25 +127,25 @@ def nestedindisumm(request):
         all_actions =   ActionItems.objects.all().values()
         all_actionwithfk = blannotatefktomodel(all_actions)
         all_actionswithrisk = bladdriskelements(all_actionwithfk)
-        dfalllist = blgetActionStuckAtdictnestedindisumm(all_actionswithrisk) # getting a list of everything
+        dfalllist = blgetActionStuckAtdictdynamicindisumm(all_actionswithrisk) # getting a list of everything
         dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format
         dfall['discsuborg']=dfall['Disipline']+'/'+dfall['Subdisipline']+'/'+dfall['Organisation'] # combining discsuborg
-        dfallindisummsorted = blsortdataframes(dfall,dfindinestedcolumns) # sort dfall
+        dfallindisummsorted = blsortdataframes(dfall,dfindisummcolumns) # sort dfall
         dfsortbyindi = dfallindisummsorted[dfallindisummsorted["Action with"] == data ] #this value should be modular like phases, need to look up ajax more to get this to work
         dfindisummlist = dfsortbyindi.values.tolist()
         print(dfsortbyindi)
-        nestedheader = ['StudyActionNo','DueDate','Study Name','Discipline','Initial Risk']
+        headerlist = ['StudyActionNo','DueDate','Study Name','Discipline','Initial Risk']
         context =   {
                     'dflist':dfindisummlist,
-                    'nestedheader' : nestedheader,
+                    'headerlist' : headerlist,
                     }
      
         return JsonResponse(context,status=200)
     else:
-        return render(request, 'userT/inclnestedindisummtable.html')
+        return render(request, 'userT/incldynamicindisumm.html')
 
 
-def nesteddiscipline(request):
+def dynamicdiscipline(request):
     
     if request.is_ajax and request.method == "GET":
         data = request.GET.get("data", None)
@@ -155,22 +155,22 @@ def nesteddiscipline(request):
         dfalllist = blgetActionStuckAtdict(all_actionwithfk) # getting a list of everything
         dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format
         dfall['discsuborg']=dfall['Disipline']+'/'+dfall['Subdisipline']+'/'+dfall['Organisation'] # combining discsuborg
-        dfallnesteddisciplinesorted = blsortdataframes(dfall,dfdisciplinecolumns) # sort dfall
-        dfsortbydiscipline = dfallnesteddisciplinesorted[dfallnesteddisciplinesorted["discsuborg"] == data ] #this value should be modular like phases, need to look up ajax more to get this to work
+        dfalldynamicdisciplinesorted = blsortdataframes(dfall,dfdisciplinecolumns) # sort dfall
+        dfsortbydiscipline = dfalldynamicdisciplinesorted[dfalldynamicdisciplinesorted["discsuborg"] == data ] #this value should be modular like phases, need to look up ajax more to get this to work
         dfdisclist =  dfsortbydiscipline.values.tolist()
 
-        lstofcount = blnestedchart(dfsortbydiscipline)
+        lstofcount = bldynamicchart(dfsortbydiscipline)
         countclosed = lstofcount[0]
         countopen = lstofcount[1]
 
-        nestedheader = ['Study Action No', 'Study Name' ,'Due Date','Action with' ]
+        headerlist = ['Study Action No', 'Study Name' ,'Due Date','Action with' ]
         context =   {
                     'dflist':dfdisclist,
-                    'nestedheader' : nestedheader,
+                    'headerlist' : headerlist,
                     'donutclose' : countclosed,
                     'donutopen' : countopen,
                     }
      
         return JsonResponse(context,status=200)
     else:
-        return render(request, 'userT/inclnestedisciplinetable.html')
+        return render(request, 'userT/incldynamicdiscipline.html')

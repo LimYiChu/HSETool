@@ -75,7 +75,7 @@ dfindisummcolumns = ["User","Pending Submission","Pending Approval"]
 #20220120 edward 
 dfstudiescolumns = ['StudyActionNo','DueDate','Action with','discsuborg','InitialRisk','id','RiskColour','StudyName']
 dfdisciplinecolumns = ['StudyActionNo','StudyName','DueDate','Action with','discsuborg','id']
-dfindinestedcolumns =  ['StudyActionNo','DueDate','StudyName','discsuborg','InitialRisk','id','RiskColour','Action with']
+dfindisummcolumns =  ['StudyActionNo','DueDate','StudyName','discsuborg','InitialRisk','id','RiskColour','Action with']
 #202220216 edward
 dfdonutcolumns = ['Closed Action','Open Action']
 
