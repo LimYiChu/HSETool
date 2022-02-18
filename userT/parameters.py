@@ -73,7 +73,7 @@ dfcompletecolumns2=['StudyActionNo','StudyName','ProjectPhase','Facility','Guide
 dfrejectedcolumns = ['StudyActionNo','StudyName','ProjectPhase','Facility','Cause','Safeguard','InitialRisk','ResidualRisk','Recommendations','Organisation','Disipline','Subdisipline','Guidewords','Revision','RiskColour']
 dfindisummcolumns = ["User","Pending Submission","Pending Approval"]
 #20220120 edward 
-dfstudiescolumns = ['StudyActionNo','DueDate','Action with','discsuborg','InitialRisk','id','RiskColour','StudyName']
+dfstudiescolumns = ['StudyActionNo','DueDate','Action with','discsuborg','InitialRisk','id','RiskColour']
 dfdisciplinecolumns = ['StudyActionNo','StudyName','DueDate','Action with','discsuborg','id']
 dfindisummcolumns =  ['StudyActionNo','DueDate','StudyName','discsuborg','InitialRisk','id','RiskColour','Action with']
 #202220216 edward

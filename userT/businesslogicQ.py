@@ -5,6 +5,14 @@ import operator
 from UploadExcel.models import ActionItems
 from .models import *
 
+#20220218 edward
+def blgetactionsitemsbystudiesQ(studies,reducedfields):
+
+    actionitems =Q(**{'StudyName__StudyName':studies})
+    actionsbystudy =  ActionItems.mdlallActionItemsCount.mgr_GeneralItemsFiltersKwargsQReduced(actionitems,reducedfields)
+    
+    return actionsbystudy
+
 #20211221 edward get the rejected count for Actionee
 def blActioneerejectedcountQ(Actionee_R):
     """This function gets the count of rejected actions from Action Items table by going through Action Routes of Actionee."""
