@@ -73,9 +73,9 @@ dfcompletecolumns2=['StudyActionNo','StudyName','ProjectPhase','Facility','Guide
 dfrejectedcolumns = ['StudyActionNo','StudyName','ProjectPhase','Facility','Cause','Safeguard','InitialRisk','ResidualRisk','Recommendations','Organisation','Disipline','Subdisipline','Guidewords','Revision','RiskColour']
 dfindisummcolumns = ["User","Pending Submission","Pending Approval"]
 #20220120 edward 
-dfstudiescolumns = ['StudyActionNo','DueDate','Action with','discsuborg','InitialRisk','id','RiskColour']
-dfdisciplinecolumns = ['StudyActionNo','StudyName','DueDate','Action with','discsuborg','id']
-dfindisummcolumns =  ['StudyActionNo','DueDate','StudyName','discsuborg','InitialRisk','id','RiskColour','Action with']
+dfstudiescolumns = ['StudyActionNo','DueDate','StuckAt','discsuborg','InitialRisk','id','RiskColour']
+dfdisciplinecolumns = ['StudyActionNo','StudyName__StudyName','DueDate','StuckAt','InitialRisk','id']
+dfindisummcolumns =  ['StudyActionNo','DueDate','StudyName__StudyName','StuckAt','InitialRisk','id','RiskColour']
 #202220216 edward
 dfdonutcolumns = ['Closed Action','Open Action']
 

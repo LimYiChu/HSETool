@@ -26,12 +26,27 @@ import shutil
 # edward 20210929 fk
 from django.db.models import F
 
+#20220222 em discsipline str matching
+def bldiscstrmatch(data) :
+    
+    emptylst = []
+    blanklst = []
+    discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg()
+    for items in discsuborg:
+        blanklst.append("/".join(items))
+        
+        if [item for item in [data] if item in blanklst] :
+            emptylst.append(items)
+    discsuborglst = emptylst[0]
+
+    return discsuborglst
+
 #20220217 edward nested charts
 def bldynamicchart(dfsorted):
     """ This function gets the count of how many closed & open actions for the dynamic charts"""
     dfcopysorted = dfsorted.copy()
-    dfcopysorted.loc[dfcopysorted['Action with'] == 'Closed','Closed Action'] = 'Closed' 
-    dfcopysorted.loc[dfcopysorted['Action with'].str.contains('Closed') == False,'Open Action'] = 'Open'
+    dfcopysorted.loc[dfcopysorted['StuckAt'] == 'Closed','Closed Action'] = 'Closed' 
+    dfcopysorted.loc[dfcopysorted['StuckAt'].str.contains('Closed') == False,'Open Action'] = 'Open'
     dfcloseopen = blsortdataframes(dfcopysorted,dfdonutcolumns)
     dfcloseopenlist = dfcloseopen.values.tolist()
     flat_list = [item for sublist in dfcloseopenlist for item in sublist]
@@ -42,6 +57,7 @@ def bldynamicchart(dfsorted):
     countopen = ['Open', dfcountopen]
     lstofcount.append(countclosed)
     lstofcount.append(countopen)
+    
     
     return lstofcount
     
@@ -692,7 +708,7 @@ def blaggregatebyDisc(discsuborg,  YetToRespondQue, ApprovalQue,QueClosed,QueOpe
     lstofdiscdetails =[]
     lstcountbydisc =[]
     for disc in discsuborg:
-        lstcountbydisc.append ("/".join(disc))
+        lstcountbydisc.append ("/".join(disc)) #20220222 em how to str manipulate this will it have ripples
         # lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,YetToRespondQue))
         # lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,ApprovalQue))
         # lstcountbydisc.append (blgetDiscSubOrgActionCount('X',disc,QueClosed))
@@ -1265,8 +1281,6 @@ def blgetActionStuckAtdict(allactions,email=False):
         Actionee = ActionRoutes.mdlgetActioneeAppr.mgr_getactioneefromtriplet(lstgettriplet) # getting Actionee for each Item
         items['Actionee'] = ((Actionee[0])['Actionee']) # just getting the Actionee from QuerySet
 
-        
-        
         lstActionDetails =[]
         allactionswithlocation = allactions
         
@@ -1677,40 +1691,7 @@ def blstopcharttoday(content,testtotal,testclosed):
 
     return updatedcontent
 
-#20220209 edward 
-def blgetActionStuckAtdictdynamicindisumm(allactions,email=False):
-    """This function gets where each action is currently at in terms of Actionee or Approver, this is without the attached Actionee/Approver in front. To be used in dynamic tables for data coming in by ajax comparison"""
 
-    lstActionDetails = []
-    lstgettriplet = []
-    
-    for items in allactions : 
-
-        strdis=items['Disipline'] # edward just using K-VP to identify & get the items
-        strsubdis=items['Subdisipline']
-        strorg=items['Organisation']
-
-        lstgettriplet = [strdis,strsubdis,strorg] 
-        lstofActioneeAppr = blgetSignotories (lstgettriplet)
-        
-        if items['QueSeries'] != 99 and (lstofActioneeAppr !=[]): #edward - looks at key QueSeries & its value pairs 
-            lststuckAt = lstofActioneeAppr[items['QueSeries']] #edward - uses QSeries to see which level in AR it is
-            #lstActionDetails.append("/".join(lststuckAt)) # edward using similar method as blgetActionstuckat to combine 
-            items['Action with'] = lststuckAt[1] # edward sort of appending this value to a key
-        else:
-            items['Action with'] = ("Closed") # if its 99 just have a tag closed 
-
-        
-        Actionee = ActionRoutes.mdlgetActioneeAppr.mgr_getactioneefromtriplet(lstgettriplet) # getting Actionee for each Item
-        items['Actionee'] = ((Actionee[0])['Actionee']) # just getting the Actionee from QuerySet
-
-        
-        
-        lstActionDetails =[]
-        allactionswithlocation = allactions
-        
-            
-    return allactionswithlocation
 
 
 
