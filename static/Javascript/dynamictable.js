@@ -108,14 +108,18 @@ function launchtable(that, event, tablepopup) {
       ]);
   
       var options = {
-        width: 500,
-        height: 200,
+        width: 370,
+        height: 220,
         backgroundColor: '#f3f2f2',
         pieHole: 0.4,
         pieSliceText: 'value',
         tooltip: {text: 'value'},
-        chartArea : { width:'100%',height:'90%', left: '50%'},
-        legend : {position:'left'}
+        pieSliceTextStyle: {
+          bold: true,
+          fontSize: 18,
+          color: 'black' },
+        chartArea : { right: 20, bottom: 50, width:'100%',height:'80%'},
+        legend : {position:'labeled', textStyle: {color: 'black', fontSize: 15}}
       };
       // var div = document.getElementsByClassName('donutchart');
       // var g = document.createElement('div');
