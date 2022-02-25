@@ -1,3 +1,132 @@
+#20220225 grom businesslogic.py
+
+# #20211122 edward stitchpdf
+# def blexceltopdf(pdfpath,pdf_list_onlyexcel):
+#     """This function converts .xlxs to .pdf files using xlwings library. This library only works on windows or macOS machines """
+
+#     for items in pdf_list_onlyexcel:
+#         fullpathexcel = os.path.join(pdfpath,items)
+#         pdf_filename_test = os.path.splitext(items)[0]+'.pdf'
+#         test = xw.Book(fullpathexcel)
+#         exceltopdf = test.to_pdf(pdfpath + pdf_filename_test)
+#         closeexceltopdf = test.close()
+
+#     return exceltopdf
+
+
+
+# 20220225 from views.py
+
+
+# def googlecharts(request):
+    
+#     content1 = [['By Studies', '///Open Actions by Organisation:::'], ['RWP', 13], 
+#                 ['HESS', 20], ['SFSB', 2], ['MMHE', 28]]
+
+#     context = {
+
+#          'content' : content1,
+#     #     'charttitles' : "XYZ"
+
+
+#      }
+#     context['XYZ'] = json.dumps([{
+
+#                     "data" : [[{
+#                                 "Feature1" : "Open Action by organisation",
+#                                 "Feature2" : "No: Open"},
+#                                 {
+#                                 "Feature1" : "MMHE","Feature2" : 28
+#                                 },{
+#                                 "Feature1" : "SFSB","Feature2" : 2
+#                                 },{
+#                                     "Feature1" : "HESS","Feature2": 20
+#                                 },
+#                                 {
+#                                     "Feature1" : "RWP","Feature2": 20
+#                                 }],[
+#                                     {
+#                                 "Feature1" : "Open/Closed Actions", "Feature2" : "Open Closed"},
+#                                 {
+#                                 "Feature1" : "Open",
+#                                 "Feature2" : 192
+#                                 },
+
+#                                 {
+#                                 "Feature1" : "Closed",
+#                                 "Feature2" : 12
+#                                 },
+#                                 ]
+#                             ]
+#                 }])
+    
+#     data=  [[['By Studies', '///Open/Closed Actions:::'], ['Open', 220], ['Closed', 12]], 
+#             [['By Studies', '///Open Actions by Organisation:::'], ['HESS', 20], ['MMHE', 28], ['RWP', 13], ['SFSB', 2]],
+#             [['By Studies', '///Submitted Actions by Organisation:::'], ['HESS', 12], ['MMHE', 16], ['RWP', 6], ['SFSB', 0]],
+#             [['By Studies', '///Open Actions by Discipline:::'], ['HUC', 19], ['Operations', 7], ['Drilling', 7], ['EHS', 1], ['EHS', 1], ['Safety', 9], ['Marine', 6], ['Electrical', 71], ['Commissioning', 3], ['Mechanical', 2], ['MARINE', 6], ['EHS', 0]],
+#             [['By Studies', '///Open Actions by Studies:::'], ['MRU Barge Campaign Post Shutdown - Phase3', 34], ['HAZID', 19], ['HAZOP', 2], ['CRA-DPDSV/PRECOMM', 0], ['Environmental Impact Identification (ENVID)', 0], ['Hazard Identification (HAZID) Study', 0], ['Hazard and Operability (HAZOP) Study', 0], ['SAFOP Report', 75], ['NMB Phase 4A Concept Definition - HAZID Report', 28], ['NMB Phase 4A Concept Definition', 34]]]
+
+#     featuresfields = ["Feature1", "Feature2"]
+#     data2=[]
+#     data3 =[]
+#     #for items in data:
+#         # for xyz in items:
+#         #     data1 = dict(zip(featuresfields,xyz))
+#         #     data2.append(data1)
+
+#         # data2= [dict(zip(featuresfields,pies)) for pies in items]
+        
+#         # data3.append(data2)
+#         # data2=[]
+#     data3 = blmakelistforjson(data,featuresfields)
+    
+#     context['XYZ'] = json.dumps([{"data":data3}])
+ 
+       
+#     return render(request, 'userT/googlecharts.html',context) 
+
+# edward 20210713 new chart
+
+    #dont delete below as its a way to actualy read from memory
+    #response = HttpResponse(content_type='application/pdf')
+    #response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
+    #bufferfile = pdfsendtoclient ('atrtemplateautofontreadonly.pdf',data_dict)
+#this annotate function needs to first because it doesnt like addtional items added to query set
+
+    # for itemPair in discsub:
+
+    #     routesfortheDiscpline = ActionRoutes.mdlgetActioneeAppr.mgr_getActApp(itemPair)
+
+
+
+    #     for items in routesfortheDiscpline:
+
+
+    #         listofPairActioneeCount.append(blgetDiscSubActionCount ('Y',itemPair,[0]))
+    #         listofPairApproverCount.append(blgetDiscSubActionCount ('Y',itemPair,ApproverQList))
+    #         listofPairNameCount.append(items.Actionee)
+    #
+    #         listoflist.append(listofPairNameCount)
+    #         listofPairNameCount = []
+
+# def loadajax (request):
+
+#     if (request.is_ajax ()):
+#         #ID= form2.instance.id
+#         print (request.GET.get('button_text'))
+#         t=time()
+#         print ("INHEREERERERE")
+#         return JsonResponse({'seconds':t},status=200)
+#     else :
+
+#         return render(request, 'userT/loadajax.html')
+ 
+# 20220225 from urls.py
+         # path('loadajax/', login_required(UserView.loadajax), name='loadajax' ),
+        #20220217 edward commented bcs moved loadajax 2 & 3 to scrap -- tp be deleted a week from now
+        # path('loadajax2/', login_required(UserView.loadajax2), name='loadajax2' ),
+        # path('loadajax3/', login_required(UserView.loadajax3), name='loadajax3' ),
+ 
  #20220217 edward from views.py 
 
  # def loadajax2 (request):
