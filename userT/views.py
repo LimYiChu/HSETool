@@ -64,7 +64,9 @@ def datatables (request):
 
 
 def base3 (request):
-    """This function is to view base3.html while editing the html"""
+    """
+    This function is to view base3.html while editing the html
+    """
     return render(request,'userT/base3.html')
 
 
@@ -103,7 +105,8 @@ def googlecharts88(request):
 
 
 def mainDashboard (request):
-    """ My Dashboard view. Rewrite Nov 21. The starting point  or at main uses this view
+    """ 
+    My Dashboard view. Rewrite Nov 21. The starting point  or at main uses this view
     1. Get all studies first. not using phases at this stage at this is more for an individual dashboard 
     2. Get routes and separate them to actionee or approver routes
     """
@@ -212,8 +215,10 @@ def mainDashboard (request):
 
 
 class ActioneeList (ListView):
-    """This class is for Your Actions/Actionee list, basically uses email to get all actions within actionee routes 
-    And then assigns a colour on it. Returns the queryset and context into object_list(default django)"""
+    """
+    This class is for Your Actions/Actionee list, basically uses email to get all actions within actionee routes 
+    And then assigns a colour on it. Returns the queryset and context into object_list(default django)
+    """
 
     template_name   =   'userT/actionlistactionee.html'
 
@@ -236,7 +241,9 @@ class ActioneeList (ListView):
 
 
 class HistoryList (ListView):
-    """Populates what you have done under History under Your Actions"""
+    """
+    Populates what you have done under History under Your Actions
+    """
     template_name   =   'userT/historylist.html' 
 
     def get_queryset(self):
@@ -280,8 +287,10 @@ class HistoryList (ListView):
 
 
 class ApproverList (ListView):
-    """This is the view under Your actions and when you click Approver Actions. It gives all 
-    approver actions across multiple que series. Get routes that maps against que series and then use """
+    """
+    This is the view under Your actions and when you click Approver Actions. It gives all 
+    approver actions across multiple que series. Get routes that maps against que series and then use 
+    """
     template_name   =   'userT/actionlistapprover.html'
 
     def get_queryset(self):
@@ -315,6 +324,9 @@ class DetailActioneeItems (DetailView):
 
 
 class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
+    """
+    This function shows the Approver view (with non editable fields) for each individual Action
+    """
     template_name = "userT/actionupdateapproveaction.html" 
     form_class = frmoriginalbaseapprover
     success_url = '/ApproverList/'
@@ -401,6 +413,9 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
 
 
 class ApproverConfirm(UpdateView):
+    """
+    This function is for the Approver Confirmation Page
+    """
     template_name = "userT/approverconfirmation.html" #yhs changed to all small letters
     form_class = frmApproverConfirmation
     success_url = '/ApproverList/'
@@ -450,7 +465,10 @@ class ApproverConfirm(UpdateView):
 
 
 class HistoryConfirm(UpdateView):
-    template_name = "userT/historyconfirmpull.html" #yhs checked capital
+    """
+    This function is for the Actionee's History Confirm Pullback View 
+    """
+    template_name = "userT/historyconfirmpull.html" 
     form_class = frmApproverConfirmation
     success_url = '/HistoryList/'
 
@@ -468,6 +486,9 @@ class HistoryConfirm(UpdateView):
 
 
 class HistoryFormMixin(UserPassesTestMixin,UpdateView):
+    """
+    This function gets the History Item for Your Actions View
+    """
     template_name = "userT/historypullback.html"
     form_class = frmApproverConfirmation
 
@@ -492,7 +513,6 @@ class HistoryFormMixin(UserPassesTestMixin,UpdateView):
         return HttpResponseRedirect('/main')
 
     def get_object(self,queryset=None):
-
         queryset=ActionItems.objects.all()
         return queryset.get(id=self.kwargs['pk'])
 
@@ -563,8 +583,7 @@ class ActioneeItemsMixin(UserPassesTestMixin,UpdateView): #@user_passes_test(lam
             return False
 
     def handle_no_permission(self):
-        #if no permission from test_func return to main
-        return HttpResponseRedirect('/main')
+        return HttpResponseRedirect('/main')  #if no permission from test_func return to main
 
     def get_object(self,queryset=None):
 
@@ -590,7 +609,6 @@ class ActioneeItemsMixin(UserPassesTestMixin,UpdateView): #@user_passes_test(lam
         return context
 
     def form_valid(self,form):
-
         if (self.request.POST.get('Cancel')):
            return HttpResponseRedirect('/ActioneeList/')
 
@@ -609,12 +627,18 @@ class ActioneeItemsMixin(UserPassesTestMixin,UpdateView): #@user_passes_test(lam
 
 
 def ContactUs (request):
-    return render(request, 'userT/contactus.html') #yhs changed to all small letters
+    """
+    This function is for the Contact Us Page
+    """
+    return render(request, 'userT/contactus.html') 
 
 
 class RejectReason (CreateView):
+    """
+    This function allows the Approver to fill in their Rejection Reason when Rejecting an Action
+    """
     model = Comments
-    template_name = 'userT/rejectreason.html' #yhs changed to all small letters
+    template_name = 'userT/rejectreason.html' 
     form_class = frmAddRejectReason
     success_url = '/ApproverList/'
 
@@ -646,7 +670,6 @@ class RejectReason (CreateView):
 
 
 def IndividualBreakdownByActions(request):
-
     allactions = ActionItems.objects.all()
     lstattributes = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','InitialRisk']
     lstofindiactions = blgetActionStuckAt(allactions, lstattributes)
@@ -658,6 +681,9 @@ def IndividualBreakdownByActions(request):
 
 
 def multiplefiles (request, **kwargs):
+    """
+    This function enables the User to upload the attachments into the system
+    """
     form_multi = frmMultipleFiles()
     emailid = request.user.email
     strsignature = blgetfieldCustomUser(emailid,"signature") #IMPORTANT
@@ -852,7 +878,9 @@ def rptbyUser(request, **kwargs):
 
 
 def repoverallexcel (request):
-    """Provides the Download Complete Excel Feature in PMT Reporting"""
+    """
+    Provides the Download Complete Excel Feature in PMT Reporting
+    """
     all_actions =   ActionItems.objects.all().values()
     all_actionwithfk = blannotatefktomodel(all_actions)
 
@@ -876,8 +904,12 @@ def repoverallexcel (request):
 
     
 def repPMTExcel (request,phase=""):
-    """This is the original function called when user selects PMT Reporting from menu
-    It dumps all actions into this function """
+    """
+    This is the original function called when user selects PMT Reporting from menu
+    It dumps all actions into this function.
+
+    The dataframes excel outputs are also written in this function.
+    """
     listofPhases= Phases.mdlSetGetField.mgrGetAllActionsAndFields()
     discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() 
     discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
@@ -1126,7 +1158,9 @@ def StickyNote(request):
 
 
 def closeoutprint(request,**kwargs):
-    """This function prints the individual closed reports to PDFs"""
+    """
+    This function prints the individual closed reports to PDFs
+    """
     ID = (kwargs["id"])
     actiondetails = ActionItems.objects.get(id=ID)
     datafrommodels= model_to_dict(actiondetails) 
@@ -1172,7 +1206,9 @@ def closeoutprint(request,**kwargs):
 
 
 def mergedcloseoutprint(request):
-    "Sends bulkpdf files with attachments in their repective folders in a zipped file to Client"
+    """
+    Sends bulkpdf files with attachments in their repective folders in a zipped file to Client
+    """
     response = FileResponse(open(bulkpdfzip,'rb'))
     response['Content-Disposition'] = 'attachment; filename= Bulk Closeout Sheets.zip'
     return response
@@ -1197,7 +1233,10 @@ def mergedcloseoutprintoriginal(request):
     return response
 
 
-def closeoutsheet(request): #new naming convention - all small letters
+def closeoutsheet(request): 
+    """
+    This function builds the closeoutsheet for Closed Actions
+    """
     QueOpen = [0,1,2,3,4,5,6,7,8,9]
     QueClosed = [99]
     YetToRespondQue =[0]
@@ -1210,7 +1249,7 @@ def closeoutsheet(request): #new naming convention - all small letters
 
     allactions = ActionItems.objects.all()
     tableallheader = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
-    lstofallactions = blgetActionStuckAt(allactions, tableallheader) #basically you feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
+    lstofallactions = blgetActionStuckAt(allactions, tableallheader) #feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
     tableallheadermodified =  ['Study Action No','Study Name', 'Discipline' ,'Recommendations','Response','Initial Risk']
     filename = [] # for appending filename place before for loop
 
@@ -1221,12 +1260,12 @@ def closeoutsheet(request): #new naming convention - all small letters
 
         y= x.values()
         for item in y :
-            i = item["StudyActionNo"] # specify +1 for each file so it does not overwrite one file
-            j = (i + '.pdf')  # easier to breakdown j & to append further on
+            i = item["StudyActionNo"] 
+            j = (i + '.pdf')  #specify +1 for each file so it does not overwrite one file
             del item["id"]
             data_dict=item
             out_file = staticmedia + j
-            pdfgenerate(atrtemplate,out_file,data_dict)#returns from pdfgenerator #edward added atrtemplate location in parameters
+            pdfgenerate(atrtemplate,out_file,data_dict)#returns from pdfgenerator 
             filename.append(j) #can only append str, appending j shows the filename for userview instead of whole location
             context1={
                 'filename' : filename,
@@ -1246,6 +1285,9 @@ def closeoutsheet(request): #new naming convention - all small letters
 
 
 class pmtrepviewall(UpdateView):
+    """
+    This function shows all the individual Actions views in PMT Reporting section
+    """
     template_name = "userT/reppmtviewall.html" #the html is missing object_list
     form_class = frmoriginalbaseapprover
 
@@ -1282,7 +1324,9 @@ class pmtrepviewall(UpdateView):
 
 
 def indiprint(request,**kwargs):
-    """This function prints individual Action Items into the """
+    """
+    This function prints individual Action Items into the 
+    """
     ID = (kwargs["id"])
     obj = ActionItems.objects.filter(id=ID).values().annotate(StudyName=F('StudyName__StudyName')).annotate(ProjectPhase = F('ProjectPhase__ProjectPhase')) # one for passing into PDF
     objFk =ActionItems.objects.get(id=ID) # this is for getting all attachments
@@ -1304,11 +1348,16 @@ def indiprint(request,**kwargs):
 
 
 def delegatedadmin (request):
+    """
+    This function returns the view for delegatedadmin
+    """
     return render(request, 'userT/delegatedadmin.html')#yhs changed to small letters
 
 
 def stitchpdf(request):
-    """Sends stitched pdf to Client """
+    """
+    Sends stitched pdf to Client 
+    """
     response = FileResponse(open(stitchedpdf,'rb'))
     response['Content-Disposition'] = 'attachment; filename= Final Report.pdf'
     return response
