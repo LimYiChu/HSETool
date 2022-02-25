@@ -65,6 +65,7 @@ def dynamicstudies(request):
 
         filteredstring = {'StudyName__StudyName': data}
         reducedfields=['id','StudyActionNo','QueSeries','DueDate','Disipline','Subdisipline','InitialRisk','Organisation']
+        headerlist = ['Study Action No', 'DueDate' ,'Action At','Discipline','Initial Risk']
 
         actionsbystudy = blgetsinglefilteractionsitemsQ(filteredstring,reducedfields) #getting actions based on studies filter
         actionswithrisk = bladdriskelements(actionsbystudy) 
@@ -80,8 +81,6 @@ def dynamicstudies(request):
         lstofcount = bldynamicchart(dfalldynamicstudiessorted)
         countclosed = lstofcount[0]
         countopen = lstofcount[1]
-        
-        headerlist = ['Study Action No', 'DueDate' ,'Action At','Discipline','Initial Risk']
         
         context = {
         'dflist':dfstudieslist,
