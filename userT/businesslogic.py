@@ -744,46 +744,54 @@ def blgetvaliduserinroute (idAI,emailid,History=False):
     else :
         
         return False
-#20220118 edward Signatories
+def bldeletehistorytablesignatory(id) :
+    '''Function to delete the last entry based on id . This function was done primarily 
+    to solve a bug with the sinatories (blgettimehistorytables) reading from history table if Approver hits Cancel'''
+    filterkwargs = {'id':id,}#'QueSeries' :QueSeries
+    ActionItems.history.filter(**filterkwargs).select_related("history_user").order_by('-history_date')[0].delete()
+
 def blgettimehistorytables (id, Signatories, QueSeries=0):
     """Gets time stamp based on queseries and whom signed from history tables. Overwrites name and time stamp from action routes
-    with actualy people whom have signed """
-    
+    with actualy people whom have signed. The idea is its the first record in history table when Queseries is one ahead
+    and turns to a second record if QueSeries is 2 or more ahead .
+    e.g If its queseries = 3 and you want actionee signature then it is the second record. 
+    This function also caters for changing the number of approvers once actions have been closed"""
+    QueSeriesTarget = 5 #Random Distant Number to be reset after first loop
     def setSignatoriesItems (setofsignatories,historyindex):
                 setofsignatories [1] = lstdictHistory[historyindex].history_user.email
                 setofsignatories [2] = lstdictHistory[historyindex].history_user.fullname
                 setofsignatories [3] = lstdictHistory[historyindex].history_user.designation
                 setofsignatories [4] = lstdictHistory[historyindex].history_user.signature
                 setofsignatories [5] = lstdictHistory[historyindex].history_date
-    
+
+                nonlocal QueSeriesTarget 
+                QueSeriesTarget = lstdictHistory[historyindex].QueSeriesTarget #sets it after the first time
+               
     for index, items in enumerate(Signatories):
-        
-        #If queseries shows not signed exit the signatories part
+        #This is for when number of approvers have changed and want to use historic tables to formulate the signatories
+        #Say if have 6 Approvers now and previous QueSeriesTarget=4 (3Approvers), have to delete last blank 3 from Signatories
+        if index == QueSeriesTarget:
+            if len (Signatories) != QueSeriesTarget :
+                noblanksignatures = len (Signatories)-QueSeriesTarget
+                del Signatories[-noblanksignatures:]
         if index >= QueSeries:
             break
-        elif (index < QueSeries) and (len(Signatories)-1 != index):
-            #the queseries must be the next one on the signatory since once you sign you increment the queries , so index +1
-            filterkwargs = {'id':id, 'QueSeries': index+1} # bombs when put in values 3 or 99 
-            
+        #elif (index < QueSeries) and (len(Signatories)-1 != index):
+        elif (index < QueSeries) and (QueSeriesTarget-1 != index):
+            #Once you sign you increment the queseries . The historic tables values for user is index+1
+            filterkwargs = {'id':id, 'QueSeries': index+1} 
             lstdictHistory = ActionItems.history.filter(**filterkwargs).select_related("history_user").order_by('-history_date')
-            
-            #Took a day to get this logic. So the idea is its the first record in history table
-            #and turns to a second record if its 2 steps away
-            #if its queseries = 3 and you want actionee it has to be second record
+            #This is the logic of one step and 2 step away
             if  QueSeries - index == 1 :
-                
                 setSignatoriesItems(items,0)
                 continue
-
             if  QueSeries - index > 1:
                 setSignatoriesItems(items,1)
-
         elif QueSeries == 99 and (len(Signatories)-1 == index):
             filterkwargs = {'id':id, 'QueSeries': 99}
             lstdictHistory = ActionItems.history.filter(**filterkwargs).select_related("history_user").order_by('-history_date')
             setSignatoriesItems(items,0)
                 
-            
     return Signatories
 
 def blgettimestampuserdetails (id, Signatories):
@@ -797,53 +805,36 @@ def blgettimestampuserdetails (id, Signatories):
         #next get all history that has got to do with ID from history tables
         #thinking that if you order by decending then you are done by getting latest first
         lstdictHistory = ActionItems.history.filter(id=id).filter(QueSeries=currentQueSeries).order_by('-history_date').values()
-        # edward appending blank string as filler 20210707   
         filler= ''
         finallstoflst = [] 
-
         #get details from signatory as in signature, full name etc for all entries in the ActionRoutes                                  
         for index, items in enumerate(Signatories):
-            
             #get each user detail first
-            objuser = CustomUser.objects.filter(email=items[1]).values()
-                      
+            objuser = CustomUser.objects.filter(email=items[1]).values()       
             if objuser:
                 fullname =   objuser[0].get('fullname')
                 items.append(fullname)
                 designation =  objuser[0].get('designation')
                 items.append(designation)
-                # signature =  objuser[0].get('signature')
-                # items.append(signature)
-
             else:
-                    
                 items.append("No User Defined")
-            #appends Time stamp for the right queseries
             if index < currentQueSeries: 
                 #get all time stamps for all que series
                 #index basically denominates Que series level. if Current que series =2 then only actionee = 0 and Approver 1 has signed
                 lstdictHistory = ActionItems.history.filter(id=id).filter(QueSeries=index).order_by('-history_date').values()
-                
                 if lstdictHistory: #to fix testing bug
-
                 #edward trying to pass signature only if signed 20210707
                     signature = objuser[0].get('signature') 
-                    
                     timestamp = lstdictHistory[0].get('history_date') # get just the first record assume decending is the way togo
-                    
                 else:
                 #edward trying to pass signature only if signed 20210707
                     signature = [] # there is a bug here or i am making a mistake, not recognizing empty list after else but can print empty list
                     timestamp = []
-                   
                 #edward trying to pass signature only if signed 20210707   
                 items.append(signature) 
                 items.append(timestamp)
-                
                 finallstoflst.append(items)
-                
                 items =[]
-            
             else:
                 #this simply says that i will give a time stamp for rest of levels to 0- no date and time
                 # edward 20210707 commented items.append(0) below
@@ -852,14 +843,9 @@ def blgettimestampuserdetails (id, Signatories):
                 items.append(filler)
                 items.append(filler)
                 finallstoflst.append(items)
-                
                 items =[]
         
-    
-          #que series will decide number of people whom have signed +1 because actionee is 0- Need a matching list index
-        
         return finallstoflst
-        #end of edward closeoutprint
 
 def blgetDiscSubOrgfromID (ID):
     """ This function just returns the company, disipline and sub (Triplet) for an object based on id of object in ActionItems

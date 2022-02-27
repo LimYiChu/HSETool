@@ -375,7 +375,7 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
             return HttpResponseRedirect(reverse ('RejectReason', kwargs={'forkeyid': form.instance.id})) #this is key as wanted another screen on the first reject
 
         if (self.request.POST.get('Cancel')):
-           return HttpResponseRedirect('/ApproverList/')
+            return HttpResponseRedirect('/ApproverList/')
 
         if (self.request.POST.get('Approve')):
             return super().form_valid(form)
@@ -425,7 +425,10 @@ class ApproverConfirm(UpdateView):
         strsignature = blgetfieldCustomUser(emailid,"signature") #IMPORTANT
 
         if (self.request.POST.get('Cancel')):
-           return HttpResponseRedirect('/ApproverList/')
+            
+            ID =self.kwargs["id"]
+            bldeletehistorytablesignatory(ID)
+            return HttpResponseRedirect('/ApproverList/')
 
         if (self.request.POST.get('ApproveConfirm')):
             ID =self.kwargs["id"]
@@ -906,7 +909,7 @@ def repoverallexcel (request):
 def repPMTExcel (request,phase=""):
     """
     This is the original function called when user selects PMT Reporting from menu
-    It dumps all actions into this function.
+   
 
     The dataframes excel outputs are also written in this function.
     """
@@ -1286,7 +1289,7 @@ def closeoutsheet(request):
 
 class pmtrepviewall(UpdateView):
     """
-    This function shows all the individual Actions views in PMT Reporting section
+    This function shows individual Actions views in PMT Reporting section
     """
     template_name = "userT/reppmtviewall.html" #the html is missing object_list
     form_class = frmoriginalbaseapprover
@@ -1320,6 +1323,7 @@ class pmtrepviewall(UpdateView):
         context['object_list'] = object_list 
         context['Rejectcomments'] = rejectcomments
         context ['Signatories'] = lstSignatoriesTimeStamp
+
         return context
 
 
