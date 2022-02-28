@@ -768,12 +768,14 @@ def blgettimehistorytables (id, Signatories, QueSeries=0):
                 QueSeriesTarget = lstdictHistory[historyindex].QueSeriesTarget #sets it after the first time
                
     for index, items in enumerate(Signatories):
+        
         #This is for when number of approvers have changed and want to use historic tables to formulate the signatories
         #Say if have 6 Approvers now and previous QueSeriesTarget=4 (3Approvers), have to delete last blank 3 from Signatories
         if index == QueSeriesTarget:
             if len (Signatories) != QueSeriesTarget :
                 noblanksignatures = len (Signatories)-QueSeriesTarget
                 del Signatories[-noblanksignatures:]
+            break
         if index >= QueSeries:
             break
         #elif (index < QueSeries) and (len(Signatories)-1 != index):
@@ -787,7 +789,7 @@ def blgettimehistorytables (id, Signatories, QueSeries=0):
                 continue
             if  QueSeries - index > 1:
                 setSignatoriesItems(items,1)
-        elif QueSeries == 99 and (len(Signatories)-1 == index):
+        elif QueSeries == 99 and (QueSeriesTarget-1 == index):
             filterkwargs = {'id':id, 'QueSeries': 99}
             lstdictHistory = ActionItems.history.filter(**filterkwargs).select_related("history_user").order_by('-history_date')
             setSignatoriesItems(items,0)
