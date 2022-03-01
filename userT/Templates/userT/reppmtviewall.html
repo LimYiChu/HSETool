@@ -1,15 +1,16 @@
 {% extends "userT/base3.html"%}
-
+{%block title%}ehs Tools{%endblock%}
 {%load crispy_forms_tags %}
 {% crispy form form.helper%}
 {% load tz %}
 
 {% block RejectReason %}
 
-{% if Rejectcomments %} <!--Just to check if it has been rejected before otherwise print comments at the side nav bar in sticky format-->
+{% if Rejectcomments %}
+<!--Just to check if it has been rejected before otherwise print comments at the side nav bar in sticky format-->
 
 {%include "userT/increjectcomments.html"%}
-  
+
 {%endif%}
 {%endblock%}
 {% block ApproverDetails%}
@@ -17,76 +18,78 @@
 
 <!--breadcrumbs-->
 <div class=''>
-    <nav>
-      <!-- 20210828 edward UI -->
-      <ol class="breadcrumb" style="background-color: #ffffff;position:relative;  right:-40px; bottom: -25px;" >
-        <li class="breadcrumb-item">
-          <a style="color:rgb(255, 255, 255)" href="/main">Dashboard</a>
-        </li>
-        <li class="breadcrumb-item-active">
-          <a aria-current="page" href="/reppmt">Reporting</a><!--add if to differentiate actionee and approver-->
-        </li>
-        <li class="breadcrumb-item-active">
-            <a aria-current="page">{{object.StudyActionNo}}</a>
-        </li>
-        <li>
-          <!-- This supposed to be empty to maintain the parent - child RS in css -->
-        </li>
-      </ol>
-    </nav>
-<br>
-<br>
-<div class="col-md-12 center" style="left:20pt" >
-  <div class="card" style="width: auto;" >
-   
-<!--breadcrumbs - needs to be automated.-->
-<!---->
-<div class="card"  >
-  <div class="card-header" >
-     <a style="color:black; font-size:large">Details</a>
-     <button type="button" class="btn btn-outline-primary btn-sm;" style = "float: right;">  <a class ="article-title" href="{% url 'indiprint' object.id %}" style="float: right;">Generate PDF <i class="material-icons">print</i>   </button> 
-  </div>
-  <div id="card-element-10" >
-    <div class="card-body" >
-        <a style ="color: black;">
-         
-          <form method="POST" enctype = 'multipart/form-data' > 
-          <fieldset class="form-group" >
-             
-                {% csrf_token %}  
-                {%crispy form%}
-                <div class="form-group"><input type="hidden" name="ApproverLevel" value={{ ApproverLevel }}></div>
-                 <!-- edward added include file for attachments -->
-                 <div>
-                  
-                  {%include "userT/inclattachments.html"%}
-                  
-                </div>
-              
-                <div>
-                  {% block signatories%}
+  <nav>
+    <!-- 20210828 edward UI -->
+    <ol class="breadcrumb" style="background-color: #ffffff;position:relative;  right:-40px; bottom: -25px;">
+      <li class="breadcrumb-item">
+        <a style="color:rgb(255, 255, 255)" href="/main">Dashboard</a>
+      </li>
+      <li class="breadcrumb-item-active">
+        <a aria-current="page" href="/reppmt">Reporting</a>
+        <!--add if to differentiate actionee and approver-->
+      </li>
+      <li class="breadcrumb-item-active">
+        <a aria-current="page">{{object.StudyActionNo}}</a>
+      </li>
+      <li>
+        <!-- This supposed to be empty to maintain the parent - child RS in css -->
+      </li>
+    </ol>
+  </nav>
+  <br>
+  <br>
+  <div class="col-md-12 center" style="left:20pt">
+    <div class="card" style="width: auto;">
+
+      <!--breadcrumbs - needs to be automated.-->
+      <!---->
+      <div class="card">
+        <div class="card-header">
+          <a style="color:black; font-size:large">Details</a>
+          <button type="button" class="btn btn-outline-primary btn-sm;" style="float: right;"> <a class="article-title"
+              href="{% url 'indiprint' object.id %}" style="float: right;">Generate PDF <i
+                class="material-icons">print</i> </button>
+        </div>
+        <div id="card-element-10">
+          <div class="card-body">
+            <a style="color: black;">
+
+              <form method="POST" enctype='multipart/form-data'>
+                <fieldset class="form-group">
+
+                  {% csrf_token %}
+                  {%crispy form%}
+                  <div class="form-group"><input type="hidden" name="ApproverLevel" value={{ ApproverLevel }}></div>
+                  <!-- edward added include file for attachments -->
+                  <div>
+
+                    {%include "userT/inclattachments.html"%}
+
+                  </div>
+
+                  <div>
+                    {% block signatories%}
                     {%include "userT/incsignatories.html"%}
-                  {% endblock %}
-                </div>
-             
-              
-        </fieldset>
-      </form> 
-        </a>
+                    {% endblock %}
+                  </div>
+
+
+                </fieldset>
+              </form>
+            </a>
+          </div>
+
+
+        </div>
+
+
+        </body>
       </div>
-
-  
-</div>
-
-
-</body>
-</div>
+    </div>
   </div>
-</div>
-
-                 
 
 
 
-{%endblock%}
 
+
+  {%endblock%}

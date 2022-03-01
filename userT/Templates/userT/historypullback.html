@@ -1,12 +1,13 @@
 {% extends "userT/base3.html"%}
-
+{%block title%}ehs Tools{%endblock%}
 {%load crispy_forms_tags %}
 {% crispy form form.helper%}
 {% load tz %}
 
 {% block RejectReason %}
 
-{% if Rejectcomments %} <!--Just to check if it has been rejected before otherwise print comments at the side nav bar in sticky format-->
+{% if Rejectcomments %}
+<!--Just to check if it has been rejected before otherwise print comments at the side nav bar in sticky format-->
 
 {%include "userT/increjectcomments.html"%}
 
@@ -17,83 +18,89 @@
 
 <!--breadcrumbs-->
 <div class=''>
-    <nav>
-      <!-- 20210828 edward UI bg color -->
-      <ol class="breadcrumb" style="background-color: #ffffff;position:relative;  right:-40px; bottom: -25px;">
-        <li class="breadcrumb-item">
-          <a style="color:black" href="/main">Dashboard</a>
-        </li>
-        {% if block.is_ApproverDetails %}<!--doesnt work...-->      
-        <li class="breadcrumb-item">
-          <a href="/ApproverList">Actions</a> <!--add if to differentiate actionee and approver-->
+  <nav>
+    <!-- 20210828 edward UI bg color -->
+    <ol class="breadcrumb" style="background-color: #ffffff;position:relative;  right:-40px; bottom: -25px;">
+      <li class="breadcrumb-item">
+        <a style="color:black" href="/main">Dashboard</a>
       </li>
-        {% else %}
-        <li class="breadcrumb-item">
-            <a href="/ActioneeList">Actions</a> <!--add if to differentiate actionee and approver-->
-        </li>
-{% endif %}
+      {% if block.is_ApproverDetails %}
+      <!--doesnt work...-->
+      <li class="breadcrumb-item">
+        <a href="/ApproverList">Actions</a>
+        <!--add if to differentiate actionee and approver-->
+      </li>
+      {% else %}
+      <li class="breadcrumb-item">
+        <a href="/ActioneeList">Actions</a>
+        <!--add if to differentiate actionee and approver-->
+      </li>
+      {% endif %}
 
-        <li class="breadcrumb-item-active">
-            <a aria-current="page">{{object.StudyActionNo}}</a>
-        </li>
-        <li>
-          <!-- This supposed to be empty to maintain the parent - child RS in css -->
-        </li>
-      </ol>
-    </nav>
-    <br>
-<br>
+      <li class="breadcrumb-item-active">
+        <a aria-current="page">{{object.StudyActionNo}}</a>
+      </li>
+      <li>
+        <!-- This supposed to be empty to maintain the parent - child RS in css -->
+      </li>
+    </ol>
+  </nav>
+  <br>
+  <br>
 
-<div class="col-md-12 center" style="left:20pt">
-  <div class="card" style="width: auto;" >
-   
-<!--breadcrumbs - needs to be automated.-->
+  <div class="col-md-12 center" style="left:20pt">
+    <div class="card" style="width: auto;">
 
-<div class="card"  >
-  <div class="card-header" >
-     <a style="color:black; font-size:large">Details</a>
-     <div >Action currently at : {{ actionlocation }}</div>
-  </div>
-  <div id="card-element-10" >
-    <div class="card-body" >
-        <a style ="color: black;">
-         
-          <form method="POST" enctype = 'multipart/form-data' > 
-          <fieldset class="form-group" >
-             
-                {% csrf_token %}  
-                {%crispy form%}
-                <div class="form-group"><input type="hidden" name="ApproverLevel" value={{ ApproverLevel }}></div>
-                <!-- edward added include file for attachments -->
-                <div>
-                  
-                  {%include "userT/inclattachments.html"%}
-                 
-                </div>
-              <div>
-                <div>
-                
-                  {% block signatories%}
-                    {%include "userT/incsignatories.html"%}
-                  {% endblock %}
-                </div>
-                  {% if isactionee %}
-                      
-                      <div class="form-group"><input type="submit" name="Pullback" value="Pull Back Action..." class="btn btn-outline-primary btn-md float-right" style="width:200pt;" id="submit-id-approve"/></div> 
-                      <div class="form-group"><input type="submit" name="Cancel" value="Cancel" class="btn btn-outline-primary btn-md float-right" style="width:100pt;" id="submit-id-reject"/></div>
-                  
-                   {%endif%}
-              </div>
-        </fieldset>
-      </form> 
-        </a>
+      <!--breadcrumbs - needs to be automated.-->
+
+      <div class="card">
+        <div class="card-header">
+          <a style="color:black; font-size:large">Details</a>
+          <div>Action currently at : {{ actionlocation }}</div>
+        </div>
+        <div id="card-element-10">
+          <div class="card-body">
+            <a style="color: black;">
+
+              <form method="POST" enctype='multipart/form-data'>
+                <fieldset class="form-group">
+
+                  {% csrf_token %}
+                  {%crispy form%}
+                  <div class="form-group"><input type="hidden" name="ApproverLevel" value={{ ApproverLevel }}></div>
+                  <!-- edward added include file for attachments -->
+                  <div>
+
+                    {%include "userT/inclattachments.html"%}
+
+                  </div>
+                  <div>
+                    <div>
+
+                      {% block signatories%}
+                      {%include "userT/incsignatories.html"%}
+                      {% endblock %}
+                    </div>
+                    {% if isactionee %}
+
+                    <div class="form-group"><input type="submit" name="Pullback" value="Pull Back Action..."
+                        class="btn btn-outline-primary btn-md float-right" style="width:200pt;"
+                        id="submit-id-approve" /></div>
+                    <div class="form-group"><input type="submit" name="Cancel" value="Cancel"
+                        class="btn btn-outline-primary btn-md float-right" style="width:100pt;" id="submit-id-reject" />
+                    </div>
+
+                    {%endif%}
+                  </div>
+                </fieldset>
+              </form>
+            </a>
+          </div>
+
+        </div>
+
+        </body>
       </div>
-
-</div>
-
-</body>
-</div>
+    </div>
   </div>
-</div>
-{%endblock%}
-
+  {%endblock%}
