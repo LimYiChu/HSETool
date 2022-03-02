@@ -25,6 +25,7 @@ function ajaxcall(event, tablepopup) {
       success: function(response) {
           dynamictable(response);
           donutchart(response);
+          submittedchart(response);
       }
   })
 }
@@ -101,12 +102,14 @@ function dynamictable(response) {
 }
 
 function donutchart(response) {
-  google.charts.load("current", {
+  google.charts.load("current", 
+  {
       packages: ["corechart"]
   });
   google.charts.setOnLoadCallback(drawChart);
 
-  function drawChart() {
+  function drawChart() 
+  {
 
       var donutclose = response.donutclose
       var donutopen = response.donutopen
@@ -204,3 +207,62 @@ $(document).ready(function() {
       });
   });
 });
+
+
+
+function submittedchart(response) 
+{
+google.charts.load("current", {packages:["corechart"]});
+google.charts.setOnLoadCallback(drawChart);
+
+var dfstuckatlst = response.dfstuckatlst;
+
+function drawChart() 
+{
+  var data = google.visualization.arrayToDataTable
+  (
+    dfstuckatlst
+  );
+  var options = {
+    width: 370,
+    height: 220,
+    backgroundColor: '#f3f2f2',
+    pieHole: 0.4,
+    pieSliceText: 'value',
+
+    tooltip: 
+    {
+        text: 'value'
+    },
+
+    pieSliceTextStyle: 
+    {
+        bold: true,
+        fontSize: 18,
+        color: 'black'
+    },
+
+    chartArea: 
+    {
+        right: 20,
+        bottom: 50,
+        width: '100%',
+        height: '80%'
+    },
+
+    legend: 
+    {
+        position: 'labeled',
+        textStyle: {
+            color: 'black',
+            fontSize: 15
+        }
+    }
+};
+
+  var chart1 = new google.visualization.PieChart(document.getElementById('chart_div1'));
+  var chart2 = new google.visualization.PieChart(document.getElementById('chart_div2'));
+  chart1.draw(data, options);
+  chart2.draw(data, options);
+}
+}

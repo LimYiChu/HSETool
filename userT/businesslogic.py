@@ -27,6 +27,25 @@ import shutil
 from django.db.models import F
 
 
+def bldynamicchartopen(dfalldynamicstudiessorted):
+    """
+    This function gets the Action Stuck at for the dynamic Submitted Chart
+    """
+    dfcountopenfilter = ['StuckAt']
+
+    dfcopysorted = dfalldynamicstudiessorted.copy()
+    dffilteropensorted = blsortdataframes(dfcopysorted,dfcountopenfilter)
+    dffilteropensorted['StuckAt'] = dffilteropensorted.StuckAt.str.split('@', expand=True)
+    dffilteropensorted['StuckAt'] = dffilteropensorted.StuckAt.str.split('/', n=1).str.get(-1)
+    dffilteropensorted['count'] = dffilteropensorted.StuckAt.map(dffilteropensorted.StuckAt.value_counts())
+    dffinalcountloc = dffilteropensorted.drop_duplicates()
+    dffilteropen = dffinalcountloc.loc[dffinalcountloc['StuckAt'].str.contains('Closed') == False]
+    dfstuckatlst=dffilteropen.values.tolist()
+    headerlst = ['Stuck At','Actions']
+    dfstuckatlst.insert(0,headerlst)
+    return dfstuckatlst
+
+
 def bldiscstrmatch(data) :
     """ This function does a string matching on the discsuborg for use in the discipline dynamic table"""
     emptylst = []

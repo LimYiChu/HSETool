@@ -75,20 +75,19 @@ def dynamicstudies(request):
         dfall['discsuborg']=dfall['Disipline']+'/'+dfall['Subdisipline']+'/'+dfall['Organisation']
         dfalldynamicstudiessorted = blsortdataframes(dfall,dfstudiescolumns) # sort dfall
         dfstudieslist = dfalldynamicstudiessorted.values.tolist()
-        dfstudiesdict = dfalldynamicstudiessorted.to_dict('records')
-        dfhtml = dfalldynamicstudiessorted.to_html()
-        
+
         lstofcount = bldynamicchart(dfalldynamicstudiessorted)
         countclosed = lstofcount[0]
         countopen = lstofcount[1]
+        dfstuckatlst=bldynamicchartopen(dfalldynamicstudiessorted)
         
         context = {
         'dflist':dfstudieslist,
         'headerlist' : headerlist,
         'donutclose' : countclosed,
         'donutopen' : countopen,
+        'dfstuckatlst':dfstuckatlst
         }
-     
         return JsonResponse(context,status=200)
     else:
         return render(request, 'userT/incldynamicstudies.html')
@@ -148,12 +147,16 @@ def dynamicdiscipline(request):
         countclosed = lstofcount[0]
         countopen = lstofcount[1]
 
+        dfstuckatlst=bldynamicchartopen(dfalldynamicdisciplinesorted)
+        print(dfstuckatlst)
+
         headerlist = ['Study Action No', 'Study Name' ,'Due Date','Action At' ]
         context =   {
                     'dflist':dfdisclist,
                     'headerlist' : headerlist,
                     'donutclose' : countclosed,
                     'donutopen' : countopen,
+                    'dfstuckatlst':dfstuckatlst
                     }
      
         return JsonResponse(context,status=200)
