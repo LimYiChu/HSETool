@@ -35,7 +35,7 @@ def bldynamicchartopen(dfalldynamicstudiessorted):
 
     dfcopysorted = dfalldynamicstudiessorted.copy()
     dffilteropensorted = blsortdataframes(dfcopysorted,dfcountopenfilter)
-    dffilteropensorted['StuckAt'] = dffilteropensorted.StuckAt.str.split('@', expand=True)
+    dffilteropensorted['StuckAt'] = dffilteropensorted.StuckAt.str.split('@', n=1).str.get(0)
     dffilteropensorted['StuckAt'] = dffilteropensorted.StuckAt.str.split('/', n=1).str.get(-1)
     dffilteropensorted['count'] = dffilteropensorted.StuckAt.map(dffilteropensorted.StuckAt.value_counts())
     dffinalcountloc = dffilteropensorted.drop_duplicates()
