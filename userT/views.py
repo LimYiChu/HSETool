@@ -116,7 +116,6 @@ def mainDashboard (request):
     queActionee = 0
     Actionee_R = []
     Approver_R = []
-    newcounter = {}
     totalactioneeaction = 0
     studies = blgetAllStudies()
 
@@ -124,23 +123,24 @@ def mainDashboard (request):
     dict_allrou = blgetuserRoutes(usersemail)
     Actionee_R =    dict_allrou.get('Actionee_Routes')
     Approver_R =    dict_allrou.get('Approver_Routes')
-    
+
     reducedfields= ['id','StudyActionNo','Disipline' ,'QueSeries', 'DueDate','InitialRisk']
     ActioneeActions = blallactionscomdissubQ(Actionee_R,queActionee,reducedfields)
     ActioneeActionsrisk = bladdriskelements(list(ActioneeActions))
-    riskrankingsummary = blaggregateby(ActioneeActionsrisk,"RiskRanking")
 
     #20211208 Ishna first box
-    for QSeries, ApproRoutes in Approver_R.items():
-        ApproverActions = blallactionscomdissubQ(ApproRoutes,QSeries,reducedfields)
-        ApproverActionsrisk = bladdriskelements(list(ApproverActions))
-        riskrankingapproverraw = blaggregateby(ApproverActionsrisk,"RiskRanking")
-        if riskrankingapproverraw is not None:
-            newcounter = Counter(riskrankingapproverraw) + Counter(newcounter)
-            riskrankingapprover = newcounter
-            riskrankingactionee = Counter(riskrankingsummary)
-            riskrankingsummary = riskrankingapprover + riskrankingactionee
+    # riskrankingsummary = blaggregateby(ActioneeActionsrisk,"RiskRanking")
+    # for QSeries, ApproRoutes in Approver_R.items():
+    #     ApproverActions = blallactionscomdissubQ(ApproRoutes,QSeries,reducedfields)
+    #     ApproverActionsrisk = bladdriskelements(list(ApproverActions))
+    #     riskrankingapproverraw = blaggregateby(ApproverActionsrisk,"RiskRanking")
+    #     if riskrankingapproverraw is not None:
+    #         newcounter = Counter(riskrankingapproverraw) + Counter(newcounter)
+    #         riskrankingapprover = newcounter
+    #         riskrankingactionee = Counter(riskrankingsummary)
+    #         riskrankingsummary = riskrankingapprover + riskrankingactionee
     #20211208 Ishna first box
+    riskrankingsummary = blriskranking(ActioneeActionsrisk, Approver_R, reducedfields) #is 20220228 1st box
 
     duedateaggregated = blaggregateby(ActioneeActionsrisk,"DueDate")
     duedatesummary = blduedateecountrelative(duedateaggregated)
