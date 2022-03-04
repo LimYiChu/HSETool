@@ -25,6 +25,25 @@ from userT.pdfgenerator import *
 import shutil
 # edward 20210929 fk
 from django.db.models import F
+from collections import Counter
+
+
+def blriskranking(ActioneeActionsrisk, Approver_R, reducedfields) :
+      """
+      This function gets the risk ranking summary that shows the count of actions in low medium and high in the first box
+      """
+      newcounter = {}
+      riskrankingsummary = blaggregateby(ActioneeActionsrisk,"RiskRanking")
+      for QSeries, ApproRoutes in Approver_R.items():
+          ApproverActions = blallactionscomdissubQ(ApproRoutes,QSeries,reducedfields)
+          ApproverActionsrisk = bladdriskelements(list(ApproverActions))
+          riskrankingapproverraw = blaggregateby(ApproverActionsrisk,"RiskRanking")
+          if riskrankingapproverraw is not None:
+              newcounter = Counter(riskrankingapproverraw) + Counter(newcounter)
+              riskrankingapprover = newcounter
+              riskrankingactionee = Counter(riskrankingsummary)
+              riskrankingsummary = riskrankingapprover + riskrankingactionee
+      return riskrankingsummary
 
 
 def bldynamicchartopen(dfalldynamicstudiessorted):
@@ -35,8 +54,8 @@ def bldynamicchartopen(dfalldynamicstudiessorted):
 
     dfcopysorted = dfalldynamicstudiessorted.copy()
     dffilteropensorted = blsortdataframes(dfcopysorted,dfcountopenfilter)
-    dffilteropensorted['StuckAt'] = dffilteropensorted.StuckAt.str.split('@', expand=True)
-    dffilteropensorted['StuckAt'] = dffilteropensorted.StuckAt.str.split('/', n=1).str.get(-1)
+    dffilteropensorted['StuckAt'] = dffilteropensorted.StuckAt.str.split('@').str.get(0)
+    dffilteropensorted['StuckAt'] = dffilteropensorted.StuckAt.str.split('/').str.get(-1)
     dffilteropensorted['count'] = dffilteropensorted.StuckAt.map(dffilteropensorted.StuckAt.value_counts())
     dffinalcountloc = dffilteropensorted.drop_duplicates()
     dffilteropen = dffinalcountloc.loc[dffinalcountloc['StuckAt'].str.contains('Closed') == False]

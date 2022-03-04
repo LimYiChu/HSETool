@@ -22,15 +22,16 @@ function ajaxcall(event, tablepopup) {
       data: {
           "data": data
       },
+      rootid: tablepopup,
+
       success: function(response) {
-          dynamictable(response);
-          donutchart(response);
-          submittedchart(response);
+          dynamictable(response, this.rootid);
+          dynamicchart(response, this.rootid);
       }
   })
 }
 
-function dynamictable(response) {
+function dynamictable(response,rootid) {
 
   var dflist = response.dflist
   var headerlist = response.headerlist
@@ -42,9 +43,17 @@ function dynamictable(response) {
       });
   };
 
+    var tables = $('table.dynamictable');
+    for(var i=0; i<tables.length; i++){
+        var table = tables.eq(i);
+        var tableid = rootid + 'table' + i
+        table.attr('id',tableid);
+    }
+  
   $('table.dynamictable').each(function() {
-      var datatableid = '#' + $(this).attr('id');
 
+    var datatableid = '#' + $(this).attr('id');
+    
       if ($.fn.dataTable.isDataTable(datatableid)) 
       {
           $(datatableid).DataTable().destroy();
@@ -101,84 +110,7 @@ function dynamictable(response) {
   });
 }
 
-function donutchart(response) {
-  google.charts.load("current", 
-  {
-      packages: ["corechart"]
-  });
-  google.charts.setOnLoadCallback(drawChart);
-
-  function drawChart() 
-  {
-
-      var donutclose = response.donutclose
-      var donutopen = response.donutopen
-
-      var data = google.visualization.arrayToDataTable([
-          ['Status', 'Number'],
-          donutclose,
-          donutopen,
-      ]);
-
-      var options = {
-          width: 370,
-          height: 220,
-          backgroundColor: '#f3f2f2',
-          pieHole: 0.4,
-          pieSliceText: 'value',
-
-          tooltip: 
-          {
-              text: 'value'
-          },
-
-          pieSliceTextStyle: 
-          {
-              bold: true,
-              fontSize: 18,
-              color: 'black'
-          },
-
-          chartArea: 
-          {
-              right: 20,
-              bottom: 50,
-              width: '100%',
-              height: '80%'
-          },
-
-          legend: 
-          {
-              position: 'labeled',
-              textStyle: {
-                  color: 'black',
-                  fontSize: 15
-              }
-          }
-      };
-      // var div = document.getElementsByClassName('donutchart');
-      // var g = document.createElement('div');
-      // g.id = 'chart1';
-      // div.append(g);
-      // var $div = $('.donutchart')
-
-      // var $div = $('.donutchart').html('')
-      // $("<div/>").attr('id','chart1').appendTo($div);
-
-      // $('.donutchart').each(function () {
-      //   var donutchart = '#' + $(this).attr('id');
-      // var div = document.getElementById(donutchart)
-
-      var chart = new google.visualization.PieChart(document.getElementById('chart1'));
-      var chart2 = new google.visualization.PieChart(document.getElementById('chart2'));
-      chart.draw(data, options);
-      chart2.draw(data, options);
-      // })
-  }
-}
-
 function fadeout(that) {
-
   var $x = $($(that).closest('div .popup').siblings('.divclick'));
   var $y = $($(that).closest('div .popup'))
   $x.css("animaton", "mymovein 2.5s ease")
@@ -209,60 +141,100 @@ $(document).ready(function() {
 });
 
 
+function dynamicchart(response,rootid) {
+  
+    google.charts.load("current", {
+        packages: ["corechart"]
+    });
 
-function submittedchart(response) 
-{
-google.charts.load("current", {packages:["corechart"]});
-google.charts.setOnLoadCallback(drawChart);
-
-var dfstuckatlst = response.dfstuckatlst;
-
-function drawChart() 
-{
-  var data = google.visualization.arrayToDataTable
-  (
-    dfstuckatlst
-  );
-  var options = {
-    width: 370,
-    height: 220,
-    backgroundColor: '#f3f2f2',
-    pieHole: 0.4,
-    pieSliceText: 'value',
-
-    tooltip: 
-    {
-        text: 'value'
-    },
-
-    pieSliceTextStyle: 
-    {
-        bold: true,
-        fontSize: 18,
-        color: 'black'
-    },
-
-    chartArea: 
-    {
-        right: 20,
-        bottom: 50,
-        width: '100%',
-        height: '80%'
-    },
-
-    legend: 
-    {
-        position: 'labeled',
-        textStyle: {
-            color: 'black',
-            fontSize: 15
-        }
-    }
-};
-
-  var chart1 = new google.visualization.PieChart(document.getElementById('chart_div1'));
-  var chart2 = new google.visualization.PieChart(document.getElementById('chart_div2'));
-  chart1.draw(data, options);
-  chart2.draw(data, options);
+    var dfstuckatlst = response.dfstuckatlst;
+    values = response.multilst;
+    
+    var getdivs = $( '.' + rootid ).children()
+    // for (let i = 0; i < getdivs.length; i++) {
+    //     alert(getdivs.eq(i).attr('id'))
+    // }
+    // alert (getdivs)
+    google.charts.setOnLoadCallback(function () { drawChart(values,rootid,getdivs); });
 }
+  
+
+function drawChart(values,rootid,getdivs) {
+  
+    for (let i = 0; i < values.length; i++)
+    {
+    
+    drawPieChart (values[i],i,rootid,getdivs[i])
+    }
+}
+
+
+function drawPieChart (value,index,rootid,singlediv) {
+    
+    var data = google.visualization.arrayToDataTable(
+        value
+    );
+    var options = {
+        width: 370,
+        height: 220,
+        backgroundColor: '#f3f2f2',
+        pieHole: 0.4,
+        pieSliceText: 'value',
+
+        tooltip: 
+        {
+            text: 'value'
+        },
+
+        pieSliceTextStyle: 
+        {
+            bold: true,
+            fontSize: 18,
+            color: 'black'
+        },
+
+        chartArea: 
+        {
+            right: 20,
+            bottom: 50,
+            width: '100%',
+            height: '80%'
+        },
+
+        legend: 
+        {
+            position: 'labeled',
+            textStyle: {
+                color: 'black',
+                fontSize: 15
+            }
+        }
+    };
+
+    // var chartid = rootid + 'chart'
+    // $('div.dynamicchart').attr('id',chartid)
+
+    // var charts = $('div.dynamicchart');
+    // for(var i=0; i<charts.length; i++){
+    //     var chart = charts.eq(i);
+    //     var chartid = rootid + 'chart' + index
+    //     $("<div/>").attr('id',chartid).appendTo(chart);
+    // }
+
+    // var $div = $('.dynamicchart')
+    // id = chartid + index
+    // $("<div/>").attr('id',chartid).appendTo($div);
+
+    // var $div2 = $('.dynamicchart2')
+    // index2 = parseInt(index) + 2
+    // id2 = 'chart'+ index2
+    // $("<div/>").attr('id',id2).appendTo($div2);
+   
+    // var finalpie = chartid.concat(index);
+    // var chart = new google.visualization.PieChart(document.getElementById(finalpie));
+    // chart.draw(data, options);
+    var chart = new google.visualization.PieChart(singlediv);
+    chart.draw(data, options);chart.draw(data, options);
+    // var chart2 = new google.visualization.PieChart(document.getElementById(id2));
+    // chart2.draw(data, options);
 }

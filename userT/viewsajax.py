@@ -80,8 +80,14 @@ def dynamicstudies(request):
         countclosed = lstofcount[0]
         countopen = lstofcount[1]
         dfstuckatlst=bldynamicchartopen(dfalldynamicstudiessorted)
+
+        headeropenclose = ['Status', 'Number']
+        lstofcount.insert(0,headeropenclose)
+        
+        multilst = [lstofcount,dfstuckatlst]
         
         context = {
+        'multilst':multilst,
         'dflist':dfstudieslist,
         'headerlist' : headerlist,
         'donutclose' : countclosed,
@@ -148,10 +154,16 @@ def dynamicdiscipline(request):
         countopen = lstofcount[1]
 
         dfstuckatlst=bldynamicchartopen(dfalldynamicdisciplinesorted)
-        print(dfstuckatlst)
 
         headerlist = ['Study Action No', 'Study Name' ,'Due Date','Action At' ]
-        context =   {
+
+        headeropenclose = ['Status', 'Number']
+        lstofcount.insert(0,headeropenclose)
+        
+        multilst = [lstofcount,dfstuckatlst]
+        
+        context = {
+                    'multilst':multilst,
                     'dflist':dfdisclist,
                     'headerlist' : headerlist,
                     'donutclose' : countclosed,
