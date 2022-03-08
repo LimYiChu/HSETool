@@ -170,13 +170,19 @@ function drawChart(values,rootid,getdivs) {
 
 
 function drawPieChart (value,index,rootid,singlediv) {
-    
+
+    chartTitle = value[0][0]
+    firstindex = chartTitle.lastIndexOf("///")+3
+    lastindex = chartTitle.lastIndexOf(":::")
+    var newtitle = chartTitle.substring(firstindex,lastindex );
+
     var data = google.visualization.arrayToDataTable(
         value
     );
     var options = {
-        width: 370,
-        height: 220,
+        title:newtitle,
+        width: 350,
+        height: 270,
         backgroundColor: '#f3f2f2',
         pieHole: 0.4,
         pieSliceText: 'value',
@@ -196,7 +202,7 @@ function drawPieChart (value,index,rootid,singlediv) {
         chartArea: 
         {
             right: 20,
-            bottom: 50,
+            bottom: 0,
             width: '100%',
             height: '80%'
         },
@@ -206,7 +212,7 @@ function drawPieChart (value,index,rootid,singlediv) {
             position: 'labeled',
             textStyle: {
                 color: 'black',
-                fontSize: 15
+                fontSize: 12.5
             }
         }
     };
