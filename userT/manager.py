@@ -5,14 +5,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import ugettext_lazy as _
 
-
-
-
-
-
 class RoutesQuerySet(models.QuerySet):
     def get_ActioneeR(self,useremail):
-        return self.filter(Actionee__iexact=useremail)
+        return self.filter(Actionee__icontains=useremail)
     def get_Approver(self,useremail,lookup):
         return self.filter(**{lookup: useremail})
     def get_AllDiscSub(self):
