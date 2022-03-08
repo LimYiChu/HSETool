@@ -60,7 +60,7 @@ def bldynamicchartopen(dfalldynamicstudiessorted):
     dffinalcountloc = dffilteropensorted.drop_duplicates()
     dffilteropen = dffinalcountloc.loc[dffinalcountloc['StuckAt'].str.contains('Closed') == False]
     dfstuckatlst=dffilteropen.values.tolist()
-    headerlst = ['Stuck At','Actions']
+    headerlst = ['\\\Action At:::','Actions']
     dfstuckatlst.insert(0,headerlst)
     return dfstuckatlst
 
