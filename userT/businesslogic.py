@@ -60,7 +60,7 @@ def bldynamicchartopen(dfalldynamicstudiessorted):
     dffinalcountloc = dffilteropensorted.drop_duplicates()
     dffilteropen = dffinalcountloc.loc[dffinalcountloc['StuckAt'].str.contains('Closed') == False]
     dfstuckatlst=dffilteropen.values.tolist()
-    headerlst = ['\\\Action At:::','Actions']
+    headerlst = ['Stuck At','Actions']
     dfstuckatlst.insert(0,headerlst)
     return dfstuckatlst
 
@@ -749,7 +749,8 @@ def blgetvaliduserinroute (idAI,emailid,History=False):
     # the join is just to convert into string Actionee Approver1 or Approver2
     # But just supposed to get 1 value, actionee or approver or...
     # Need to modify for testing as sometimes we want to have 
-    approveractioneeseries = ''.join([k for k, v in Signatories.items() if v==emailid])
+   #approveractioneeseries = ''.join([k for k, v in Signatories.items() if v==emailid])
+    approveractioneeseries = ''.join([k for k, v in Signatories.items() if emailid in v])
     approverlevel= ''.join(re.findall('[0-9]+', str(approveractioneeseries)))
     
     isvaliduser = emailid in Signatories.values()
@@ -796,37 +797,15 @@ def blgettimehistorytables (id, Signatories, QueSeries=0):
     This function also caters for changing the number of approvers once actions have been closed"""
     QueSeriesTarget = 5 #Random Distant Number to be reset after first loop
     def setSignatoriesItems (setofsignatories,historyindex):
-        """Pass in the nth Item In Signatories and it sets it based on Historty table data retrived 
-        in main function below. The history index is 0 or 1- first or second record based on logic of where 
-        it is que"""
-        setofsignatories [1] = lstdictHistory[historyindex].history_user.email
-        setofsignatories [2] = lstdictHistory[historyindex].history_user.fullname
-        setofsignatories [3] = lstdictHistory[historyindex].history_user.designation
-        setofsignatories [4] = lstdictHistory[historyindex].history_user.signature
-        setofsignatories [5] = lstdictHistory[historyindex].history_date
+                setofsignatories [1] = lstdictHistory[historyindex].history_user.email
+                setofsignatories [2] = lstdictHistory[historyindex].history_user.fullname
+                setofsignatories [3] = lstdictHistory[historyindex].history_user.designation
+                setofsignatories [4] = lstdictHistory[historyindex].history_user.signature
+                setofsignatories [5] = lstdictHistory[historyindex].history_date
 
-        nonlocal QueSeriesTarget 
-        if QueSeries == 99:
-            QueSeriesTarget = lstdictHistory[historyindex].QueSeriesTarget 
-        else :
-            QueSeriesTarget = blgetFieldValue(id,"QueSeriesTarget")
-
-    def checkRouteReduced (Signa, ID,QueSeriesT):
-        """If the routes have been reduced and the item is closed , this function gets the existing signatories
-        from the history tables """
-        if QueSeriesT > len (Signa) :
-            for i in range (len(Signa),QueSeriesT):
-                filterkwargs = {'id':ID, 'QueSeries': i} 
-                nonlocal lstdictHistory
-                lstdictHistory = ActionItems.history.filter(**filterkwargs).select_related("history_user").order_by('-history_date')
-                newlist = [""]*6
-                newlist[0]=f'{"Approver"}{i}'
-                Signa.append(newlist)
-                if QueSeriesT -i == 1: 
-                    setSignatoriesItems(Signa[-1],0)
-                elif QueSeriesT -i >1 :
-                    setSignatoriesItems(Signa[-1],1)
-
+                nonlocal QueSeriesTarget 
+                QueSeriesTarget = lstdictHistory[historyindex].QueSeriesTarget #sets it after the first time
+               
     for index, items in enumerate(Signatories):
         
         #This is for when number of approvers have changed and want to use historic tables to formulate the signatories
@@ -850,12 +829,10 @@ def blgettimehistorytables (id, Signatories, QueSeries=0):
             if  QueSeries - index > 1:
                 setSignatoriesItems(items,1)
         elif QueSeries == 99 and (QueSeriesTarget-1 == index):
-        
             filterkwargs = {'id':id, 'QueSeries': 99}
             lstdictHistory = ActionItems.history.filter(**filterkwargs).select_related("history_user").order_by('-history_date')
             setSignatoriesItems(items,0)
-    if QueSeries == 99 :
-        checkRouteReduced (Signatories, id,QueSeriesTarget)
+                
     return Signatories
 
 def blgettimestampuserdetails (id, Signatories):
