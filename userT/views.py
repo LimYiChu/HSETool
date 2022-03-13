@@ -396,6 +396,7 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
         discsub = blgetDiscSubOrgfromID(idAI)
         Signatories = blgetSignotories(discsub)
         lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories) #it changes the Signatories directly
+       
         currentQueSeries = blgetFieldValue(idAI,'QueSeries')
         blgettimehistorytables(idAI,lstSignatoriesTimeStamp,currentQueSeries)
         ApproverLevel = blgetApproverLevel(discsub) #add approver level target in case it doesnt get set at the start
@@ -578,7 +579,7 @@ class ActioneeItemsMixin(UserPassesTestMixin,UpdateView): #@user_passes_test(lam
         IdAI = self.kwargs.get("pk")
         emailID = self.request.user.email
         inroute = blgetvaliduserinroute(IdAI,emailID)
-
+        
         #satifies 2 test before allowing to access items in Url  otherwise just redirect to main
         if  (ingroup) and (inroute):
             return True
@@ -596,10 +597,12 @@ class ActioneeItemsMixin(UserPassesTestMixin,UpdateView): #@user_passes_test(lam
     def get_context_data(self,**kwargs):
         IdAI = self.kwargs.get("pk") #its actually the id and used as foreign key
         context = super().get_context_data(**kwargs)
+        emailID = self.request.user.email
 
         discsuborg = blgetDiscSubOrgfromID(IdAI)
         ApproverLevel = blgetApproverLevel(discsuborg)
         Signatories = blgetSignotories(discsuborg)
+        multipleSignatories = blmultisignareplace(Signatories,emailID,"Actionee") # Replaces the multiple signatory with an individual
         blsetApproverLevelTarget(IdAI,ApproverLevel)
         lstSignatoriesTimeStamp= blgettimestampuserdetails (IdAI, Signatories)
         object_list = self.object.attachments_set.all()
