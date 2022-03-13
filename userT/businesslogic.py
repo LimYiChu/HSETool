@@ -739,7 +739,18 @@ def blconverttodictforpdf(lstofsignatories):
                 dict.update(dictapp)
     return(dict)
 
+def blmultisignareplace (Signatories,emailid,ActioneeApprover=""):
 
+    """ This is for multiple signatory . This function searches signatory for actionee or approver level passed in and 
+    reduces it to a single person showing on the signatory section.It finds it in list of list and then strips out all others
+     And uses tuple to get value to insert into index you need to change."""
+
+    indexaAcctAppr= [[index for actappr in items if actappr == ActioneeApprover]
+                            for index, items in enumerate(Signatories) ]
+    res = [item for sublist in indexaAcctAppr for item in sublist  if sublist != [] ]
+    intres = int(''.join(map(str, tuple(res))))
+    Signatories [intres][1] = emailid
+    
 def blgetvaliduserinroute (idAI,emailid,History=False):
     """This function gets the valid users in a Route"""
     discsuborg = blgetDiscSubOrgfromID(idAI)
@@ -753,8 +764,9 @@ def blgetvaliduserinroute (idAI,emailid,History=False):
     approveractioneeseries = ''.join([k for k, v in Signatories.items() if emailid in v])
     approverlevel= ''.join(re.findall('[0-9]+', str(approveractioneeseries)))
     
+    #check this line and why we need it
     isvaliduser = emailid in Signatories.values()
-    
+   
     #must check queseries again to make sure queseries not at approver level
     #So this example below is if multiple actionee and then access id which is at approver level
     # 2 limb test must test for queseries because he could be an actionee and try and access url on approver que
@@ -762,7 +774,8 @@ def blgetvaliduserinroute (idAI,emailid,History=False):
     #first test if you are actionee
     if  'Actionee' in approveractioneeseries :
         if (queseries==0) or History==True:
-            isvaliduser = emailid in Signatories.values() # Triple quadruple checking even though above should have sufficed
+            #Used for multiple actionee, didnt split, just used direct
+            isvaliduser = emailid in Signatories['Actionee'] 
             return isvaliduser
         #next need to check if approver in that mixed que for same route mostly while development
         
@@ -791,7 +804,8 @@ def bldeletehistorytablesignatory(id) :
 
 def blgettimehistorytables (id, Signatories, QueSeries=0):
     """Gets time stamp based on queseries and whom signed from history tables. Overwrites name and time stamp from action routes
-    with actualy people whom have signed. The idea is its the first record in history table when Queseries is one ahead
+    with actual people whom have signed. This happens when routing table is changed half way through
+    The idea is its the first record in history table when Queseries is one ahead
     and turns to a second record if QueSeries is 2 or more ahead .
     e.g If its queseries = 3 and you want actionee signature then it is the second record. 
     This function also caters for changing the number of approvers once actions have been closed"""
@@ -834,6 +848,18 @@ def blgettimehistorytables (id, Signatories, QueSeries=0):
             setSignatoriesItems(items,0)
                 
     return Signatories
+def blreplacemultiplesignatories (signatories,id,index):
+    """returns a single signatory, just a dummy data since the exact signatory is checked 
+    in blgettimehistorytables subsequently. Uses ; to check for multiple signtory and return first item
+    as dummy data """
+    
+    multipleSignatories = ";" in signatories
+
+    if multipleSignatories:
+        listofmultiplesignatories = signatories.split(";")
+        return listofmultiplesignatories[0]
+    else:
+        return signatories
 
 def blgettimestampuserdetails (id, Signatories):
        
@@ -851,7 +877,9 @@ def blgettimestampuserdetails (id, Signatories):
         #get details from signatory as in signature, full name etc for all entries in the ActionRoutes                                  
         for index, items in enumerate(Signatories):
             #get each user detail first
-            objuser = CustomUser.objects.filter(email=items[1]).values()       
+            singlesignatory = blreplacemultiplesignatories (items[1],id,index)
+            objuser = CustomUser.objects.filter(email=singlesignatory).values()
+                  
             if objuser:
                 fullname =   objuser[0].get('fullname')
                 items.append(fullname)
@@ -1050,16 +1078,9 @@ def blgetIndiResponseCount2(dfdiscsuborgphase,queseriesopen,queseriesclosed,phas
             completePendingPair.append (indiPendingSeries)
          
             indiPendingSeries = []
-            
-
-    
-
+     
     finallistoflist = [x for x in completePendingPair if x]   
     
-    
-    #finalisedlist = blfilteractionsbyphase(finallistoflist)
-    #print(finallistoflist) 
-
     return finallistoflist
 
 def blgetActionStuckAt(allactions, lstoftableattributes,email=False):
