@@ -1219,11 +1219,21 @@ def blgetSignotories (lstorgdiscsub):
     finallistoflist = [x for x in finalSigPair if x]
     
     return finallistoflist
+def blcheckmultipleactionee (id,signatories):
+    """Checks for multiple signatories for actionee . Basically it returns a single actionee from 
+    history tables. the problem with below is have to select 0"""
+    
+    filterkwargs = {'id':id, 'QueSeries': 0} 
+    lstdictHistory = ActionItems.history.filter(**filterkwargs).select_related("history_user").order_by('-history_date')
+    emailid = lstdictHistory[0].history_user.email
+    blmultisignareplace(signatories,emailid,"Actionee")
+    
 
-def blgetSignatoryemailbyquereject(lstdiscsuborg,queseries):
+def blgetSignatoryemailbyquereject(lstdiscsuborg,queseries,id):
     
     pairSignatories = blgetSignotories(lstdiscsuborg) #just reusing what is already done 
-
+    blcheckmultipleactionee (id, pairSignatories)
+    #Logic for multiple actionee
     for items in pairSignatories:
         items.pop(0) # basically removes the Actionee, Approver from pair and maintains name
         
@@ -1240,7 +1250,7 @@ def blgetSignatoryemailbyque(lstdiscsuborg,queseries):
     """This function gets the Signatories by email que & sends email notification to the next person in the que when Action is Submitted or Approved"""
     
     pairSignatories = blgetSignotories(lstdiscsuborg) #just reusing what is already done 
-
+    
     for items in pairSignatories:
         items.pop(0) # basically removes the Actionee, Approver from pair and maintains name
 
@@ -1324,8 +1334,8 @@ def blApproverHistoryActions(contextRoutes,que):
                                                                 blvardisipline,
                                                                blvarsubbdisipline,queseries))
     
-    
     return streams
+
 def blallActionsComDisSub(contextRoutes,que):
     
     streams = []
