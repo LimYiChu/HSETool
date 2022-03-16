@@ -661,8 +661,8 @@ class RejectReason (CreateView):
             rejectreason =  form.instance.Reason
             discsub = blgetDiscSubOrgfromID(ID)
             Signatoryemails = blgetSignatoryemailbyquereject(discsub,intqueseries,ID)
+            
             ContentSubject  =blbuildSubmittedemail(ID,"Reject",rejectreason)
-           
             success = blemailSendindividual(emailSender,Signatoryemails,ContentSubject[0], ContentSubject[1]) #send email, the xyz is dummy data and not used
             return super().form_valid(form)
 

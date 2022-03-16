@@ -1219,25 +1219,28 @@ def blgetSignotories (lstorgdiscsub):
     finallistoflist = [x for x in finalSigPair if x]
     
     return finallistoflist
-def blcheckmultipleactionee (id,signatories):
+def blcheckmultipleactionee (id,signatories,queseries):
     """Checks for multiple signatories for actionee . Basically it returns a single actionee from 
-    history tables. the problem with below is have to select 0"""
+    history tables. Use the same logic as previous based on current queseries before it gets rejected"""
     
-    filterkwargs = {'id':id, 'QueSeries': 0} 
+    filterkwargs = {'id':id, 'QueSeries': 1} 
     lstdictHistory = ActionItems.history.filter(**filterkwargs).select_related("history_user").order_by('-history_date')
-    emailid = lstdictHistory[0].history_user.email
+    if queseries > 1:
+            emailid = lstdictHistory[1].history_user.email
+    else:
+            emailid = lstdictHistory[0].history_user.email
+    
     blmultisignareplace(signatories,emailid,"Actionee")
     
 
 def blgetSignatoryemailbyquereject(lstdiscsuborg,queseries,id):
     
     pairSignatories = blgetSignotories(lstdiscsuborg) #just reusing what is already done 
-    blcheckmultipleactionee (id, pairSignatories)
+    blcheckmultipleactionee (id, pairSignatories,queseries)
+    
     #Logic for multiple actionee
     for items in pairSignatories:
         items.pop(0) # basically removes the Actionee, Approver from pair and maintains name
-        
-    
     abbrevatedemail=pairSignatories[:queseries] # returns only before queseries
 
     lstfinal = [''.join(ele) for ele in abbrevatedemail] #this is just list comprehensioin to return a list and not list of list
