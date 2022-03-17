@@ -61,7 +61,6 @@ def dynamicstudiesexceldisc(request,data):
 
     if request.is_ajax and request.method == "GET":
         data = request.GET.get("data", None)
-        print(data)
         filteredstring = {'StudyName__StudyName': data}
         reducedfields=['id','StudyActionNo','QueSeries','DueDate','Disipline','Subdisipline','InitialRisk','Organisation']
 
@@ -71,7 +70,6 @@ def dynamicstudiesexceldisc(request,data):
         dfdisc = pd.DataFrame(disclst)
         dictheader = {0:'Discipline',1:'Pending Submission',2:'Submitted',3:'Closed',4:'Open Actions',5:'Total Actions'}
         dfdisc.rename(columns=dictheader,inplace=True)
-        print(dfdisc)
         in_memory = BytesIO()
         response = HttpResponse(content_type='application/ms-excel') 
         response['Content-Disposition'] = 'attachment; filename=DisciplinebyStudies.xlsx'
@@ -84,7 +82,6 @@ def dynamicstudiesexceldisc(request,data):
             
         in_memory.seek(0)
         response.write(in_memory.read())
-        print(response)
         
         return response
         
@@ -225,7 +222,6 @@ def dynamicdiscipline(request):
         discmultilist = bldynamicstudiesdisc(actionsbydisc)
         discheaderlst = discmultilist[0]
         disclst = discmultilist[1]
-        print(discmultilist)
         context = {
                     'multilst':multilst,
                     'dflist':dfdisclist,
