@@ -57,6 +57,37 @@ from django.utils import timezone
 from UploadExcel.formstudies import *
 from time import time
 
+def dynamicstudiesexceldisc(request,data):
+
+    if request.is_ajax and request.method == "GET":
+        data = request.GET.get("data", None)
+        print(data)
+        filteredstring = {'StudyName__StudyName': data}
+        reducedfields=['id','StudyActionNo','QueSeries','DueDate','Disipline','Subdisipline','InitialRisk','Organisation']
+
+        actionsstuckat = bldynamicstudiesactionformat(filteredstring,reducedfields)
+        discmultilist = bldynamicstudiesdisc(actionsstuckat)
+        disclst = discmultilist[1]
+        dfdisc = pd.DataFrame(disclst)
+        dictheader = {0:'Discipline',1:'Pending Submission',2:'Submitted',3:'Closed',4:'Open Actions',5:'Total Actions'}
+        dfdisc.rename(columns=dictheader,inplace=True)
+        print(dfdisc)
+        in_memory = BytesIO()
+        response = HttpResponse(content_type='application/ms-excel') 
+        response['Content-Disposition'] = 'attachment; filename=DisciplinebyStudies.xlsx'
+
+        with pd.ExcelWriter(in_memory)as writer: #using excelwriter library to edit worksheet
+            dfdisc.to_excel(writer, sheet_name='Discipline',engine='xlsxwriter',header=None,startrow=1)
+            workbook = writer.book #gives excelwriter access to workbook
+            worksheet = writer.sheets['Discipline'] #gives excelwriter access to worksheet
+            formattedexcel = blexcelformat(dfdisc,workbook,worksheet)
+            
+        in_memory.seek(0)
+        response.write(in_memory.read())
+        print(response)
+        
+        return response
+        
 
 def dynamicstudies(request):
 
@@ -65,16 +96,18 @@ def dynamicstudies(request):
 
         filteredstring = {'StudyName__StudyName': data}
         reducedfields=['id','StudyActionNo','QueSeries','DueDate','Disipline','Subdisipline','InitialRisk','Organisation']
-        headerlist = ['Study Action No', 'DueDate' ,'Action At','Discipline','Initial Risk']
+        headerlst = ['Study Action No', 'DueDate' ,'Action At','Discipline','Initial Risk']
 
-        actionsbystudy = blgetsinglefilteractionsitemsQ(filteredstring,reducedfields) #getting actions based on studies filter
-        actionswithrisk = bladdriskelements(actionsbystudy) 
-        actionsstuckat = blgetdictActionStuckAt(actionswithrisk)
-        
+        actionsstuckat = bldynamicstudiesactionformat(filteredstring,reducedfields)
+
+        discmultilist = bldynamicstudiesdisc(actionsstuckat)
+        discheaderlst = discmultilist[0]
+        disclst = discmultilist[1]
+
         dfall = pd.DataFrame.from_dict(actionsstuckat) #puts it into df columns format
         dfall['discsuborg']=dfall['Disipline']+'/'+dfall['Subdisipline']+'/'+dfall['Organisation']
         dfalldynamicstudiessorted = blsortdataframes(dfall,dfstudiescolumns) # sort dfall
-        dfstudieslist = dfalldynamicstudiessorted.values.tolist()
+        dfstudieslst = dfalldynamicstudiessorted.values.tolist()
 
         lstofcount = bldynamicchart(dfalldynamicstudiessorted)
         countclosed = lstofcount[0]
@@ -85,14 +118,41 @@ def dynamicstudies(request):
         lstofcount.insert(0,headeropenclose)
         
         multilst = [lstofcount,dfstuckatlst]
-        print(multilst)
+
+        dfdisc = pd.DataFrame(disclst)
+        dictheader = {0:'Discipline',1:'Pending Submission',2:'Submitted',3:'Closed',4:'Open Actions',5:'Total Actions'}
+        dfdisc.rename(columns=dictheader,inplace=True)
+      
+
+        
+        # if request.method == 'POST':
+        #     print('pass 1')
+        #     if (request.POST.get('dynamicstudiesdisc')):
+        #         print('pass 2')
+        #         in_memory = BytesIO()
+        #         response = HttpResponse(content_type='application/ms-excel') 
+        #         response['Content-Disposition'] = 'attachment; filename=DisciplinebyStudies.xlsx'
+            
+        #         with pd.ExcelWriter(in_memory)as writer: #using excelwriter library to edit worksheet
+        #             dfdisc.to_excel(writer, sheet_name='Discipline',engine='xlsxwriter',header=None,startrow=1)
+        #             workbook = writer.book #gives excelwriter access to workbook
+        #             worksheet = writer.sheets['Discipline'] #gives excelwriter access to worksheet
+        #             formattedexcel = blexcelformat(dfdisc,workbook,worksheet)
+                    
+        #         in_memory.seek(0)
+        #         response.write(in_memory.read())
+        #         return response
+        
         context = {
         'multilst':multilst,
-        'dflist':dfstudieslist,
-        'headerlist' : headerlist,
+        'dflist':dfstudieslst,
+        'headerlist' : headerlst,
         'donutclose' : countclosed,
         'donutopen' : countopen,
-        'dfstuckatlst':dfstuckatlst
+        'dfstuckatlst':dfstuckatlst,
+        'discheaderlst':discheaderlst,
+        'disclst':disclst,
+        'data':data
         }
         return JsonResponse(context,status=200)
     else:
@@ -161,14 +221,20 @@ def dynamicdiscipline(request):
         lstofcount.insert(0,headeropenclose)
         
         multilst = [lstofcount,dfstuckatlst]
-        
+
+        discmultilist = bldynamicstudiesdisc(actionsbydisc)
+        discheaderlst = discmultilist[0]
+        disclst = discmultilist[1]
+        print(discmultilist)
         context = {
                     'multilst':multilst,
                     'dflist':dfdisclist,
                     'headerlist' : headerlist,
                     'donutclose' : countclosed,
                     'donutopen' : countopen,
-                    'dfstuckatlst':dfstuckatlst
+                    'dfstuckatlst':dfstuckatlst,
+                    'discheaderlst':discheaderlst,
+                    'disclst':disclst
                     }
      
         return JsonResponse(context,status=200)

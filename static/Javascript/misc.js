@@ -1,25 +1,25 @@
-$(document).ready(function()
+// $(document).ready(function()
 
-{
-  $(".btn").click(function()
-  {
-    $.ajax({
+// {
+//   $(".btn").click(function()
+//   {
+//     $.ajax({
 
-      url: "../loadajax3",
-      type : 'get',
-      data : {
-        button_text: $(this).text()
-      },
-      success: function (response){
-        $(".btn").text(response.context) 
-        // alert(response.context)  
-      }
+//       url: "../loadajax3",
+//       type : 'get',
+//       data : {
+//         button_text: $(this).text()
+//       },
+//       success: function (response){
+//         $(".btn").text(response.context) 
+//         // alert(response.context)  
+//       }
 
 
-    })
-    })
+//     })
+//     })
 
-})
+// })
 
 function phasesurl (id,phase)
 

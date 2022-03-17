@@ -27,6 +27,32 @@ import shutil
 from django.db.models import F
 from collections import Counter
 
+def bldynamicstudiesactionformat(filteredstring,reducedfields):
+    """
+    This function gets the filtered string & reduced fields for the dynamic studies & then adds the risk elements & where the action is stuck at & subsequently returns the formulated action set
+    """
+    actionsbystudy = blgetsinglefilteractionsitemsQ(filteredstring,reducedfields) #getting actions based on studies filter
+    actionswithrisk = bladdriskelements(actionsbystudy) 
+    actionsstuckat = blgetdictActionStuckAt(actionswithrisk)
+    return actionsstuckat
+
+def bldynamicstudiesdisc(actionsstuckat):
+    """
+    This function gets the count for pending submission,submitted,closed,open & total actions for disciplines based on each studies.
+    """
+    discmultilist=[]
+    actionsvalues = actionsstuckat.values('Disipline',
+                'Subdisipline','Organisation')
+    dfactionitem = pd.DataFrame(actionsvalues)
+    dfactionitemfilter = dfactionitem.drop_duplicates()
+    dfdiscsuborglist = dfactionitemfilter.values.tolist()
+    discheaderlst = ['Discipline', 'Pending Submission' ,'Submitted', 'Closed','Open Actions','Total Actions']
+    discmultilist.append(discheaderlst)
+    disclst= blaggregatebyDisc(dfdiscsuborglist,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue)
+    discmultilist.append(disclst)
+    
+    return discmultilist
+
 
 def blriskranking(ActioneeActionsrisk, Approver_R, reducedfields) :
       """
@@ -60,7 +86,7 @@ def bldynamicchartopen(dfalldynamicstudiessorted):
     dffinalcountloc = dffilteropensorted.drop_duplicates()
     dffilteropen = dffinalcountloc.loc[dffinalcountloc['StuckAt'].str.contains('Closed') == False]
     dfstuckatlst=dffilteropen.values.tolist()
-    headerlst = ['Stuck At','Actions']
+    headerlst = ['\\\Action At:::','Actions']
     dfstuckatlst.insert(0,headerlst)
     return dfstuckatlst
 
@@ -227,6 +253,8 @@ def blbulkdownload(objactionitems,destinationfolders,createzipfilename):
             discsub = blgetDiscSubOrgfromID(items['id']) 
             Signatories = blgetSignotories(discsub) 
             lstSignatoriesTimeStamp= blgettimestampuserdetails (items['id'], Signatories) 
+            currentQueSeries = blgetFieldValue(items['id'],'QueSeries')
+            blgettimehistorytables(items['id'],lstSignatoriesTimeStamp,currentQueSeries)
             studyactno = items["StudyActionNo"] 
             studyactnopdf = (studyactno + '.pdf')
             signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)

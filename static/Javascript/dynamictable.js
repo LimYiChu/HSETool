@@ -11,11 +11,13 @@ function fadein(that) {
   $y.css("display", "block");
 }
 
+var title;
 function ajaxcall(event, tablepopup) {
   var data = event.currentTarget.firstElementChild.innerText
-  var title = event.currentTarget.firstElementChild.innerText
+  title = event.currentTarget.firstElementChild.innerText
   $('.caption').html(title);
-
+  $("input.hidden").val(title);
+//   alert($("input.hidden").val)
   $.ajax({
       url: "/" + tablepopup,
       type: 'GET',
@@ -27,14 +29,34 @@ function ajaxcall(event, tablepopup) {
       success: function(response) {
           dynamictable(response, this.rootid);
           dynamicchart(response, this.rootid);
+          dynamictabledisc(response, this.rootid);
       }
   })
+
+  
+}
+
+function alerttest() {
+    data = title
+    // alert(data)
+
+    $.ajax({
+        url: "/dynamicstudiesexceldisc" ,
+        type: 'GET',
+        data: {
+            "data": data
+        },
+        success: function(response) {
+        //    alert(response)
+        }
+    })
 }
 
 function dynamictable(response,rootid) {
 
   var dflist = response.dflist
   var headerlist = response.headerlist
+
   var dynamicheaders = [];
   for (var i = 0; i < headerlist.length; i++) 
   {
@@ -43,12 +65,12 @@ function dynamictable(response,rootid) {
       });
   };
 
-    var tables = $('table.dynamictable');
-    for(var i=0; i<tables.length; i++){
-        var table = tables.eq(i);
-        var tableid = rootid + 'table' + i
-        table.attr('id',tableid);
-    }
+    // var tables = $('table.dynamictable');
+    // for(var i=0; i<tables.length; i++){
+    //     var table = tables.eq(i);
+    //     var tableid = rootid + 'table' + i
+    //     table.attr('id',tableid);
+    // }
   
   $('table.dynamictable').each(function() {
 
@@ -244,3 +266,95 @@ function drawPieChart (value,index,rootid,singlediv) {
     // var chart2 = new google.visualization.PieChart(document.getElementById(id2));
     // chart2.draw(data, options);
 }
+
+function openTab(evt, tabname) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("dyntabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("dynamictabs");
+    for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tabname).style.display = "block";
+    evt.currentTarget.className += " active";
+    }
+    $(document).ready(function() {
+    document.getElementById("defaultOpen").click();  
+    })
+
+
+function dynamictabledisc(response,rootid) {
+   
+        var discheaderlst = response.discheaderlst
+        var disclst = response.disclst
+      
+        var dynamicheaders = [];
+        for (var i = 0; i < discheaderlst.length; i++) 
+        {
+            dynamicheaders.push({
+                "sTitle": discheaderlst[i],
+            });
+        };
+      
+          var tables = $('table.dynamictabledisc');
+          for(var i=0; i<tables.length; i++){
+              var table = tables.eq(i);
+              var tableid = rootid + 'table' + i
+              table.attr('id',tableid);
+          }
+        
+        $('table.dynamictabledisc').each(function() {
+      
+          var datatableid = '#' + $(this).attr('id');
+          
+            if ($.fn.dataTable.isDataTable(datatableid)) 
+            {
+                $(datatableid).DataTable().destroy();
+                $(datatableid).empty();
+            }
+      
+            var table = $(datatableid).DataTable({
+                data: disclst,
+      
+                "aoColumns": dynamicheaders,
+                
+                "bDestroy": true,
+                orderCellsTop: true,
+                "lengthMenu": 
+                [
+                    [-1, 10, 25, 50, 200],
+                    ["All", 10, 25, 50, 200]
+                ],
+                "createdRow": function(row, data, dataIndex, column) 
+                {
+                    if (data[6] == 'Red') 
+                    {
+                      return $(column[4]).addClass('table-danger')
+                    } 
+                    else if (data[6] == 'Yellow') 
+                    {
+                      return $(column[4]).addClass('table-warning')
+                    } 
+                    else if (data[6] == 'Green') 
+                    {
+                      return $(column[4]).addClass('table-success');
+                    }
+                },
+            });
+      
+            $(datatableid + ' thead tr').clone(false).appendTo(datatableid + ' thead'); //clone headers
+            $(datatableid + ' thead tr:eq(1) th').each(function(i) {
+                $(this).html('<input type="text" placeholder="Search" class="column_search" />');
+                $(this).removeClass("sorting sorting_asc sorting_desc")
+            });
+      
+            $(datatableid + ' thead').on('keyup', ".column_search", function() {
+                table
+                    .column($(this).parent().index())
+                    .search(this.value)
+                    .draw();
+            });
+        });
+      }
