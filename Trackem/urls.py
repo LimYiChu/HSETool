@@ -119,6 +119,8 @@ urlpatterns = [
         path('dynamicstudies/',login_required(viewsajax.dynamicstudies), name='dynamicstudies' ),
         path('dynamicindisumm/',login_required(viewsajax.dynamicindisumm), name='dynamicindisumm' ),
         path('dynamicdiscipline/',login_required(viewsajax.dynamicdiscipline), name='dynamicdiscipline' ),
+
+        path('dynamicstudiesexceldisc/',login_required(viewsajax.dynamicstudiesexceldisc), name='dynamicstudiesexceldisc' ),
         
       ]
 

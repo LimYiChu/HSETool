@@ -39,12 +39,13 @@
     width: 100% !important;
 }
 
-.donutchart {
-    /* width: 500px;
-    height: 250px; */
-    display: inline-block;
-
-}
+.dyntabcontent {
+    display: none;
+    }
+    
+.dynamictabs {
+    padding-bottom: 10px;
+    }
 
 @keyframes slide-in {
     0% {

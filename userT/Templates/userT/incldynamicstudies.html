@@ -4,12 +4,31 @@
   <div>
     <h3 style="display: inline-block;">Study : </h3>
     <h3 style="display: inline-block;" class="caption pb-3"></h3>
+    <input type="hidden" class="hidden" id="xyz" >
   </div>
   <div style="justify-content:center" class="d-flex dynamicstudies">
     <div></div>
     <div></div>
   </div>
 
-  <table class="table table-striped table-hover tablew100 dynamictable">
-  </table>
+<br>  
+<div class="tabset tab-child child-one-font">
+  <button type="button" id="defaultOpen" class="dynamictabs" onclick="openTab(event, 'Details')">Details</button>
+  <button type="button" class="dynamictabs" onclick="openTab(event, 'DisciplineSummary')">Discipline Summary</button>
+</div>
+<div id="Details" class="dyntabcontent">
+  <table id="studiesdetails" class="table table-striped table-hover tablew100 dynamictable"></table>
+</div>
+<div id="DisciplineSummary" class="dyntabcontent">
+  <table id="studiesdisc" class="table table-striped table-hover tablew100 dynamictabledisc"></table>
+</div>
+
+
+<!-- <a class="article-title" onclick="alerttest();" href="{% url  'dynamicstudiesexceldisc'  %}">
+  <button type="button" class="btn btn-outline-primary btn-sm dynamicstudiesexceldisc;" >
+    Download Discipline Excel
+    <i class="bi bi-file-earmark-spreadsheet"></i>
+  </button>
+</a> -->
+
 </div>
