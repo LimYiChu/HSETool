@@ -70,9 +70,9 @@ def dynamicstudiesexceldisc(request,study=""):
     response = HttpResponse(content_type='application/ms-excel') 
     response['Content-Disposition'] = 'attachment; filename=DisciplinebyStudies.xlsx'
     with pd.ExcelWriter(in_memory)as writer: #using excelwriter library to edit worksheet
-        dfdisc.to_excel(writer, sheet_name='Discipline',engine='xlsxwriter',header=None,startrow=1)
+        dfdisc.to_excel(writer, sheet_name=study,engine='xlsxwriter',header=None,startrow=1)
         workbook = writer.book #gives excelwriter access to workbook
-        worksheet = writer.sheets['Discipline'] #gives excelwriter access to worksheet
+        worksheet = writer.sheets[study] #gives excelwriter access to worksheet
         formattedexcel = blexcelformat(dfdisc,workbook,worksheet)    
     in_memory.seek(0)
     response.write(in_memory.read())
@@ -87,28 +87,21 @@ def dynamicstudies(request):
         filteredstring = {'StudyName__StudyName': data}
         reducedfields=['id','StudyActionNo','QueSeries','DueDate','Disipline','Subdisipline','InitialRisk','Organisation']
         headerlst = ['Study Action No', 'DueDate' ,'Action At','Discipline','Initial Risk']
-
         actionsstuckat = bldynamicstudiesactionformat(filteredstring,reducedfields)
-
         discmultilist = bldynamicstudiesdisc(actionsstuckat)
         discheaderlst = discmultilist[0]
         disclst = discmultilist[1]
-
         dfall = pd.DataFrame.from_dict(actionsstuckat) #puts it into df columns format
         dfall['discsuborg']=dfall['Disipline']+'/'+dfall['Subdisipline']+'/'+dfall['Organisation']
         dfalldynamicstudiessorted = blsortdataframes(dfall,dfstudiescolumns) # sort dfall
         dfstudieslst = dfalldynamicstudiessorted.values.tolist()
-
         lstofcount = bldynamicchart(dfalldynamicstudiessorted)
         countclosed = lstofcount[0]
         countopen = lstofcount[1]
         dfstuckatlst=bldynamicchartopen(dfalldynamicstudiessorted)
-
         headeropenclose = ['\\\Status:::', 'Number']
         lstofcount.insert(0,headeropenclose)
-        
         multilst = [lstofcount,dfstuckatlst]
-
         dfdisc = pd.DataFrame(disclst)
         dictheader = {0:'Discipline',1:'Pending Submission',2:'Submitted',3:'Closed',4:'Open Actions',5:'Total Actions'}
         dfdisc.rename(columns=dictheader,inplace=True)
@@ -168,30 +161,22 @@ def dynamicdiscipline(request):
     
     if request.is_ajax and request.method == "GET":
         data = request.GET.get("data", None)
-
         discsuborglst = bldiscstrmatch(data)
         filteredstring = {'Disipline':discsuborglst[0],'Subdisipline':discsuborglst[1],'Organisation':discsuborglst[2]}
         reducedfields=['id','StudyActionNo','QueSeries','DueDate','Disipline','Subdisipline','InitialRisk','Organisation','StudyName__StudyName']
         actionsbydisc = blgetsinglefilteractionsitemsQ(filteredstring,reducedfields) 
-        
         dfalllist = blgetdictActionStuckAt(actionsbydisc) # getting a list of everything
         dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format
         dfalldynamicdisciplinesorted = blsortdataframes(dfall,dfdisciplinecolumns) # sort dfall
         dfdisclist =  dfalldynamicdisciplinesorted.values.tolist()
-
         lstofcount = bldynamicchart(dfalldynamicdisciplinesorted)
         countclosed = lstofcount[0]
         countopen = lstofcount[1]
-
         dfstuckatlst=bldynamicchartopen(dfalldynamicdisciplinesorted)
-
         headerlist = ['Study Action No', 'Study Name' ,'Due Date','Action At' ]
-
         headeropenclose = ['\\\Status:::', 'Number']
-        lstofcount.insert(0,headeropenclose)
-        
+        lstofcount.insert(0,headeropenclose)  
         multilst = [lstofcount,dfstuckatlst]
-
         discmultilist = bldynamicstudiesdisc(actionsbydisc)
         discheaderlst = discmultilist[0]
         disclst = discmultilist[1]
