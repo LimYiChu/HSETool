@@ -47,7 +47,7 @@ function alerttest() {
             "data": data
         },
         success: function(response) {
-        //    alert(response)
+           alert(response)
         }
     })
 }
@@ -130,6 +130,8 @@ function dynamictable(response,rootid) {
               .draw();
       });
   });
+
+  $('#buttonplace').html(" <a class='article-title' href='/dynamicstudiesexceldisc/" + title + "' >Download Excel</a>")           
 }
 
 function fadeout(that) {
