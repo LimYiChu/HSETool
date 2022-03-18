@@ -31,7 +31,6 @@ def blexcelgetactioneeandlocation (dfalllist):
     lstActionDetails = []
     for items in dfalllist:  
         lstoftriplet = blgetDiscSubOrgfromID (items['id']) 
-        print(lstoftriplet)
         lstofActioneeAppr = blgetSignotories (lstoftriplet)
         if items['QueSeries'] != 99 and (lstofActioneeAppr !=[]): #edward - looks at key QueSeries & its value pairs 
             lststuckAt = lstofActioneeAppr[items['QueSeries']] #edward - uses QSeries to see which level in AR it is
@@ -39,7 +38,6 @@ def blexcelgetactioneeandlocation (dfalllist):
             items['Action with'] = lstActionDetails[0] # edward sort of appending this value to a key
         else:
             items['Action with'] = ("Closed") # if its 99 just have a tag closed 
-
         Actionee = ActionRoutes.mdlgetActioneeAppr.mgr_getactioneefromtriplet(lstoftriplet) # getting Actionee for each Item
         items['Actionee'] = ((Actionee[0])['Actionee']) # just getting the Actionee from QuerySet
     return dfalllist
