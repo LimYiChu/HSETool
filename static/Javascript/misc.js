@@ -63,5 +63,4 @@ function openReport(evt, ReportName) {
 
     evt.currentTarget.className += " active";
     //evt.currentTarget.style.visibility = 'hidden';
-  }
-document.getElementById("defaultOpen").click(); //default open
+}
