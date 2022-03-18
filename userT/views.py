@@ -890,21 +890,18 @@ def repoverallexcel (request):
     """
     all_actions =   ActionItems.objects.all().values()
     all_actionwithfk = blannotatefktomodel(all_actions)
-
-    dfalllist = blgetActionStuckAtdict(all_actionwithfk) 
-    dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format
+    dfalllist = blgetdictActionStuckAt(all_actionwithfk) 
+    dfalllocation = blexcelgetactioneeandlocation (dfalllist)   
+    dfall = pd.DataFrame.from_dict(dfalllocation) #puts it into df columns format
     dfallsorted = blsortdataframes(dfall,dfcompletecolumns) # sort dfall
-
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename=AllActionDetails.xlsx'
     in_memory = BytesIO()
-
     with pd.ExcelWriter(in_memory)as writer: #using excelwriter library to edit worksheet
         dfallsorted.to_excel(writer, sheet_name='All Action Details',engine='xlsxwriter',header=False,startrow=1)
         workbook = writer.book #gives excelwriter access to workbook
         worksheet = writer.sheets['All Action Details'] #gives excelwriter access to worksheet
-        formattedexcel = blexcelformat(dfallsorted,workbook,worksheet)
-        
+        formattedexcel = blexcelformat(dfallsorted,workbook,worksheet)  
     in_memory.seek(0)
     response.write(in_memory.read())
     return response
@@ -913,8 +910,6 @@ def repoverallexcel (request):
 def repPMTExcel (request,phase=""):
     """
     This is the original function called when user selects PMT Reporting from menu
-   
-
     The dataframes excel outputs are also written in this function.
     """
     listofPhases= Phases.mdlSetGetField.mgrGetAllActionsAndFields()

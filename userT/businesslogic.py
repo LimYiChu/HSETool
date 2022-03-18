@@ -27,6 +27,22 @@ import shutil
 from django.db.models import F
 from collections import Counter
 
+def blexcelgetactioneeandlocation (dfalllist):
+    lstActionDetails = []
+    for items in dfalllist:  
+        lstoftriplet = blgetDiscSubOrgfromID (items['id']) 
+        lstofActioneeAppr = blgetSignotories (lstoftriplet)
+        if items['QueSeries'] != 99 and (lstofActioneeAppr !=[]): #edward - looks at key QueSeries & its value pairs 
+            lststuckAt = lstofActioneeAppr[items['QueSeries']] #edward - uses QSeries to see which level in AR it is
+            lstActionDetails.append("/".join(lststuckAt)) # edward using similar method as blgetActionstuckat to combine 
+            items['Action with'] = lstActionDetails[0] # edward sort of appending this value to a key
+        else:
+            items['Action with'] = ("Closed") # if its 99 just have a tag closed 
+        Actionee = ActionRoutes.mdlgetActioneeAppr.mgr_getactioneefromtriplet(lstoftriplet) # getting Actionee for each Item
+        items['Actionee'] = ((Actionee[0])['Actionee']) # just getting the Actionee from QuerySet
+    return dfalllist
+
+
 def bldynamicstudiesactionformat(filteredstring,reducedfields):
     """
     This function gets the filtered string & reduced fields for the dynamic studies & then adds the risk elements & where the action is stuck at & subsequently returns the formulated action set

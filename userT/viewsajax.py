@@ -57,33 +57,26 @@ from django.utils import timezone
 from UploadExcel.formstudies import *
 from time import time
 
-def dynamicstudiesexceldisc(request,data):
-
-    if request.is_ajax and request.method == "GET":
-        data = request.GET.get("data", None)
-        filteredstring = {'StudyName__StudyName': data}
-        reducedfields=['id','StudyActionNo','QueSeries','DueDate','Disipline','Subdisipline','InitialRisk','Organisation']
-
-        actionsstuckat = bldynamicstudiesactionformat(filteredstring,reducedfields)
-        discmultilist = bldynamicstudiesdisc(actionsstuckat)
-        disclst = discmultilist[1]
-        dfdisc = pd.DataFrame(disclst)
-        dictheader = {0:'Discipline',1:'Pending Submission',2:'Submitted',3:'Closed',4:'Open Actions',5:'Total Actions'}
-        dfdisc.rename(columns=dictheader,inplace=True)
-        in_memory = BytesIO()
-        response = HttpResponse(content_type='application/ms-excel') 
-        response['Content-Disposition'] = 'attachment; filename=DisciplinebyStudies.xlsx'
-
-        with pd.ExcelWriter(in_memory)as writer: #using excelwriter library to edit worksheet
-            dfdisc.to_excel(writer, sheet_name='Discipline',engine='xlsxwriter',header=None,startrow=1)
-            workbook = writer.book #gives excelwriter access to workbook
-            worksheet = writer.sheets['Discipline'] #gives excelwriter access to worksheet
-            formattedexcel = blexcelformat(dfdisc,workbook,worksheet)
-            
-        in_memory.seek(0)
-        response.write(in_memory.read())
-        
-        return response
+def dynamicstudiesexceldisc(request,study=""):
+    filteredstring = {'StudyName__StudyName': study}
+    reducedfields=['id','StudyActionNo','QueSeries','DueDate','Disipline','Subdisipline','InitialRisk','Organisation']
+    actionsstuckat = bldynamicstudiesactionformat(filteredstring,reducedfields)
+    discmultilist = bldynamicstudiesdisc(actionsstuckat)
+    disclst = discmultilist[1]
+    dfdisc = pd.DataFrame(disclst)
+    dictheader = {0:'Discipline',1:'Pending Submission',2:'Submitted',3:'Closed',4:'Open Actions',5:'Total Actions'}
+    dfdisc.rename(columns=dictheader,inplace=True)
+    in_memory = BytesIO()
+    response = HttpResponse(content_type='application/ms-excel') 
+    response['Content-Disposition'] = 'attachment; filename=DisciplinebyStudies.xlsx'
+    with pd.ExcelWriter(in_memory)as writer: #using excelwriter library to edit worksheet
+        dfdisc.to_excel(writer, sheet_name='Discipline',engine='xlsxwriter',header=None,startrow=1)
+        workbook = writer.book #gives excelwriter access to workbook
+        worksheet = writer.sheets['Discipline'] #gives excelwriter access to worksheet
+        formattedexcel = blexcelformat(dfdisc,workbook,worksheet)    
+    in_memory.seek(0)
+    response.write(in_memory.read())
+    return response
         
 
 def dynamicstudies(request):
@@ -119,26 +112,6 @@ def dynamicstudies(request):
         dfdisc = pd.DataFrame(disclst)
         dictheader = {0:'Discipline',1:'Pending Submission',2:'Submitted',3:'Closed',4:'Open Actions',5:'Total Actions'}
         dfdisc.rename(columns=dictheader,inplace=True)
-      
-
-        
-        # if request.method == 'POST':
-        #     print('pass 1')
-        #     if (request.POST.get('dynamicstudiesdisc')):
-        #         print('pass 2')
-        #         in_memory = BytesIO()
-        #         response = HttpResponse(content_type='application/ms-excel') 
-        #         response['Content-Disposition'] = 'attachment; filename=DisciplinebyStudies.xlsx'
-            
-        #         with pd.ExcelWriter(in_memory)as writer: #using excelwriter library to edit worksheet
-        #             dfdisc.to_excel(writer, sheet_name='Discipline',engine='xlsxwriter',header=None,startrow=1)
-        #             workbook = writer.book #gives excelwriter access to workbook
-        #             worksheet = writer.sheets['Discipline'] #gives excelwriter access to worksheet
-        #             formattedexcel = blexcelformat(dfdisc,workbook,worksheet)
-                    
-        #         in_memory.seek(0)
-        #         response.write(in_memory.read())
-        #         return response
         
         context = {
         'multilst':multilst,
