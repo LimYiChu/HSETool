@@ -1,63 +1,26 @@
-from django.db.models.fields import NullBooleanField
-from django.forms.fields import JSONString
-from django.http import response
-from django.http.response import FileResponse, JsonResponse
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse, reverse_lazy, resolve
-from django.http import HttpResponse, HttpResponseRedirect, request
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib import messages
-from django.views.decorators.csrf import csrf_exempt
-from numpy import empty
+from django.http.response import JsonResponse
+from django.shortcuts import render
 from .forms import *
 from UploadExcel.forms import *
-from django.contrib.auth import get_user_model
-import matplotlib as plt
 from .businesslogic import *
 from .businesslogicQ import *
 from .tableheader import *
 from .excelReports import *
 from .models import *
 from UploadExcel.models import *
-from django.views.generic import ListView, DetailView, UpdateView,TemplateView, CreateView
-from django.contrib.auth.decorators import login_required
-from django.conf import settings
-from django.views.generic.base import ContextMixin
-from django.views.generic.edit import FormMixin
-from django.core.mail import send_mail
 from .reports import *
-from django.template.loader import render_to_string
-from django.template import loader
-from django.core.mail import EmailMessage
 import pandas as pd
-from django.utils import timezone
-import os
-from django.views.generic.detail import SingleObjectMixin
 from userT.pdfgenerator import *
-from django.db.models import Count
-from zipfile import ZipFile
-from io import StringIO, BytesIO
-from rest_framework import viewsets
-from .serializers import *
-from rest_framework import generics
+from io import BytesIO
 from UploadExcel.forms import *
 from userT.parameters import *
-from django.contrib.auth.mixins import UserPassesTestMixin
-import json
-import datetime
-from datetime import date as dt
-from operator import itemgetter
-from collections import OrderedDict
-from collections import Counter 
-from django.forms.models import model_to_dict
-from django.db.models import F
-from django.http import StreamingHttpResponse
-from datetime import datetime as dtime
-from django.utils import timezone
 from UploadExcel.formstudies import *
-from time import time
+
 
 def dynamicstudiesexceldisc(request,study=""):
+    """
+    This function adds the Actionee & Action With columns to the download complete excel
+    """
     filteredstring = {'StudyName__StudyName': study}
     reducedfields=['id','StudyActionNo','QueSeries','DueDate','Disipline','Subdisipline','InitialRisk','Organisation']
     actionsstuckat = bldynamicstudiesactionformat(filteredstring,reducedfields)
@@ -80,6 +43,9 @@ def dynamicstudiesexceldisc(request,study=""):
         
 
 def dynamicstudies(request):
+    """
+    This function gets the all the data for use by the googlecharts & datatables in the dynamic studies pop out tab
+    """
 
     if request.is_ajax and request.method == "GET":
         data = request.GET.get("data", None)
@@ -88,13 +54,11 @@ def dynamicstudies(request):
         reducedfields=['id','StudyActionNo','QueSeries','DueDate','Disipline','Subdisipline','InitialRisk','Organisation']
         headerlst = ['Study Action No', 'DueDate' ,'Action At','Discipline','Initial Risk']
         actionsstuckat = bldynamicstudiesactionformat(filteredstring,reducedfields)
-        discmultilist = bldynamicstudiesdisc(actionsstuckat)
-        discheaderlst = discmultilist[0]
-        disclst = discmultilist[1]
         dfall = pd.DataFrame.from_dict(actionsstuckat) #puts it into df columns format
         dfall['discsuborg']=dfall['Disipline']+'/'+dfall['Subdisipline']+'/'+dfall['Organisation']
         dfalldynamicstudiessorted = blsortdataframes(dfall,dfstudiescolumns) # sort dfall
-        dfstudieslst = dfalldynamicstudiessorted.values.tolist()
+        dfstudieslst = dfalldynamicstudiessorted.values.tolist() #list is here being sent to js
+        
         lstofcount = bldynamicchart(dfalldynamicstudiessorted)
         countclosed = lstofcount[0]
         countopen = lstofcount[1]
@@ -102,6 +66,9 @@ def dynamicstudies(request):
         headeropenclose = ['\\\Status:::', 'Number']
         lstofcount.insert(0,headeropenclose)
         multilst = [lstofcount,dfstuckatlst]
+        discmultilist = bldynamicstudiesdisc(actionsstuckat)
+        discheaderlst = discmultilist[0]
+        disclst = discmultilist[1]
         dfdisc = pd.DataFrame(disclst)
         dictheader = {0:'Discipline',1:'Pending Submission',2:'Submitted',3:'Closed',4:'Open Actions',5:'Total Actions'}
         dfdisc.rename(columns=dictheader,inplace=True)
@@ -158,6 +125,9 @@ def dynamicindisumm(request):
 
 
 def dynamicdiscipline(request):
+    """
+    This function gets the all the data for use by the googlecharts & datatables in the dynamic discipline pop out tab
+    """
     
     if request.is_ajax and request.method == "GET":
         data = request.GET.get("data", None)

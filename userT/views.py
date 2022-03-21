@@ -891,8 +891,8 @@ def repoverallexcel (request):
     all_actions =   ActionItems.objects.all().values()
     all_actionwithfk = blannotatefktomodel(all_actions)
     dfalllist = blgetdictActionStuckAt(all_actionwithfk) 
-    dfalllocation = blexcelgetactioneeandlocation (dfalllist)   
-    dfall = pd.DataFrame.from_dict(dfalllocation) #puts it into df columns format
+    # dfalllocation = blexcelgetactioneeandlocation (dfalllist)   
+    dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format
     dfallsorted = blsortdataframes(dfall,dfcompletecolumns) # sort dfall
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename=AllActionDetails.xlsx'

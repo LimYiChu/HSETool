@@ -92,15 +92,15 @@ def bldynamicchartopen(dfalldynamicstudiessorted):
     """
     This function gets the Action Stuck at for the dynamic Submitted Chart
     """
-    dfcountopenfilter = ['StuckAt']
+    dfcountopenfilter = ['ActionAt']
 
     dfcopysorted = dfalldynamicstudiessorted.copy()
     dffilteropensorted = blsortdataframes(dfcopysorted,dfcountopenfilter)
-    dffilteropensorted['StuckAt'] = dffilteropensorted.StuckAt.str.split('@').str.get(0)
-    dffilteropensorted['StuckAt'] = dffilteropensorted.StuckAt.str.split('/').str.get(-1)
-    dffilteropensorted['count'] = dffilteropensorted.StuckAt.map(dffilteropensorted.StuckAt.value_counts())
+    dffilteropensorted['ActionAt'] = dffilteropensorted.ActionAt.str.split('@').str.get(0)
+    dffilteropensorted['ActionAt'] = dffilteropensorted.ActionAt.str.split('/').str.get(-1)
+    dffilteropensorted['count'] = dffilteropensorted.ActionAt.map(dffilteropensorted.ActionAt.value_counts())
     dffinalcountloc = dffilteropensorted.drop_duplicates()
-    dffilteropen = dffinalcountloc.loc[dffinalcountloc['StuckAt'].str.contains('Closed') == False]
+    dffilteropen = dffinalcountloc.loc[dffinalcountloc['ActionAt'].str.contains('Closed') == False]
     dfstuckatlst=dffilteropen.values.tolist()
     headerlst = ['\\\Action At:::','Actions']
     dfstuckatlst.insert(0,headerlst)
@@ -124,11 +124,12 @@ def bldiscstrmatch(data) :
 def bldynamicchart(dfsorted):
     """ This function gets the count of how many closed & open actions for the dynamic charts"""
     dfcopysorted = dfsorted.copy()
-    dfcopysorted.loc[dfcopysorted['StuckAt'] == 'Closed','Closed Action'] = 'Closed' 
-    dfcopysorted.loc[dfcopysorted['StuckAt'].str.contains('Closed') == False,'Open Action'] = 'Open'
+    dfcopysorted.loc[dfcopysorted['ActionAt'] == 'Closed','Closed Action'] = 'Closed' 
+    dfcopysorted.loc[dfcopysorted['ActionAt'].str.contains('Closed') == False,'Open Action'] = 'Open'
     dfcloseopen = blsortdataframes(dfcopysorted,dfdonutcolumns)
     dfcloseopenlist = dfcloseopen.values.tolist()
     flat_list = [item for sublist in dfcloseopenlist for item in sublist]
+    print(flat_list)
     dfcountclosed = flat_list.count('Closed')
     dfcountopen = flat_list.count('Open')
     lstofcount =[]
@@ -1176,11 +1177,13 @@ def blgetdictActionStuckAt(allactions):
         if items['QueSeries'] != 99 and (lstofActioneeAppr !=[]):
              # basically its looks at que series and then matches it against the list of entire signatories above
             lststuckAt = lstofActioneeAppr[items['QueSeries']]#basically just uses QueSeries to tell us where its stuck at
-            items['StuckAt'] = "/".join(lststuckAt)
+            items['ActionAt'] = "/".join(lststuckAt)
         
             
         else:     
-            items['StuckAt'] = "Closed"
+            items['ActionAt'] = "Closed"
+        if lstofActioneeAppr :
+            items['Actionee'] = lstofActioneeAppr[0][1]
           
     return allactions
 
