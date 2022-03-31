@@ -123,7 +123,7 @@ urlpatterns = [
         path('dynamicstudiesexceldisc/<study>',login_required(viewsajax.dynamicstudiesexceldisc), name='dynamicstudiesexceldisc' ),
 
         
-        
+        path('dynamicindisummX/',login_required(UserView.dynamicindisummX), name='dynamicindisumm' ),
       ]
 
 if settings.DEBUG:

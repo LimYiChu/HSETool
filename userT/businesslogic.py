@@ -27,6 +27,10 @@ import shutil
 from django.db.models import F
 from collections import Counter
 
+def blgetparameters ():
+    
+    return Parameters.objects.all().first()
+
 def blexcelgetactioneeandlocation (dfalllist):
     lstActionDetails = []
     for items in dfalllist:  

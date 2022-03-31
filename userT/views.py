@@ -57,7 +57,9 @@ from django.utils import timezone
 from UploadExcel.formstudies import *
 from time import time
 
+def dynamicindisummX (request) :
 
+    return render (request, 'userT/YY.html')
 
 def datatables (request): 
   return render(request, 'userT/datatables.html')   
@@ -199,7 +201,12 @@ def mainDashboard (request):
     totalapproveraction = sum (appractioncount)
     approverjsonlist = blremoveemptylist(apprfinalist)
     
+    parameters = blgetparameters ()
+    Versioning =  str(parameters.Versioning)
+
+
     Context = {
+        'Versioning' : Versioning,
         'oneweekcount':countlistbyweek[0],
         'twoweekcount':countlistbyweek[1],
         'strdays':strdays,
@@ -1023,6 +1030,7 @@ def repPMTExcel (request,phase=""):
 
     studiesattributes =['StudyName','ProjectPhase']
     phasestudies =  blphasegetStudyreducedfieldsQ(studiesattributes,phase)
+    
     # allstudies = Studies.objects.all() #IMPORTANT
 
     tablestudiesheader = ['Studies', 'Yet to Respond' ,'Approval Stage','Closed','Open Actions', 'Total Actions']

@@ -88,7 +88,6 @@ def blphasegetStudyreducedfieldsQ(reducedfields,phase=""):
     filters = QObjectMiscAND
     StudiesPhase =  Studies.mdlallStudies.mgr_GeneralItemsFiltersKwargsQReduced(filters,reducedfields)
     
-    
     return StudiesPhase
 #20211203 edward 
 
