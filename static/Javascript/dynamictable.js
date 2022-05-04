@@ -1,6 +1,6 @@
-function launchtable(that, event, tablepopup) {
+function launchtable(that, event, tablepopup,urlcolumn) {
   fadein(that);
-  ajaxcall(event, tablepopup);
+  ajaxcall(event, tablepopup,urlcolumn);
 }
 
 function fadein(that) {
@@ -13,31 +13,46 @@ function fadein(that) {
 
 var title;
 
-function ajaxcall(event, tablepopup) {
-  var data = event.currentTarget.firstElementChild.innerText
+function ajaxcall(event, tablepopup, urlcolumn) {
+  var data;
   title = event.currentTarget.firstElementChild.innerText
+
+// To get the item from hidden dynamicdiscipline column 
+  try 
+  {                                                             
+    rowtarget = $($(event.currentTarget).children(".hiddenx"));
+    data = rowtarget[0].innerText
+  } 
+  catch (error) 
+  {
+    data = event.currentTarget.firstElementChild.innerText;
+  }
+
   $('.caption').html(title);
 
   $.ajax({
-      url: "/" + tablepopup,
+      url: "/dynamictable/" + tablepopup,
       type: 'GET',
       data: {
-          "data": data
+        "dynamictable": tablepopup,  
+        "data": data,
       },
       rootid: tablepopup,
 
       success: function(response) {
-          dynamictable(response, this.rootid);
+          dynamictable(response, this.rootid, urlcolumn);
           dynamicchart(response, this.rootid);
           dynamictabledisc(response, this.rootid);
       }
   })
 }
 
-function dynamictable(response,rootid) {
+function dynamictable(response,rootid,urlcolumn=true) {
 
     var dflist = response.dflist
     var headerlist = response.headerlist
+   
+
 
     var dynamicheaders = [];
     for (var i = 0; i < headerlist.length; i++) 
@@ -66,7 +81,14 @@ function dynamictable(response,rootid) {
             [{
                 "targets": [0],
                 "mRender": function(data, row, column) {
-                    return '<a href="/pmtrepviewall' + '/' + column[5] + '/view' + '">' + data + '</a>';
+                    if (urlcolumn == true)
+                    {
+                        return '<a href="/pmtrepviewall' + '/' + column[5] + '/view' + '">' + data + '</a>';
+                    }
+                    else if (urlcolumn == false)
+                    {
+                        return data;
+                    }
                 }
             }, ],
             "bDestroy": true,
@@ -107,8 +129,18 @@ function dynamictable(response,rootid) {
         });
     });
 
-    $('#buttonplace').html(" <a class='article-title' href='/dynamicstudiesexceldisc/" + title + 
-    "' ><button type='button' class='btn btn-outline-primary btn-md;' style='width:150pt'>Download Excel</button></a>")           
+    $('#buttonplaceindisumm').html(" <a class='article-title' href='/dynamicindisummexcel/" + title + 
+    "' ><button type='button' class='btn btn-outline-primary btn-md;' style='width:150pt'>Download Excel</button></a>")
+
+    $('#buttonplacedetails').html(" <a class='article-title' href='/dynamicstudiesexcel/" + title + 
+    "' ><button type='button' class='btn btn-outline-primary btn-md;' style='width:150pt'>Download Excel</button></a>") 
+    
+    $('#buttonplacedissumm').html(" <a class='article-title' href='/dynamicstudiesdiscexcel/" + title + 
+    "' ><button type='button' class='btn btn-outline-primary btn-md;' style='width:150pt'>Download Excel</button></a>")
+    
+    $('#buttonplacediscipline').html(" <a class='article-title' href='/dynamicdisciplineexcel/" + title + 
+    "' ><button type='button' class='btn btn-outline-primary btn-md;' style='width:150pt'>Download Excel</button></a>") 
+
 }
 
 function fadeout(that) {
@@ -128,9 +160,9 @@ $(document).ready(function() {
           var $x = $('.divclick');
           var $y = $('.popup');
 
-          if ($y.css('display') !== 'none') 
+          if ($y.css('.popup') !== 'none') 
           {
-              $x.css("animaton", "mymovein 2.5s ease")
+            $x.css("animaton", "mymovein 2.5s ease")
               $y.css("animation", "slide-out .5s ease");
               setTimeout(() => {
                   $y.css("display", "none");

@@ -67,15 +67,16 @@ ApprovalQue = [1,2,3,4,5,6,7,8,9]
 TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
 
 # ***dataframes constants edward 20210804
-dfallcolumns=['StudyActionNo','StudyName','Disipline','Recommendations', 'Response','DueDate','InitialRisk','RiskColour']
-dfcompletecolumns=['StudyActionNo','StudyName','ProjectPhase','Facility','Guidewords','Deviation', 'Cause', 'Consequence', 'Safeguard','InitialRisk','ResidualRisk','Recommendations','DueDate', 'Response','FutureAction','Organisation','Disipline','Subdisipline','Actionee','ActionAt','Revision'] # 'RiskColour',
-dfcompletecolumns2=['StudyActionNo','StudyName','ProjectPhase','Facility','Guidewords','Deviation', 'Cause', 'Consequence', 'Safeguard','InitialRisk','ResidualRisk','Recommendations','DueDate', 'Response','FutureAction','Organisation','Disipline','Subdisipline']
-dfrejectedcolumns = ['StudyActionNo','StudyName','ProjectPhase','Facility','Cause','Safeguard','InitialRisk','ResidualRisk','Recommendations','Organisation','Disipline','Subdisipline','Guidewords','Revision','RiskColour']
-dfindisummcolumns = ["User","Pending Submission","Pending Approval"]
+dfallcolumns=['StudyActionNo', 'StudyName', 'Disipline', 'Recommendations', 'Response', 'DueDate', 'InitialRisk', 'RiskColour']
+dfcompletecolumns=['StudyActionNo', 'StudyName', 'ProjectPhase', 'Facility', 'Guidewords', 'Deviation', 'Cause', 'Consequence', 'Safeguard', 'InitialRisk', 'ResidualRisk', 'Recommendations', 'DueDate', 'Response', 'FutureAction', 'Organisation', 'Disipline', 'Subdisipline', 'Actionee', 'ActionAt', 'Revision'] # 'RiskColour',
+dfcompletecolumns2=['StudyActionNo', 'StudyName', 'ProjectPhase', 'Facility', 'Guidewords', 'Deviation', 'Cause', 'Consequence', 'Safeguard', 'InitialRisk', 'ResidualRisk', 'Recommendations', 'DueDate', 'Response', 'FutureAction', 'Organisation', 'Disipline', 'Subdisipline']
+dfrejectedcolumns = ['StudyActionNo', 'StudyName', 'ProjectPhase', 'Facility', 'Cause', 'Safeguard', 'InitialRisk', 'ResidualRisk', 'Recommendations', 'Organisation', 'Disipline', 'Subdisipline', 'Guidewords', 'Revision', 'RiskColour']
+dfindisummcolumns = ["User", "Pending Submission", "Pending Approval"]
 #20220120 edward 
-dfstudiescolumns = ['StudyActionNo','DueDate','ActionAt','discsuborg','InitialRisk','id','RiskColour']
-dfdisciplinecolumns = ['StudyActionNo','StudyName__StudyName','DueDate','ActionAt','InitialRisk','id']
-dfindisummcolumns =  ['StudyActionNo','DueDate','StudyName__StudyName','ActionAt','InitialRisk','id','RiskColour']
+dfstudiescolumns = ['StudyActionNo', 'DueDate', 'ActionAt', 'discsuborg', 'InitialRisk', 'id', 'RiskColour']
+dfdisciplinecolumns = ['StudyActionNo', 'StudyName__StudyName', 'DueDate', 'ActionAt', 'InitialRisk', 'id']
+dfindisummcolumns =  ['StudyActionNo', 'DueDate', 'StudyName__StudyName', 'ActionAt', 'InitialRisk', 'id', 'RiskColour']
 #202220216 edward
-dfdonutcolumns = ['Closed Action','Open Action']
-
+dfdonutcolumns = ['Closed Action', 'Open Action']
+#202220425 yingying
+indisumm_parameter = ['Role', 'Organisation Route', 'Pending Submission', 'Pending Approval', 'Closed', 'Open Actions']
