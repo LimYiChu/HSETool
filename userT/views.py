@@ -56,6 +56,7 @@ from datetime import datetime as dtime
 from django.utils import timezone
 from UploadExcel.formstudies import *
 from time import time
+import copy
 
 
 
@@ -1004,7 +1005,9 @@ def repPMTExcel (request,phase=""):
     
     #for Disipline based view
     tabledischeader = ['Discipline', 'Yet to Respond' ,'Approval Stage', 'Closed','Open Actions','Total Actions']
-    lstbyDisc= blaggregatebyDisc(dfdiscsuborgphase,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue)
+    lstbyDisc = blaggregatebyDisc(dfdiscsuborgphase, YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue)
+    lstbyDischidden = copy.deepcopy(lstbyDisc)
+    lstbyDischidden = blaggregatebyDisc_hidden(dfdiscsuborgphase,lstbyDischidden)
 
     #get rejected summary actions get Reject Table
     tablerheaderejected = ['Discipline', 'Rejected Count']
@@ -1128,13 +1131,13 @@ def repPMTExcel (request,phase=""):
         'lstbyDueDate' : lstbyDueDate,
         'tableduedateheader' : tableduedateheader,
         'totalallDueDate' : totalallDueDate, 
-        'lstbyDisc' : lstbyDisc,
+        'lstbyDisc' : lstbyDischidden,
         'lstbyWorkshop' : lstbyWorkshop,
         'Indisets' : Indisets,
         "dictofallactions" : dictofallactions,
         'tableindiheader' : tableindiheader,
         'tablestudiesheader' : tablestudiesheader,
-        'tabledischeader' : tabledischeader ,
+        'tabledischeader' : tabledischeader,
         'tableallheader' : tableallheadermodified,
         'listaggregatedindi':listaggregatedindi,
         'listaggregatedindiheader':listaggregatedindiheader,

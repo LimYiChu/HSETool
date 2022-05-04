@@ -115,14 +115,15 @@ urlpatterns = [
         path('base3/', login_required(UserView.base3), name='base3' ),
         path('readsqltable/',login_required(UploadV.readsqltable), name='readsqltable'),
         
+        #PMT Report Dynamic Table
+        path('dynamictable/<dynamictable>', login_required(viewsajax.dynamictable), name='dynamictable'),  
+     
+        #PMT Report Dynamic Table Excel Download
+        path('dynamicindisummexcel/<user>', login_required(viewsajax.dynamicindisummexcel), name='dynamicindisummexcel'),
+        path('dynamicstudiesexcel/<study>', login_required(viewsajax.dynamicstudiesexcel), name='dynamicstudiesexcel'),
+        path('dynamicstudiesdiscexcel/<study>', login_required(viewsajax.dynamicstudiesdiscexcel), name='dynamicstudiesdiscexcel'),
+        path('dynamicdisciplineexcel/<path:discipline>', login_required(viewsajax.dynamicdisciplineexcel), name='dynamicdisciplineexcel'),
 
-        path('dynamicstudies/',login_required(viewsajax.dynamicstudies), name='dynamicstudies' ),
-        path('dynamicindisumm/',login_required(viewsajax.dynamicindisumm), name='dynamicindisumm' ),
-        path('dynamicdiscipline/',login_required(viewsajax.dynamicdiscipline), name='dynamicdiscipline' ),
-
-        path('dynamicstudiesexceldisc/<study>',login_required(viewsajax.dynamicstudiesexceldisc), name='dynamicstudiesexceldisc' ),
-
-        
         
       ]
 
