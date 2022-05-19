@@ -380,6 +380,7 @@ def blbulkdownload(objactionitems,destinationfolders,createzipfilename):
                 shutil.copyfile(attachmentorigin,os.path.join(dst) ) #copying all done inside for loop for each attachment
 
     returnzipfile = shutil.make_archive(createzipfilename, 'zip', destinationfolders)
+
     return returnzipfile
 
 
@@ -770,7 +771,7 @@ def blallActionsComDisSubbyList(contextRoutes,quelist):
             streams.append (ActionItems.myActionItems.get_myItemsbyCompDisSub(blvarorganisation,
                                                                 blvardisipline,
                                                                blvarSUbdisipline,que))
-    
+
     return streams
 
 
@@ -1465,9 +1466,9 @@ def blgetActionItemsbyid(dictofids):
     
     
     actionitemsbyid = ActionItems.objects.filter(id__in=dictofids).values(
-        'id','StudyActionNo','StudyName__StudyName','Disipline',
+        'id','StudyActionNo','StudyName__StudyName','Organisation','Disipline',
                     'Subdisipline', 'Cause', 'Recommendations','DueDate',
-                    'InitialRisk'
+                    'InitialRisk','Revision'
 
     )
 

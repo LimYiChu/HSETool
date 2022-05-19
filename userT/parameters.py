@@ -41,6 +41,13 @@ for items in ALLOWED_HOSTS :
         stitchedpdf = '/opt/bitnami/projects/HSETool/static/test/mergepdffolder/testingmerge.pdf' 
         #20220120 edward
         hazidcloseouttemplate = '/opt/bitnami/projects/HSETool/hazidcloseouttemplate'#closeouttemplate location (used for pdf closeoutprint & indiprint)
+        #20220517 Ying Ying
+        studytemp = '/opt/bitnami/projects/HSETool/static/media/studybulkpdfdir/' 
+        bystudypdfdir = "/opt/bitnami/projects/HSETool/static/media/studybulkpdfdir/studybulkpdf/" 
+        bystudypdfcreatezipfilename = "/opt/bitnami/projects/HSETool/static/media/studybulkpdfdir/" + "studypdffiles"
+        studypdfzip = '/opt/bitnami/projects/HSETool/static/media/studybulkpdfdir/studypdffiles.zip' 
+        blankzip = '/opt/bitnami/projects/HSETool/static/media/studybulkpdfdir/blank.zip'
+        blankzipdir = '/opt/bitnami/projects/HSETool/static/media/studybulkpdfdir/blank/' 
 
     else :
         tempfolder = 'static/media/temp/'
@@ -54,7 +61,14 @@ for items in ALLOWED_HOSTS :
         bulkpdfzip = 'static/media/temp/bulkpdffiles.zip'  
         stitchedpdf =  'static/test/mergepdffolder/testingmerge.pdf' 
         #20220120 edward
-        hazidcloseouttemplate = 'hazidcloseouttemplate'                                                                                                                                      
+        hazidcloseouttemplate = 'hazidcloseouttemplate'   
+        #20220517 Ying Ying
+        studytemp = 'static/media/studybulkpdfdir/' 
+        bystudypdfdir = "static/media/studybulkpdfdir/studybulkpdf/"   
+        bystudypdfcreatezipfilename = "static/media/studybulkpdfdir/" + "studypdffiles"  
+        studypdfzip = 'static/media/studybulkpdfdir/studypdffiles.zip'
+        blankzip = 'static/media/studybulkpdfdir/blank.zip'   
+        blankzipdir = 'static/media/studybulkpdfdir/blank/'                                                                                                                             
  
 
 #Paramters to simply views.py . Commonly used parameters in Views.py to be parked here and standardised
@@ -80,3 +94,6 @@ dfindisummcolumns =  ['StudyActionNo', 'DueDate', 'StudyName__StudyName', 'Actio
 dfdonutcolumns = ['Closed Action', 'Open Action']
 #202220425 yingying
 indisumm_parameter = ['Role', 'Organisation Route', 'Pending Submission', 'Pending Approval', 'Closed', 'Open Actions']
+#06052022 yingying
+dfrejectedexcelcolumns = ['StudyActionNo', 'StudyName', 'Org/Disc/Sub-Disc','Cause','Recommendations', 'DueDate', 'InitialRisk', 'RiskColour', 'Response','Revision']
+dfallcolumnsupdate=['StudyActionNo', 'StudyName', 'Org/Disc/Sub-Disc', 'Recommendations', 'Response', 'DueDate', 'InitialRisk', 'RiskColour']

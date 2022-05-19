@@ -36,7 +36,7 @@
                   <!--set to maximum 20 rows per page-->
 
                   {%include "userT/inclactioneeapprtableheader.html"%}
-                  <th>Responses</th>
+                  <th>Response</th>
                   </tr>
                   </thead>
 
@@ -49,7 +49,7 @@
                       <td><a class="article-title" href="{% url  'ApproveFormMixin' x.id %}">{{ x.StudyActionNo }}</a>
                       </td>
                       <td>{{ x.StudyName__StudyName }}</td>
-                      <td>{{ x.Disipline }} / {{ x.Subdisipline }} </td>
+                      <td>{{ x.Organisation }} / {{ x.Disipline }} / {{ x.Subdisipline }}</td>
 
                       <td>{{ x.Cause }}</td>
 

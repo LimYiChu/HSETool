@@ -5,29 +5,38 @@ from django.shortcuts import get_object_or_404
 
 
 class QuerySet(models.QuerySet):
-    #edward 20210729 changing icontains to iexact for Org,Disc,SubDisc
+
     def get_myActions(self,userorganisation,userdisipline,usersubdisipline,que): 
         return self.filter(Organisation__iexact=userorganisation).filter(Disipline__iexact=userdisipline).filter(
                 Subdisipline__iexact=usersubdisipline).filter(QueSeries__iexact=que).values(
 
-                    'id','StudyActionNo','StudyName__StudyName','Disipline',
+                    'id','StudyActionNo','StudyName__StudyName','Organisation','Disipline',
                     'Subdisipline', 'Cause', 'Recommendations','DueDate', 'Response',
-                    'InitialRisk'
+                    'InitialRisk','Revision'
                 )
 
-    #edward 20210729 changing icontains to iexact for Disc,SubDisc
+    def get_myhistoryActions(self,userorganisation,userdisipline,usersubdisipline,que): 
+        return self.filter(Organisation__iexact=userorganisation).filter(Disipline__iexact=userdisipline).filter(
+                Subdisipline__iexact=usersubdisipline).filter(QueSeries__iexact=que).values(
+
+                    'id','StudyActionNo','StudyName__StudyName','Organisation','Disipline',
+                    'Subdisipline', 'Cause', 'Recommendations','DueDate', 'Response',
+                    'InitialRisk','Revision'
+                )
+
+
     def get_myActionsCount(self,userorganisation,userdisipline,usersubdisipline,que): #edward 20210729 changing icontains to iexact for Org,Disc,SubDisc
         return self.filter(Organisation__iexact=userorganisation).filter(Disipline__iexact=userdisipline).filter(Subdisipline__iexact=usersubdisipline).filter(QueSeries__iexact=que).count ()
-    #edward 20210729 changing icontains to iexact for Disc,SubDisc
+
     #GV weird foreign Key filtering process__StudyName refers back table with foreign key and its field
     def get_myActionsCountbyStudies(self,studies, organisation,disipline,subdisipline,que):
         return self.filter(StudyName__StudyName=studies).filter(Organisation__iexact=organisation).filter(Disipline__iexact=disipline).filter(
             
                             Subdisipline__iexact=subdisipline).filter(QueSeries__iexact=que).count ()
-    #edward 20210729 changing icontains to iexact for Org,Disc,SubDisc
+
     def get_allActionsCountbyStudies(self,studies, que):#Gv - studies edited here
         return self.filter(StudyName__StudyName=studies).filter(QueSeries__iexact=que).count ()
-    #edward 20210729 changing icontains to iexact for Org,Disc,SubDisc
+ 
     def get_allActionsCountbyDisc(self,Disc, que):
         return self.filter(Disipline__iexact=Disc).filter(QueSeries__iexact=que).count ()
 
@@ -58,18 +67,18 @@ class QuerySet(models.QuerySet):
         return self.filter (QueSeries__iexact=que).count ()
     def get_phaseActionsCount(self,phase,que):
         return self.filter (QueSeries__iexact=que).filter(ProjectPhase__ProjectPhase=phase).count()
-    #edward 20210729 changing icontains to iexact for Org,Disc,SubDisc
+    
     def get_DiscSubActionsCount(self,workshop,DiscSub,que):
         return self.filter (Disipline__iexact=DiscSub[0]).filter(Subdisipline__iexact=DiscSub[1]).filter (QueSeries__iexact=que).count ()
-    #edward 20210729 changing icontains to iexact for Org,Disc,SubDisc
+    
     def get_DiscSubOrgActionsCount(self,workshop,DiscSub,que): #get discipline, sub-disc, get the filter
         return self.filter (Disipline__iexact=DiscSub[0]).filter(Subdisipline__iexact=DiscSub[1]).filter (Organisation__iexact=DiscSub[2]).filter (
             QueSeries__iexact=que).count ()
-    #edward 20210729 changing icontains to iexact for Org,Disc,SubDisc
+   
     def get_DiscSubOrgRejectedActionsCount(self,DiscSub,Revvalue): #get discipline, sub-disc, get the filter
         return self.filter (Disipline__iexact=DiscSub[0]).filter(Subdisipline__iexact=DiscSub[1]).filter (
                         Organisation__iexact=DiscSub[2]).filter (Revision__gte=Revvalue).count ()
-    #edward 20210729 changing icontains to iexact for Org,Disc,SubDisc
+    
     def get_DiscSubOrgRejectedActions(self,DiscSub,Revvalue): #get discipline, sub-disc, get the filter
         return self.filter (Disipline__iexact=DiscSub[0]).filter(Subdisipline__iexact=DiscSub[1]).filter (
                         Organisation__iexact=DiscSub[2]).filter (Revision__gte=Revvalue).values()
@@ -79,7 +88,7 @@ class QuerySet(models.QuerySet):
 
     def get_mgrComments(self,fkey):
         return self.filter(Action__pk=fkey)
-    #edward 20210729 changing icontains to iexact for Org,Disc,SubDisc
+    
     def get_mgrCompanyCount(self,Company,que):
         return self.filter (Organisation__iexact=Company).filter (QueSeries__iexact=que).count()
     
@@ -92,6 +101,7 @@ class myActionItemManager(models.Manager):
         return QuerySet(self.model, using=self._db)
     def get_myItemsbyCompDisSub(self,userorganisation,userdisipline,usersubdisipline,que):
         return self.get_queryset().get_myActions(userorganisation,userdisipline,usersubdisipline,que)
+
 
 class myActionCount(models.Manager):
     def get_queryset (self):
