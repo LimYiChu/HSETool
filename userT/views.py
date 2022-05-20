@@ -59,6 +59,26 @@ from time import time
 import copy
 
 
+def closeoutstudyprint(request,study=""):
+    """
+    This function is to generate zip file for Close-out Sheet/By Studies
+    """
+    studydetails = ActionItems.objects.filter(StudyName__StudyName = study)
+    studydetailsfilter = studydetails.filter(QueSeries = 99).values()
+    makesubfolders = os.makedirs(blankzipdir,exist_ok=True)    
+
+    try:
+        objactionitemsfk = blannotatefktomodel(studydetailsfilter)
+        returnzipfile = blbulkdownload(objactionitemsfk,bystudypdfdir,bystudypdfcreatezipfilename)
+        response = FileResponse(open(studypdfzip,'rb'))
+        response['Content-Disposition'] = f'attachment; filename= {study}.zip'
+        shutil.rmtree(bystudypdfdir)
+    except:
+        returnzipfile = shutil.make_archive(blankzipdir, 'zip', blankzipdir)
+        response = FileResponse(open(blankzip,'rb'))
+        response['Content-Disposition'] = f'attachment; filename= {study}.zip'
+        
+    return response
 
 def datatables (request): 
   return render(request, 'userT/datatables.html')   
@@ -212,7 +232,7 @@ def mainDashboard (request):
         "duedatesummary":duedatesummary,
         "submittedsummary": submittedsummary
             }
-    return render(request, 'userT/maindashboard.html',Context) 
+    return render(request, 'userT/maindashboard.html',Context)
 
 
 class ActioneeList (ListView):
@@ -229,8 +249,8 @@ class ActioneeList (ListView):
         ActioneeRoutes =[]
         ActioneeActions =[]
         ActioneeRoutes =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
-        reducedfileds= ['id','StudyActionNo','StudyName__StudyName','Disipline' ,'Subdisipline','Cause','Recommendations',
-        'QueSeries', 'DueDate','InitialRisk']
+        reducedfileds= ['id','StudyActionNo','StudyName__StudyName','Organisation', 'Disipline', 'Subdisipline', 'Cause', 'Recommendations',
+        'QueSeries', 'DueDate', 'InitialRisk']
         ActioneeActions = blallactionscomdissubQ(ActioneeRoutes,queactionee,reducedfileds)
         finalactionitems = bladdriskelements(list(ActioneeActions))
         return ActioneeActions
@@ -301,7 +321,7 @@ class ApproverList (ListView):
         dict_allRou = blgetuserRoutes(userZemail)
         #gets approver routes by que series and slots QuerySet for routes according to key dict Approver Routes
         Approver_R =    dict_allRou.get('Approver_Routes')
-        reducedfileds= ['id','StudyActionNo','StudyName__StudyName','Disipline' ,'Subdisipline','Cause','Recommendations',
+        reducedfileds= ['id','StudyActionNo','StudyName__StudyName','Organisation','Disipline' ,'Subdisipline','Cause','Recommendations',
         'QueSeries', 'DueDate','Response','InitialRisk']
 
         for key, value in Approver_R.items():
@@ -974,30 +994,32 @@ def repPMTExcel (request,phase=""):
     
     listaggregatedindi,listaggregatedindiheader=blgroupbyaggsum(Indisets,tableindiheader,'User', ['Pending Submission','Pending Approval']) #this has been changed by edward 20210706, used to be Yet-to-Respond & Yet-to-Approve
     tableallheader = ['id','StudyActionNo','StudyName', 'ProjectPhase','Disipline' ,'Recommendations', 'Response','DueDate','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
-    tableallheadermodified = ['Study Action No','Study Name', 'Project Phase','Discipline' ,'Recommendations', 'Response','Due Date','Initial Risk']
+    tableallactheadermodified = ['Study Action No','Study Name', 'Project Phase','Org/Disc/Sub-Disc','Recommendation', 'Response','Due Date','Initial Risk']
     
     #All actions and actions by Phases
-    justenoughattributes =  ['id','StudyActionNo','Disipline' ,'Recommendations', 'QueSeries', 'Response','DueDate','InitialRisk']
+    justenoughattributes =  ['id','StudyActionNo','Organisation','Disipline' ,'Subdisipline','Recommendations', 'QueSeries', 'Response','DueDate','InitialRisk']
     phasesactions =  blphasegetActionreducedfieldsQ(justenoughattributes,phase)
     
     dictofallactions    = blannotatefktomodel(phasesactions) #Annotate first because it doesnt like addtional items added to query set
     #this sequence is important otherwise doesnt work
     phaseswithrisk = bladdriskelements(dictofallactions)
     dictofallactions    = blgetdictActionStuckAt(phaseswithrisk)
-    
+      
     #pandas excel
     all_actions =   ActionItems.objects.all().values()
     all_actionsannotate = blannotatefktomodel(all_actions)
     blank=[]
     all_actionsopt = bladdriskelements(all_actionsannotate)
     dfall1 = pd.DataFrame.from_dict(all_actionsopt) # sort dfall
-    dfall = blsortdataframes(dfall1,dfallcolumns)
+    dfall1['Org/Disc/Sub-Disc']=dfall1['Organisation']+'/'+dfall1['Disipline']+'/'+dfall1['Subdisipline'] 
+    dfall = blsortdataframes(dfall1,dfallcolumnsupdate)
 
     revisiongte = 1
     queseriesrejected = 0
    
     #Rejected details using Q Object
-    rejectedactions = blphasegetrejectedactionsQ (revisiongte,queseriesrejected,justenoughattributes,phase)
+    rejectattribute =  ['id','StudyActionNo','Organisation' ,'Disipline' ,'Subdisipline','Cause','Recommendations', 'QueSeries', 'Response','DueDate','InitialRisk','Revision']
+    rejectedactions = blphasegetrejectedactionsQ (revisiongte,queseriesrejected,rejectattribute,phase)
     rejecteddictofallactions    = blannotatefktomodel(rejectedactions)
     #this sequence is important otherwise doesnt work
     rejectedallactionitems = bladdriskelements(rejecteddictofallactions)
@@ -1075,7 +1097,9 @@ def repPMTExcel (request,phase=""):
         elif (request.POST.get('rejectedactions')):
 
             in_memory = BytesIO()
-            drejectedsorted = blsortdataframes(dfrejection,dfrejectedcolumns)
+            dfcopyrejected = dfrejection.copy()
+            dfcopyrejected['Org/Disc/Sub-Disc']=dfcopyrejected['Organisation']+'/'+dfcopyrejected['Disipline']+'/'+dfcopyrejected['Subdisipline'] 
+            drejectedsorted = blsortdataframes(dfcopyrejected,dfrejectedexcelcolumns)
 
             with pd.ExcelWriter(in_memory)as writer: #using excelwriter library to edit worksheet
                 drejectedsorted.to_excel(writer, sheet_name='Rejected Actions',engine='xlsxwriter',header=False,startrow=1)
@@ -1125,6 +1149,25 @@ def repPMTExcel (request,phase=""):
             response['Content-Disposition'] = 'attachment; filename=byDueDates.xlsx'
             workbook.save(response) # odd way but it works - took too long to figure out as no resource on the web
             return response    
+
+        elif (request.POST.get('rejectedcounts')):
+
+            in_memory = BytesIO()
+            dfrejectedcount = pd.DataFrame(listofrejecteditems, columns = tablerheaderejected)
+            drejectedcountsorted = blsortdataframes(dfrejectedcount,tablerheaderejected)
+
+            with pd.ExcelWriter(in_memory)as writer: #using excelwriter library to edit worksheet
+                drejectedcountsorted.to_excel(writer, sheet_name='Rejected Counts',engine='xlsxwriter',header=False,startrow=1)
+                workbook = writer.book #gives excelwriter access to workbook
+                worksheet = writer.sheets['Rejected Counts'] #gives excelwriter access to worksheet
+                formattedexcel = blexcelformat(drejectedcountsorted,workbook,worksheet)
+    
+            response = HttpResponse(content_type='application/ms-excel') 
+            response['Content-Disposition'] = 'attachment; filename=byRejectedCounts.xlsx'
+            in_memory.seek(0)
+            response.write(in_memory.read())
+
+            return response
      
     context = {
         'riskmatrix' : True,
@@ -1138,7 +1181,7 @@ def repPMTExcel (request,phase=""):
         'tableindiheader' : tableindiheader,
         'tablestudiesheader' : tablestudiesheader,
         'tabledischeader' : tabledischeader,
-        'tableallheader' : tableallheadermodified,
+        'tableallheader' : tableallactheadermodified,
         'listaggregatedindi':listaggregatedindi,
         'listaggregatedindiheader':listaggregatedindiheader,
         'listofrejectedheader': tablerheaderejected,
@@ -1224,7 +1267,7 @@ def mergedcloseoutprintoriginal(request):
     objactionitems = ActionItems.objects.filter(QueSeries = 99).values() 
     objactionitemsfk = blannotatefktomodel(objactionitems)
     returnzipfile = blbulkdownload(objactionitemsfk,bulkpdfdir,bulkpdfcreatezipfilename) 
-
+    
     in_memory = BytesIO()
     zip = ZipFile(in_memory,mode="w")
     finalname = os.path.basename(bulkpdfzipfoldername)
@@ -1238,9 +1281,9 @@ def mergedcloseoutprintoriginal(request):
     return response
 
 
-def closeoutsheet(request): 
+def closeoutsheet(request,phase=""): 
     """
-    This function builds the closeoutsheet for Closed Actions
+    This function builds the table for Close-out Sheet/closed item and Close-out Sheet/By Studies for Closed Actions
     """
     QueOpen = [0,1,2,3,4,5,6,7,8,9]
     QueClosed = [99]
@@ -1248,43 +1291,62 @@ def closeoutsheet(request):
     ApprovalQue = [1,2,3,4,5,6,7,8,9]
     TotalQue = [0,1,2,3,4,5,6,7,8,9,99]
     allstudies = Studies.objects.all()
-
-    tablestudiesheader = ['Studies', 'Yet to Respond' ,'Approval Stage','Closed','Open Actions', 'Total Actions']
-    lstbyWorkshop = blgetbyStdudiesCount(allstudies,YetToRespondQue,ApprovalQue,QueClosed,QueOpen,TotalQue)
-
+    listofPhases= Phases.mdlSetGetField.mgrGetAllActionsAndFields()
     allactions = ActionItems.objects.all()
-    tableallheader = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
-    lstofallactions = blgetActionStuckAt(allactions, tableallheader) #feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
-    tableallheadermodified =  ['Study Action No','Study Name', 'Discipline' ,'Recommendations','Response','Initial Risk']
-    filename = [] # for appending filename place before for loop
 
-    lstclosed = ActionItems.objects.filter(QueSeries =99)
+    bystudytableheader = ['Studies', 'Yet to Respond' ,'Approval Stage','Closed','Open Actions', 'Total Actions']
+    bystudytableheaderhtml = ['studies', 'yettorespond' ,'approvalstage','closed','open', 'total']
+    studiesattributes =['StudyName','ProjectPhase']
+    phasestudies =  blphasegetStudyreducedfieldsQ(studiesattributes,phase)
+    lstbyWorkshop = blgetbyStdudiesCountphase(phasestudies,YetToRespondQue,ApprovalQue,QueClosed,QueOpen,TotalQue)
+    dictbystudy = []
+    for item in lstbyWorkshop:
+        dictbystudy.append(dict(zip(bystudytableheaderhtml, item)))
+
+    # allactions = ActionItems.objects.all()
+    # tableallheader = ['StudyActionNo','StudyName', 'Disipline' ,'Recommendations','Response','InitialRisk'] # Warning donnt change this as this item needs to map against the MODEL
+    # lstofallactions = blgetActionStuckAt(allactions, tableallheader) #feed in any sort of actions with tables you want and it will send you back where the actions are stuck at
+
+    closeoutsheetheader =  ['Study Action No', 'Study Name', 'Org/Disc/Sub-Disc', 'Recommendation', 'Response']
+    # filename = [] # for appending filename place before for loop
+
+    fieldsrequired = ['id','StudyActionNo', 'Organisation', 'Disipline', 'Subdisipline', 'Recommendations', 'Response', 'QueSeries']
+    actionitemsbyphase = blphasegetActionreducedfieldsQ(fieldsrequired,phase)
+    actionitemgetstudyname = blannotatefktomodel(actionitemsbyphase) #Annotate first because it doesnt like addtional items added to query set
+    lstclosed = actionitemgetstudyname.filter(QueSeries =99)
+
+    # lstclosed = ActionItems.objects.filter(QueSeries =99)
     
-    if (request.POST.get('GeneratePDF')):
-        x=ActionItems.objects.all()  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
+    # Ying Ying 
+    # if (request.POST.get('GeneratePDF')):
+    #     x=ActionItems.objects.all()  #the row shall not contain "." because conflicting with .pdf output(typcially in header) /previously used .filter(StudyActionNo__icontains='PSD')
 
-        y= x.values()
-        for item in y :
-            i = item["StudyActionNo"] 
-            j = (i + '.pdf')  #specify +1 for each file so it does not overwrite one file
-            del item["id"]
-            data_dict=item
-            out_file = staticmedia + j
-            pdfgenerate(atrtemplate,out_file,data_dict)#returns from pdfgenerator 
-            filename.append(j) #can only append str, appending j shows the filename for userview instead of whole location
-            context1={
-                'filename' : filename,
-                'table': True,
-                'lstbyWorkshop' : lstbyWorkshop,
-                'lstofallactions' : lstofallactions,
-            }
-        return render(request, 'userT/closeoutsheet.html', context1)
+    #     y= x.values()
+    #     for item in y :
+    #         i = item["StudyActionNo"] 
+    #         j = (i + '.pdf')  #specify +1 for each file so it does not overwrite one file
+    #         del item["id"]
+    #         data_dict=item
+    #         out_file = staticmedia + j
+    #         pdfgenerate(atrtemplate,out_file,data_dict)#returns from pdfgenerator 
+    #         filename.append(j) #can only append str, appending j shows the filename for userview instead of whole location
+    #         context1={
+    #             'filename' : filename,
+    #             'table': True,
+    #             'lstbyWorkshop' : lstbyWorkshop,
+    #             'lstofallactions' : lstofallactions,
+    #         }
+    #     return render(request, 'userT/closeoutsheet.html', context1)
 
     context = {
         'lstclosed' : lstclosed,
-        'lstbyWorkshop' : lstbyWorkshop,
-        'lstofallactions' : lstofallactions,
-        'tablestudiesheader' : tablestudiesheader,
+        'lstbyWorkshop' : dictbystudy,
+        # 'lstofallactions' : lstofallactions,
+        'summarytableheader' : bystudytableheader,
+        'closeoutsheetheader' : closeoutsheetheader,
+        "listofPhases": listofPhases,
+        "phase": phase,
+        "phasestudies": phasestudies,
     }
     return render(request, 'userT/closeoutsheet.html', context)
 

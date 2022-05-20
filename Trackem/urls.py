@@ -103,7 +103,9 @@ urlpatterns = [
         
         #PDF close out
         path('closeoutsheet/',login_required(UserView.closeoutsheet),name='closeoutsheet'),
+        path('closeoutsheet/<phase>',login_required(UserView.closeoutsheet),name='closeoutsheetphases'),
         path('closeoutsheet/<int:id>/print', login_required(UserView.closeoutprint), name='closeoutprint' ),
+        path('closeoutsheet/<path:study>/print', login_required(UserView.closeoutstudyprint), name='closeoutstudyprint' ),
         path('mergedcloseoutprint/', login_required(UserView.mergedcloseoutprint), name='mergedcloseouprint' ),
         path('stitchpdf/', login_required(UserView.stitchpdf), name='stitchpdf' ),
         
@@ -124,7 +126,7 @@ urlpatterns = [
         path('dynamicstudiesdiscexcel/<study>', login_required(viewsajax.dynamicstudiesdiscexcel), name='dynamicstudiesdiscexcel'),
         path('dynamicdisciplineexcel/<path:discipline>', login_required(viewsajax.dynamicdisciplineexcel), name='dynamicdisciplineexcel'),
 
-        
+
       ]
 
 if settings.DEBUG:

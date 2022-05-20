@@ -32,15 +32,37 @@ function phasesurl (id,phase)
     }else{
         document.location.href = phase // adds the phase part to the end of the reppmt- it is then caught by views
         
-}
-   
-}
+}}
+
+function closeoutphasesurl (id,phase)
+
+{
+    
+    if (phase == '') {
+
+        document.location.href = "../closeoutsheet"
+
+    }else{
+        document.location.href = phase // adds the phase part to the end of the reppmt- it is then caught by views
+        
+}}
 
 function maketabactive (id){
     ///make the tab (button active)
     if (id===""){
 
         id="allphases"
+    }
+    var gettab = document.getElementById(id)
+    gettab.className += " active"
+
+}
+
+function makecloseouttabactive (id){
+    ///make the tab (button active)
+    if (id===""){
+
+        id="allcloseoutphases"
     }
     var gettab = document.getElementById(id)
     gettab.className += " active"

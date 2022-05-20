@@ -55,7 +55,7 @@
                       <td><a class="article-title"
                           href="{% url  'HistoryFormMixin' x.id True%}">{{ x.StudyActionNo }}</a></td>
                       <td>{{ x.StudyName__StudyName }}</td>
-                      <td>{{ x.Disipline }} / {{ x.Subdisipline }}</td>
+                      <td>{{ x.Organisation }} / {{ x.Disipline }} / {{ x.Subdisipline }}</td>
                       <td>{{ x.Cause }}</td>
                       <td><a class="article-title"
                           href="{% url  'HistoryFormMixin' x.id True%}">{{ x.Recommendations }}</a></td>
@@ -99,7 +99,7 @@
                       <td><a class="article-title"
                           href="{% url  'HistoryFormMixin' x.id False%}">{{ x.StudyActionNo }}</a></td>
                       <td>{{ x.StudyName__StudyName }}</td>
-                      <td>{{ x.Disipline }} / {{ x.Subdisipline }}</td>
+                      <td>{{ x.Organisation }} / {{ x.Disipline }} / {{ x.Subdisipline }}</td>
                       <td>{{ x.Cause }}</td>
                       <td><a class="article-title"
                           href="{% url  'HistoryFormMixin' x.id False%}">{{ x.Recommendations }}</a></td>
@@ -145,7 +145,7 @@
                       <td><a class="article-title"
                           href="{% url  'HistoryFormMixin' x.id False%}">{{ x.StudyActionNo }}</a></td>
                       <td>{{ x.StudyName__StudyName }}</td>
-                      <td>{{ x.Disipline }} / {{ x.Subdisipline }}</td>
+                      <td>{{ x.Organisation }} /{{ x.Disipline }} / {{ x.Subdisipline }}</td>
                       <td>{{ x.Cause }}</td>
                       <td><a class="article-title"
                           href="{% url  'HistoryFormMixin' x.id False%}">{{ x.Recommendations }}</a></td>
