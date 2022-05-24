@@ -96,4 +96,4 @@ dfdonutcolumns = ['Closed Action', 'Open Action']
 indisumm_parameter = ['Role', 'Organisation Route', 'Pending Submission', 'Pending Approval', 'Closed', 'Open Actions']
 #06052022 yingying
 dfrejectedexcelcolumns = ['StudyActionNo', 'StudyName', 'Org/Disc/Sub-Disc','Cause','Recommendations', 'DueDate', 'InitialRisk', 'RiskColour', 'Response','Revision']
-dfallcolumnsupdate=['StudyActionNo', 'StudyName', 'Org/Disc/Sub-Disc', 'Recommendations', 'Response', 'DueDate', 'InitialRisk', 'RiskColour']
+dfallcolumnsupdate=['StudyActionNo', 'StudyName', 'ProjectPhase', 'Org/Disc/Sub-Disc', 'Recommendations', 'Response', 'DueDate', 'InitialRisk', 'RiskColour','ActionAt']

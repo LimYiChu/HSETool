@@ -93,10 +93,11 @@ function dynamictable(response,rootid,urlcolumn=true) {
             }, ],
             "bDestroy": true,
             orderCellsTop: true,
+            pageLength: 50,
             "lengthMenu": 
             [
-                [-1, 10, 25, 50, 200],
-                ["All", 10, 25, 50, 200]
+                [10, 25, 50, 200,-1],
+                [10, 25, 50, 200, "All"]
             ],
             "createdRow": function(row, data, dataIndex, column) 
             {
@@ -318,10 +319,11 @@ function dynamictabledisc(response,rootid) {
             
             "bDestroy": true,
             orderCellsTop: true,
+            pageLength: 25,
             "lengthMenu": 
             [
-                [-1, 10, 25, 50, 200],
-                ["All", 10, 25, 50, 200]
+                [10, 25, 50, 200, -1],
+                [10, 25, 50, 200, "All"]
             ],
             "createdRow": function(row, data, dataIndex, column) 
             {
