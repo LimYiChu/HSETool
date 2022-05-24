@@ -1004,15 +1004,18 @@ def repPMTExcel (request,phase=""):
     #this sequence is important otherwise doesnt work
     phaseswithrisk = bladdriskelements(dictofallactions)
     dictofallactions    = blgetdictActionStuckAt(phaseswithrisk)
-      
+
     #pandas excel
-    all_actions =   ActionItems.objects.all().values()
-    all_actionsannotate = blannotatefktomodel(all_actions)
-    blank=[]
-    all_actionsopt = bladdriskelements(all_actionsannotate)
-    dfall1 = pd.DataFrame.from_dict(all_actionsopt) # sort dfall
+    dfall1 = pd.DataFrame.from_dict(dictofallactions)
     dfall1['Org/Disc/Sub-Disc']=dfall1['Organisation']+'/'+dfall1['Disipline']+'/'+dfall1['Subdisipline'] 
     dfall = blsortdataframes(dfall1,dfallcolumnsupdate)
+    # all_actions =   ActionItems.objects.all().values()
+    # all_actionsannotate = blannotatefktomodel(all_actions)
+    # blank=[]
+    # all_actionsopt = bladdriskelements(all_actionsannotate)
+    # dfall1 = pd.DataFrame.from_dict(all_actionsopt) # sort dfall
+    # dfall1['Org/Disc/Sub-Disc']=dfall1['Organisation']+'/'+dfall1['Disipline']+'/'+dfall1['Subdisipline'] 
+    # dfall = blsortdataframes(dfall1,dfallcolumnsupdate)
 
     revisiongte = 1
     queseriesrejected = 0
@@ -1081,6 +1084,9 @@ def repPMTExcel (request,phase=""):
 
         if (request.POST.get('allActions')):
             in_memory = BytesIO()
+            dictheader = {'StudyActionNo': 'Study Action No', 'StudyName': 'Study Name', 'ProjectPhase': 'Project Phase', 
+                        'Recommendations': 'Recommendation', 'DueDate': 'Due Date', 'InitialRisk': 'Initial Risk', 'RiskColour': 'Risk Colour', 'ActionAt': 'Action At'}
+            dfall.rename(columns=dictheader, inplace=True) 
             response = HttpResponse(content_type='application/ms-excel') #
             response['Content-Disposition'] = 'attachment; filename=byAllActions.xlsx'
         
@@ -1097,9 +1103,16 @@ def repPMTExcel (request,phase=""):
         elif (request.POST.get('rejectedactions')):
 
             in_memory = BytesIO()
-            dfcopyrejected = dfrejection.copy()
-            dfcopyrejected['Org/Disc/Sub-Disc']=dfcopyrejected['Organisation']+'/'+dfcopyrejected['Disipline']+'/'+dfcopyrejected['Subdisipline'] 
-            drejectedsorted = blsortdataframes(dfcopyrejected,dfrejectedexcelcolumns)
+            try:
+                dfcopyrejected = dfrejection.copy()
+                dfcopyrejected['Org/Disc/Sub-Disc']=dfcopyrejected['Organisation']+'/'+dfcopyrejected['Disipline']+'/'+dfcopyrejected['Subdisipline'] 
+                drejectedsorted = blsortdataframes(dfcopyrejected,dfrejectedexcelcolumns)
+
+            except:
+                drejectedsorted = blsortdataframes(dfrejection,dfrejectedexcelcolumns)
+            
+            dictheader = {'StudyActionNo': 'Study Action No', 'StudyName': 'Study Name', 'Recommendations': 'Recommendation', 'DueDate': 'Due Date', 'InitialRisk': 'Initial Risk', 'RiskColour': 'Risk Colour'}
+            drejectedsorted.rename(columns=dictheader, inplace=True)   
 
             with pd.ExcelWriter(in_memory)as writer: #using excelwriter library to edit worksheet
                 drejectedsorted.to_excel(writer, sheet_name='Rejected Actions',engine='xlsxwriter',header=False,startrow=1)

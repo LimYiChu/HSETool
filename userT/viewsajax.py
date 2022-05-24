@@ -244,10 +244,11 @@ def dynamicindisummexcel(request,user=""):
     This function download the excel of dynamic individual details from pop out table.
     """
     filteredstring = user                                                                     
-    reducedfields = ['User', 'Role', 'Organisation Route', 'Pending Submission', 'Pending Approval', 'Closed', 'Open Actions']
+    reducedfields = ['User','Role', 'Organisation Route', 'Pending Submission', 'Pending Approval', 'Closed', 'Open Actions']
     headerlist = ['Role', 'Organisation Route', 'Pending Submission', 'Pending Approval', 'Closed', 'Open Actions']                               
     actionsamount = bldynamicindisummactionformat(filteredstring, reducedfields)  
     dfall = pd.DataFrame(actionsamount)
+    dfall.pop('User')
     dictheader = {0: 'Role', 1: 'Organisation Route', 2: 'Pending Submission', 3: 'Pending Approval', 4: 'Closed', 5: 'Open Actions'}
     dfall.rename(columns=dictheader, inplace=True)
     usersheetname = user[:31]
@@ -275,8 +276,9 @@ def dynamicstudiesexcel(request,study=""):
     dfall = pd.DataFrame.from_dict(actionsstuckat)                                                                      
     dfall['discsuborg']=dfall['Disipline']+'/'+dfall['Subdisipline']+'/'+dfall['Organisation']                          
     dfalldynamicstudiessorted = blsortdataframes(dfall, dfstudiescolumns) 
-    dfalldynamicstudiessorted = dfalldynamicstudiessorted.iloc[:, :-2]
-    dictheader = {'StudyActionNo': 'Study Action No', 'DueDate': 'Due Date', 'ActionAt': 'Action At', 'discsuborg': 'Discipline', 'InitialRisk': 'Initial Risk'}
+    dfalldynamicstudiessorted.pop("id")
+    # dfalldynamicstudiessorted = dfalldynamicstudiessorted.iloc[:, :-1]
+    dictheader = {'StudyActionNo': 'Study Action No', 'DueDate': 'Due Date', 'ActionAt': 'Action At', 'discsuborg': 'Discipline', 'InitialRisk': 'Initial Risk', 'RiskColour': 'Risk Colour'}
     dfalldynamicstudiessorted.rename(columns=dictheader, inplace=True)
     studysheetname = study[:31]
 
