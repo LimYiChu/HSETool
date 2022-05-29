@@ -4,7 +4,18 @@ from functools import reduce
 import operator
 from UploadExcel.models import ActionItems
 from .models import *
+def blfiltergeneralbyOrQ (filteredstring,table=ActionItems.history,orderby="-history_date",reducedfields=["id","history_date"]) :
+    """Pass in list of items as filtered string . The function then filters based on OR operato. This function then has default tables 
+    it filters on, and orders by which is actually the history tables at the start, """
+    QObjectSeries =[]
+    for items in filteredstring:
+        tupsdict = dict([items])
+        QObjectSeries.append(Q(**tupsdict))
+    #QObjectfilter =Q(**QObjectSeries)
+    filters = reduce(operator.or_,QObjectSeries)
+    filteredaction = table.filter(filters).order_by(orderby).values(*reducedfields)
 
+    return filteredaction
 def blgetsinglefilteractionsitemsQ(dictfilter,reducedfields):
 
     QObjectfilter =Q(**dictfilter)
@@ -13,7 +24,7 @@ def blgetsinglefilteractionsitemsQ(dictfilter,reducedfields):
     return filteredactions
 
 #20211221 em get the rejected count for Actionee
-def blActioneerejectedcountQ(Actionee_R):
+def blActioneerejectedcountQ(Actionee_R,newdef=False):
     """This function gets the count of rejected actions from Action Items table by going through Action Routes of Actionee."""
     revision = 1
     routes = Actionee_R
@@ -21,9 +32,14 @@ def blActioneerejectedcountQ(Actionee_R):
     if routes :
         QObjectSeries =[]
         for x, item in enumerate(routes):
-            organisation   = item.Organisation
-            discipline  = item.Disipline
-            subdiscipline  = item.Subdisipline
+            if newdef :
+                organisation   = item["Organisation"]
+                discipline  = item["Disipline"]
+                subdiscipline  = item["Subdisipline"]
+            else: 
+                organisation   = item.Organisation
+                discipline  = item.Disipline
+                subdiscipline  = item.Subdisipline
             QObjectSeries.append(Q(**{'Disipline':discipline, 'Subdisipline': subdiscipline, 
                                 'Organisation': organisation,'Revision__gte':revision }))
 
@@ -70,7 +86,6 @@ def blnewgetrejecteditemsQcount(dfdiscsuborg,revision,phase):
     
     return count
 
-#20211203 edward 
 def blphasegetStudyreducedfieldsQ(reducedfields,phase=""):
     """This function only looks through the Studies table. It filters studies by phase only in the Studies table.If phase is empty it retrives all studies. Reduced field parameter  
     is used to return less data to html. Pass in list for reduced field e.g ['id','DueDate', 'QueSeries' etc]
@@ -88,14 +103,13 @@ def blphasegetStudyreducedfieldsQ(reducedfields,phase=""):
     filters = QObjectMiscAND
     StudiesPhase =  Studies.mdlallStudies.mgr_GeneralItemsFiltersKwargsQReduced(filters,reducedfields)
     
-    
     return StudiesPhase
-#20211203 edward 
 
-def blallactionscomdissubQ(routes,queseries,reducedfields):
-    '''Uses Q object for more efficient queries. Pass in routes from actinee or approver.
-    routes is a list of routes defined when user logs in. 
-    This function then loops through all routes that logged in user holds actions based on que series
+
+def blallactionscomdissubQ(routes,queseries,reducedfields,newdef=False):
+    '''Uses Q object for more efficient queries. Pass in filtered routes from actionee or approver. 
+    This function then loops through all routes to get actions based based on que series. Returns a .values 
+    i.e dictionary object of id related to queseries
     Addtionally Pass in reduced fields so it does not retrieve all values() and limits the data transfer . 
     '''
     allactions = []
@@ -103,9 +117,14 @@ def blallactionscomdissubQ(routes,queseries,reducedfields):
     if routes :
         QObjectSeries =[]
         for x, item in enumerate(routes):
-            organisation   = item.Organisation
-            discipline  = item.Disipline
-            subdiscipline  = item.Subdisipline
+            if newdef :
+                organisation   = item["Organisation"]
+                discipline  = item["Disipline"]
+                subdiscipline  = item["Subdisipline"]
+            else :
+                organisation   = item.Organisation
+                discipline  = item.Disipline
+                subdiscipline  = item.Subdisipline
 
             QObjectSeries.append(Q(**{'Disipline':discipline, 'Subdisipline': subdiscipline, 
                                 'Organisation': organisation, 'QueSeries' : queseries}))
@@ -114,23 +133,42 @@ def blallactionscomdissubQ(routes,queseries,reducedfields):
 
     return allactions
 
-def blActionCountbyStudiesStreamQ(contextRoutes,studies,que):
-    '''Need to change this to q object '''
-    streamscount = []
-    streamdisc  = []
-    for x, item in enumerate(contextRoutes):
-        blvarorganisation   = item.Organisation
-        blvardisipline  = item.Disipline
-        blvarSUbdisipline  = item.Subdisipline
-        blque               =   que
+def blActionCountbyStudiesStreamQ(routes,studies,que,newdef=False):
+    """this is for studies to get a count based on user routes, output is a count based on que series and routes that have been tied to que series"""
+    countstudies = 0
+    
+    # for x, item in enumerate(contextRoutes):
+    #     blvarorganisation   = item.Organisation
+    #     blvardisipline  = item.Disipline
+    #     blvarSUbdisipline  = item.Subdisipline
+    #     blque               =   que
        
-        streamscount.append(ActionItems.myActionItemsCount.mgr_myItemsCountbyStudies(studies,blvarorganisation,
-                                                                blvardisipline,
-                                                                blvarSUbdisipline,blque))
-        streamdisc.append (blvardisipline)
-    return streamscount, streamdisc
+    #     streamscount.append(ActionItems.myActionItemsCount.mgr_myItemsCountbyStudies(studies,blvarorganisation,
+    #                                                             blvardisipline,
+    #                                                             blvarSUbdisipline,blque))
+    if routes:
+        QObjectSeries =[]
+        for x, item in enumerate(routes):
+            
+            if newdef :
+                organisation   = item["Organisation"]
+                discipline  = item["Disipline"]
+                subdiscipline  = item["Subdisipline"]
+            else:
+                organisation   = item.Organisation
+                discipline  = item.Disipline
+                subdiscipline  = item.Subdisipline
 
-def blfuncActionCountQ(routes,que=[]):
+            QObjectSeries.append(Q(**{'Disipline':discipline, 'Subdisipline': subdiscipline, 
+                                'Organisation': organisation, 'QueSeries' : que , 'StudyName__StudyName':studies}) )
+
+        filters = reduce(operator.or_,QObjectSeries)
+
+        countstudies = ActionItems.mdlallActionItemsCount.mgr_GeneralItemsCountbyFiltersKwargsQ(filters)
+        
+    return countstudies
+
+def blfuncActionCountQ(routes,que=[],newdef=False):
     '''Pass routes in and it counts everything in your routes . 
     '''
     count=0
@@ -138,9 +176,16 @@ def blfuncActionCountQ(routes,que=[]):
     QObjectSeries =[]
     if routes: 
         for x, item in enumerate(routes):
-            organisation   = item.Organisation
-            discipline  = item.Disipline
-            subdiscipline  = item.Subdisipline
+            
+            if newdef :
+                organisation   = item["Organisation"]
+                discipline  = item["Disipline"]
+                subdiscipline  = item["Subdisipline"]
+            else:
+                organisation   = item.Organisation
+                discipline  = item.Disipline
+                subdiscipline  = item.Subdisipline
+
             QObjectSeries.append(Q(**{'Disipline':discipline, 'Subdisipline': subdiscipline, 
                                 'Organisation': organisation, })& blQobjectQueSeries(que) )
 

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import *
 from django.contrib.admin.forms import AuthenticationForm
-
+from simple_history.admin import SimpleHistoryAdmin
 # Register your models here.
 class ActionItemsAdmin(admin.ModelAdmin):
     list_display =('StudyActionNo' ,'DueDate','StudyName','ProjectPhase', 'Recommendations', 'Response','Organisation', 'Disipline','Subdisipline','DateCreated','QueSeries',)

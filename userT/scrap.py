@@ -1,5 +1,19 @@
 #20220225 grom businesslogic.py
 
+
+    #20211208 Ishna first box
+    # riskrankingsummary = blaggregateby(ActioneeActionsrisk,"RiskRanking")
+    # for QSeries, ApproRoutes in Approver_R.items():
+    #     ApproverActions = blallactionscomdissubQ(ApproRoutes,QSeries,reducedfields)
+    #     ApproverActionsrisk = bladdriskelements(list(ApproverActions))
+    #     riskrankingapproverraw = blaggregateby(ApproverActionsrisk,"RiskRanking")
+    #     if riskrankingapproverraw is not None:
+    #         newcounter = Counter(riskrankingapproverraw) + Counter(newcounter)
+    #         riskrankingapprover = newcounter
+    #         riskrankingactionee = Counter(riskrankingsummary)
+    #         riskrankingsummary = riskrankingapprover + riskrankingactionee
+    #20211208 Ishna first box
+
 # #20211122 edward stitchpdf
 # def blexceltopdf(pdfpath,pdf_list_onlyexcel):
 #     """This function converts .xlxs to .pdf files using xlwings library. This library only works on windows or macOS machines """

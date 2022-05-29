@@ -5,6 +5,7 @@ from .manager import *
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from .manager import *
+from UploadExcel.manager import *
 #user= settings.AUTH_USER_MODEL
 from UploadExcel.models import *
 from simple_history.models import HistoricalRecords
@@ -62,6 +63,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
     subdisipline    =  models.CharField(max_length=254, blank=True, null=True) 
     organisation   =   models.CharField(max_length=254, blank=True, null=True)
     designation     =    models.CharField(max_length=254, blank=True, null=True)
+    licensing     =    models.CharField(max_length=254, blank=True, null=True)
     signature = models.CharField(max_length=100, blank=True, null=True)
     expiration     =  models.DateTimeField(null=True) 
     is_active = models.BooleanField(default=True) #according to django contrib doc, is_active returned here
@@ -149,19 +151,30 @@ class Studies (models.Model):
     AttendanceList  = models.CharField(max_length=200, null=True,blank=True)
     DateConducted = models.DateField(auto_now_add=True,null=True,blank=True)
     Form = models.CharField(max_length=100, null=True,blank=True)
-    #20211203 edward added foreignkey for phases here
     ProjectPhase =   models.ForeignKey(Phases, on_delete=models.SET_NULL,null=True,blank=True)
-    #20211203 edward added foreignkey for phases here end
 
-    
     class Meta:
-       verbose_name_plural = "Studies" #this if not done gives a view of Studiess
-    #20211203 edward
+       verbose_name_plural = "Studies" #this if not done gives a view of Studiess in admin panel
+    
     objects = models.Manager()
     mdlallStudies = mgrallActionCount()
 
     def __str__(self): 
        return '%s -- %s' %(self.StudyName, self.ProjectPhase)
+
+class Parameters (models.Model):
+    Versioning = models.CharField(max_length=200, null=True)
+    Emailactionee = models.CharField(max_length=200, null=True,blank=True)
+    Emailapprover = models.CharField(max_length=200, null=True,blank=True)
+    Emailfrequency = models.CharField(max_length=200, null=True,blank=True)
+    
+    class Meta:
+        verbose_name_plural = "Parameters" #this if not done gives a view of Studiess in admin panel
+    
+    objects = models.Manager()
+   
+    def __str__(self): 
+       return '%s' %(self.Versioning)
 
 class RiskMatrix (models.Model):
     Consequence = models.CharField(max_length=20, null=True,blank=True)
@@ -211,3 +224,19 @@ class ActionRoutes(models.Model):
 
     def __str__(self): 
        return '%s--%s--%s' %(self.Organisation, self.Disipline, self.Subdisipline)
+
+class Menus (models.Model) :
+
+    Urlhref = models.CharField(max_length=200, null=True,blank=True)
+    Icon = models.CharField(max_length=200, null=True,blank=True)
+    Namemenu = models.CharField(max_length=200, null=True,blank=True)
+    Parentid = models.IntegerField(null=True,blank=True)
+    Permissioning = models.CharField(max_length=200, null=True,blank=True)
+    Classelement = models.JSONField(max_length=200, null=True,blank=True)
+    Hierarchy = models.IntegerField(null=True,blank=True)
+   
+    def __str__(self): 
+        return '%s--%s--%s' %(self.Urlhref, self.Namemenu, self.Parentid)
+    class Meta:
+       verbose_name_plural = "Menus"
+

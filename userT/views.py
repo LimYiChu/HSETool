@@ -57,7 +57,19 @@ from django.utils import timezone
 from UploadExcel.formstudies import *
 from time import time
 
+def dynamicindisummX (request) :
 
+    usersemail=request.user.email
+    glist =[]
+    xyzroutes = list(ActionRoutes.ActioneeRo.get_myroutes(usersemail).values_list("Disipline","Subdisipline"))
+
+    xyzrouteslist = [print(list(x)) for x in xyzroutes]
+
+    for items in xyzroutes:
+
+        glist.append(list(items))
+
+    return render (request, 'userT/YY.html')
 
 def datatables (request): 
   return render(request, 'userT/datatables.html')   
@@ -113,45 +125,35 @@ def mainDashboard (request):
     usersemail=request.user.email
     ActioneeActions = []
     ApproverActions = []
-    queActionee = 0
     Actionee_R = []
     Approver_R = []
     totalactioneeaction = 0
     studies = blgetAllStudies()
-
+    menus = blgetmenus ()
     #get all routes based on email and then get seprate actione and approver routes 
-    dict_allrou = blgetuserRoutes(usersemail)
+    #dict_allrou = blgetuserRoutes(usersemail)
+    dict_allrou = blgetuseroutesnew(usersemail)
+    newdefswitch = True
     Actionee_R =    dict_allrou.get('Actionee_Routes')
     Approver_R =    dict_allrou.get('Approver_Routes')
 
+
     reducedfields= ['id','StudyActionNo','Disipline' ,'QueSeries', 'DueDate','InitialRisk']
-    ActioneeActions = blallactionscomdissubQ(Actionee_R,queActionee,reducedfields)
-    ActioneeActionsrisk = bladdriskelements(list(ActioneeActions))
-
-    #20211208 Ishna first box
-    # riskrankingsummary = blaggregateby(ActioneeActionsrisk,"RiskRanking")
-    # for QSeries, ApproRoutes in Approver_R.items():
-    #     ApproverActions = blallactionscomdissubQ(ApproRoutes,QSeries,reducedfields)
-    #     ApproverActionsrisk = bladdriskelements(list(ApproverActions))
-    #     riskrankingapproverraw = blaggregateby(ApproverActionsrisk,"RiskRanking")
-    #     if riskrankingapproverraw is not None:
-    #         newcounter = Counter(riskrankingapproverraw) + Counter(newcounter)
-    #         riskrankingapprover = newcounter
-    #         riskrankingactionee = Counter(riskrankingsummary)
-    #         riskrankingsummary = riskrankingapprover + riskrankingactionee
-    #20211208 Ishna first box
-    riskrankingsummary = blriskranking(ActioneeActionsrisk, Approver_R, reducedfields) #is 20220228 1st box
-
+    riskrankingsummary , ActioneeActionsrisk, ApproverActionsrisk = blgetriskrankingsummary(Actionee_R, Approver_R, reducedfields,newdefswitch)
     duedateaggregated = blaggregateby(ActioneeActionsrisk,"DueDate")
     duedatesummary = blduedateecountrelative(duedateaggregated)
-    totalactioneeaction = blfuncActionCountQ(Actionee_R,YetToRespondQue)
-    totalactionssubmitted = blfuncActionCountQ(Actionee_R,ApprovalQue)
-    rejecteditemsid = blRejectedHistortyActionsbyId(usersemail,queActionee,1)
-    countrejected = bldropduplicateandcount(rejecteditemsid)
-    totalactionsapproved = blfuncActionCountQ(Actionee_R,QueClosed)
-    rejectedactionscount = blActioneerejectedcountQ(Actionee_R) #3rd box in nicedashboard
+    totalactioneeaction = blfuncActionCountQ(Actionee_R,YetToRespondQue,newdefswitch)
+    totalactionssubmitted = blfuncActionCountQ(Actionee_R,ApprovalQue,newdefswitch)
 
+
+    totalactionsapproved = blfuncActionCountQ(Actionee_R,QueClosed,newdefswitch)
+    rejectedactionscount = blActioneerejectedcountQ(Actionee_R,newdefswitch) #3rd box in nicedashboard
     submittedsummary = {'totalactionssubmitted':totalactionssubmitted,'countrejected':rejectedactionscount, 'totalactionsapproved' :totalactionsapproved }
+
+    #strdays = bltotalholdtime(Approver_R,reducedfields,newdefswitch)
+   
+    strdays = bltotalholdtimeActAppr(ApproverActionsrisk,ActioneeActionsrisk)
+    countlistbyweek = blexceedholdtime(Approver_R,reducedfields,newdefswitch) # YY change this   
 
     stripCount =[]
     striplabels = []
@@ -165,7 +167,7 @@ def mainDashboard (request):
     for eachstudy in studies:
         StudyName = eachstudy.StudyName
         labels=[]
-        countbyStudies, labels= blActionCountbyStudiesStream(Actionee_R,StudyName,0)
+        countbyStudies, labels= blActionCountbyStudiesStream(Actionee_R,StudyName,0,newdefswitch)
         stripCount, striplabels ,  = stripAndmatch(countbyStudies,labels)
 
         # Just to get a better view in HTML instead of rendering spaces for empty charts
@@ -175,17 +177,20 @@ def mainDashboard (request):
             googlechartlist =[]
 
         #complete sub routine for actionee and then go to approver
+        #approver routes has already been prefiltered according to queseries, so this loop just does the checking again based on studies
+        #20_04_22 Changed to q series , tod elete commented items
         for QueSeries, Routes in Approver_R.items():
-            
-            listofCountManyApprovers,labelsapp =blActionCountbyStudiesStream(Routes,StudyName,QueSeries)
-            sumoflistCount = sum(listofCountManyApprovers)
-            appractioncount.append(sumoflistCount)
-            if (sumoflistCount > 0):
+           
+            #listofCountManyApprovers,labelsapp =blActionCountbyStudiesStream(Routes,StudyName,QueSeries,newdefswitch)
+            listofCountManyApprovers = blActionCountbyStudiesStreamQ(Routes,StudyName,QueSeries,newdefswitch)
+            #sumoflistCount = sum(listofCountManyApprovers)
+            appractioncount.append(listofCountManyApprovers)
+            if (listofCountManyApprovers > 0):
                 labelsApprover.append('Level'+str(QueSeries))
-                dataApprover.append(sumoflistCount)
+                dataApprover.append(listofCountManyApprovers)
                 
                 chartappdata = blprepGoogChartsbyStudies(labelsApprover,dataApprover,StudyName)
-                sumoflistCount = 0
+                listofCountManyApprovers = 0
             
         apprfinalist.append(chartappdata)
         #reinitialize the list
@@ -194,12 +199,15 @@ def mainDashboard (request):
         labelsApprover =[]
         countbyStudies = []
 
-    strdays = bltotalholdtime(Approver_R,reducedfields)
-    countlistbyweek = blexceedholdtime(Approver_R,reducedfields) # moving to return list IMPORTANT
     totalapproveraction = sum (appractioncount)
     approverjsonlist = blremoveemptylist(apprfinalist)
     
+    parameters = blgetparameters ()
+    Versioning =  str(parameters.Versioning)
+
+
     Context = {
+        'Versioning' : Versioning,
         'oneweekcount':countlistbyweek[0],
         'twoweekcount':countlistbyweek[1],
         'strdays':strdays,
@@ -915,10 +923,11 @@ def repPMTExcel (request,phase=""):
     listofPhases= Phases.mdlSetGetField.mgrGetAllActionsAndFields()
     discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() 
     discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
+  
     organisationnames = ActionRoutes.mdlAllCompany.mgr_getOrgnames()
 
     dfdiscsuborgphase = bldfdiscsuborgphase(phase)
-
+    
     #1st Pie Overall Actions Open/Closed
     forpie=[]
     PhaseOpenActions= blallphasegetAction(QueOpen,phase)
@@ -1023,6 +1032,7 @@ def repPMTExcel (request,phase=""):
 
     studiesattributes =['StudyName','ProjectPhase']
     phasestudies =  blphasegetStudyreducedfieldsQ(studiesattributes,phase)
+    
     # allstudies = Studies.objects.all() #IMPORTANT
 
     tablestudiesheader = ['Studies', 'Yet to Respond' ,'Approval Stage','Closed','Open Actions', 'Total Actions']
