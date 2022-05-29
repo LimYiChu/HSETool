@@ -31,6 +31,17 @@ def blgetparameters ():
     
     return Parameters.objects.all().first()
 
+def blgetmenus():
+    menusall = Menus.objects.all()
+
+    topmenu = menusall.filter (Hierarchy=0)
+    childmenu = menusall.filter (Hierarchy=1)
+    childchildmenu = menusall.filter (Hierarchy=2)
+    cccmenu = menusall.filter (Hierarchy=3)
+
+    for index, items in enumerate(topmenu) :
+        print ("iiiiiiiii",items,index)
+    
 def blexcelgetactioneeandlocation (dfalllist):
     lstActionDetails = []
     for items in dfalllist:  
@@ -74,22 +85,30 @@ def bldynamicstudiesdisc(actionsstuckat):
     return discmultilist
 
 
-def blriskranking(ActioneeActionsrisk, Approver_R, reducedfields) :
-      """
-      This function gets the risk ranking summary that shows the count of actions in low medium and high in the first box
-      """
-      newcounter = {}
-      riskrankingsummary = blaggregateby(ActioneeActionsrisk,"RiskRanking")
-      for QSeries, ApproRoutes in Approver_R.items():
-          ApproverActions = blallactionscomdissubQ(ApproRoutes,QSeries,reducedfields)
-          ApproverActionsrisk = bladdriskelements(list(ApproverActions))
-          riskrankingapproverraw = blaggregateby(ApproverActionsrisk,"RiskRanking")
-          if riskrankingapproverraw is not None:
-              newcounter = Counter(riskrankingapproverraw) + Counter(newcounter)
-              riskrankingapprover = newcounter
-              riskrankingactionee = Counter(riskrankingsummary)
-              riskrankingsummary = riskrankingapprover + riskrankingactionee
-      return riskrankingsummary
+def blgetriskrankingsummary(Actionee_R, Approver_R, reducedfields,newdef=False) :
+    """
+    This function gets the risk ranking summary that shows the count of actions in low medium and high in the first box
+    in my dashboard . It aggregates based on actionee and approver. Filters and summarisez for whats only in your queue
+    also returns a summary of risk ranking together with your actionee and approver actions bufferred with risk
+    """
+    riskrankingapproverbuff = {}
+    ApproverActionriskdict = {}
+    ActioneeActions = blallactionscomdissubQ(Actionee_R,YetToRespondQue[0],reducedfields,newdef)
+    ActioneeActionsrisk = bladdriskelements(list(ActioneeActions))
+    riskrankingactioneebuff = blaggregateby(ActioneeActionsrisk,"RiskRanking")
+
+    for QSeries, ApproRoutes in Approver_R.items():
+        ApproverActions = blallactionscomdissubQ(ApproRoutes,QSeries,reducedfields,newdef)
+        ApproverActionsrisk = bladdriskelements(list(ApproverActions))
+        ApproverActionriskdict [QSeries] =ApproverActionsrisk
+        riskrankingapproversum = blaggregateby(ApproverActionsrisk,"RiskRanking")
+        if riskrankingapproversum is not None:
+            riskrankingapproverbuff = Counter(riskrankingapproversum) + Counter(riskrankingapproverbuff)
+           
+    riskrankingsummary = riskrankingapproverbuff + Counter(riskrankingactioneebuff)
+
+    
+    return riskrankingsummary, ActioneeActionsrisk , ApproverActionriskdict
 
 
 def bldynamicchartopen(dfalldynamicstudiessorted):
@@ -133,7 +152,7 @@ def bldynamicchart(dfsorted):
     dfcloseopen = blsortdataframes(dfcopysorted,dfdonutcolumns)
     dfcloseopenlist = dfcloseopen.values.tolist()
     flat_list = [item for sublist in dfcloseopenlist for item in sublist]
-    print(flat_list)
+
     dfcountclosed = flat_list.count('Closed')
     dfcountopen = flat_list.count('Open')
     lstofcount =[]
@@ -144,7 +163,7 @@ def bldynamicchart(dfsorted):
     return lstofcount
     
 
-def blexceedholdtime(Approver_R,reducedfileds):
+def blexceedholdtime(Approver_R,reducedfileds,newdef=False):
     """This function gets the number of actions with holding time more than 1 or 2 weeks """
     timezonenow = timezone.now()
     oneweeklist=[]
@@ -154,7 +173,7 @@ def blexceedholdtime(Approver_R,reducedfileds):
     fourteendays = datetime.timedelta(days=14)
 
     for QSeries, ApproRoutes in Approver_R.items():
-        ApproverActions= blallactionscomdissubQ(ApproRoutes,QSeries,reducedfileds)
+        ApproverActions= blallactionscomdissubQ(ApproRoutes,QSeries,reducedfileds,newdef)
     
         for items in ApproverActions:
             dictactualhistory = ActionItems.history.filter(id=items["id"]).order_by('-history_date').values()
@@ -173,16 +192,41 @@ def blexceedholdtime(Approver_R,reducedfileds):
     countlistbyweek.append(twoweekcount)
     return countlistbyweek
 
+def bldepth (items):
 
-def bltotalholdtime(Approver_R,reducedfileds):
+    return isinstance(items, dict) and max(map(bldepth, items))+1
+
+def bltotalholdtimeActAppr(*argactions):
+    """2022_05 This function gets the cumulative holding time for all Actions in Actioneee or Approver basket
+    approver is passed in as dictionary with approver levele """
+    timezonenow = timezone.now()
+    finalaccumalatedtime=[]
+    holdingdays = 0
+    dfmaster = pd.DataFrame() 
+    for appractactions in argactions:
+        if isinstance(appractactions, dict) :
+            for key ,value in appractactions.items():
+                res= [("id" , str(valuex["id"]))for valuex in value]
+                if res != [] :
+                    historyactions = blfiltergeneralbyOrQ(res,ActionItems.history)
+                    pd.set_option('display.max_rows', None)#used if there are print statements to show all records instead of truncated records
+                    dfholdtimes =pd.DataFrame(historyactions)
+                    dftimemax = dfholdtimes.groupby('id').max()
+                    dftimemax ['holding_time'] = timezonenow - dftimemax.history_date
+                    dfmaster = dfmaster.append(dftimemax)                 
+    holdingdays = dfmaster['holding_time'].sum().days
+   
+    return holdingdays
+
+def bltotalholdtime(Approver_R,reducedfileds,newdef=False):
     """This function gets the cumulative holding time for all Actions in Actioneee or Approver basket"""
     timezonenow = timezone.now()
 
     blanklist=[]
 
     for QSeries, ApproRoutes in Approver_R.items():
-        ApproverActions= blallactionscomdissubQ(ApproRoutes,QSeries,reducedfileds)
-    
+        ApproverActions= blallactionscomdissubQ(ApproRoutes,QSeries,reducedfileds,newdef)
+        
         for items in ApproverActions:
             dictactualhistory = ActionItems.history.filter(id=items["id"]).order_by('-history_date').values()
             historyrecentimeapp = dictactualhistory[0].get('history_date')
@@ -190,7 +234,7 @@ def bltotalholdtime(Approver_R,reducedfileds):
             timeinbasket = timezonenow - historyrecentimeapp
             blanklist.append(timeinbasket)
     dfdates = pd.DataFrame(blanklist)
-    
+
     if not dfdates.empty : 
         dfdatessum = dfdates.sum(axis=0)
         dftodict = dfdatessum.to_dict()
@@ -209,6 +253,7 @@ def bldfdiscsuborgphase(phase):
     if phase == "":
         ActionItem = ActionItems.objects.values('Disipline',
                         'Subdisipline','Organisation')
+        
     else:
         ActionItem= ActionItems.objects.filter(ProjectPhase__ProjectPhase=phase).values('Disipline',
                         'Subdisipline','Organisation')
@@ -351,7 +396,7 @@ def blaggregateby(actionitems,fieldtoaggregate):
 def bladdriskelements (actionitems):
     """ Accepts dictionary only items and then extracts InitialRisk using dataframes,
     then looks up RiskMatrix Model and gets a risk colour. It uses the Combined value in the RiskMatrix to map back to the Risk COlour
-    the second parameter is optional seprate funtinality for removing addtional fields. """
+    """
     if actionitems:
         dfRiskMatrix = pd.DataFrame(list(RiskMatrix.objects.all().values())) 
         for items in actionitems:
@@ -438,17 +483,47 @@ def blgetRiskMatrixAvailable():
         availability = False
     return availability
 
+def blgetuseroutesnew(useremail):
+    """This new functions get all routes for logged on user or any user passed in. Its an improvement to
+    the function blgetuserRoutes. it uses python filter and dictionary comprehension for approver loops and instead of
+    of hitting the database just does a quick pythonic filter. Have to use .values for this"""
+    ApproverLevel = 8
+    Approver_Routes = {}
+    Actionee_Routes   =   ActionRoutes.ActioneeRo.get_myroutes(useremail).values()
+    All_Routes = ActionRoutes.objects.values()
+
+    for ApproverLevel in range(1 , ApproverLevel+1):
+        Approver_Routes [ApproverLevel] = list(filter(lambda approver: approver['Approver'+str(ApproverLevel)] == useremail, All_Routes))
+    
+    dictRoutes = {
+       'Actionee_Routes' : Actionee_Routes,
+       'Approver_Routes': Approver_Routes,
+    }
+    return dictRoutes
 
 def blgetuserRoutes(useremail):
     ApproverLevel = 8
     userZemail = useremail
     Approver_Routes = {}
+    Approver_RoutesDICT = {}
     Actionee_Routes   =   ActionRoutes.ActioneeRo.get_myroutes(userZemail)
-    
+    Actionee_Routestest   =   ActionRoutes.ActioneeRo.get_myroutes(userZemail).values()
+
+    All_Routesxx = ActionRoutes.objects.values()
+  
     #Optimised to get all approver levels; readjust the key to 1 instead of 0
+    # for ApproverLevel in range(1 , ApproverLevel+1):
+    #    Approver_Routes [ApproverLevel]  =  ActionRoutes.ApproverRo.get_myroutes(userZemail,ApproverLevel)
+    
     for ApproverLevel in range(1 , ApproverLevel+1):
-       Approver_Routes [ApproverLevel]  =  ActionRoutes.ApproverRo.get_myroutes(userZemail,ApproverLevel)
-    #context just another form of return
+        #lookup = 'Approver'+str(ApproverLevel)+'__iexact'
+        #Approver_Routes [ApproverLevel] = All_Routesxx.filter(**{lookup: useremail})
+        Approver_Routes [ApproverLevel]  =  ActionRoutes.ApproverRo.get_myroutes(userZemail,ApproverLevel)
+        #Approver_Routes [ApproverLevel] = list(filter(lambda approver: approver['Approver'+str(ApproverLevel)] == userZemail, All_Routesxx))
+    
+    #print ("Approver_Routes",Approver_Routes)
+   
+
     dictRoutes = {
        'Actionee_Routes' : Actionee_Routes,
        'Approver_Routes': Approver_Routes,
@@ -1075,7 +1150,7 @@ def blgetIndiResponseCount(discsuborg,queseriesopen,queseriesclosed):
 #20211201 edward remove discsuborg    
 # def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed,phase=""): #Guna 20210703 to be consolidated
 def blgetIndiResponseCount2(dfdiscsuborgphase,queseriesopen,queseriesclosed,phase=""): #Guna 20210703 to be consolidated
-    
+    """"""
     indiPendingSeries =[] #emptylist
     completePendingPair = [] #emptylist
     filler = 0
@@ -1092,10 +1167,6 @@ def blgetIndiResponseCount2(dfdiscsuborgphase,queseriesopen,queseriesclosed,phas
         lstofActioneeApprover = blgetSignotories(itemtriplet)
 
         
-
-
-
-       
         #indiPendingPair.append(itemtriplet)
         for indique,indipair in enumerate(lstofActioneeApprover):
             if (indipair != []):
@@ -1455,14 +1526,20 @@ def blActioneeComDisSubManyStr(contextRoutes,que):
     return firststream, secondstream, thirdstream
     #(Organisation__icontains=blvarorganisation).filter(Disipline__icontains=blvardisipline).filter(Subdisipline__icontains=blvarSUbdisipline)
 
-def blActionCountbyStudiesStream(contextRoutes,studies,que):
+def blActionCountbyStudiesStream(contextRoutes,studies,que,newdef=False):
 
     streamscount = []
     streamdisc  = []
     for x, item in enumerate(contextRoutes):
-        blvarorganisation   = item.Organisation
-        blvardisipline  = item.Disipline
-        blvarSUbdisipline  = item.Subdisipline
+        
+        if newdef :
+            blvarorganisation   = item["Organisation"]
+            blvardisipline  = item["Disipline"]
+            blvarSUbdisipline  = item["Subdisipline"]
+        else :
+            blvarorganisation   = item.Organisation
+            blvardisipline  = item.Disipline
+            blvarSUbdisipline  = item.Subdisipline
         blque               =   que
        
         streamscount.append(ActionItems.myActionItemsCount.mgr_myItemsCountbyStudies(studies,blvarorganisation,

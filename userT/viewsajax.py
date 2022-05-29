@@ -47,47 +47,53 @@ def dynamicstudies(request):
     This function gets the all the data for use by the googlecharts & datatables in the dynamic studies pop out tab
     """
 
-    if request.is_ajax and request.method == "GET":
-        data = request.GET.get("data", None)
-
-        filteredstring = {'StudyName__StudyName': data}
-        reducedfields=['id','StudyActionNo','QueSeries','DueDate','Disipline','Subdisipline','InitialRisk','Organisation']
-        headerlst = ['Study Action No', 'DueDate' ,'Action At','Discipline','Initial Risk']
-        actionsstuckat = bldynamicstudiesactionformat(filteredstring,reducedfields)
-        dfall = pd.DataFrame.from_dict(actionsstuckat) #puts it into df columns format
-        dfall['discsuborg']=dfall['Disipline']+'/'+dfall['Subdisipline']+'/'+dfall['Organisation']
-        dfalldynamicstudiessorted = blsortdataframes(dfall,dfstudiescolumns) # sort dfall
-        dfstudieslst = dfalldynamicstudiessorted.values.tolist() #list is here being sent to js
-        
-        lstofcount = bldynamicchart(dfalldynamicstudiessorted)
-        countclosed = lstofcount[0]
-        countopen = lstofcount[1]
-        dfstuckatlst=bldynamicchartopen(dfalldynamicstudiessorted)
-        headeropenclose = ['\\\Status:::', 'Number']
-        lstofcount.insert(0,headeropenclose)
-        multilst = [lstofcount,dfstuckatlst]
-        discmultilist = bldynamicstudiesdisc(actionsstuckat)
-        discheaderlst = discmultilist[0]
-        disclst = discmultilist[1]
-        dfdisc = pd.DataFrame(disclst)
-        dictheader = {0:'Discipline',1:'Pending Submission',2:'Submitted',3:'Closed',4:'Open Actions',5:'Total Actions'}
-        dfdisc.rename(columns=dictheader,inplace=True)
-        
-        context = {
-        'multilst':multilst,
-        'dflist':dfstudieslst,
-        'headerlist' : headerlst,
-        'donutclose' : countclosed,
-        'donutopen' : countopen,
-        'dfstuckatlst':dfstuckatlst,
-        'discheaderlst':discheaderlst,
-        'disclst':disclst,
-        'data':data
-        }
-        return JsonResponse(context,status=200)
-    else:
-        return render(request, 'userT/incldynamicstudies.html')
-
+    
+    data = request.GET.get("data", None)
+    print ("instudies")
+    filteredstring = {'StudyName__StudyName': data}
+    reducedfields=['id','StudyActionNo','QueSeries','DueDate','Disipline','Subdisipline','InitialRisk','Organisation']
+    headerlst = ['Study Action No', 'DueDate' ,'Action At','Discipline','Initial Risk']
+    actionsstuckat = bldynamicstudiesactionformat(filteredstring,reducedfields)
+    
+    #Needs an error trap here
+    dfall = pd.DataFrame.from_dict(actionsstuckat) #puts it into df columns format
+    dfall['discsuborg']=dfall['Disipline']+'/'+dfall['Subdisipline']+'/'+dfall['Organisation']
+    dfalldynamicstudiessorted = blsortdataframes(dfall,dfstudiescolumns) # sort dfall
+    dfstudieslst = dfalldynamicstudiessorted.values.tolist() #list is here being sent to js
+    
+    lstofcount = bldynamicchart(dfalldynamicstudiessorted)
+    countclosed = lstofcount[0]
+    countopen = lstofcount[1]
+    dfstuckatlst=bldynamicchartopen(dfalldynamicstudiessorted)
+    headeropenclose = ['\\\Status:::', 'Number']
+    lstofcount.insert(0,headeropenclose)
+    multilst = [lstofcount,dfstuckatlst]
+    discmultilist = bldynamicstudiesdisc(actionsstuckat)
+    discheaderlst = discmultilist[0]
+    disclst = discmultilist[1]
+    dfdisc = pd.DataFrame(disclst)
+    dictheader = {0:'Discipline',1:'Pending Submission',2:'Submitted',3:'Closed',4:'Open Actions',5:'Total Actions'}
+    dfdisc.rename(columns=dictheader,inplace=True)
+    
+    context = {
+    'multilst':multilst,
+    'dflist':dfstudieslst,
+    'headerlist' : headerlst,
+    'donutclose' : countclosed,
+    'donutopen' : countopen,
+    'dfstuckatlst':dfstuckatlst,
+    'discheaderlst':discheaderlst,
+    'disclst':disclst,
+    'data':data
+    }
+    return JsonResponse(context,status=200)
+    
+def dynamicindisum (request):
+    
+    print (" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+    dfdiscsuborgphase = bldfdiscsuborgphase("")
+    print (dfdiscsuborgphase)
+    data =  blgetIndiResponseCount2()
 
 def dynamicindisumm(request):
     
@@ -129,38 +135,37 @@ def dynamicdiscipline(request):
     This function gets the all the data for use by the googlecharts & datatables in the dynamic discipline pop out tab
     """
     
-    if request.is_ajax and request.method == "GET":
-        data = request.GET.get("data", None)
-        discsuborglst = bldiscstrmatch(data)
-        filteredstring = {'Disipline':discsuborglst[0],'Subdisipline':discsuborglst[1],'Organisation':discsuborglst[2]}
-        reducedfields=['id','StudyActionNo','QueSeries','DueDate','Disipline','Subdisipline','InitialRisk','Organisation','StudyName__StudyName']
-        actionsbydisc = blgetsinglefilteractionsitemsQ(filteredstring,reducedfields) 
-        dfalllist = blgetdictActionStuckAt(actionsbydisc) # getting a list of everything
-        dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format
-        dfalldynamicdisciplinesorted = blsortdataframes(dfall,dfdisciplinecolumns) # sort dfall
-        dfdisclist =  dfalldynamicdisciplinesorted.values.tolist()
-        lstofcount = bldynamicchart(dfalldynamicdisciplinesorted)
-        countclosed = lstofcount[0]
-        countopen = lstofcount[1]
-        dfstuckatlst=bldynamicchartopen(dfalldynamicdisciplinesorted)
-        headerlist = ['Study Action No', 'Study Name' ,'Due Date','Action At' ]
-        headeropenclose = ['\\\Status:::', 'Number']
-        lstofcount.insert(0,headeropenclose)  
-        multilst = [lstofcount,dfstuckatlst]
-        discmultilist = bldynamicstudiesdisc(actionsbydisc)
-        discheaderlst = discmultilist[0]
-        disclst = discmultilist[1]
-        context = {
-                    'multilst':multilst,
-                    'dflist':dfdisclist,
-                    'headerlist' : headerlist,
-                    'donutclose' : countclosed,
-                    'donutopen' : countopen,
-                    'dfstuckatlst':dfstuckatlst,
-                    'discheaderlst':discheaderlst,
-                    'disclst':disclst
-                    }
-     
-        return JsonResponse(context,status=200)
-    else:
-        return render(request, 'userT/incldynamicdiscipline.html')
+   
+    data = request.GET.get("data", None)
+    discsuborglst = bldiscstrmatch(data)
+    filteredstring = {'Disipline':discsuborglst[0],'Subdisipline':discsuborglst[1],'Organisation':discsuborglst[2]}
+    reducedfields=['id','StudyActionNo','QueSeries','DueDate','Disipline','Subdisipline','InitialRisk','Organisation','StudyName__StudyName']
+    actionsbydisc = blgetsinglefilteractionsitemsQ(filteredstring,reducedfields) 
+    dfalllist = blgetdictActionStuckAt(actionsbydisc) # getting a list of everything
+    dfall = pd.DataFrame.from_dict(dfalllist) #puts it into df columns format
+    dfalldynamicdisciplinesorted = blsortdataframes(dfall,dfdisciplinecolumns) # sort dfall
+    dfdisclist =  dfalldynamicdisciplinesorted.values.tolist()
+    lstofcount = bldynamicchart(dfalldynamicdisciplinesorted)
+    countclosed = lstofcount[0]
+    countopen = lstofcount[1]
+    dfstuckatlst=bldynamicchartopen(dfalldynamicdisciplinesorted)
+    headerlist = ['Study Action No', 'Study Name' ,'Due Date','Action At' ]
+    headeropenclose = ['\\\Status:::', 'Number']
+    lstofcount.insert(0,headeropenclose)  
+    multilst = [lstofcount,dfstuckatlst]
+    discmultilist = bldynamicstudiesdisc(actionsbydisc)
+    discheaderlst = discmultilist[0]
+    disclst = discmultilist[1]
+    context = {
+                'multilst':multilst,
+                'dflist':dfdisclist,
+                'headerlist' : headerlist,
+                'donutclose' : countclosed,
+                'donutopen' : countopen,
+                'dfstuckatlst':dfstuckatlst,
+                'discheaderlst':discheaderlst,
+                'disclst':disclst
+                }
+    
+    return JsonResponse(context,status=200)
+    
