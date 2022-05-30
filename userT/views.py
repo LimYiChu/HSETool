@@ -1015,13 +1015,14 @@ def repPMTExcel (request,phase=""):
     tableallactheadermodified = ['Study Action No','Study Name', 'Project Phase','Org/Disc/Sub-Disc','Recommendation', 'Response','Due Date','Initial Risk']
     
     #All actions and actions by Phases
-    justenoughattributes =  ['id','StudyActionNo','Organisation','Disipline' ,'Subdisipline','Recommendations', 'QueSeries', 'Response','DueDate','InitialRisk']
+    justenoughattributes =  ['id','StudyActionNo','Organisation','Disipline' ,'Subdisipline','Recommendations', 'QueSeries', 'Response','DueDate','InitialRisk','DateCreated']
     phasesactions =  blphasegetActionreducedfieldsQ(justenoughattributes,phase)
     
     dictofallactions    = blannotatefktomodel(phasesactions) #Annotate first because it doesnt like addtional items added to query set
     #this sequence is important otherwise doesnt work
     phaseswithrisk = bladdriskelements(dictofallactions)
     dictofallactions    = blgetdictActionStuckAt(phaseswithrisk)
+    dictofallactionswithtime = blholdtime(dictofallactions)
 
     #pandas excel
     dfall1 = pd.DataFrame.from_dict(dictofallactions)
@@ -1210,6 +1211,7 @@ def repPMTExcel (request,phase=""):
         'lstbyWorkshop' : lstbyWorkshop,
         'Indisets' : Indisets,
         "dictofallactions" : dictofallactions,
+        "dictofallactionswithtime" : dictofallactionswithtime,
         'tableindiheader' : tableindiheader,
         'tablestudiesheader' : tablestudiesheader,
         'tabledischeader' : tabledischeader,
@@ -1415,7 +1417,7 @@ class pmtrepviewall(UpdateView):
         blgettimehistorytables(idAI,lstSignatoriesTimeStamp,currentQueSeries)
         object_list = self.object.attachments_set.all() 
         rejectcomments = self.object.comments_set.all() 
-
+        
         context['object_list'] = object_list 
         context['Rejectcomments'] = rejectcomments
         context ['Signatories'] = lstSignatoriesTimeStamp

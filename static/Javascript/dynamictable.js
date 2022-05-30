@@ -294,6 +294,7 @@ function dynamictabledisc(response,rootid) {
             
             "bDestroy": true,
             orderCellsTop: true,
+            pageLength: 50,
             "lengthMenu": 
             [
                 [-1, 10, 25, 50, 200],

@@ -22,16 +22,16 @@
     <!-- 20210828 edward UI bg color -->
     <ol class="breadcrumb" style="background-color: #ffffff;position:relative;  right:-40px; bottom: -25px;">
       <li class="breadcrumb-item">
-        <a style="color:black" href="/main">Dashboard</a>
+        <a style="color:white" href="/main">Dashboard</a>
       </li>
       {% if block.is_ApproverDetails %}
       <!--doesnt work...-->
-      <li class="breadcrumb-item">
+      <li class="breadcrumb-item-active">
         <a href="/ApproverList">Actions</a>
         <!--add if to differentiate actionee and approver-->
       </li>
       {% else %}
-      <li class="breadcrumb-item">
+      <li class="breadcrumb-item-active">
         <a href="/ActioneeList">Actions</a>
         <!--add if to differentiate actionee and approver-->
       </li>
