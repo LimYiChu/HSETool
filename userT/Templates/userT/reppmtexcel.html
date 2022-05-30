@@ -92,7 +92,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                      {%for details in dictofallactions%}
+                      {%for details in dictofallactionswithtime%}
                       <tr>
                         <td><a class="article-title"
                             href="{% url  'pmtrepviewall' details.id %}">{{details.StudyActionNo}}</a></td>
@@ -116,7 +116,8 @@
                         <!--Original Code-->
                         {%endif%}
                         {%endblock%}
-                        <td width="10%">{{details.ActionAt}}</td>
+                        <td data-toggle="tooltip" data-placement="right" title="Holding Day(s): {{details.HoldingTime}}" width="10%">{{details.ActionAt}}</td>
+                        
                       </tr>
                       {%endfor%}
 

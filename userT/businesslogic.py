@@ -1,4 +1,5 @@
 from ast import Index
+from tarfile import XGLTYPE
 
 from matplotlib import testing
 from .businesslogicQ import *
@@ -28,6 +29,33 @@ import shutil
 # edward 20210929 fk
 from django.db.models import F
 from collections import Counter
+
+
+def blholdtime(allaction):
+    """This function gets the cumulative holding time for all Actions in Actioneee or Approver basket"""
+    timezonenow = timezone.now()
+
+    for items in allaction: 
+
+        if items['QueSeries'] != 99:
+            
+            if items['QueSeries'] != 0: 
+                ID = items['id']
+                dictactualhistory = ActionItems.history.filter(id=ID).order_by('-history_date').values('history_date')
+                historyrecentimeapp = dictactualhistory[0].get('history_date')
+                timeinbasket = timezonenow - historyrecentimeapp    
+                items['HoldingTime'] = timeinbasket.days 
+
+            else:
+                ID = items['id']
+                historyrecentimeapp = items.get('DateCreated')
+                timeinbasket = timezonenow.date() - historyrecentimeapp  
+                items['HoldingTime'] = timeinbasket.days 
+
+        else:
+            items['HoldingTime'] = "None"
+
+    return allaction
 
 def blaggregatebyDisc_hidden(discsuborg, lstbyDisc_hidden):
     """
@@ -253,7 +281,7 @@ def bltotalholdtime(Approver_R,reducedfileds):
 
     for QSeries, ApproRoutes in Approver_R.items():
         ApproverActions= blallactionscomdissubQ(ApproRoutes,QSeries,reducedfileds)
-    
+        
         for items in ApproverActions:
             dictactualhistory = ActionItems.history.filter(id=items["id"]).order_by('-history_date').values()
             historyrecentimeapp = dictactualhistory[0].get('history_date')
@@ -1275,17 +1303,17 @@ def blgetdictActionStuckAt(allactions):
     """Pass a dictionary object from .values(...) and get the action stuck at data. This is done by gettings triplet 
     and then mapping against signatories and then using queseries to decifer in that route
     which signatory holds the actions. allactions passed in and modified directly and returned without making a copy of it. This will be the approach from here"""
-   
+
     for items in allactions:
-        
+
         lstoftriplet = blgetDiscSubOrgfromID (items['id']) 
         lstofActioneeAppr = blgetSignotories (lstoftriplet)
-        
+
         if items['QueSeries'] != 99 and (lstofActioneeAppr !=[]):
              # basically its looks at que series and then matches it against the list of entire signatories above
             lststuckAt = lstofActioneeAppr[items['QueSeries']]#basically just uses QueSeries to tell us where its stuck at
             items['ActionAt'] = "/".join(lststuckAt)
-        
+
             
         else:     
             items['ActionAt'] = "Closed"
