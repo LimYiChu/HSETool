@@ -103,7 +103,9 @@ urlpatterns = [
         
         #PDF close out
         path('closeoutsheet/',login_required(UserView.closeoutsheet),name='closeoutsheet'),
+        path('closeoutsheet/<phase>',login_required(UserView.closeoutsheet),name='closeoutsheetphases'),
         path('closeoutsheet/<int:id>/print', login_required(UserView.closeoutprint), name='closeoutprint' ),
+        path('closeoutsheet/<path:study>/print', login_required(UserView.closeoutstudyprint), name='closeoutstudyprint' ),
         path('mergedcloseoutprint/', login_required(UserView.mergedcloseoutprint), name='mergedcloseouprint' ),
         path('stitchpdf/', login_required(UserView.stitchpdf), name='stitchpdf' ),
         
@@ -115,15 +117,15 @@ urlpatterns = [
         path('base3/', login_required(UserView.base3), name='base3' ),
         path('readsqltable/',login_required(UploadV.readsqltable), name='readsqltable'),
         
+        #PMT Report Dynamic Table
+        path('dynamictable/<dynamictable>', login_required(viewsajax.dynamictable), name='dynamictable'),  
+     
+       #PMT Report Dynamic Table Excel Download
 
-        path('dynamicstudies/',login_required(viewsajax.dynamicstudies), name='dynamicstudies' ),
-        path('dynamicindisumm/',login_required(viewsajax.dynamicindisumm), name='dynamicindisumm' ),
-        path('dynamicdiscipline/',login_required(viewsajax.dynamicdiscipline), name='dynamicdiscipline' ),
-
-        path('dynamicstudiesexceldisc/<study>',login_required(viewsajax.dynamicstudiesexceldisc), name='dynamicstudiesexceldisc' ),
-
-        
-        path('dynamicindisummX/',login_required(UserView.dynamicindisummX), name='dynamicindisumm' ),
+        path('dynamicindisummexcel/<user>', login_required(viewsajax.dynamicindisummexcel), name='dynamicindisummexcel'),
+        path('dynamicstudiesexcel/<study>', login_required(viewsajax.dynamicstudiesexcel), name='dynamicstudiesexcel'),
+        path('dynamicstudiesdiscexcel/<study>', login_required(viewsajax.dynamicstudiesdiscexcel), name='dynamicstudiesdiscexcel'),
+        path('dynamicdisciplineexcel/<path:discipline>', login_required(viewsajax.dynamicdisciplineexcel), name='dynamicdisciplineexcel'),
       ]
 
 if settings.DEBUG:

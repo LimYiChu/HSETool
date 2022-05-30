@@ -152,3 +152,9 @@ div.sticky {
 table.sticky thead th {
   min-width: 51px !important;
 }
+
+#download-bulkpdf {
+  position: absolute;
+  right: 1.5em;
+  top: 1rem;
+}

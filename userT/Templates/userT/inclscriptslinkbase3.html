@@ -1,22 +1,27 @@
 {% load static %}
 <link rel="icon" type="image/png" href="{% static 'sapura2.png' %}" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="{% static 'Javascript/jquery.min.js' %}"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> -->
 <!--dropdown function of the side bar button-->
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+<link rel="stylesheet" href="{% static 'generalcss/bootstrap-icons.css' %}">
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"> -->
 <!--bootstrap icon pack-->
 
-<link rel="preconnect" href="https://fonts.gstatic.com">
+<!-- <link rel="preconnect" href="https://fonts.gstatic.com"> -->
 <!--google font-->
 
-<link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet'>
+<link href="{% static 'generalcss/font-pacifico.css' %}" rel='stylesheet'>
+<!-- <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet'> -->
 <!--google font-->
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="{% static 'generalcss/icon-materialicon.css' %}">
+<!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> -->
 <!--icon pack-->
 <link rel="stylesheet" href="{% static 'generalcss/tabsticky.css' %}">
 <!--sticky note CSS-->
-<link href='https://fonts.googleapis.com/css?family=Great+Vibes' rel='stylesheet'>
+<link href="{% static 'generalcss/font-greatvibe.css' %}" rel='stylesheet'>
+<!-- <link href='https://fonts.googleapis.com/css?family=Great+Vibes' rel='stylesheet'> -->
 <!--Guna Used for Signature Signing-->
 
 
@@ -37,16 +42,25 @@
 
 <!--GUNA END of MESSY BOOTSTRAP CODES-->
 
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="{% static 'Javascript/jquery-3.6.0.js' %}"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script> -->
+
 <!--Datatable for filtering-->
-<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
-<!--Datatable for filtering-->
-<!--<script src="https://cdn.datatables.net/fixedheader/3.1.8/js/dataTables.fixedHeader.min.js"></script>-->
-<script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap5.min.js"></script>
+<script src="{% static 'datatables/js/jquery.dataTables.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'datatables/css/jquery.dataTables.min.css' %}">
+<!-- <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script> -->
+
 <!--Datatable for filtering-->
 
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap5.min.css">
+<!-- <script src="https://cdn.datatables.net/fixedheader/3.1.8/js/dataTables.fixedHeader.min.js"></script> -->
+<script src="{% static 'datatables/js/dataTables.bootstrap5.min.js' %}"></script>
+<!-- <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap5.min.js"></script> -->
+<!--Datatable for filtering-->
+
+<link rel="stylesheet" href="{% static 'datatables/css/dataTables.bootstrap5.min.css' %}">
+<!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap5.min.css"> -->
 <!--bootstrap for pagination-->
+
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 

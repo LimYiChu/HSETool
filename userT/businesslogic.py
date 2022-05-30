@@ -1,4 +1,6 @@
 from ast import Index
+
+from matplotlib import testing
 from .businesslogicQ import *
 import django_filters
 from django.http import HttpResponse
@@ -56,6 +58,94 @@ def blexcelgetactioneeandlocation (dfalllist):
         Actionee = ActionRoutes.mdlgetActioneeAppr.mgr_getactioneefromtriplet(lstoftriplet) # getting Actionee for each Item
         items['Actionee'] = ((Actionee[0])['Actionee']) # just getting the Actionee from QuerySet
     return dfalllist
+def blaggregatebyDisc_hidden(discsuborg, lstbyDisc_hidden):
+    """
+    27/04/2022 Ying Ying 
+    Created to get disuborg list as hidden element to pass to dynamic discipline table. 
+    Add Dissuborg list (e.g ['dis','sub','org']) as hidden element for PMT reporting discipline table.
+    """
+    for x, y in enumerate(lstbyDisc_hidden):
+        y.append(discsuborg[x])
+   
+    return lstbyDisc_hidden
+
+
+def bldynamicindisummchart(dfindisummsorted):
+    """ 
+    27/04/2022 Ying Ying 
+    This function gets the count of how many closed & open actions for dynamic indisumm first dynamic charts
+    """
+    dfcopysorted = dfindisummsorted.copy()
+    dfcopysorted.drop_duplicates(subset=['Organisation Route'], keep='first', inplace=True)
+    dfcopysorted.drop(columns=['Pending Submission', 'Pending Approval'], axis=1, inplace=True)
+    df_sum = dfcopysorted.sum(numeric_only=True)
+    dfcloseopenlist = df_sum.values.tolist()
+    headerlist = ['Closed', 'Open Actions']
+    opencloselst = [list(l) for l in zip(headerlist, dfcloseopenlist)]
+    return opencloselst
+
+
+def bldynamicindisummpend(dfalldynamicindisummsorted):
+    """
+    27/04/2022 Ying Ying 
+    This function gets the number of pending submission and pending approval action for dynamic indisumm second dynamic charts
+    """
+    dfcopysorted = dfalldynamicindisummsorted.copy()
+    dfcopysorted.drop(columns=['Closed', 'Open Actions'], axis=1, inplace=True)
+    df_sum = dfcopysorted.sum(numeric_only=True)
+    dfcloseopenlist = df_sum.values.tolist()
+    headerlist = ['Pending Submission', 'Pending Approval']
+    pendinglst = [list(l) for l in zip(headerlist, dfcloseopenlist)]
+    titlelst = ['\\\Status:::', 'Number']
+    pendinglst.insert(0,titlelst)
+    return pendinglst
+
+
+def bldynamicindisummactionformat(filteredstring, reducedfields):
+    """
+    27/04/2022 Ying Ying 
+    This function gets the open action, closed action, pending submission and pending approval from discipline, organization and suborganization for user.
+    """
+    disuborg_list = blgetdisuborg(filteredstring)
+    combinelst = blgetIndiResponseCount2(disuborg_list, QueOpen, QueClosed, phase="") 
+    Email_filter = [filteredstring]                                                                       
+    Indisets = [i for i in combinelst if any(b in Email_filter for b in i)]
+    indisumm_dict = []
+    for row in Indisets:
+        indisumm_dict.append(dict(zip(reducedfields, row)))
+    return indisumm_dict
+
+    
+def blgetdisuborg(clickedemail):
+    """
+    27/04/2022 Ying Ying 
+    This function gets the discipline, organization and suborganization involved by user 
+    """
+    data = blgetuseroutesnew(clickedemail)
+    
+    Actioneelist = [item for item in data['Actionee_Routes']]
+    Approver_dict = data.get('Approver_Routes') 
+    Approver_convertlst = [Approver_dict[i] for i in Approver_dict if Approver_dict[i]!=[]]      
+    Approver_rmxbracket = [val for sublist in Approver_convertlst for val in sublist]    
+    
+    Actioneelist.extend(Approver_rmxbracket)
+    ActioneeApproverdiscuborg = [[i["Disipline"],i["Subdisipline"],i["Organisation"]] for i in Actioneelist]
+    ActioneeApprover_disuborg = [i for n, i in enumerate(ActioneeApproverdiscuborg) if i not in ActioneeApproverdiscuborg[:n]]
+
+    return ActioneeApprover_disuborg
+
+
+# def blgetallapproverlevels(usersemail):
+#     """
+#     10/04/2022 Ying Ying 
+#     This function gets the information for discipline, subdisipline, organisation and the entire action route of the usersemail for approver role. 
+#     """
+#     All_Routesxx = ActionRoutes.objects.values()
+#     Approver_Level = 8
+#     Approver_Routes = {}
+#     for Approver_Level in range(1, Approver_Level+1):
+#         Approver_Routes [Approver_Level] = list(filter(lambda approver: approver['Approver'+str(Approver_Level)] == usersemail, All_Routesxx))
+#     return Approver_Routes
 
 
 def bldynamicstudiesactionformat(filteredstring,reducedfields):
@@ -66,6 +156,7 @@ def bldynamicstudiesactionformat(filteredstring,reducedfields):
     actionswithrisk = bladdriskelements(actionsbystudy) 
     actionsstuckat = blgetdictActionStuckAt(actionswithrisk)
     return actionsstuckat
+
 
 def bldynamicstudiesdisc(actionsstuckat):
     """
@@ -81,7 +172,6 @@ def bldynamicstudiesdisc(actionsstuckat):
     discmultilist.append(discheaderlst)
     disclst= blaggregatebyDisc(dfdiscsuborglist,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue)
     discmultilist.append(disclst)
-    
     return discmultilist
 
 
@@ -145,14 +235,13 @@ def bldiscstrmatch(data) :
 
 
 def bldynamicchart(dfsorted):
-    """ This function gets the count of how many closed & open actions for the dynamic charts"""
+    """ This function gets the count of how many closed & open actions for dynamicstudies and dynamicdiscipline dynamic charts"""
     dfcopysorted = dfsorted.copy()
     dfcopysorted.loc[dfcopysorted['ActionAt'] == 'Closed','Closed Action'] = 'Closed' 
     dfcopysorted.loc[dfcopysorted['ActionAt'].str.contains('Closed') == False,'Open Action'] = 'Open'
     dfcloseopen = blsortdataframes(dfcopysorted,dfdonutcolumns)
     dfcloseopenlist = dfcloseopen.values.tolist()
     flat_list = [item for sublist in dfcloseopenlist for item in sublist]
-
     dfcountclosed = flat_list.count('Closed')
     dfcountopen = flat_list.count('Open')
     lstofcount =[]
@@ -264,6 +353,22 @@ def bldfdiscsuborgphase(phase):
     return dfactionitemlist
 
 
+def blexcelgetactioneeandlocation (dfalllist):
+    lstActionDetails = []
+    for items in dfalllist:  
+        lstoftriplet = blgetDiscSubOrgfromID (items['id']) 
+        lstofActioneeAppr = blgetSignotories (lstoftriplet)
+        if items['QueSeries'] != 99 and (lstofActioneeAppr !=[]): #edward - looks at key QueSeries & its value pairs 
+            lststuckAt = lstofActioneeAppr[items['QueSeries']] #edward - uses QSeries to see which level in AR it is
+            lstActionDetails.append("/".join(lststuckAt)) # edward using similar method as blgetActionstuckat to combine 
+            items['Action with'] = lstActionDetails[0] # edward sort of appending this value to a key
+        else:
+            items['Action with'] = ("Closed") # if its 99 just have a tag closed 
+        Actionee = ActionRoutes.mdlgetActioneeAppr.mgr_getactioneefromtriplet(lstoftriplet) # getting Actionee for each Item
+        items['Actionee'] = ((Actionee[0])['Actionee']) # just getting the Actionee from QuerySet
+    return dfalllist
+
+
 def blfilteractionsbyphase(finallistoflist):
     phaseindisets = []
     for items in finallistoflist:
@@ -338,6 +443,7 @@ def blbulkdownload(objactionitems,destinationfolders,createzipfilename):
                 shutil.copyfile(attachmentorigin,os.path.join(dst) ) #copying all done inside for loop for each attachment
 
     returnzipfile = shutil.make_archive(createzipfilename, 'zip', destinationfolders)
+
     return returnzipfile
 
 
@@ -500,6 +606,24 @@ def blgetuseroutesnew(useremail):
        'Approver_Routes': Approver_Routes,
     }
     return dictRoutes
+
+def blgetuseroutesnew(useremail):
+    """This new functions get all routes for logged on user or any user passed in. Its an improvement to
+    the function blgetuserRoutes. it uses python filter and dictionary comprehension for approver loops and instead of
+    of hitting the database just does a quick pythonic filter. Have to use .values for this"""
+
+    ApproverLevel = 8
+    Approver_Routes = {}
+    Actionee_Routes = ActionRoutes.ActioneeRo.get_myroutes(useremail).values()
+    All_Routes = ActionRoutes.objects.values()
+    for ApproverLevel in range(1 , ApproverLevel+1):
+        Approver_Routes [ApproverLevel] = list(filter(lambda approver: approver['Approver'+str(ApproverLevel)] == useremail, All_Routes))
+    dictRoutes = {
+       'Actionee_Routes' : Actionee_Routes,
+       'Approver_Routes': Approver_Routes,
+    }
+    return dictRoutes
+
 
 def blgetuserRoutes(useremail):
     ApproverLevel = 8
@@ -740,7 +864,7 @@ def blallActionsComDisSubbyList(contextRoutes,quelist):
             streams.append (ActionItems.myActionItems.get_myItemsbyCompDisSub(blvarorganisation,
                                                                 blvardisipline,
                                                                blvarSUbdisipline,que))
-    
+
     return streams
 
 
@@ -760,18 +884,18 @@ def blgetrejectedcount(discsuborg,revision):
 
 
 
-def blaggregatebyDisc(discsuborg,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue):
+def blaggregatebyDisc(discsuborg, YetToRespondQue, ApprovalQue, QueClosed, QueOpen, TotalQue):
     """Agregates by discpline across organisation. Takes in various QueSeries denoting Yettorespond, Approval 
     Open Actions, Total Queue"""
     lstofdiscdetails =[]
     lstcountbydisc =[]
     for disc in discsuborg:
-        lstcountbydisc.append ("/".join(disc)) 
-        lstcountbydisc.append (blphasegetDiscSubOrgActionCountQ(disc,YetToRespondQue))
-        lstcountbydisc.append (blphasegetDiscSubOrgActionCountQ(disc,ApprovalQue))
-        lstcountbydisc.append (blphasegetDiscSubOrgActionCountQ(disc,QueClosed))
-        lstcountbydisc.append  (blphasegetDiscSubOrgActionCountQ(disc,QueOpen))
-        lstcountbydisc.append (blphasegetDiscSubOrgActionCountQ(disc,TotalQue))
+        lstcountbydisc.append("/".join(disc)) 
+        lstcountbydisc.append(blphasegetDiscSubOrgActionCountQ(disc,YetToRespondQue))
+        lstcountbydisc.append(blphasegetDiscSubOrgActionCountQ(disc,ApprovalQue))
+        lstcountbydisc.append(blphasegetDiscSubOrgActionCountQ(disc,QueClosed))
+        lstcountbydisc.append(blphasegetDiscSubOrgActionCountQ(disc,QueOpen))
+        lstcountbydisc.append(blphasegetDiscSubOrgActionCountQ(disc,TotalQue))
         lstofdiscdetails.append(lstcountbydisc)
         lstcountbydisc =[]
     return lstofdiscdetails
@@ -1064,6 +1188,7 @@ def blgetApproverLevel (lstorgdiscsub):
     del allfields[0:3] #- remove ID field, company and discpline - need to be carefull with this 
     
     blnOverride = False # sets the override to true when you hit the first Approver being none
+
     for fields in allfields:
         
         for x, items in enumerate(obj):
@@ -1072,7 +1197,7 @@ def blgetApproverLevel (lstorgdiscsub):
             if (eval(param) == None and ("Approver" in fields)and (blnOverride==False) ):
                 blnOverride = True
                 ApproverLevel = fields[-1]# only 9 Approvers allowed for now 
-    
+
     return ApproverLevel
 def blsetcloseouttemplate (ID):
     """This function sets the template which should be used for the pdf closeout report based on the number of approvers & the type of studies using forms method"""
@@ -1434,9 +1559,9 @@ def blgetActionItemsbyid(dictofids):
     
     
     actionitemsbyid = ActionItems.objects.filter(id__in=dictofids).values(
-        'id','StudyActionNo','StudyName__StudyName','Disipline',
+        'id','StudyActionNo','StudyName__StudyName','Organisation','Disipline',
                     'Subdisipline', 'Cause', 'Recommendations','DueDate',
-                    'InitialRisk'
+                    'InitialRisk','Revision'
 
     )
 

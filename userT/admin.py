@@ -30,7 +30,7 @@ class UserAdmin2(BaseUserAdmin):
 
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('organisation','disipline','subdisipline','designation','expiration')}),
+        ('Personal info', {'fields': ('fullname', 'organisation','disipline','subdisipline','designation', 'signature', 'expiration')}),
         ('Permissions', {'fields': ('is_active','admin','staff','is_superuser','groups','user_permissions',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -49,6 +49,7 @@ class UserAdmin2(BaseUserAdmin):
 class ActionRoutesAdmin(admin.ModelAdmin):
     list_display =('id','Organisation' ,'Disipline','Subdisipline','Actionee','ProjectPhase')
     list_editable = ('Actionee','ProjectPhase')
+    search_fields = ('id','Organisation' ,'Disipline','Subdisipline')   
 
 admin.site.register(CustomUser,UserAdmin2)
 #admin.site.register(Group)

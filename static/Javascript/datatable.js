@@ -8,10 +8,11 @@ $(document).ready(function() {
   var title = $(this).text();
   $(this).html( '<input type="text" placeholder="Search" class="column_search" />' );
   } );
-  // DataTable
+  // DataTable 
   var table = $(datatableid).DataTable({
     orderCellsTop: true,
-    "lengthMenu": [[-1, 10, 25, 50, 200], ["All", 10, 25, 50, 200]],
+    pageLength: 100,
+    "lengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]],
   });
 // Apply the search
   $( datatableid +' thead'  ).on( 'keyup', ".column_search",function () {
