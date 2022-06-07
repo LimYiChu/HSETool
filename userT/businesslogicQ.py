@@ -169,7 +169,7 @@ def blActionCountbyStudiesStreamQ(routes,studies,que,newdef=False):
     return countstudies
 
 def blfuncActionCountQ(routes,que=[],newdef=False):
-    '''Pass routes in and it counts everything in your routes . 
+    '''Pass routes in and it counts everything in your routes based on que series. 
     '''
     count=0
     allstreams = []

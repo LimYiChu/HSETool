@@ -160,6 +160,7 @@ def mainDashboard (request):
     totalactioneeaction = 0
     studies = blgetAllStudies()
     menus = blgetmenus ()
+    strdays = 0
     #get all routes based on email and then get seprate actione and approver routes 
     #dict_allrou = blgetuserRoutes(usersemail)
     dict_allrou = blgetuseroutesnew(usersemail)
@@ -172,19 +173,19 @@ def mainDashboard (request):
     riskrankingsummary , ActioneeActionsrisk, ApproverActionsrisk = blgetriskrankingsummary(Actionee_R, Approver_R, reducedfields,newdefswitch)
     duedateaggregated = blaggregateby(ActioneeActionsrisk,"DueDate")
     duedatesummary = blduedateecountrelative(duedateaggregated)
+
+    #again this is 2 function call # should be consolidated to one call
     totalactioneeaction = blfuncActionCountQ(Actionee_R,YetToRespondQue,newdefswitch)
     totalactionssubmitted = blfuncActionCountQ(Actionee_R,ApprovalQue,newdefswitch)
-
-
     totalactionsapproved = blfuncActionCountQ(Actionee_R,QueClosed,newdefswitch)
+
     rejectedactionscount = blActioneerejectedcountQ(Actionee_R,newdefswitch) #3rd box in nicedashboard
     submittedsummary = {'totalactionssubmitted':totalactionssubmitted,'countrejected':rejectedactionscount, 'totalactionsapproved' :totalactionsapproved }
 
     #strdays = bltotalholdtime(Approver_R,reducedfields,newdefswitch)
-   
-    strdays = bltotalholdtimeActAppr(ApproverActionsrisk,ActioneeActionsrisk)
-    countlistbyweek = blexceedholdtime(Approver_R,reducedfields,newdefswitch) # YY change this   
-
+    strdays,countlistbyweek = bltotalholdtimeActAppr(ApproverActionsrisk)
+    #countlistbyweek = blexceedholdtime(Approver_R,reducedfields,newdefswitch) # YY please change this   
+    
     stripCount =[]
     striplabels = []
     chartappdata=[]
