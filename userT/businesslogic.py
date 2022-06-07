@@ -210,11 +210,13 @@ def blgetriskrankingsummary(Actionee_R, Approver_R, reducedfields,newdef=False) 
     also returns a summary of risk ranking together with your actionee and approver actions bufferred with risk
     """
     riskrankingapproverbuff = {}
+    riskrankingactioneebuff ={}
     ApproverActionriskdict = {}
     ActioneeActions = blallactionscomdissubQ(Actionee_R,YetToRespondQue[0],reducedfields,newdef)
     ActioneeActionsrisk = bladdriskelements(list(ActioneeActions))
     riskrankingactioneebuff = blaggregateby(ActioneeActionsrisk,"RiskRanking")
 
+    
     for QSeries, ApproRoutes in Approver_R.items():
         ApproverActions = blallactionscomdissubQ(ApproRoutes,QSeries,reducedfields,newdef)
         ApproverActionsrisk = bladdriskelements(list(ApproverActions))
@@ -222,10 +224,8 @@ def blgetriskrankingsummary(Actionee_R, Approver_R, reducedfields,newdef=False) 
         riskrankingapproversum = blaggregateby(ApproverActionsrisk,"RiskRanking")
         if riskrankingapproversum is not None:
             riskrankingapproverbuff = Counter(riskrankingapproversum) + Counter(riskrankingapproverbuff)
-           
-    riskrankingsummary = riskrankingapproverbuff + Counter(riskrankingactioneebuff)
+    riskrankingsummary = Counter(riskrankingapproverbuff) + Counter(riskrankingactioneebuff)
 
-    
     return riskrankingsummary, ActioneeActionsrisk , ApproverActionriskdict
 
 
@@ -314,8 +314,9 @@ def bldepth (items):
     return isinstance(items, dict) and max(map(bldepth, items))+1
 
 def bltotalholdtimeActAppr(*argactions):
-    """2022_05 This function gets the cumulative holding time for all Actions in Actioneee or Approver basket
-    approver is passed in as dictionary with approver levele """
+    """2022_05 This function gets the cumulative holding time for all Actions in only Approver basket
+    . Could be extended for actionee actions at a later point in time . Identifies a dictionary and works with approver items only """
+    "identifies which iems are later than 1 week or 2 weeks (this should be moved to another function)"
     timezonenow = timezone.now()
     finalaccumalatedtime=[]
     holdingdays = 0
@@ -330,10 +331,27 @@ def bltotalholdtimeActAppr(*argactions):
                     dfholdtimes =pd.DataFrame(historyactions)
                     dftimemax = dfholdtimes.groupby('id').max()
                     dftimemax ['holding_time'] = timezonenow - dftimemax.history_date
-                    dfmaster = dfmaster.append(dftimemax)                 
-    holdingdays = dfmaster['holding_time'].sum().days
-   
-    return holdingdays
+                    #dftimemax.loc[dftimemax['holding_time'] > 7 days, '>1week'] = 'True' 
+                    dftimemax.loc[dftimemax['holding_time'] >  '7 days', '>1week'] = 'True'
+                    dftimemax.loc[dftimemax['holding_time'] >  '14 days', '>2weeks'] = 'True' 
+                    #dftimemax ['> 1week'] = (if dftimemax ['holding_time'].sum().days > 7) 
+                    dfmaster = dfmaster.append(dftimemax)
+    
+    # try is in the event only actionee actions exits hence dataframe is empty              
+    try :
+        holdingdays = dfmaster['holding_time'].sum().days
+        exceed1week = dfmaster['>1week'].value_counts().tolist()
+        exceed2weeks = dfmaster['>2weeks'].value_counts().tolist()
+        
+    except:
+        holdingdays = 0
+        exceed1week = 0
+        exceed2weeks = 0
+
+    countlistbyweek = exceed1week + exceed2weeks
+    print ("exceed1week",exceed1week)
+    print ("exceed2weeks",exceed2weeks)
+    return holdingdays, countlistbyweek
 
 def bltotalholdtime(Approver_R,reducedfileds,newdef=False):
     """This function gets the cumulative holding time for all Actions in Actioneee or Approver basket"""
