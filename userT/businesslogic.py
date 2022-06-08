@@ -345,12 +345,11 @@ def bltotalholdtimeActAppr(*argactions):
         
     except:
         holdingdays = 0
-        exceed1week = 0
-        exceed2weeks = 0
+        exceed1week = [0]
+        exceed2weeks = [0]
 
     countlistbyweek = exceed1week + exceed2weeks
-    print ("exceed1week",exceed1week)
-    print ("exceed2weeks",exceed2weeks)
+    
     return holdingdays, countlistbyweek
 
 def bltotalholdtime(Approver_R,reducedfileds,newdef=False):
