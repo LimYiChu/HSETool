@@ -213,7 +213,7 @@
                         {% for study in lstbyWorkshop%}
                         <tr>
                           <td width="30%"><a class="article-title"
-                            href="{% url  'closeoutstudyprint' study.studies %}">{{study.studies}}</a></td>
+                            href="{% url  'mergedstudycloseoutprint' study.studies %}">{{study.studies}}</a></td>
                           <td>{{study.yettorespond}}</td>
                           <td>{{study.approvalstage}}</td>
                           <td>{{study.closed}}</td>
