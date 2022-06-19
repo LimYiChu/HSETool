@@ -1,3 +1,4 @@
+from urllib import request
 from django.db import models
 from django.urls import reverse
 from django.utils.tree import Node
@@ -82,7 +83,21 @@ class ActionItems(models.Model):
         return reverse("DetailsForm", kwargs={"id": self.id})
         
     def __str__(self): 
-        return self.StudyActionNo   
+        return self.StudyActionNo  
+
+
+    def save(self, *args, **kwargs):
+
+        useremail = HistoricalRecords.thread.request.user
+        objuser  = CustomUser.objects.get (email = useremail)     
+
+        if objuser.is_superuser ==  True:
+            self.skip_history_when_saving = True
+            super(ActionItems, self).save(*args, **kwargs)
+
+        else:
+            super(ActionItems, self).save(*args, **kwargs)
+
 
 class Comments (models.Model):
     Action = models.ForeignKey(ActionItems, on_delete=models.SET_NULL,null=True) #edward-> removed related name 

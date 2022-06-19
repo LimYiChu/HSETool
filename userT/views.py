@@ -58,35 +58,75 @@ from UploadExcel.formstudies import *
 from time import time
 import copy
 
-def closeoutstudyprint(request,study=""):
-
+def mergedcloseoutprint_update(request):
     """
-
-    This function is to generate zip file for Close-out Sheet/By Studies
-
+    Sends bulkpdf files with attachments in their repective folders in a zipped file to Client
     """
-    studydetails = ActionItems.objects.filter(StudyName__StudyName = study)
-    studydetailsfilter = studydetails.filter(QueSeries = 99).values()
-    makesubfolders = os.makedirs(blankzipdir,exist_ok=True)    
+    csvlocation = tempfolder+'bulkdownload.csv'
+    actionitemdict = ActionItems.objects.filter(QueSeries = 99).values()
+    folderupdate = pdfcsvcompareandupdate(actionitemdict,csvlocation,bulkpdfdir,bulkpdfcreatezipfilename)
 
-    try:
+    response = FileResponse(open(bulkpdfzip,'rb'))
+    response['Content-Disposition'] = 'attachment; filename= Bulk Closeout Sheets.zip'
+    return response
 
-        objactionitemsfk = blannotatefktomodel(studydetailsfilter)
-        returnzipfile = blbulkdownload(objactionitemsfk,bystudypdfdir,bystudypdfcreatezipfilename)
-        response = FileResponse(open(studypdfzip,'rb'))
-        response['Content-Disposition'] = f'attachment; filename= {study}.zip'
-        shutil.rmtree(bystudypdfdir)
 
-    except:
+def mergedstudycloseoutprint(request,study=""):
+    """
+    Update and sends bulkpdf files with attachments in their repective folders in a zipped file to Client
+    """
+    #Make directory for study if the directory not exist
+    actionitemcsv = pdfbystudy+f'{study}'+'.csv'
+    isExist = os.path.exists(pdfbystudy+f'{study}')
+    if not isExist:
+        os.makedirs(pdfbystudy+f'{study}',exist_ok=True) 
+        dfempty = pd.DataFrame(list())
+        dfempty.to_csv(actionitemcsv)
 
-        returnzipfile = shutil.make_archive(blankzipdir, 'zip', blankzipdir)
-        response = FileResponse(open(blankzip,'rb'))
+    pdfdir = (pdfbystudy+f'{study}'+"/")
+    zipname = pdfbystudy+f'{study}'
+    actionitemdict = ActionItems.objects.filter(StudyName__StudyName = study)
+    studydetails = actionitemdict.filter(QueSeries = 99).values()
+    folderupdate = pdfcsvcompareandupdate(studydetails, actionitemcsv, pdfdir, zipname)
 
-        response['Content-Disposition'] = f'attachment; filename= {study}.zip'
+    zipfile = pdfbystudy+f'{study}'+'.zip'
+    response = FileResponse(open(zipfile,'rb'))
+    response['Content-Disposition'] = f'attachment; filename= {study}.zip'
+
+    return response
+
+
+# def closeoutstudyprint(request,study=""):
+
+#     """
+
+
+#     This function is to generate zip file for Close-out Sheet/By Studies
+
+#     """
+#     studydetails = ActionItems.objects.filter(StudyName__StudyName = study)
+#     studydetailsfilter = studydetails.filter(QueSeries = 99).values()
+#     makesubfolders = os.makedirs(blankzipdir,exist_ok=True)    
+
+#     try:
+
+#         objactionitemsfk = blannotatefktomodel(studydetailsfilter)
+#         returnzipfile = blbulkdownload(objactionitemsfk,bystudypdfdir,bystudypdfcreatezipfilename)
+#         response = FileResponse(open(studypdfzip,'rb'))
+#         response['Content-Disposition'] = f'attachment; filename= {study}.zip'
+#         shutil.rmtree(bystudypdfdir)
+
+#     except:
+
+#         returnzipfile = shutil.make_archive(blankzipdir, 'zip', blankzipdir)
+#         response = FileResponse(open(blankzip,'rb'))
+
+#         response['Content-Disposition'] = f'attachment; filename= {study}.zip'
 
        
 
-    return response
+#     return response
+
 def dynamicindisummX (request) :
 
     usersemail=request.user.email

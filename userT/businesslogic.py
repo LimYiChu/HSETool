@@ -30,6 +30,25 @@ import shutil
 from django.db.models import F
 from collections import Counter
 
+def pdfcsvcompareandupdate(actionitemdict, csvname, pdfdir, zipname):
+    
+    objactionitemsfk = blannotatefktomodel(actionitemdict)
+    dfstudy_file = pd.read_csv(csvname)
+    dfstudy_current = pd.DataFrame(objactionitemsfk)
+    dfcomparison = pd.concat([dfstudy_file,dfstudy_current]).drop_duplicates(subset=['id'],keep=False)
+    idlist = dfcomparison['id'].tolist()
+
+    objactionitemsfklist = []
+    for x in idlist:
+        info = list(filter(lambda item: item['id'] == x, objactionitemsfk))
+        objactionitemsfklist.extend(info)
+
+    dfstudyfilter = dfstudy_current.iloc[:,:2]
+    dfstudyfilter.to_csv(csvname)
+    returnzipfile = blbulkdownload(objactionitemsfklist,pdfdir,zipname)
+
+    return returnzipfile
+
 def blgetparameters ():
     
     return Parameters.objects.all().first()
@@ -340,9 +359,9 @@ def bltotalholdtimeActAppr(*argactions):
     # try is in the event only actionee actions exits hence dataframe is empty              
     try :
         holdingdays = dfmaster['holding_time'].sum().days
-        exceed1week = dfmaster['>1week'].value_counts().tolist()
-        exceed2weeks = dfmaster['>2weeks'].value_counts().tolist()
-        
+        padding = lambda x : x if x else [0]
+        exceed1week = padding(dfmaster['>1week'].value_counts().tolist())
+        exceed2weeks =padding (dfmaster['>2weeks'].value_counts().tolist())
     except:
         holdingdays = 0
         exceed1week = [0]
@@ -470,7 +489,7 @@ def blbulkdownload(objactionitems,destinationfolders,createzipfilename):
             Signatories = blgetSignotories(discsub) 
             lstSignatoriesTimeStamp= blgettimestampuserdetails (items['id'], Signatories) 
             currentQueSeries = blgetFieldValue(items['id'],'QueSeries')
-            blgettimehistorytables(items['id'],lstSignatoriesTimeStamp,currentQueSeries)
+            blgettimehistorytables(items['id'],lstSignatoriesTimeStamp,currentQueSeries)  
             studyactno = items["StudyActionNo"] 
             studyactnopdf = (studyactno + '.pdf')
             signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)

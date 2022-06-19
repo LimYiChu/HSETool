@@ -42,12 +42,14 @@ for items in ALLOWED_HOSTS :
         #20220120 edward
         hazidcloseouttemplate = '/opt/bitnami/projects/HSETool/hazidcloseouttemplate'#closeouttemplate location (used for pdf closeoutprint & indiprint)
         #20220517 Ying Ying
-        studytemp = '/opt/bitnami/projects/HSETool/static/media/studybulkpdfdir/' 
-        bystudypdfdir = "/opt/bitnami/projects/HSETool/static/media/studybulkpdfdir/studybulkpdf/" 
-        bystudypdfcreatezipfilename = "/opt/bitnami/projects/HSETool/static/media/studybulkpdfdir/" + "studypdffiles"
-        studypdfzip = '/opt/bitnami/projects/HSETool/static/media/studybulkpdfdir/studypdffiles.zip' 
-        blankzip = '/opt/bitnami/projects/HSETool/static/media/studybulkpdfdir/blank.zip'
-        blankzipdir = '/opt/bitnami/projects/HSETool/static/media/studybulkpdfdir/blank/' 
+        # studytemp = '/opt/bitnami/projects/HSETool/static/media/studybulkpdfdir/' 
+        # bystudypdfdir = "/opt/bitnami/projects/HSETool/static/media/studybulkpdfdir/studybulkpdf/" 
+        # bystudypdfcreatezipfilename = "/opt/bitnami/projects/HSETool/static/media/studybulkpdfdir/" + "studypdffiles"
+        # studypdfzip = '/opt/bitnami/projects/HSETool/static/media/studybulkpdfdir/studypdffiles.zip' 
+        # blankzip = '/opt/bitnami/projects/HSETool/static/media/studybulkpdfdir/blank.zip'
+        # blankzipdir = '/opt/bitnami/projects/HSETool/static/media/studybulkpdfdir/blank/' 
+        # 20220608 Ying Ying
+        pdfbystudy = '/opt/bitnami/projects/HSETool/static/media/pdfbystudy/' 
 
     else :
         tempfolder = 'static/media/temp/'
@@ -63,12 +65,16 @@ for items in ALLOWED_HOSTS :
         #20220120 edward
         hazidcloseouttemplate = 'hazidcloseouttemplate'   
         #20220517 Ying Ying
-        studytemp = 'static/media/studybulkpdfdir/' 
-        bystudypdfdir = "static/media/studybulkpdfdir/studybulkpdf/"   
-        bystudypdfcreatezipfilename = "static/media/studybulkpdfdir/" + "studypdffiles"  
-        studypdfzip = 'static/media/studybulkpdfdir/studypdffiles.zip'
-        blankzip = 'static/media/studybulkpdfdir/blank.zip'   
-        blankzipdir = 'static/media/studybulkpdfdir/blank/'                                                                                                                             
+        # studytemp = 'static/media/studybulkpdfdir/' 
+        # bystudypdfdir = "static/media/studybulkpdfdir/studybulkpdf/"   
+        # bystudypdfcreatezipfilename = "static/media/studybulkpdfdir/" + "studypdffiles"  
+        # studypdfzip = 'static/media/studybulkpdfdir/studypdffiles.zip'
+        # blankzip = 'static/media/studybulkpdfdir/blank.zip'   
+        # blankzipdir = 'static/media/studybulkpdfdir/blank/' 
+        # 20220608 Ying Ying
+        pdfbystudy = 'static/media/pdfbystudy/' 
+
+                                                                                                                                    
  
 
 #Paramters to simply views.py . Commonly used parameters in Views.py to be parked here and standardised
