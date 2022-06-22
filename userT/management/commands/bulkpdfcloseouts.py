@@ -10,7 +10,8 @@ class Command(BaseCommand):
 
     def handle(self, *args,**options):
 
-        shutil.rmtree(bulkpdfdir)
+        if os.path.isdir(bulkpdfdir):
+            shutil.rmtree(bulkpdfdir)
         bulkpdfzipfoldername = tempfolder + ("bulkpdffiles" +".zip")
         objactionitems = ActionItems.objects.filter(QueSeries = 99).values() # to be altered when move to bl
         objactionitemsfk = blannotatefktomodel(objactionitems)
@@ -18,5 +19,7 @@ class Command(BaseCommand):
         dfstudyfilter = dfstudy.iloc[:,:2]
         dfstudyfilter.to_csv(tempfolder+'bulkdownload.csv')
         returnzipfile = blbulkdownload(objactionitemsfk,bulkpdfdir,bulkpdfcreatezipfilename) #to remove bulkpdfmakebulkpdfdir
-
+        os.chmod(bulkpdfdir, 0o770)                 #770 is linux permission
+        shutil.chown(bulkpdfdir, 0, 1004)           # 0 is root in linux, 1004 is varwwwusers (user group)
+        
         return returnzipfile

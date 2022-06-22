@@ -60,7 +60,7 @@ import copy
 
 def mergedcloseoutprint_update(request):
     """
-    Sends bulkpdf files with attachments in their repective folders in a zipped file to Client
+    Update and sends bulkpdf files with attachments in their repective folders in a zipped file to Client
     """
     csvlocation = tempfolder+'bulkdownload.csv'
     actionitemdict = ActionItems.objects.filter(QueSeries = 99).values()
@@ -73,23 +73,21 @@ def mergedcloseoutprint_update(request):
 
 def mergedstudycloseoutprint(request,study=""):
     """
-    Update and sends bulkpdf files with attachments in their repective folders in a zipped file to Client
+    Update and sends bulkpdf by study with attachments in their repective folders in a zipped file to Client
     """
     #Make directory for study if the directory not exist
-    actionitemcsv = pdfbystudy+f'{study}'+'.csv'
-    isExist = os.path.exists(pdfbystudy+f'{study}')
+    actionitemcsv = pdfbystudy+study+'.csv'
+    isExist = os.path.exists(pdfbystudy+study)
     if not isExist:
-        os.makedirs(pdfbystudy+f'{study}',exist_ok=True) 
+        os.makedirs(pdfbystudy+study,exist_ok=True) 
         dfempty = pd.DataFrame(list())
         dfempty.to_csv(actionitemcsv)
-
-    pdfdir = (pdfbystudy+f'{study}'+"/")
-    zipname = pdfbystudy+f'{study}'
+    pdfdir = (pdfbystudy+study+"/")
+    zipname = pdfbystudy+study
     actionitemdict = ActionItems.objects.filter(StudyName__StudyName = study)
     studydetails = actionitemdict.filter(QueSeries = 99).values()
     folderupdate = pdfcsvcompareandupdate(studydetails, actionitemcsv, pdfdir, zipname)
-
-    zipfile = pdfbystudy+f'{study}'+'.zip'
+    zipfile = pdfbystudy+study+'.zip'
     response = FileResponse(open(zipfile,'rb'))
     response['Content-Disposition'] = f'attachment; filename= {study}.zip'
 

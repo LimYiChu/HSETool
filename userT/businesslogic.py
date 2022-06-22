@@ -30,23 +30,47 @@ import shutil
 from django.db.models import F
 from collections import Counter
 
+def change_group_recursive(path, ownermode, groupmode):
+    """
+    Change the user and/or group ownership of files and directories in linux
+    """
+    for root, dirs, files in os.walk(path, topdown=False):
+        for dir in [os.path.join(root,d) for d in dirs]:
+            os.chown(dir, ownermode, groupmode)
+    for file in [os.path.join(root, f) for f in files]:
+            os.chown(file, ownermode, groupmode)
+
+def change_permissions_recursive(path, mode):
+    """
+    Change directories and files permissions in linux
+    """
+    for root, dirs, files in os.walk(path, topdown=False):
+        for dir in [os.path.join(root,d) for d in dirs]:
+            os.chmod(dir, mode)
+    for file in [os.path.join(root, f) for f in files]:
+            os.chmod(file, mode)
+
 def pdfcsvcompareandupdate(actionitemdict, csvname, pdfdir, zipname):
-    
+    """
+    Compare id of latest closed item and closed item created with Crontab using excel
+    Add the latest closed item (pdf and attachment) to bulkdownload folder / download by study folder
+    """
     objactionitemsfk = blannotatefktomodel(actionitemdict)
     dfstudy_file = pd.read_csv(csvname)
     dfstudy_current = pd.DataFrame(objactionitemsfk)
     dfcomparison = pd.concat([dfstudy_file,dfstudy_current]).drop_duplicates(subset=['id'],keep=False)
-    idlist = dfcomparison['id'].tolist()
-
-    objactionitemsfklist = []
-    for x in idlist:
-        info = list(filter(lambda item: item['id'] == x, objactionitemsfk))
-        objactionitemsfklist.extend(info)
-
-    dfstudyfilter = dfstudy_current.iloc[:,:2]
-    dfstudyfilter.to_csv(csvname)
-    returnzipfile = blbulkdownload(objactionitemsfklist,pdfdir,zipname)
-
+    if 'id' in dfcomparison:
+        idlist = dfcomparison['id'].tolist()
+        objactionitemsfklist = []
+        for x in idlist:
+            info = list(filter(lambda item: item['id'] == x, objactionitemsfk))
+            objactionitemsfklist.extend(info)
+        dfstudyfilter = dfstudy_current.iloc[:,:2]
+        dfstudyfilter.to_csv(csvname)
+        returnzipfile = blbulkdownload(objactionitemsfklist,pdfdir,zipname)
+    else:
+        return None
+        
     return returnzipfile
 
 def blgetparameters ():
