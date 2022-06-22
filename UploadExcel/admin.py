@@ -29,6 +29,7 @@ class delegatedActionItemsAdmin(admin.ModelAdmin):
     list_editable = ('DueDate',)
 
     allfields = [f.name for f in ActionItems._meta.get_fields()]
+    search_fields =('StudyActionNo' , 'DueDate', 'Recommendations', 'Response','Organisation', 'Disipline','Subdisipline','DateCreated','QueSeries',)
 
     
     del allfields[0:2] #the first few items are foreign keys under meta function so gotta delete it
