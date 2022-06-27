@@ -30,19 +30,27 @@ import shutil
 from django.db.models import F
 from collections import Counter
 
-def change_group_recursive(path, ownermode, groupmode):
+def blchangelinuxgroup(path, owner, group):
     """
-    Change the user and/or group ownership of files and directories in linux
+    yingying 27062022
+    Change the owner/group of files and directories in path for linux system. 
+    Path is the parent directory at which you want to change the owner/group of files and directories in it.
+    Owner is to assign the owner of the files or directories in the path. 
+    Group is to assign the specific group which can read,write,execute(depends on permission) the files or directories in the path.
+    Owner and group are in integer form. For this application, 0 is root in linux, 1000 is bitnami in linux, 1004 is varwwwusers (user group).
     """
     for root, dirs, files in os.walk(path, topdown=False):
         for dir in [os.path.join(root,d) for d in dirs]:
-            os.chown(dir, ownermode, groupmode)
+            os.chown(dir, owner, group)
     for file in [os.path.join(root, f) for f in files]:
-            os.chown(file, ownermode, groupmode)
+            os.chown(file, owner, group)
 
-def change_permissions_recursive(path, mode):
+def blchangelinuxpermissions(path, mode):
     """
-    Change directories and files permissions in linux
+    yingying 27062022
+    Change the owner/group of files and directories in path for linux system.
+    Path is the parent directory at which you want to change the permission of files and directories in it.
+    Mode is linux permission mode.
     """
     for root, dirs, files in os.walk(path, topdown=False):
         for dir in [os.path.join(root,d) for d in dirs]:
@@ -50,16 +58,19 @@ def change_permissions_recursive(path, mode):
     for file in [os.path.join(root, f) for f in files]:
             os.chmod(file, mode)
 
-def pdfcsvcompareandupdate(actionitemdict, csvname, pdfdir, zipname):
+def blpdfcompareandupdate(actionitemdict, csvname, pdfdir, zipname):
     """
+    yingying 27062022
     Compare id of latest closed item and closed item created with Crontab using excel
     Add the latest closed item (pdf and attachment) to bulkdownload folder / download by study folder
+    actionitemdict is the incoming list of dictionaries, csvname is the name of the csv (e.g.:<studyname>.csv)
+    pdfdir is the directory which keep all the folders with pdf and attachments inside, zipname is the name for zip created (e.g.:<studyname>.zip)
     """
     objactionitemsfk = blannotatefktomodel(actionitemdict)
     dfstudy_file = pd.read_csv(csvname)
     dfstudy_current = pd.DataFrame(objactionitemsfk)
     dfcomparison = pd.concat([dfstudy_file,dfstudy_current]).drop_duplicates(subset=['id'],keep=False)
-    if 'id' in dfcomparison:
+    if not dfcomparison.empty:
         idlist = dfcomparison['id'].tolist()
         objactionitemsfklist = []
         for x in idlist:
@@ -104,30 +115,46 @@ def blexcelgetactioneeandlocation (dfalllist):
     return dfalllist
 
 def blholdtime(allaction):
-    """This function gets the cumulative holding time for all Actions in Actioneee or Approver basket"""
+    """
+    yingying 27062022
+    This function gets the cumulative holding time for all Actions in Actioneee or Approver basket
+    Incoming data (allaction) is queryset (list of dictionary), output is in data frame.
+    """
     timezonenow = timezone.now()
+    dfall = pd.DataFrame(allaction)
+    res= [("id" , str(sub["id"])) for sub in allaction]
+    if res != [] :
+        historyactions = blfiltergeneralbyOrQ(res,ActionItems.history)
+        pd.set_option('display.max_rows', None)  #used if there are print statements to show all records instead of truncated records
+        dfholdtimes =pd.DataFrame(historyactions)
+        dftimemax = dfholdtimes.groupby('id').max()
+        dftimemax ['holding_time'] = timezonenow - dftimemax['history_date']
+        dftimemax ['holding_days'] = (dftimemax ['holding_time']).dt.days
+        dftotal = pd.merge(dfall, dftimemax, on='id')
+        dftotal.loc[dftotal['QueSeries'] == 99, 'holding_days'] = 'None'
 
-    for items in allaction: 
+    # timezonenow = timezone.now()
+    # for items in allaction: 
 
-        if items['QueSeries'] != 99:
+    #     if items['QueSeries'] != 99:
             
-            if items['QueSeries'] != 0: 
-                ID = items['id']
-                dictactualhistory = ActionItems.history.filter(id=ID).order_by('-history_date').values('history_date')
-                historyrecentimeapp = dictactualhistory[0].get('history_date')
-                timeinbasket = timezonenow - historyrecentimeapp    
-                items['HoldingTime'] = timeinbasket.days 
+    #         if items['QueSeries'] != 0: 
+    #             ID = items['id']
+    #             dictactualhistory = ActionItems.history.filter(id=ID).order_by('-history_date').values('history_date')
+    #             historyrecentimeapp = dictactualhistory[0].get('history_date')
+    #             timeinbasket = timezonenow - historyrecentimeapp    
+    #             items['HoldingTime'] = timeinbasket.days 
 
-            else:
-                ID = items['id']
-                historyrecentimeapp = items.get('DateCreated')
-                timeinbasket = timezonenow.date() - historyrecentimeapp  
-                items['HoldingTime'] = timeinbasket.days 
+    #         else:
+    #             ID = items['id']
+    #             historyrecentimeapp = items.get('DateCreated')
+    #             timeinbasket = timezonenow.date() - historyrecentimeapp  
+    #             items['HoldingTime'] = timeinbasket.days 
 
-        else:
-            items['HoldingTime'] = "None"
+    #     else:
+    #         items['HoldingTime'] = "None"
 
-    return allaction
+    return dftotal
 
 def blaggregatebyDisc_hidden(discsuborg, lstbyDisc_hidden):
     """
@@ -379,7 +406,7 @@ def bltotalholdtimeActAppr(*argactions):
                     dftimemax.loc[dftimemax['holding_time'] >  '14 days', '>2weeks'] = 'True' 
                     #dftimemax ['> 1week'] = (if dftimemax ['holding_time'].sum().days > 7) 
                     dfmaster = dfmaster.append(dftimemax)
-    
+
     # try is in the event only actionee actions exits hence dataframe is empty              
     try :
         holdingdays = dfmaster['holding_time'].sum().days
