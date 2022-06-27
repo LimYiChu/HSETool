@@ -27,7 +27,8 @@ class Command(BaseCommand):
             dfstudyfilter = dfstudy.iloc[:,:2]
             dfstudyfilter.to_csv(excelpath)
             returnzipfile = blbulkdownload(objactionitemsfk,studyfolder,studypath)
-        change_permissions_recursive(pdfbystudy, 0o770)     # 770 is linux permission
-        change_group_recursive(pdfbystudy, 1000, 1004)      # 1000 is bitnami in linux, 1004 is varwwwusers (user group)
-
+        blchangelinuxpermissions(pdfbystudy, 0o770)     # 770 is linux permission
+        blchangelinuxgroup(pdfbystudy, 1000, 1004)      # 1000 is bitnami in linux, 1004 is varwwwusers (user group)
+        os.chmod(pdfbystudy, 0o770)                 #770 is linux permission
+        shutil.chown(pdfbystudy, 0, 1004)
         return returnzipfile

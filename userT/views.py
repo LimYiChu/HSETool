@@ -60,11 +60,12 @@ import copy
 
 def mergedcloseoutprint_update(request):
     """
+    yingying 27062022
     Update and sends bulkpdf files with attachments in their repective folders in a zipped file to Client
     """
     csvlocation = tempfolder+'bulkdownload.csv'
     actionitemdict = ActionItems.objects.filter(QueSeries = 99).values()
-    folderupdate = pdfcsvcompareandupdate(actionitemdict,csvlocation,bulkpdfdir,bulkpdfcreatezipfilename)
+    folderupdate = blpdfcompareandupdate(actionitemdict,csvlocation,bulkpdfdir,bulkpdfcreatezipfilename)
 
     response = FileResponse(open(bulkpdfzip,'rb'))
     response['Content-Disposition'] = 'attachment; filename= Bulk Closeout Sheets.zip'
@@ -73,6 +74,7 @@ def mergedcloseoutprint_update(request):
 
 def mergedstudycloseoutprint(request,study=""):
     """
+    yingying 27062022
     Update and sends bulkpdf by study with attachments in their repective folders in a zipped file to Client
     """
     #Make directory for study if the directory not exist
@@ -86,7 +88,7 @@ def mergedstudycloseoutprint(request,study=""):
     zipname = pdfbystudy+study
     actionitemdict = ActionItems.objects.filter(StudyName__StudyName = study)
     studydetails = actionitemdict.filter(QueSeries = 99).values()
-    folderupdate = pdfcsvcompareandupdate(studydetails, actionitemcsv, pdfdir, zipname)
+    folderupdate = blpdfcompareandupdate(studydetails, actionitemcsv, pdfdir, zipname)
     zipfile = pdfbystudy+study+'.zip'
     response = FileResponse(open(zipfile,'rb'))
     response['Content-Disposition'] = f'attachment; filename= {study}.zip'

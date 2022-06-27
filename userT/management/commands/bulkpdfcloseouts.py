@@ -21,5 +21,7 @@ class Command(BaseCommand):
         returnzipfile = blbulkdownload(objactionitemsfk,bulkpdfdir,bulkpdfcreatezipfilename) #to remove bulkpdfmakebulkpdfdir
         os.chmod(bulkpdfdir, 0o770)                 #770 is linux permission
         shutil.chown(bulkpdfdir, 0, 1004)           # 0 is root in linux, 1004 is varwwwusers (user group)
+        blchangelinuxpermissions(bulkpdfdir, 0o770)     
+        blchangelinuxgroup(bulkpdfdir, 1000, 1004)
         
         return returnzipfile

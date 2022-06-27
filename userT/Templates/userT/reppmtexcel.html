@@ -92,33 +92,33 @@
                       </tr>
                     </thead>
                     <tbody>
-                      {%for details in dictofallactionswithtime%}
-                      <tr>
-                        <td><a class="article-title"
-                            href="{% url  'pmtrepviewall' details.id %}">{{details.StudyActionNo}}</a></td>
-                        <td>{{details.StudyName}}</td>
-                        <td>{{details.ProjectPhase}}</td>
-                        <td>{{details.Organisation}}/ {{details.Disipline}}/ {{details.Subdisipline}}</td>
-                        <td width="20%"><a class="article-title"
-                            href="{% url  'pmtrepviewall' details.id %}">{{details.Recommendations}}</a></td>
-                        <td width="20%">{{details.Response}}</td>
-                        <td>{{details.DueDate}}</td>
-                        {%block incInitialRiskColour%}
+                      {%for key, value in dictofallactionswithtime.iterrows %}
+                        <tr data-toggle="tooltip" data-placement="right" title="Holding Day(s): {{ value.holding_days }}">
+                          <td><a class="article-title"
+                              href="{% url  'pmtrepviewall' value.id %}">{{value.StudyActionNo }}</a></td>
+                          <td>{{value.StudyName}}</td>
+                          <td>{{value.ProjectPhase}}</td>
+                          <td>{{value.Organisation}}/ {{value.Disipline}}/ {{value.Subdisipline}}</td>
+                          <td width="20%"><a class="article-title"
+                              href="{% url  'pmtrepviewall' value.id %}">{{value.Recommendations}}</a></td>
+                          <td width="20%">{{value.Response}}</td>
+                          <td>{{value.DueDate}}</td>
+                          {%block incInitialRiskColour%}
 
-                        {%if riskmatrix%}
-                        {% with initialrisk=details.InitialRisk%}
-                        {% with riskcolour=details.RiskColour%}
-                        {%include "userT/incinitialriskcolour.html"%}
-                        {%endwith%}
-                        {%endwith%}
-                        {%else%}
-                        <td>{{ details.InitialRisk }}</td>
-                        <!--Original Code-->
-                        {%endif%}
-                        {%endblock%}
-                        <td data-toggle="tooltip" data-placement="right" title="Holding Day(s): {{details.HoldingTime}}" width="10%">{{details.ActionAt}}</td>
-                        
-                      </tr>
+                          {%if riskmatrix%}
+                          {% with initialrisk=value.InitialRisk%}
+                          {% with riskcolour=value.RiskColour%}
+                          {%include "userT/incinitialriskcolour.html"%}
+                          {%endwith%}
+                          {%endwith%}
+                          {%else%}
+                          <td>{{ value.InitialRisk }}</td>
+                          <!--Original Code-->
+                          {%endif%}
+                          {%endblock%}
+                          <td width="10%">{{value.ActionAt}}</td>
+                          
+                        </tr>
                       {%endfor%}
 
                     </tbody>
