@@ -61,9 +61,14 @@ import copy
 def mergedcloseoutprint_update(request):
     """
     yingying 27062022
-    Update and sends bulkpdf files with attachments in their repective folders in a zipped file to Client
+    Update and sends bulkpdf files with attachments in their repective folders in a zipped file to Client when Client click on bulkdownload button
+    tempfolder = static/media/temp/
     """
     csvlocation = tempfolder+'bulkdownload.csv'
+    iscsvExist = os.path.exists(csvlocation)
+    if not iscsvExist:
+        dfempty = pd.DataFrame(list())
+        dfempty.to_csv(csvlocation)
     actionitemdict = ActionItems.objects.filter(QueSeries = 99).values()
     folderupdate = blpdfcompareandupdate(actionitemdict,csvlocation,bulkpdfdir,bulkpdfcreatezipfilename)
 
@@ -75,21 +80,34 @@ def mergedcloseoutprint_update(request):
 def mergedstudycloseoutprint(request,study=""):
     """
     yingying 27062022
-    Update and sends bulkpdf by study with attachments in their repective folders in a zipped file to Client
+    Update and sends bulkpdf by study with attachments in their repective folders in a zipped file to Client when Client click on any Study hyperlink in 
+    Close-Out Sheets/By Studies.
+    pdfbystudy = static/media/pdfbystudy/  , study is the name of the study which Cient click on.
+    The first part is parameter declaration, second part is to check whether directory, excel and zip are available for particular study.
+    Then, get all the information for closed action items of the study. Compare ID in excel with the ID of closed item and update the directory if there
+    is any new closed item for the study. Finally compressed the study folder to zip and download. 
     """
     #Make directory for study if the directory not exist
-    actionitemcsv = pdfbystudy+study+'.csv'
-    isExist = os.path.exists(pdfbystudy+study)
+    studypath = pdfbystudy+study
+    pdfdir = (studypath+"/")
+    actionitemcsv = studypath+'.csv'
+    zipfile = studypath+'.zip'
+
+    isExist = os.path.exists(studypath)
     if not isExist:
-        os.makedirs(pdfbystudy+study,exist_ok=True) 
+        os.makedirs(studypath,exist_ok=True) 
+    iscsvExist = os.path.exists(actionitemcsv)
+    if not iscsvExist:
         dfempty = pd.DataFrame(list())
         dfempty.to_csv(actionitemcsv)
-    pdfdir = (pdfbystudy+study+"/")
-    zipname = pdfbystudy+study
+    iszipExist = os.path.exists(zipfile)
+    if not iszipExist:
+        shutil.make_archive(studypath, 'zip', pdfdir)
+    
     actionitemdict = ActionItems.objects.filter(StudyName__StudyName = study)
     studydetails = actionitemdict.filter(QueSeries = 99).values()
-    folderupdate = blpdfcompareandupdate(studydetails, actionitemcsv, pdfdir, zipname)
-    zipfile = pdfbystudy+study+'.zip'
+    folderupdate = blpdfcompareandupdate(studydetails, actionitemcsv, pdfdir, studypath)
+    
     response = FileResponse(open(zipfile,'rb'))
     response['Content-Disposition'] = f'attachment; filename= {study}.zip'
 
@@ -209,7 +227,7 @@ def mainDashboard (request):
     Approver_R =    dict_allrou.get('Approver_Routes')
 
 
-    reducedfields= ['id','StudyActionNo','Disipline' ,'QueSeries', 'DueDate','InitialRisk']
+    reducedfields= ['id','StudyActionNo','Disipline' ,'QueSeries', 'DueDate','InitialRisk','DateCreated']
     riskrankingsummary , ActioneeActionsrisk, ApproverActionsrisk = blgetriskrankingsummary(Actionee_R, Approver_R, reducedfields,newdefswitch)
     duedateaggregated = blaggregateby(ActioneeActionsrisk,"DueDate")
     duedatesummary = blduedateecountrelative(duedateaggregated)
@@ -221,7 +239,6 @@ def mainDashboard (request):
 
     rejectedactionscount = blActioneerejectedcountQ(Actionee_R,newdefswitch) #3rd box in nicedashboard
     submittedsummary = {'totalactionssubmitted':totalactionssubmitted,'countrejected':rejectedactionscount, 'totalactionsapproved' :totalactionsapproved }
-
     #strdays = bltotalholdtime(Approver_R,reducedfields,newdefswitch)
     strdays,countlistbyweek = bltotalholdtimeActAppr(ApproverActionsrisk)
     #countlistbyweek = blexceedholdtime(Approver_R,reducedfields,newdefswitch) # YY please change this   
@@ -1063,12 +1080,12 @@ def repPMTExcel (request,phase=""):
     #this sequence is important otherwise doesnt work
     phaseswithrisk = bladdriskelements(dictofallactions)
     dictofallactions    = blgetdictActionStuckAt(phaseswithrisk)
-    dictofallactionswithtime = blholdtime(dictofallactions)
+    dictofallactionswithtime = bladdholdtime(dictofallactions)
 
     #pandas excel
-    dfall1 = pd.DataFrame.from_dict(dictofallactions)
-    dfall1['Org/Disc/Sub-Disc']=dfall1['Organisation']+'/'+dfall1['Disipline']+'/'+dfall1['Subdisipline'] 
-    dfall = blsortdataframes(dfall1,dfallcolumnsupdate)
+    # dfall1 = pd.DataFrame.from_dict(dictofallactions)
+    # dfall1['Org/Disc/Sub-Disc']=dfall1['Organisation']+'/'+dfall1['Disipline']+'/'+dfall1['Subdisipline'] 
+    # dfall = blsortdataframes(dfall1,dfallcolumnsupdate)
     # all_actions =   ActionItems.objects.all().values()
     # all_actionsannotate = blannotatefktomodel(all_actions)
     # blank=[]
@@ -1147,6 +1164,9 @@ def repPMTExcel (request,phase=""):
             in_memory = BytesIO()
             dictheader = {'StudyActionNo': 'Study Action No', 'StudyName': 'Study Name', 'ProjectPhase': 'Project Phase', 
                         'Recommendations': 'Recommendation', 'DueDate': 'Due Date', 'InitialRisk': 'Initial Risk', 'RiskColour': 'Risk Colour', 'ActionAt': 'Action At'}
+            dfall1 = pd.DataFrame.from_dict(dictofallactions)
+            dfall1['Org/Disc/Sub-Disc']=dfall1['Organisation']+'/'+dfall1['Disipline']+'/'+dfall1['Subdisipline'] 
+            dfall = blsortdataframes(dfall1,dfallcolumnsupdate)
             dfall.rename(columns=dictheader, inplace=True) 
             response = HttpResponse(content_type='application/ms-excel') #
             response['Content-Disposition'] = 'attachment; filename=byAllActions.xlsx'

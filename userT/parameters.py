@@ -24,7 +24,7 @@ for items in ALLOWED_HOSTS:
     else:
         paremailurl = "https://prism.prism-ehstools.com"
         paremailphase ="Prism"
-  
+
 #following parameters to differentiate between aws & localhost, hence not url sensitive
 for items in ALLOWED_HOSTS :
     
@@ -50,6 +50,7 @@ for items in ALLOWED_HOSTS :
         # blankzipdir = '/opt/bitnami/projects/HSETool/static/media/studybulkpdfdir/blank/' 
         # 20220608 Ying Ying
         pdfbystudy = '/opt/bitnami/projects/HSETool/static/media/pdfbystudy/' 
+        paraOmitAdmin = 1    
 
     else :
         tempfolder = 'static/media/temp/'
@@ -73,6 +74,7 @@ for items in ALLOWED_HOSTS :
         # blankzipdir = 'static/media/studybulkpdfdir/blank/' 
         # 20220608 Ying Ying
         pdfbystudy = 'static/media/pdfbystudy/' 
+        paraOmitAdmin = 9     #change according to local admin  
 
                                                                                                                                     
  

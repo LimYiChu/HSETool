@@ -114,47 +114,7 @@ def blexcelgetactioneeandlocation (dfalllist):
         items['Actionee'] = ((Actionee[0])['Actionee']) # just getting the Actionee from QuerySet
     return dfalllist
 
-def blholdtime(allaction):
-    """
-    yingying 27062022
-    This function gets the cumulative holding time for all Actions in Actioneee or Approver basket
-    Incoming data (allaction) is queryset (list of dictionary), output is in data frame.
-    """
-    timezonenow = timezone.now()
-    dfall = pd.DataFrame(allaction)
-    res= [("id" , str(sub["id"])) for sub in allaction]
-    if res != [] :
-        historyactions = blfiltergeneralbyOrQ(res,ActionItems.history)
-        pd.set_option('display.max_rows', None)  #used if there are print statements to show all records instead of truncated records
-        dfholdtimes =pd.DataFrame(historyactions)
-        dftimemax = dfholdtimes.groupby('id').max()
-        dftimemax ['holding_time'] = timezonenow - dftimemax['history_date']
-        dftimemax ['holding_days'] = (dftimemax ['holding_time']).dt.days
-        dftotal = pd.merge(dfall, dftimemax, on='id')
-        dftotal.loc[dftotal['QueSeries'] == 99, 'holding_days'] = 'None'
 
-    # timezonenow = timezone.now()
-    # for items in allaction: 
-
-    #     if items['QueSeries'] != 99:
-            
-    #         if items['QueSeries'] != 0: 
-    #             ID = items['id']
-    #             dictactualhistory = ActionItems.history.filter(id=ID).order_by('-history_date').values('history_date')
-    #             historyrecentimeapp = dictactualhistory[0].get('history_date')
-    #             timeinbasket = timezonenow - historyrecentimeapp    
-    #             items['HoldingTime'] = timeinbasket.days 
-
-    #         else:
-    #             ID = items['id']
-    #             historyrecentimeapp = items.get('DateCreated')
-    #             timeinbasket = timezonenow.date() - historyrecentimeapp  
-    #             items['HoldingTime'] = timeinbasket.days 
-
-    #     else:
-    #         items['HoldingTime'] = "None"
-
-    return dftotal
 
 def blaggregatebyDisc_hidden(discsuborg, lstbyDisc_hidden):
     """
@@ -383,6 +343,59 @@ def bldepth (items):
 
     return isinstance(items, dict) and max(map(bldepth, items))+1
 
+def bladdholdtime(allaction):
+    """
+    yingying 27062022
+    This function gets the cumulative holding time for all Actions in Actioneee or Approver basket
+    Incoming data (allaction) is queryset (list of dictionary), output is in data frame.
+    """
+    timezonenow = timezone.now()
+    dfall = pd.DataFrame(allaction)
+
+    res= [("id" , str(sub["id"])) for sub in allaction]
+    if res != [] :
+        historyactions = blfiltergeneralbyOrQ(res,ActionItems.history)
+        pd.set_option('display.max_rows', None)  #used if there are print statements to show all records instead of truncated records
+        dfholdtimes =pd.DataFrame(historyactions)
+
+        dfholdtimes = dfholdtimes.sort_values(['id', 'history_date'])
+        dfholdtimes['Transition'] = dfholdtimes['QueSeries'].ne(dfholdtimes['QueSeries'].shift().bfill()).astype(int)
+        dfholdtimes['Revision']=dfholdtimes.groupby(['id'])['Revision'].transform(lambda x: max(x))  
+        dfholdtimes.drop(dfholdtimes[dfholdtimes['Transition'] == 0].index, inplace = True)
+        dftimemax = dfholdtimes.groupby('id').last()
+
+        dftimemax ['holding_time'] = timezonenow - dftimemax['history_date']
+        dftimemax ['holding_time'] = (dftimemax ['holding_time']).dt.days
+        dftimemax.loc[(dftimemax['QueSeries'] == 0) & (dftimemax['Revision'] == 0), 'holding_time'] = np.NaN
+        dftotal = pd.merge(dfall, dftimemax, how="outer",on='id')
+
+        dftotal ['actholding_day'] = timezonenow.date() - dftotal['DateCreated']
+        dftotal ['actholding_day'] = (dftotal ['actholding_day']).dt.days
+        dftotal ['holding_time'] = dftotal ['holding_time'].fillna(dftotal ['actholding_day'])
+
+        dftotal ['holding_time'] = dftotal ['holding_time'].astype(float).astype(int)
+        dftotal.loc[dftotal['QueSeries_y'] == 99.0, 'holding_time'] = 'None'
+
+    # timezonenow = timezone.now()
+    # for items in allaction: 
+    #     if items['QueSeries'] != 99:
+    #         if items['QueSeries'] != 0: 
+    #             ID = items['id']
+    #             dictactualhistory = ActionItems.history.filter(id=ID).order_by('-history_date').values('history_date')
+    #             historyrecentimeapp = dictactualhistory[0].get('history_date')
+    #             timeinbasket = timezonenow - historyrecentimeapp    
+    #             items['HoldingTime'] = timeinbasket.days 
+
+    #         else:
+    #             ID = items['id']
+    #             historyrecentimeapp = items.get('DateCreated')
+    #             timeinbasket = timezonenow.date() - historyrecentimeapp  
+    #             items['HoldingTime'] = timeinbasket.days 
+    #     else:
+    #         items['HoldingTime'] = "None"
+
+    return dftotal
+
 def bltotalholdtimeActAppr(*argactions):
     """2022_05 This function gets the cumulative holding time for all Actions in only Approver basket
     . Could be extended for actionee actions at a later point in time . Identifies a dictionary and works with approver items only """
@@ -406,7 +419,7 @@ def bltotalholdtimeActAppr(*argactions):
                     dftimemax.loc[dftimemax['holding_time'] >  '14 days', '>2weeks'] = 'True' 
                     #dftimemax ['> 1week'] = (if dftimemax ['holding_time'].sum().days > 7) 
                     dfmaster = dfmaster.append(dftimemax)
-
+    
     # try is in the event only actionee actions exits hence dataframe is empty              
     try :
         holdingdays = dfmaster['holding_time'].sum().days
@@ -1184,7 +1197,7 @@ def blgettimehistorytables (id, Signatories, QueSeries=0):
                 QueSeriesTarget = lstdictHistory[historyindex].QueSeriesTarget #sets it after the first time
                
     for index, items in enumerate(Signatories):
-        
+
         #This is for when number of approvers have changed and want to use historic tables to formulate the signatories
         #Say if have 6 Approvers now and previous QueSeriesTarget=4 (3Approvers), have to delete last blank 3 from Signatories
         if index == QueSeriesTarget:
@@ -1198,7 +1211,7 @@ def blgettimehistorytables (id, Signatories, QueSeries=0):
         elif (index < QueSeries) and (QueSeriesTarget-1 != index):
             #Once you sign you increment the queseries . The historic tables values for user is index+1
             filterkwargs = {'id':id, 'QueSeries': index+1} 
-            lstdictHistory = ActionItems.history.filter(**filterkwargs).select_related("history_user").order_by('-history_date')
+            lstdictHistory = ActionItems.history.filter(**filterkwargs).select_related("history_user").order_by('-history_date').exclude(history_user=paraOmitAdmin)
             #This is the logic of one step and 2 step away
             if  QueSeries - index == 1 :
                 setSignatoriesItems(items,0)
@@ -1207,9 +1220,9 @@ def blgettimehistorytables (id, Signatories, QueSeries=0):
                 setSignatoriesItems(items,1)
         elif QueSeries == 99 and (QueSeriesTarget-1 == index):
             filterkwargs = {'id':id, 'QueSeries': 99}
-            lstdictHistory = ActionItems.history.filter(**filterkwargs).select_related("history_user").order_by('-history_date')
+            lstdictHistory = ActionItems.history.filter(**filterkwargs).select_related("history_user").order_by('-history_date').exclude(history_user=paraOmitAdmin)
             setSignatoriesItems(items,0)
-                
+            
     return Signatories
 def blreplacemultiplesignatories (signatories,id,index):
     """returns a single signatory, just a dummy data since the exact signatory is checked 
