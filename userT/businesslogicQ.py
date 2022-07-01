@@ -4,7 +4,7 @@ from functools import reduce
 import operator
 from UploadExcel.models import ActionItems
 from .models import *
-def blfiltergeneralbyOrQ (filteredstring,table=ActionItems.history,orderby="-history_date",reducedfields=["id","history_date"]) :
+def blfiltergeneralbyOrQ (filteredstring,table=ActionItems.history,orderby="-history_date",reducedfields=["id","history_date","QueSeries","Revision"]) :
     """Pass in list of items as filtered string . The function then filters based on OR operato. This function then has default tables 
     it filters on, and orders by which is actually the history tables at the start, """
     QObjectSeries =[]

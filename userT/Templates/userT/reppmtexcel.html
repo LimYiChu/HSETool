@@ -93,7 +93,7 @@
                     </thead>
                     <tbody>
                       {%for key, value in dictofallactionswithtime.iterrows %}
-                        <tr data-toggle="tooltip" data-placement="right" title="Holding Day(s): {{ value.holding_days }}">
+                        <tr data-toggle="tooltip" data-placement="right" title="Holding Day(s): {{ value.holding_time }}">
                           <td><a class="article-title"
                               href="{% url  'pmtrepviewall' value.id %}">{{value.StudyActionNo }}</a></td>
                           <td>{{value.StudyName}}</td>
