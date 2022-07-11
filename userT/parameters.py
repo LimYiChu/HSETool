@@ -74,7 +74,7 @@ for items in ALLOWED_HOSTS :
         # blankzipdir = 'static/media/studybulkpdfdir/blank/' 
         # 20220608 Ying Ying
         pdfbystudy = 'static/media/pdfbystudy/' 
-        paraOmitAdmin = 9     #change according to local admin  
+        paraOmitAdmin = 99     #change according to local admin  
 
                                                                                                                                     
  

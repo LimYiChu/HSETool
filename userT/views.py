@@ -494,7 +494,9 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
         lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories) #it changes the Signatories directly
        
         currentQueSeries = blgetFieldValue(idAI,'QueSeries')
+        # revision = blgetFieldValue(idAI,'Revision') #Ying Ying 20220703-Bug Fix for signatories
         blgettimehistorytables(idAI,lstSignatoriesTimeStamp,currentQueSeries)
+        # blgettimehistoryyingying(idAI,lstSignatoriesTimeStamp,revision, currentQueSeries)
         ApproverLevel = blgetApproverLevel(discsub) #add approver level target in case it doesnt get set at the start
         blsetApproverLevelTarget(idAI,ApproverLevel)
         object_list = self.object.attachments_set.all()
@@ -601,7 +603,7 @@ class HistoryFormMixin(UserPassesTestMixin,UpdateView):
         IdAI = self.kwargs.get("pk")
         emailID = self.request.user.email
         inroute = blgetvaliduserinroute(IdAI,emailID,True)
-
+ 
         #satifies 2 test before allowing to access items in Url  otherwise just redirect to main
         if  (ingroup) and (inroute):
             return True
@@ -790,7 +792,7 @@ def multiplefiles (request, **kwargs):
     form_multi = frmMultipleFiles()
     emailid = request.user.email
     strsignature = blgetfieldCustomUser(emailid,"signature") #IMPORTANT
-
+    
     if (request.POST.get('Upload')):
         ID = kwargs['forkeyid']
         #set using model manager since we want it back to actionee it has to be set at QueSeries=0
@@ -1321,6 +1323,8 @@ def closeoutprint(request,**kwargs):
 
     currentQueSeries = blgetFieldValue(ID,'QueSeries')
     blgettimehistorytables(ID,lstSignatoriesTimeStamp,currentQueSeries)
+    # revision = blgetFieldValue(ID,'Revision') #Ying Ying 20220703-Bug Fix for signatories
+    # blgettimehistoryyingying(ID,lstSignatoriesTimeStamp,revision, currentQueSeries)
     signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
     
     studyname = str(actiondetails.StudyName)
@@ -1476,6 +1480,8 @@ class pmtrepviewall(UpdateView):
         lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories)
         currentQueSeries = blgetFieldValue(idAI,'QueSeries')
         blgettimehistorytables(idAI,lstSignatoriesTimeStamp,currentQueSeries)
+        # revision = blgetFieldValue(idAI,'Revision') #Ying Ying 20220703-Bug Fix for signatories
+        # blgettimehistoryyingying(idAI,lstSignatoriesTimeStamp,revision,currentQueSeries) #Ying Ying 20220703-Bug Fix for signatories
         object_list = self.object.attachments_set.all() 
         rejectcomments = self.object.comments_set.all() 
         
