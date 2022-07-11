@@ -88,10 +88,11 @@ class ActionItems(models.Model):
 
     def save(self, *args, **kwargs):
 
-        useremail = HistoricalRecords.thread.request.user
-        objuser  = CustomUser.objects.get (email = useremail)     
-
-        if objuser.is_superuser ==  True:
+        # useremail = HistoricalRecords.thread.request.user
+        # objuser  = CustomUser.objects.get (email = useremail)   
+        userurl = HistoricalRecords.thread.request.path
+        urllowercase = userurl.casefold()
+        if "admin/uploadexcel/" in urllowercase:
             self.skip_history_when_saving = True
             super(ActionItems, self).save(*args, **kwargs)
 

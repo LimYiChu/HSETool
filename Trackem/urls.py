@@ -106,7 +106,7 @@ urlpatterns = [
         path('closeoutsheet/<phase>',login_required(UserView.closeoutsheet),name='closeoutsheetphases'),
         path('closeoutsheet/<int:id>/print', login_required(UserView.closeoutprint), name='closeoutprint' ),
         path('closeoutsheet/<path:study>/print', login_required(UserView.mergedstudycloseoutprint), name='mergedstudycloseoutprint' ),
-        path('mergedcloseoutprint/', login_required(UserView.mergedcloseoutprint_update), name='mergedcloseouprint' ),
+        path('mergedcloseoutprint/', login_required(UserView.mergedcloseoutprint), name='mergedcloseoutprint' ),
         path('stitchpdf/', login_required(UserView.stitchpdf), name='stitchpdf' ),
         
         path('addonupload/', login_required(UploadV.AddonLoad), name='addonupload' ),

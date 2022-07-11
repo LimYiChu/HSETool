@@ -1139,10 +1139,10 @@ def blgetvaliduserinroute (idAI,emailid,History=False):
    #approveractioneeseries = ''.join([k for k, v in Signatories.items() if v==emailid])
     approveractioneeseries = ''.join([k for k, v in Signatories.items() if emailid in v])
     approverlevel= ''.join(re.findall('[0-9]+', str(approveractioneeseries)))
-    
+
     #check this line and why we need it
     isvaliduser = emailid in Signatories.values()
-   
+
     #must check queseries again to make sure queseries not at approver level
     #So this example below is if multiple actionee and then access id which is at approver level
     # 2 limb test must test for queseries because he could be an actionee and try and access url on approver que
@@ -1161,22 +1161,91 @@ def blgetvaliduserinroute (idAI,emailid,History=False):
         else:
             return False
     elif ('Approver' in approveractioneeseries) :
-        
+
         if (str(queseries) in approverlevel) or History==True:
-    
+
     # 2 limb test
 
         #if isvaliduser and (str(queseries)==int(approverlevel)):
 
             return True
     else :
-        
+
         return False
 def bldeletehistorytablesignatory(id) :
     '''Function to delete the last entry based on id . This function was done primarily 
     to solve a bug with the sinatories (blgettimehistorytables) reading from history table if Approver hits Cancel'''
     filterkwargs = {'id':id,}#'QueSeries' :QueSeries
     ActionItems.history.filter(**filterkwargs).select_related("history_user").order_by('-history_date')[0].delete()
+
+
+def blgettimehistoryyingying(id, Signatories, revision, QueSeries=0):
+    QueSeriesTarget = 9 #Random Distant Number to be reset after first loop
+    def setSignatoriesItems (setofsignatories,historyindex):
+                setofsignatories [1] = lstdictHistory[historyindex].history_user.email
+                setofsignatories [2] = lstdictHistory[historyindex].history_user.fullname
+                setofsignatories [3] = lstdictHistory[historyindex].history_user.designation
+                setofsignatories [4] = lstdictHistory[historyindex].history_user.signature
+                setofsignatories [5] = lstdictHistory[historyindex].history_date
+
+                nonlocal QueSeriesTarget 
+                QueSeriesTarget = lstdictHistory[historyindex].QueSeriesTarget #sets it after the first time
+               
+    for index, items in enumerate(Signatories):
+
+        #This is for when number of approvers have changed and want to use historic tables to formulate the signatories
+        #Say if have 6 Approvers now and previous QueSeriesTarget=4 (3Approvers), have to delete last blank 3 from Signatories
+        if index == QueSeriesTarget:
+            if len (Signatories) != QueSeriesTarget :
+                noblanksignatures = len (Signatories)-QueSeriesTarget
+                del Signatories[-noblanksignatures:]
+            break
+        if index >= QueSeries:
+            break
+
+        elif (index < QueSeries) and (QueSeriesTarget-1 != index):
+            #Once you sign you increment the queseries . The historic tables values for user is index+1
+            Initfilterkwargs = {'id':id,'Revision': revision} 
+            filterkwargs = {'QueSeries': index+1}  #Ying Ying 20220703-Bug Fix for signatories
+
+            InitlstdictHistory = ActionItems.history.filter(**Initfilterkwargs).select_related("history_user").order_by('-history_date').exclude(history_user=paraOmitAdmin)
+            lstdictHistory = InitlstdictHistory.filter(**filterkwargs)
+
+            df = pd.DataFrame(InitlstdictHistory.values("id","StudyActionNo","QueSeries","QueSeriesTarget","Revision","history_date"))
+            df2 = df.loc[df.groupby('QueSeries')['history_date'].idxmax()]
+            df2.loc[df2.QueSeries == 99 ,'max'] = 'Yes'
+            df2 = df2.groupby('max').last()
+            df2['latest'] = 'Yes'
+            dftotal = pd.merge(df, df2, how="left",on=['id','StudyActionNo','QueSeries','QueSeriesTarget','Revision','history_date'])
+            dftotal['latest'] = dftotal.latest.shift(-1)
+            dftotal = dftotal.sort_values('history_date')
+            dftotal['latest'] = dftotal['latest'].replace(to_replace= np.NaN, method='ffill')
+            dftotal = dftotal.sort_values('history_date', ascending=False)
+            dftotal['index'] = dftotal.groupby(['QueSeries']).cumcount()
+            dflast = dftotal.sort_values(['QueSeries','history_date'])
+            dflast['queseries'] = dflast['QueSeries']
+
+            if (dflast['latest'] == "Yes").any():
+                dflast = dflast[dflast['latest'].str.contains('Yes', na=False)]
+            dflast = dflast.groupby('QueSeries').first()
+            dffinal = dflast.loc[dflast['queseries'] == index+1]
+            index_number = dffinal['index'].item()
+
+            #This is the logic of one step and 2 step away
+            if  QueSeries - index == 1 :
+                setSignatoriesItems(items,0)
+                
+                continue
+            if  QueSeries - index > 1:
+                # setSignatoriesItems(items,1)
+                setSignatoriesItems(items,index_number)  
+                
+        elif QueSeries == 99 and (QueSeriesTarget-1 == index):
+            filterkwargs = {'id':id, 'QueSeries': 99}
+            lstdictHistory = ActionItems.history.filter(**filterkwargs).select_related("history_user").order_by('-history_date').exclude(history_user=paraOmitAdmin)
+            setSignatoriesItems(items,0)
+            
+    return Signatories
 
 def blgettimehistorytables (id, Signatories, QueSeries=0):
     """Gets time stamp based on queseries and whom signed from history tables. Overwrites name and time stamp from action routes
