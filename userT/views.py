@@ -289,13 +289,9 @@ def mainDashboard (request):
 
     totalapproveraction = sum (appractioncount)
     approverjsonlist = blremoveemptylist(apprfinalist)
-    
-    parameters = blgetparameters ()
-    Versioning =  str(parameters.Versioning)
 
 
     Context = {
-        'Versioning' : Versioning,
         'oneweekcount':countlistbyweek[0],
         'twoweekcount':countlistbyweek[1],
         'strdays':strdays,
@@ -494,9 +490,12 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
         lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories) #it changes the Signatories directly
        
         currentQueSeries = blgetFieldValue(idAI,'QueSeries')
-        # revision = blgetFieldValue(idAI,'Revision') #Ying Ying 20220703-Bug Fix for signatories
-        blgettimehistorytables(idAI,lstSignatoriesTimeStamp,currentQueSeries)
-        # blgettimehistoryyingying(idAI,lstSignatoriesTimeStamp,revision, currentQueSeries)
+        # blgettimehistorytables(idAI,lstSignatoriesTimeStamp,currentQueSeries)
+        #Ying Ying 20220703-Bug Fix for signatories
+        revision = blgetFieldValue(idAI,'Revision') 
+        blgettimehistorytablesUpdate(idAI,lstSignatoriesTimeStamp,revision, currentQueSeries)
+        #end bugfixed
+
         ApproverLevel = blgetApproverLevel(discsub) #add approver level target in case it doesnt get set at the start
         blsetApproverLevelTarget(idAI,ApproverLevel)
         object_list = self.object.attachments_set.all()
@@ -1082,7 +1081,7 @@ def repPMTExcel (request,phase=""):
     #this sequence is important otherwise doesnt work
     phaseswithrisk = bladdriskelements(dictofallactions)
     dictofallactions    = blgetdictActionStuckAt(phaseswithrisk)
-    dictofallactionswithtime = bladdholdtime(dictofallactions)
+    dictofallactionswithtime = bladdholdtimeupdate(dictofallactions)
 
     #pandas excel
     # dfall1 = pd.DataFrame.from_dict(dictofallactions)
@@ -1322,11 +1321,13 @@ def closeoutprint(request,**kwargs):
     lstSignatoriesTimeStamp= blgettimestampuserdetails (ID, Signatories) #edward changed this to use new bl for signature 20210706
 
     currentQueSeries = blgetFieldValue(ID,'QueSeries')
-    blgettimehistorytables(ID,lstSignatoriesTimeStamp,currentQueSeries)
-    # revision = blgetFieldValue(ID,'Revision') #Ying Ying 20220703-Bug Fix for signatories
-    # blgettimehistoryyingying(ID,lstSignatoriesTimeStamp,revision, currentQueSeries)
+    # blgettimehistorytables(ID,lstSignatoriesTimeStamp,currentQueSeries)
+    #Ying Ying 20220703-Bug Fix for signatories
+    revision = blgetFieldValue(ID,'Revision') 
+    blgettimehistorytablesUpdate(ID,lstSignatoriesTimeStamp,revision, currentQueSeries)
+    #end bugfixed
+
     signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
-    
     studyname = str(actiondetails.StudyName)
     projectphase = str(actiondetails.ProjectPhase)
     foreignkeydict = {'StudyName':studyname,'ProjectPhase':projectphase}
@@ -1476,12 +1477,15 @@ class pmtrepviewall(UpdateView):
         context = super().get_context_data(**kwargs)
         discsub = blgetDiscSubOrgfromID(idAI)
         Signatories = blgetSignotories(discsub)
-        
         lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories)
+        
         currentQueSeries = blgetFieldValue(idAI,'QueSeries')
-        blgettimehistorytables(idAI,lstSignatoriesTimeStamp,currentQueSeries)
-        # revision = blgetFieldValue(idAI,'Revision') #Ying Ying 20220703-Bug Fix for signatories
-        # blgettimehistoryyingying(idAI,lstSignatoriesTimeStamp,revision,currentQueSeries) #Ying Ying 20220703-Bug Fix for signatories
+        # blgettimehistorytables(idAI,lstSignatoriesTimeStamp,currentQueSeries)
+        #Ying Ying 20220703-Bug Fix for signatories
+        revision = blgetFieldValue(idAI,'Revision') 
+        blgettimehistorytablesUpdate(idAI,lstSignatoriesTimeStamp,revision, currentQueSeries)
+        #end bugfixed
+
         object_list = self.object.attachments_set.all() 
         rejectcomments = self.object.comments_set.all() 
         

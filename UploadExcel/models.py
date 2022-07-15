@@ -92,7 +92,7 @@ class ActionItems(models.Model):
         # objuser  = CustomUser.objects.get (email = useremail)   
         userurl = HistoricalRecords.thread.request.path
         urllowercase = userurl.casefold()
-        if "admin/uploadexcel/" in urllowercase:
+        if "admin/" in urllowercase:
             self.skip_history_when_saving = True
             super(ActionItems, self).save(*args, **kwargs)
 
