@@ -85,7 +85,7 @@ def blpdfcompareandupdate(actionitemdict, csvname, pdfdir, zipname):
     return returnzipfile
 
 def blgetparameters ():
-    
+
     return Parameters.objects.all().first()
 
 def blgetmenus():
@@ -342,6 +342,45 @@ def blexceedholdtime(Approver_R,reducedfileds,newdef=False):
 def bldepth (items):
 
     return isinstance(items, dict) and max(map(bldepth, items))+1
+
+def bladdholdtimeupdate(allaction):
+    """
+    yingying 27062022
+    This function gets the cumulative holding time for all Actions in Actioneee or Approver basket
+    Incoming data (allaction) is queryset (list of dictionary), output is in data frame.
+    """
+    timezonenow = timezone.now()
+    dfall = pd.DataFrame(allaction)
+
+    res= [("id" , str(sub["id"])) for sub in allaction]
+    if res != [] :
+        historyactions = blfiltergeneralbyOrQ(res,ActionItems.history)
+        pd.set_option('display.max_rows', None)  #used if there are print statements to show all records instead of truncated records
+        dfholdtimes =pd.DataFrame(historyactions)
+        dfholdtimes = dfholdtimes.sort_values(by = ['id', 'history_date'], ascending=[True,False])
+        dfholdtimes['QueSeriesTransition'] = dfholdtimes['QueSeries'].ne(dfholdtimes['QueSeries'].shift().bfill()).astype(int)
+        dfholdtimes.loc[dfholdtimes['QueSeries'].eq(99) & dfholdtimes['QueSeries'].shift(1).eq(0), '99Transition'] = 'True'
+        dfholdtimes.loc[dfholdtimes['id'] != dfholdtimes['id'].shift(1), 'idTransition'] = 'True'
+        dfholdtimes.loc[(dfholdtimes['99Transition'] == 'True') & (dfholdtimes['idTransition'] != 'True'), 'AdminIntefere'] = 'True'
+        mask = ~(dfholdtimes['AdminIntefere'].eq("True").groupby(dfholdtimes['id']).cummax())    
+        dfholdtimes = dfholdtimes[mask]
+        dfholdtimes['revisioncompare'] = dfholdtimes.groupby(['id'])['Revision'].transform(lambda x: max(x)) 
+        dfholdtimes = dfholdtimes[dfholdtimes['revisioncompare'] == dfholdtimes['Revision']]
+        dfholdtimes['maplatestQueSeries'] = dfholdtimes.groupby(['id'])['QueSeries'].transform('first')
+        dfholdtimes = dfholdtimes[dfholdtimes['QueSeries'] == dfholdtimes['maplatestQueSeries']]
+        dftimemax = dfholdtimes.groupby('id').last()
+
+        dftimemax ['holding_time'] = timezonenow - dftimemax['history_date']
+        dftimemax ['holding_time'] = (dftimemax ['holding_time']).dt.days
+        dftimemax.loc[(dftimemax['QueSeries'] == 0) & (dftimemax['Revision'] == 0), 'holding_time'] = np.NaN
+        dftotal = pd.merge(dfall, dftimemax, how="outer",on='id')
+        dftotal ['actholding_day'] = timezonenow.date() - dftotal['DateCreated']
+        dftotal ['actholding_day'] = (dftotal ['actholding_day']).dt.days
+        dftotal ['holding_time'] = dftotal ['holding_time'].fillna(dftotal ['actholding_day'])
+        dftotal ['holding_time'] = dftotal ['holding_time'].astype(float).astype(int)
+        dftotal.loc[dftotal['QueSeries_y'] == 99.0, 'holding_time'] = 'None'
+
+    return dftotal
 
 def bladdholdtime(allaction):
     """
@@ -1179,7 +1218,13 @@ def bldeletehistorytablesignatory(id) :
     ActionItems.history.filter(**filterkwargs).select_related("history_user").order_by('-history_date')[0].delete()
 
 
-def blgettimehistoryyingying(id, Signatories, revision, QueSeries=0):
+def blgettimehistorytablesUpdate(id, Signatories, revision, QueSeries=0):
+    """
+    yingying 13072022
+    Update based on def blgettimehistorytable, add extra condition and dataframe to get the correct history date and signature and to 
+    prevent back and forth issue in signatories table.
+    """
+
     QueSeriesTarget = 9 #Random Distant Number to be reset after first loop
     def setSignatoriesItems (setofsignatories,historyindex):
                 setofsignatories [1] = lstdictHistory[historyindex].history_user.email
@@ -1207,34 +1252,24 @@ def blgettimehistoryyingying(id, Signatories, revision, QueSeries=0):
             #Once you sign you increment the queseries . The historic tables values for user is index+1
             Initfilterkwargs = {'id':id,'Revision': revision} 
             filterkwargs = {'QueSeries': index+1}  #Ying Ying 20220703-Bug Fix for signatories
-
             InitlstdictHistory = ActionItems.history.filter(**Initfilterkwargs).select_related("history_user").order_by('-history_date').exclude(history_user=paraOmitAdmin)
             lstdictHistory = InitlstdictHistory.filter(**filterkwargs)
-
-            df = pd.DataFrame(InitlstdictHistory.values("id","StudyActionNo","QueSeries","QueSeriesTarget","Revision","history_date"))
-            df2 = df.loc[df.groupby('QueSeries')['history_date'].idxmax()]
-            df2.loc[df2.QueSeries == 99 ,'max'] = 'Yes'
-            df2 = df2.groupby('max').last()
-            df2['latest'] = 'Yes'
-            dftotal = pd.merge(df, df2, how="left",on=['id','StudyActionNo','QueSeries','QueSeriesTarget','Revision','history_date'])
-            dftotal['latest'] = dftotal.latest.shift(-1)
-            dftotal = dftotal.sort_values('history_date')
-            dftotal['latest'] = dftotal['latest'].replace(to_replace= np.NaN, method='ffill')
-            dftotal = dftotal.sort_values('history_date', ascending=False)
-            dftotal['index'] = dftotal.groupby(['QueSeries']).cumcount()
-            dflast = dftotal.sort_values(['QueSeries','history_date'])
-            dflast['queseries'] = dflast['QueSeries']
-
-            if (dflast['latest'] == "Yes").any():
-                dflast = dflast[dflast['latest'].str.contains('Yes', na=False)]
-            dflast = dflast.groupby('QueSeries').first()
-            dffinal = dflast.loc[dflast['queseries'] == index+1]
-            index_number = dffinal['index'].item()
+            dfactionhistory = pd.DataFrame(InitlstdictHistory.values("id","StudyActionNo","QueSeries","QueSeriesTarget","Revision","history_date"))
+            dfactionhistory['Transition'] = dfactionhistory['QueSeries'].eq(99) & dfactionhistory['QueSeries'].shift(1).eq(0)  #This is look for 99 to 0 transition if any
+            transitioncount = len(dfactionhistory[dfactionhistory['Transition'] == True])                         #To calculate the number of 99 to 0 transition                                
+            dfactionhistory['index'] = dfactionhistory.groupby(['QueSeries']).cumcount()                          #provide the sequence number to history within each QueSeries                     
+            if transitioncount >= 1:                                                                            #transition count is to calculate 99 to 0 transition, 
+                mask = ~(dfactionhistory['Transition'].eq(True).groupby(dfactionhistory['id']).cummax())        #to remove the row with Transition =  "True" and the rows before, leaving the latest.
+                dfactionhistory = dfactionhistory[mask]
+            dfactionhistory['queseries'] = dfactionhistory['QueSeries']
+            dfhistoryfilter = dfactionhistory.groupby('QueSeries').last()                       #get the last value of each queseries
+            dfhistoryfinal = dfhistoryfilter.loc[dfhistoryfilter['queseries'] == index+1]
+            index_number = dfhistoryfinal['index'].item()                                      #get the index number
 
             #This is the logic of one step and 2 step away
             if  QueSeries - index == 1 :
-                setSignatoriesItems(items,0)
-                
+                setSignatoriesItems(items,index_number)
+
                 continue
             if  QueSeries - index > 1:
                 # setSignatoriesItems(items,1)
@@ -1261,7 +1296,7 @@ def blgettimehistorytables (id, Signatories, QueSeries=0):
                 setofsignatories [3] = lstdictHistory[historyindex].history_user.designation
                 setofsignatories [4] = lstdictHistory[historyindex].history_user.signature
                 setofsignatories [5] = lstdictHistory[historyindex].history_date
-
+                
                 nonlocal QueSeriesTarget 
                 QueSeriesTarget = lstdictHistory[historyindex].QueSeriesTarget #sets it after the first time
                
