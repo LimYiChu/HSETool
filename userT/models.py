@@ -6,10 +6,15 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from .manager import *
 from UploadExcel.manager import *
+from django.utils import timezone
+#from .businesslogic import *
 #user= settings.AUTH_USER_MODEL
-from UploadExcel.models import *
+import UploadExcel.models 
+#from UploadExcel.models import ActionItems
 from simple_history.models import HistoricalRecords
+from userT.parameters import *
 
+#import userT.views
 from django.contrib.auth.models import ( 
     AbstractBaseUser, BaseUserManager
      )
@@ -72,6 +77,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
     staff = models.BooleanField(default=True)
     
     objects =   UserManager()
+    mdlGetUserObject = mgrgetobject()
     mdlSetGetField = mgrSetGetfields()
     USERNAME_FIELD =   'email'
     REQUIRED_FIELDS =   []
@@ -97,8 +103,6 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
     #         #self.type = self.default_type
     #         self.type.append(self.default_type)
     #     return super().save(*args, **kwargs)
-
-    
 
     def get_full_name(self):
         return self.fullname
@@ -130,6 +134,39 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
     #     # Simplest possible answer: Yes, always
     #     return True
 #changed active to is_active
+
+class Signatory (models.Model):
+
+    ActionItemsid = models.ForeignKey('UploadExcel.ActionItems', on_delete=models.SET_NULL,null=True)
+    QueSeries = models.IntegerField(blank=True, null=True)
+    disipline   =   models.CharField(max_length=254, blank=True, null=True)
+    subdisipline    =  models.CharField(max_length=254, blank=True, null=True) 
+    organisation   =   models.CharField(max_length=254, blank=True, null=True)
+    email =  models.EmailField(max_length=254, blank=True, null=True)
+    fullname = models.CharField(max_length=254, blank=True, null=True)
+    signature = models.CharField(max_length=254, blank=True, null=True)
+    designation = models.CharField(max_length=254, blank=True, null=True)
+    #Role = models.CharField(max_length=254, blank=True, null=True)
+    Timestamp = models.DateTimeField(default=timezone.now,null=True,blank=True)
+    
+    objects = models.Manager()
+    #mdlSetSigantory = mgrSetSignatoryObject()
+
+    
+    def create_signatory (self,**kwargs):
+        """11/07/2022 Guna : Pass in ActionItemsid_id, email and Queseries as kwargs. This then uses the email to get the user object 
+        Copies the data from user object into this table at the point of signing hence gives user the flexibility of changing the signature 
+        for different id"""
+        
+        userobject = CustomUser.mdlGetUserObject.mgrGetObject(email=kwargs['email'])
+        dictuserobject = userobject.__dict__
+        wanted_keys = ['disipline', 'subdisipline', 'organisation','fullname','signature','designation']
+        newdict = dict((k, dictuserobject[k]) for k in wanted_keys if k in dictuserobject)
+        newdict.update(kwargs)
+        Signatory.objects.create(**newdict)
+
+
+
 class Phases (models.Model):
     ProjectPhase = models.CharField(max_length=200, null=True)
     Scheduled = models.CharField(max_length=200, null=True)

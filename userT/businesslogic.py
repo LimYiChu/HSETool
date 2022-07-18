@@ -30,6 +30,11 @@ import shutil
 from django.db.models import F
 from collections import Counter
 
+def blcropdictionary (dictitem, listofkeys):
+    """09-07-2022 Guna - Pass in large dictionary and get a subset of the dictionary based on list of wanted keys you pass in"""
+    newdict = dict((k, dictitem[k]) for k in listofkeys if k in dictitem)
+
+
 def blchangelinuxgroup(path, owner, group):
     """
     yingying 27062022

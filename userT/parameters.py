@@ -8,6 +8,8 @@ cclist = ["ehstools@prism-ehstools.awsapps.com"]#cclist to send a copy of email 
 emailSender ="ehstools@prism-ehstools.awsapps.com"#used in views for email sender origin address
 #urllist = ["http://test.prism-ehstools.com","https://sapuraphase3.prism-ehstools.com","https://sapuraphase4a.prism-ehstools.com","https://prism.prism-ehstools.com"]
 #this is to enable different parameters to be provided for different hosts. This for loop is to specify the parameters in email headers & email message(emailreminders in views.py) based on different urls.
+global urlglobal 
+urlglobal ="Test12343"
 for items in ALLOWED_HOSTS:
     if items.find('test')>=0 :
         paremailurl = "http://test.prism-ehstools.com"
