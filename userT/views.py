@@ -57,6 +57,9 @@ from django.utils import timezone
 from UploadExcel.formstudies import *
 from time import time
 import copy
+from userT import parameters
+global urlview
+urlview = "VIEWURLGLOBAL"
 
 def mergedcloseoutprint_update(request):
     """
@@ -484,6 +487,9 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
 
     def get_context_data(self,**kwargs):
         idAI = self.kwargs.get("pk")
+        emailid = self.request.user.email
+      
+
         context = super().get_context_data(**kwargs)
         discsub = blgetDiscSubOrgfromID(idAI)
         Signatories = blgetSignotories(discsub)
@@ -500,6 +506,9 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
         blsetApproverLevelTarget(idAI,ApproverLevel)
         object_list = self.object.attachments_set.all()
 
+       
+
+
         context['object_list'] = object_list
         context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(idAI)
         context['Approver'] = True
@@ -514,13 +523,13 @@ class ApproverConfirm(UpdateView):
     """
     This function is for the Approver Confirmation Page
     """
-    template_name = "userT/approverconfirmation.html" #yhs changed to all small letters
+    template_name = "userT/approverconfirmation.html" 
     form_class = frmApproverConfirmation
     success_url = '/ApproverList/'
 
     def form_valid(self,form):
         emailid=self.request.user.email
-        strsignature = blgetfieldCustomUser(emailid,"signature") #IMPORTANT
+        strsignature = blgetfieldCustomUser(emailid,"signature") 
 
         if (self.request.POST.get('Cancel')):
             
@@ -535,7 +544,7 @@ class ApproverConfirm(UpdateView):
             if (form.instance.QueSeries == (ApproverLevel-1)):
                 form.instance.QueSeries = 99 # Random far end number to show all closed
             else:
-                form.instance.QueSeries += 1
+                form.instance.QueSeries += 1 #this sets the queseries in the form object and automaticall saves it
 
             if (self.request.POST.get('signature')):
                 strsignature = self.request.POST.get('signature')
@@ -545,6 +554,12 @@ class ApproverConfirm(UpdateView):
 
             integerqueseries = blgetFieldValue(ID,"QueSeries")
             discsub = blgetDiscSubOrgfromID(ID)
+
+             # 15 - 07 - 2022 Guna -- new signatory - Move 3 lines of code to bl - it needs to be moved above 
+            signobj = Signatory ()
+            signobj.create_signatory(ActionItemsid_id= ID,email =emailid,QueSeries=currentQueSeries)
+            ActionItems.mdlSetField.mgrSetField(ID,"Signatory",True)
+            # end new signatory
             Signatoryemails = blgetSignatoryemailbyque(discsub,integerqueseries+1)
             ContentSubject  = blbuildSubmittedemail(ID,"Approver")
             success = blemailSendindividual(emailSender,Signatoryemails,ContentSubject[0], ContentSubject[1])
@@ -786,7 +801,7 @@ def IndividualBreakdownByActions(request):
 
 def multiplefiles (request, **kwargs):
     """
-    This function enables the User to upload the attachments into the system
+    06_07_2022 Guna - Modification to create signatory tablesThis function enables the User to upload the attachments into the system. Actionee second page
     """
     form_multi = frmMultipleFiles()
     emailid = request.user.email
@@ -806,15 +821,24 @@ def multiplefiles (request, **kwargs):
             x = Attachments.objects.create(
                 Attachment=file,
                 Action_id=ID,
-                Username=request.user.email
+                Username=emailid
             )
         newQueSeries = 1
+        
+        #July 2022 - Guna - Write to new signatory table and set the value in ActionItems to True
+        signobj = Signatory ()
+        signobj.create_signatory(ActionItemsid_id= ID,email =emailid,QueSeries=0)
+        ActionItems.mdlSetField.mgrSetField(ID,"Signatory",True)
+        #July End new signatory
 
         ActionItems.mdlQueSeries.mgrsetQueSeries(ID,newQueSeries)
+        #below is for sending email.
         discsub = blgetDiscSubOrgfromID(ID)
         Signatoryemails = blgetSignatoryemailbyque(discsub,newQueSeries) 
         ContentSubject  =blbuildSubmittedemail(ID,"Actionee")
         success = blemailSendindividual(emailSender,Signatoryemails,ContentSubject[0], ContentSubject[1])
+
+       
         return HttpResponseRedirect('/ActioneeList/')
 
     if (request.POST.get('Cancel')):

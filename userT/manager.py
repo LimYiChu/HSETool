@@ -1,10 +1,9 @@
 from django.db.models import Q
 from django.db import models
 from django.contrib.auth.models import User
-
 from django.contrib.auth.base_user import BaseUserManager
-
 from django.utils.translation import gettext_lazy as _
+from django.shortcuts import get_object_or_404
 
 class RoutesQuerySet(models.QuerySet):
     def get_ActioneeR(self,useremail):
@@ -122,7 +121,12 @@ class mgrSetGetfields(models.Manager):
     def mgrGetField(self,email, fields):
          #lookup = str(fields)+'__icontains' - This is how you search dynamically but since we are setting it
          return self.get_queryset().get_field(email, fields)
-    
+
+class mgrgetobject(models.Manager):
+     def mgrGetObject(self,**kwargs):
+        obj = get_object_or_404(self.model, **kwargs)
+        return obj
+
 class mgrGeneralGetSetfields(models.Manager):
     def get_queryset (self):
          return GeneralQuerySet(self.model, using=self._db)

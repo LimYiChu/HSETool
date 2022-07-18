@@ -19,18 +19,11 @@ class UploadExl(models.Model):
 class ActionItems(models.Model):
    
     StudyActionNo   =   models.CharField(max_length=100,null=True,blank=True)
-    # StudyName_backup       =   models.CharField(max_length=255,null=True,blank=True)
-    # StudyName       =   models.ForeignKey(Studies, on_delete=models.SET_NULL,null=True,blank=True) 
     StudyName_backup      =   models.CharField(max_length=255,null=True,blank=True)
     StudyName       =   models.ForeignKey(Studies, on_delete=models.SET_NULL,null=True,blank=True) 
     Facility       =   models.CharField(max_length=255,null=True,blank=True)
-   
-
-    # ProjectPhase_backup         =   models.CharField(max_length=255,null=True,blank=True)
-    # ProjectPhase       =   models.ForeignKey(Phases, on_delete=models.SET_NULL,null=True,blank=True)
     ProjectPhase_backup         =   models.CharField(max_length=255,null=True,blank=True)
     ProjectPhase =   models.ForeignKey(Phases, on_delete=models.SET_NULL,null=True,blank=True)
-
     Cause           =   models.TextField(null=True,blank=True)
     Safeguard           = models.TextField(null=True,blank=True)
     Consequence     =   models.TextField(null=True,blank=True)
@@ -38,12 +31,10 @@ class ActionItems(models.Model):
     InitialRisk     =   models.CharField(max_length=10,null=True,blank=True)
     ResidualRisk    =   models.CharField(max_length=10,null=True,blank=True)
     Response        =   models.TextField(null=True,blank=True)
-    
     Organisation    =   models.CharField(max_length=100,null=True,blank=True)
     Disipline       = models.CharField(max_length=100,null=True,blank=True)
     Subdisipline    = models.CharField(max_length=100,null=True,blank=True)
     FutureAction    =   models.TextField(null=True,blank=True)
-    
     DueDate         =   models.DateField(null=True,blank=True)
     QueSeries       =   models.IntegerField(blank=True,null=True,default=0) #try to make the queseries value default to 0 when not included in the templated uploaded.
     QueSeriesTarget =   models.IntegerField(blank=True,null=True,default=0)
@@ -51,12 +42,12 @@ class ActionItems(models.Model):
     Deviation       =  models.TextField(null=True,blank=True)
     Revision        =   models.IntegerField(blank=True,null=True,default=0)
     DateCreated     =  models.DateField(auto_now_add=True, null=True,blank=True)
-
-    #20211223 edward Hazid fields
     NodeNo = models.IntegerField(blank=True,null=True,default=0)
     NodeDescription = models.TextField(null=True,blank=True)
-    PreventiveSafeguard = models.TextField(null=True,blank=True)
+    PreventiveSafeguard = models.TextField(null=True,blank=True) 
     MitigativeSafeguard = models.TextField(null=True,blank=True)
+
+    Signatory = models.BooleanField(default=False)
     
     class Meta:
         indexes = [
@@ -95,7 +86,6 @@ class ActionItems(models.Model):
         if "admin/" in urllowercase:
             self.skip_history_when_saving = True
             super(ActionItems, self).save(*args, **kwargs)
-
         else:
             super(ActionItems, self).save(*args, **kwargs)
 
