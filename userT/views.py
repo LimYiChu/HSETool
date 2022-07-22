@@ -378,7 +378,7 @@ class HistoryList (ListView):
         finalappractionitems = bladdriskcolourandoptimise(approverflatdict)
         rejecteditemsid = blRejectedHistortyActionsbyId(userZemail,0,1)
         rejecteditemsbyhistory = [blgetActionItemsbyid(rejecteditemsid)] # Creating a list to feed into bladdriskcolourandoptimise as that function is expecting a list of dictionaries
-        rejecteditemsbyhistorywithrejectiondate = blgetrejectiondate(rejecteditemsid, rejecteditemsbyhistory)
+        rejecteditemsbyhistorywithrejectiondate = blgetrejectiondate(rejecteditemsbyhistory)
         newrejecteditemsbyhist = bladdriskcolourandoptimise(rejecteditemsbyhistory)
         # context['rejectedhistory'] = rejecteditemsbyhistory
         context['rejectedhistory'] = rejecteditemsbyhistorywithrejectiondate

@@ -33,21 +33,23 @@ from collections import Counter
 def blcropdictionary (dictitem, listofkeys):
     """09-07-2022 Guna - Pass in large dictionary and get a subset of the dictionary based on list of wanted keys you pass in"""
     newdict = dict((k, dictitem[k]) for k in listofkeys if k in dictitem)
-def blgetrejectiondate(dictofids, dictofaction):
+
+    
+def blgetrejectiondate(dictofaction):
     """
     Ying Ying 20220722
-    dictofids is pass in as a list of dictionary (id). dictofaction is pass in as a list of dictionary (ie .values.
+    dictofaction is pass in as a list of dictionary (ie .values must have at least 'id')
     Get the rejection date from Comments table. Convert dictofaction and rejection date to dataframe, then merge based on acton item ID.
     Data is return as dataframe consisting of rejected items with rejection date.
     """
-    listofids =[x['id']for x in dictofids]
     lstofrejectdate = []
+    dfaction = pd.DataFrame(dictofaction[0])
+    idlist = dfaction['id'].values.tolist() 
 
-    for item in listofids:
+    for item in idlist:
         Rejectdate = Comments.mdlComments.mgrCommentsbyFK(item).values('Action_id','DateAdded')
         Rejectdatesorted = max(Rejectdate, key = lambda x:x['DateAdded'])
         lstofrejectdate.append(Rejectdatesorted)
-    dfaction = pd.DataFrame(dictofaction[0])
     dfrejectdate = pd.DataFrame(lstofrejectdate)
     dfrejectdate['DateAdded'] = pd.to_datetime(dfrejectdate['DateAdded']).dt.date
     dfrejectdatedropduplicate= dfrejectdate.drop_duplicates().reset_index(drop=True)
