@@ -57,6 +57,7 @@ from django.utils import timezone
 from UploadExcel.formstudies import *
 from time import time
 import copy
+import itertools
 
 def mergedcloseoutprint_update(request):
     """
@@ -372,8 +373,10 @@ class HistoryList (ListView):
         finalappractionitems = bladdriskcolourandoptimise(approverflatdict)
         rejecteditemsid = blRejectedHistortyActionsbyId(userZemail,0,1)
         rejecteditemsbyhistory = [blgetActionItemsbyid(rejecteditemsid)] # Creating a list to feed into bladdriskcolourandoptimise as that function is expecting a list of dictionaries
+        rejecteditemsbyhistorywithrejectiondate = blgetrejectiondate(rejecteditemsid, rejecteditemsbyhistory)
         newrejecteditemsbyhist = bladdriskcolourandoptimise(rejecteditemsbyhistory)
-        context['rejectedhistory'] = rejecteditemsbyhistory
+        # context['rejectedhistory'] = rejecteditemsbyhistory
+        context['rejectedhistory'] = rejecteditemsbyhistorywithrejectiondate
         context['approveractions'] = finalappractionitems
         return context
 
@@ -1082,7 +1085,7 @@ def repPMTExcel (request,phase=""):
     phaseswithrisk = bladdriskelements(dictofallactions)
     dictofallactions    = blgetdictActionStuckAt(phaseswithrisk)
     dictofallactionswithtime = bladdholdtimeupdate(dictofallactions)
-
+    
     #pandas excel
     # dfall1 = pd.DataFrame.from_dict(dictofallactions)
     # dfall1['Org/Disc/Sub-Disc']=dfall1['Organisation']+'/'+dfall1['Disipline']+'/'+dfall1['Subdisipline'] 

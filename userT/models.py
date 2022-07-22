@@ -152,7 +152,8 @@ class Studies (models.Model):
     DateConducted = models.DateField(auto_now_add=True,null=True,blank=True)
     Form = models.CharField(max_length=100, null=True,blank=True)
     ProjectPhase =   models.ForeignKey(Phases, on_delete=models.SET_NULL,null=True,blank=True)
-
+    Sendemail = models.BooleanField(default=True)
+    
     class Meta:
        verbose_name_plural = "Studies" #this if not done gives a view of Studiess in admin panel
     

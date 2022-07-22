@@ -104,9 +104,6 @@
                       <td><a class="article-title"
                           href="{% url  'HistoryFormMixin' x.id False%}">{{ x.Recommendations }}</a></td>
                       <td>{{ x.DueDate }}</td>
-
-
-
                       {%if riskmatrix%}
                       {% with initialrisk=x.InitialRisk%}
                       {% with riskcolour=x.RiskColour%}
@@ -117,8 +114,6 @@
                       <td>{{ x.InitialRisk }}</td>
                       <!--Original Code-->
                       {%endif%}
-
-
                       <td>{{ x.Revision }}</td>
                       {%endfor%}
                       {%endfor%}
@@ -136,23 +131,45 @@
                 <table id="table3" class="table table-striped table-hover fixedtable" style="width:100%">
                   {%include "userT/inclactioneeapprtableheader.html"%}
                   <th>Revision</th>
-                  </tr>
+                  <th>Rejection Date</th>
+                  
                   </thead>
                   <tbody>
-                    {% for items  in rejectedhistory %}
+                    {%for key, value in rejectedhistory.iterrows %}
+                      <tr>
+                        <td><a class="article-title"
+                            href="{% url  'HistoryFormMixin' value.id False%}">{{ value.StudyActionNo }}</a></td>
+                        <td>{{ value.StudyName__StudyName }}</td>
+                        <td>{{ value.Organisation }} /{{ value.Disipline }} / {{ value.Subdisipline }}</td>
+                        <td>{{ value.Cause }}</td>
+                        <td><a class="article-title"
+                            href="{% url  'HistoryFormMixin' value.id False%}">{{ value.Recommendations }}</a></td>
+                        <td>{{ value.DueDate }}</td>
+                        {%if riskmatrix%}
+                        {% with initialrisk=value.InitialRisk%}
+                        {% with riskcolour=value.RiskColour%}
+                        {%include "userT/incinitialriskcolour.html"%}
+                        {%endwith%}
+                        {%endwith%}
+                        {%else%}
+                        <td>{{ value.InitialRisk }}</td>
+
+                        {%endif%}
+                        <td>{{ value.Revision }}</td>
+                        <td>{{ value.DateAdded }}</td> 
+                      </tr>
+                    {%endfor%}
+                    <!-- {% for items  in rejectedhistory %}
                     {% for x  in items %}
                     <tr>
                       <td><a class="article-title"
-                          href="{% url  'HistoryFormMixin' x.id False%}">{{ x.StudyActionNo }}</a></td>
+                          href="% url  'HistoryFormMixin' x.id False%">{{ x.StudyActionNo }}</a></td>
                       <td>{{ x.StudyName__StudyName }}</td>
                       <td>{{ x.Organisation }} /{{ x.Disipline }} / {{ x.Subdisipline }}</td>
                       <td>{{ x.Cause }}</td>
                       <td><a class="article-title"
-                          href="{% url  'HistoryFormMixin' x.id False%}">{{ x.Recommendations }}</a></td>
+                          href="% url  'HistoryFormMixin' x.id False%">{{ x.Recommendations }}</a></td>
                       <td>{{ x.DueDate }}</td>
-
-
-
                       {%if riskmatrix%}
                       {% with initialrisk=x.InitialRisk%}
                       {% with riskcolour=x.RiskColour%}
@@ -160,14 +177,13 @@
                       {%endwith%}
                       {%endwith%}
                       {%else%}
-                      <td>{{ x.InitialRisk }}</td>
-                      <!--Original Code-->
-                      {%endif%}
-
-
+                      <td>{{ x.InitialRisk }}</td> -->
+                      <!--Original Code-->  
+                      <!-- {%endif%}
+                      
                       <td>{{ x.Revision }}</td>
                       {%endfor%}
-                      {%endfor%}
+                      {%endfor%} -->
                   </tbody>
 
                 </table>
