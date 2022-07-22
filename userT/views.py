@@ -57,13 +57,12 @@ from django.utils import timezone
 from UploadExcel.formstudies import *
 from time import time
 import copy
-<<<<<<< HEAD
 from userT import parameters
+import itertools
+
 global urlview
 urlview = "VIEWURLGLOBAL"
-=======
-import itertools
->>>>>>> 20220715-Notification_Supression_basedon_Study&Rejection_Date
+
 
 def mergedcloseoutprint_update(request):
     """

@@ -30,11 +30,9 @@ import shutil
 from django.db.models import F
 from collections import Counter
 
-<<<<<<< HEAD
 def blcropdictionary (dictitem, listofkeys):
     """09-07-2022 Guna - Pass in large dictionary and get a subset of the dictionary based on list of wanted keys you pass in"""
     newdict = dict((k, dictitem[k]) for k in listofkeys if k in dictitem)
-=======
 def blgetrejectiondate(dictofids, dictofaction):
     """
     Ying Ying 20220722
@@ -94,7 +92,6 @@ def blgetemailstuckat(actionitem):
     dfaction['DaystoDueDate'] = timezonenow.date() - dfaction['DueDate']
 
     return dfaction
->>>>>>> 20220715-Notification_Supression_basedon_Study&Rejection_Date
 
 
 def blchangelinuxgroup(path, owner, group):

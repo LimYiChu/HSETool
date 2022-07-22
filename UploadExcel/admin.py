@@ -8,7 +8,7 @@ from simple_history.admin import SimpleHistoryAdmin
 class ActionItemsAdmin(admin.ModelAdmin):
     list_display =('id', 'StudyActionNo', 'DueDate', 'StudyName', 'ProjectPhase', 'Recommendations', 'Response', 'Organisation', 'Disipline', 'Subdisipline', 'DateCreated', 'QueSeries',)
     list_editable = ('DueDate', 'StudyName', 'ProjectPhase')
-    search_fields =('StudyActionNo', 'DueDate', 'Recommendations', 'Response', 'Organisation', 'Disipline', 'Subdisipline', 'DateCreated', 'QueSeries',)
+    search_fields =('id', 'StudyActionNo', 'DueDate', 'Recommendations', 'Response', 'Organisation', 'Disipline', 'Subdisipline', 'DateCreated', 'QueSeries',)
 
 
 class delegatedadmin(admin.AdminSite):
