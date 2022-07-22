@@ -6,7 +6,7 @@ from .businesslogicQ import *
 import django_filters
 from django.http import HttpResponse
 import pandas as pd
-from UploadExcel.models import ActionItems
+from UploadExcel.models import ActionItems,Comments
 from .models import *
 from django.db.models import Count
 from django.utils import timezone
@@ -30,9 +30,71 @@ import shutil
 from django.db.models import F
 from collections import Counter
 
+<<<<<<< HEAD
 def blcropdictionary (dictitem, listofkeys):
     """09-07-2022 Guna - Pass in large dictionary and get a subset of the dictionary based on list of wanted keys you pass in"""
     newdict = dict((k, dictitem[k]) for k in listofkeys if k in dictitem)
+=======
+def blgetrejectiondate(dictofids, dictofaction):
+    """
+    Ying Ying 20220722
+    dictofids is pass in as a list of dictionary (id). dictofaction is pass in as a list of dictionary (ie .values.
+    Get the rejection date from Comments table. Convert dictofaction and rejection date to dataframe, then merge based on acton item ID.
+    Data is return as dataframe consisting of rejected items with rejection date.
+    """
+    listofids =[x['id']for x in dictofids]
+    lstofrejectdate = []
+
+    for item in listofids:
+        Rejectdate = Comments.mdlComments.mgrCommentsbyFK(item).values('Action_id','DateAdded')
+        Rejectdatesorted = max(Rejectdate, key = lambda x:x['DateAdded'])
+        lstofrejectdate.append(Rejectdatesorted)
+    dfaction = pd.DataFrame(dictofaction[0])
+    dfrejectdate = pd.DataFrame(lstofrejectdate)
+    dfrejectdate['DateAdded'] = pd.to_datetime(dfrejectdate['DateAdded']).dt.date
+    dfrejectdatedropduplicate= dfrejectdate.drop_duplicates().reset_index(drop=True)
+    dfrejectdatedropduplicate.rename(columns = {'Action_id':'id'}, inplace = True)
+    dfmerge = pd.merge(dfaction, dfrejectdatedropduplicate, how="left", on="id")
+
+    return dfmerge
+
+def blgetadvancednotificationstuckat(actionitem,role,numberofdays):
+    """
+    Ying Ying 20220722
+    Used to get actionee's and approver's email who have action(s) on their plate.
+    actionitem is pass in as a list of dictionary(ie .values must have at least 'id','StudyName__StudyName','Disipline','Subdisipline','Organisation',
+    'DueDate','QueSeries'). The action items is pass to blgetemailstuckat to get days before due for each open action item. Remove action item which does not fulfill 
+    condition and return as dataframe.
+    """
+    daysbeforedue = datetime.timedelta(days=numberofdays)
+    dfaction = blgetemailstuckat(actionitem)
+    dfaction.loc[(dfaction.DaystoDueDate != daysbeforedue) | (dfaction.Role != role), 'numberofdays'] = "False"
+    dfaction = dfaction.drop(dfaction[dfaction['numberofdays'] == 'False'].index)
+
+    return dfaction
+
+def blgetemailstuckat(actionitem):
+    """
+    Ying Ying 20220722
+    Used to get actionee's and approver's email who have action(s) on their plate.
+    actionitem is pass in as a list of dictionary(ie .values must have at least 'id','StudyName__StudyName','Disipline','Subdisipline','Organisation',
+    'DueDate','QueSeries'). Filtering is done on studies table, using Sendemail field on each action item (After get action stuck at using blgetdictActionStuckAt.). 
+    Data is return as dataframe consisting of all actions being held by individual until and unless the actions are closed.
+    """
+    timezonenow = timezone.now()
+    sendemailstudy = Studies.objects.filter(Sendemail = True).values('StudyName')
+    filter = [value['StudyName'] for value in sendemailstudy]
+    actionstuckat = blgetdictActionStuckAt(actionitem)
+    dfactionstuckat = pd.DataFrame(actionstuckat)
+    dfactionsfilter = dfactionstuckat[dfactionstuckat['StudyName__StudyName'].isin(filter)]
+    dfaction = dfactionsfilter.drop(dfactionsfilter[dfactionsfilter['QueSeries'] == 99].index)
+    dfaction['Email'] = dfaction.ActionAt.str.split('/').str.get(-1)
+    dfaction = (dfaction.assign(Email=dfaction['Email'].str.split(';')).explode('Email').reset_index(drop=True))  
+    dfaction['Role'] = dfaction.ActionAt.str.split('/').str.get(0)
+    dfaction['DaystoDueDate'] = timezonenow.date() - dfaction['DueDate']
+
+    return dfaction
+>>>>>>> 20220715-Notification_Supression_basedon_Study&Rejection_Date
 
 
 def blchangelinuxgroup(path, owner, group):
@@ -597,7 +659,8 @@ def blbulkdownload(objactionitems,destinationfolders,createzipfilename):
             Signatories = blgetSignotories(discsub) 
             lstSignatoriesTimeStamp= blgettimestampuserdetails (items['id'], Signatories) 
             currentQueSeries = blgetFieldValue(items['id'],'QueSeries')
-            blgettimehistorytables(items['id'],lstSignatoriesTimeStamp,currentQueSeries)  
+            revision = blgetFieldValue(items['id'],'Revision') 
+            blgettimehistorytablesUpdate(items['id'],lstSignatoriesTimeStamp,revision, currentQueSeries) 
             studyactno = items["StudyActionNo"] 
             studyactnopdf = (studyactno + '.pdf')
             signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
@@ -1475,6 +1538,10 @@ def blgetApproverLevelTarget(ID,field):
     return ActionItems.mdlSetField.mgrgetField(ID,field)
 
 def blgetIndiResponseCount(discsuborg,queseriesopen,queseriesclosed):
+    """
+    Ying Ying 20220722
+    This function is obsoleted.
+    """
 
     indiPendingSeries =[]
     completePendingPair = []
@@ -1512,7 +1579,6 @@ def blgetIndiResponseCount(discsuborg,queseriesopen,queseriesclosed):
 #20211201 edward remove discsuborg    
 # def blgetIndiResponseCount2(discsuborg,queseriesopen,queseriesclosed,phase=""): #Guna 20210703 to be consolidated
 def blgetIndiResponseCount2(dfdiscsuborgphase,queseriesopen,queseriesclosed,phase=""): #Guna 20210703 to be consolidated
-    """"""
     indiPendingSeries =[] #emptylist
     completePendingPair = [] #emptylist
     filler = 0
@@ -1610,7 +1676,7 @@ def blgetdictActionStuckAt(allactions):
 
         lstoftriplet = blgetDiscSubOrgfromID (items['id']) 
         lstofActioneeAppr = blgetSignotories (lstoftriplet)
-
+        
         if items['QueSeries'] != 99 and (lstofActioneeAppr !=[]):
              # basically its looks at que series and then matches it against the list of entire signatories above
             lststuckAt = lstofActioneeAppr[items['QueSeries']]#basically just uses QueSeries to tell us where its stuck at
