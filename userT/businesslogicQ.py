@@ -4,6 +4,28 @@ from functools import reduce
 import operator
 from UploadExcel.models import ActionItems
 from .models import *
+
+def blphasestudygetDiscSubOrgActionCountQ(studies,discsuborg,quelist,phase=""):
+    """
+    Ying Ying 20220727
+    Uses DiscSubOrg, and a list of QueSeries and phase to return a count based on phase and study
+    It uses Q Object for optimisation
+    """
+    count = 0   
+    QObjectMiscAND =Q()
+    
+    if phase!="":
+        QObjectMiscAND = Q(**{'Disipline':discsuborg[0], 'Subdisipline': discsuborg[1], 'Organisation': discsuborg[2],
+                        'ProjectPhase__ProjectPhase':phase,'StudyName__StudyName':studies})
+    else:
+        QObjectMiscAND = Q(**{'Disipline':discsuborg[0], 'Subdisipline': discsuborg[1],
+                        'Organisation': discsuborg[2],'StudyName__StudyName':studies })
+
+    filters = blQobjectQueSeries(quelist) & QObjectMiscAND
+    count += ActionItems.mdlallActionItemsCount.mgr_GeneralItemsCountbyFiltersKwargsQ(filters)
+    
+    return count
+
 def blfiltergeneralbyOrQ (filteredstring,table=ActionItems.history,orderby="-history_date",reducedfields=["id","history_date","QueSeries","Revision"]) :
     """Pass in list of items as filtered string . The function then filters based on OR operato. This function then has default tables 
     it filters on, and orders by which is actually the history tables at the start, """

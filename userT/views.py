@@ -429,7 +429,7 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
     """
     template_name = "userT/actionupdateapproveaction.html" 
     form_class = frmoriginalbaseapprover
-    success_url = '/ApproverList/'
+    # success_url = '/ApproverList/'
 
     def get_form_class(self,**kwargs):
         form_classnew = (blgetFieldValue(self.kwargs.get("pk"),"StudyName__Form"))
@@ -445,7 +445,11 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
         ingroup =  self.request.user.groups.filter(name="Approver").exists()
         IdAI = self.kwargs.get("pk")
         emailID = self.request.user.email
-        inroute = blgetvaliduserinroute(IdAI,emailID)
+        # inroute = blgetvaliduserinroute(IdAI,emailID)
+        #YingYing 20220728
+        path = self.request.path
+        inroute = blgetvaliduserinrouteUpdate(IdAI,emailID,path)
+        #end
 
         #satifies 2 test before allowing to access items in Url  otherwise just redirect to main
         if  (ingroup) and (inroute):
@@ -499,7 +503,7 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
         discsub = blgetDiscSubOrgfromID(idAI)
         Signatories = blgetSignotories(discsub)
         lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories) #it changes the Signatories directly
-       
+        
         currentQueSeries = blgetFieldValue(idAI,'QueSeries')
         # blgettimehistorytables(idAI,lstSignatoriesTimeStamp,currentQueSeries)
         #Ying Ying 20220703-Bug Fix for signatories
@@ -544,8 +548,13 @@ class ApproverConfirm(UpdateView):
 
         if (self.request.POST.get('ApproveConfirm')):
             ID =self.kwargs["id"]
-            field = "QueSeriesTarget"
-            ApproverLevel =  blgetFieldValue(ID,field)
+            id = {"id":ID}
+            fields = ["QueSeriesTarget", "QueSeries","Revision"]
+            itemdict = blgetsinglefilteractionsitemsQ(id,fields)[0]
+            ApproverLevel =  itemdict["QueSeriesTarget"]
+            integerqueseries = itemdict["QueSeries"]
+            discsub = blgetDiscSubOrgfromID(ID)
+            
             if (form.instance.QueSeries == (ApproverLevel-1)):
                 form.instance.QueSeries = 99 # Random far end number to show all closed
             else:
@@ -553,17 +562,17 @@ class ApproverConfirm(UpdateView):
 
             if (self.request.POST.get('signature')):
                 strsignature = self.request.POST.get('signature')
+                blwritetosignatoriestable(ID, emailid, itemdict)
                 blsetfieldCustomUser(emailid,"signature",strsignature)
             else :
+                blwritetosignatoriestable(ID, emailid, itemdict)
                 blsetfieldCustomUser(emailid,"signature",str(emailid))
 
-            integerqueseries = blgetFieldValue(ID,"QueSeries")
-            discsub = blgetDiscSubOrgfromID(ID)
 
              # 15 - 07 - 2022 Guna -- new signatory - Move 3 lines of code to bl - it needs to be moved above 
-            signobj = Signatory ()
-            signobj.create_signatory(ActionItemsid_id= ID,email =emailid,QueSeries=currentQueSeries)
-            ActionItems.mdlSetField.mgrSetField(ID,"Signatory",True)
+            # signobj = Signatory ()
+            # signobj.create_signatory(ActionItemsid_id= ID,email =emailid,QueSeries=integerqueseries)
+            # ActionItems.mdlSetField.mgrSetField(ID,"Signatory",True)
             # end new signatory
             Signatoryemails = blgetSignatoryemailbyque(discsub,integerqueseries+1)
             ContentSubject  = blbuildSubmittedemail(ID,"Approver")
@@ -599,6 +608,7 @@ class HistoryConfirm(UpdateView):
 
         if (self.request.POST.get('Pullconfirm')):
             form.instance.QueSeries = 0 # Return back to Actionee
+            form.instance.Revision += 1
             return super().form_valid(form)
 
     def get_object(self,queryset=None):
@@ -621,8 +631,12 @@ class HistoryFormMixin(UserPassesTestMixin,UpdateView):
 
         IdAI = self.kwargs.get("pk")
         emailID = self.request.user.email
-        inroute = blgetvaliduserinroute(IdAI,emailID,True)
- 
+        # inroute = blgetvaliduserinroute(IdAI, emailID, True)
+        #YingYing 20220728
+        path = self.request.path
+        inroute = blgetvaliduserinrouteUpdate(IdAI, emailID, path, True)
+        #end
+        
         #satifies 2 test before allowing to access items in Url  otherwise just redirect to main
         if  (ingroup) and (inroute):
             return True
@@ -646,6 +660,12 @@ class HistoryFormMixin(UserPassesTestMixin,UpdateView):
         ApproverLevel = blgetApproverLevel(discsuborg)
         Signatories = blgetSignotories(discsuborg)
         lstSignatoriesTimeStamp= blgettimestampuserdetails (id, Signatories)
+
+        #YingYing 20220729 Bug Fixing- Incorrect Signatories in Actionee
+        currentQueSeries = blgetFieldValue(id,'QueSeries')
+        revision = blgetFieldValue(id,'Revision') 
+        blgettimehistorytablesUpdate(id,lstSignatoriesTimeStamp,revision, currentQueSeries)
+        #end 
 
         actionlocation = []
         integerqueseries = blgetFieldValue(id,"QueSeries")
@@ -695,7 +715,11 @@ class ActioneeItemsMixin(UserPassesTestMixin,UpdateView): #@user_passes_test(lam
         ingroup = self.request.user.groups.filter(name="Actionee").exists()
         IdAI = self.kwargs.get("pk")
         emailID = self.request.user.email
-        inroute = blgetvaliduserinroute(IdAI,emailID)
+        # inroute = blgetvaliduserinroute(IdAI,emailID)
+        #Ying Ying 20220728 
+        path = self.request.path
+        inroute = blgetvaliduserinrouteUpdate(IdAI, emailID, path) 
+        #end
         
         #satifies 2 test before allowing to access items in Url  otherwise just redirect to main
         if  (ingroup) and (inroute):
@@ -718,7 +742,7 @@ class ActioneeItemsMixin(UserPassesTestMixin,UpdateView): #@user_passes_test(lam
 
         discsuborg = blgetDiscSubOrgfromID(IdAI)
         ApproverLevel = blgetApproverLevel(discsuborg)
-        Signatories = blgetSignotories(discsuborg)
+        Signatories = blgetSignotories(discsuborg)  
         multipleSignatories = blmultisignareplace(Signatories,emailID,"Actionee") # Replaces the multiple signatory with an individual
         blsetApproverLevelTarget(IdAI,ApproverLevel)
         lstSignatoriesTimeStamp= blgettimestampuserdetails (IdAI, Signatories)
@@ -815,6 +839,9 @@ def multiplefiles (request, **kwargs):
     if (request.POST.get('Upload')):
         ID = kwargs['forkeyid']
         #set using model manager since we want it back to actionee it has to be set at QueSeries=0
+        id = {"id":ID}
+        fields = ["QueSeriesTarget", "QueSeries","Revision"]
+        itemdict = blgetsinglefilteractionsitemsQ(id,fields)[0]
         files = request.FILES.getlist('Attachment')
         if (request.POST.get('signature')):
             strsignature = request.POST.get('signature')
@@ -829,11 +856,12 @@ def multiplefiles (request, **kwargs):
                 Username=emailid
             )
         newQueSeries = 1
-        
+        blwritetosignatoriestable(ID, emailid, itemdict)
+
         #July 2022 - Guna - Write to new signatory table and set the value in ActionItems to True
-        signobj = Signatory ()
-        signobj.create_signatory(ActionItemsid_id= ID,email =emailid,QueSeries=0)
-        ActionItems.mdlSetField.mgrSetField(ID,"Signatory",True)
+        # signobj = Signatory ()
+        # signobj.create_signatory(ActionItemsid_id= ID,email =emailid,QueSeries=0)
+        # ActionItems.mdlSetField.mgrSetField(ID,"Signatory",True)
         #July End new signatory
 
         ActionItems.mdlQueSeries.mgrsetQueSeries(ID,newQueSeries)
@@ -1506,8 +1534,9 @@ class pmtrepviewall(UpdateView):
         context = super().get_context_data(**kwargs)
         discsub = blgetDiscSubOrgfromID(idAI)
         Signatories = blgetSignotories(discsub)
-        lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories)
-        
+        # lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories)
+        lstSignatoriesTimeStamp = blgettimestampuserdetailsUpdate(Signatories)   #Ying Ying 20220729 Fix Missing name and designation for multiple actionee
+
         currentQueSeries = blgetFieldValue(idAI,'QueSeries')
         # blgettimehistorytables(idAI,lstSignatoriesTimeStamp,currentQueSeries)
         #Ying Ying 20220703-Bug Fix for signatories

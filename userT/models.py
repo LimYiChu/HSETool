@@ -148,6 +148,7 @@ class Signatory (models.Model):
     designation = models.CharField(max_length=254, blank=True, null=True)
     #Role = models.CharField(max_length=254, blank=True, null=True)
     Timestamp = models.DateTimeField(default=timezone.now,null=True,blank=True)
+    Revision = models.IntegerField(blank=True,null=True)
     
     objects = models.Manager()
     #mdlSetSigantory = mgrSetSignatoryObject()
@@ -161,7 +162,7 @@ class Signatory (models.Model):
         userobject = CustomUser.mdlGetUserObject.mgrGetObject(email=kwargs['email'])
         dictuserobject = userobject.__dict__
         wanted_keys = ['disipline', 'subdisipline', 'organisation','fullname','signature','designation']
-        newdict = dict((k, dictuserobject[k]) for k in wanted_keys if k in dictuserobject)
+        newdict = dict((k, dictuserobject[k]) for k in wanted_keys if k in dictuserobject)       
         newdict.update(kwargs)
         Signatory.objects.create(**newdict)
 
