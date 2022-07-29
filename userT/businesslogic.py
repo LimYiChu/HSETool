@@ -30,6 +30,16 @@ import shutil
 from django.db.models import F
 from collections import Counter
 
+def blwritetosignatoriestable(ID, emailid, inputdict):
+    """
+    Ying Ying 20220722
+    This function is to write to Signatory Table.
+    """
+    signobj = Signatory ()
+    signobj.create_signatory(ActionItemsid_id = ID, email = emailid, QueSeries = inputdict['QueSeries'], Revision = inputdict['Revision'])
+    ActionItems.mdlSetField.mgrSetField(ID,"Signatory",True)
+
+
 def blcropdictionary (dictitem, listofkeys):
     """09-07-2022 Guna - Pass in large dictionary and get a subset of the dictionary based on list of wanted keys you pass in"""
     newdict = dict((k, dictitem[k]) for k in listofkeys if k in dictitem)
@@ -39,22 +49,21 @@ def blgetrejectiondate(dictofaction):
     """
     Ying Ying 20220722
     dictofaction is pass in as a list of dictionary (ie .values must have at least 'id')
-    Get the rejection date from Comments table. Convert dictofaction and rejection date to dataframe, then merge based on acton item ID.
+    Get the rejection date from Comments table. Convert dictofaction and rejection date to dataframe, then merge based on action item ID.
     Data is return as dataframe consisting of rejected items with rejection date.
     """
-    lstofrejectdate = []
     dfaction = pd.DataFrame(dictofaction[0])
-    idlist = dfaction['id'].values.tolist() 
-
-    for item in idlist:
-        Rejectdate = Comments.mdlComments.mgrCommentsbyFK(item).values('Action_id','DateAdded')
-        Rejectdatesorted = max(Rejectdate, key = lambda x:x['DateAdded'])
-        lstofrejectdate.append(Rejectdatesorted)
-    dfrejectdate = pd.DataFrame(lstofrejectdate)
+    Rejectdate = Comments.mdlComments.all().values('Action_id','DateAdded')
+    dfrejectdate = pd.DataFrame(Rejectdate)
+    dfrejectdate = dfrejectdate.groupby('Action_id', as_index=False)['DateAdded'].last()
     dfrejectdate['DateAdded'] = pd.to_datetime(dfrejectdate['DateAdded']).dt.date
-    dfrejectdatedropduplicate= dfrejectdate.drop_duplicates().reset_index(drop=True)
-    dfrejectdatedropduplicate.rename(columns = {'Action_id':'id'}, inplace = True)
-    dfmerge = pd.merge(dfaction, dfrejectdatedropduplicate, how="left", on="id")
+    dfrejectdate.rename(columns = {'Action_id':'id'}, inplace = True)
+    
+    if not dfaction.empty:
+        dfmerge = pd.merge(dfaction, dfrejectdate, how="left", on="id")
+        dfmerge = dfmerge.dropna(subset=['DateAdded'])
+    else:
+        dfmerge = pd. DataFrame()
 
     return dfmerge
 
@@ -282,7 +291,7 @@ def bldynamicstudiesactionformat(filteredstring,reducedfields):
     return actionsstuckat
 
 
-def bldynamicstudiesdisc(actionsstuckat):
+def bldynamicstudiesdisc(study, actionsstuckat):
     """
     This function gets the count for pending submission,submitted,closed,open & total actions for disciplines based on each studies.
     """
@@ -294,7 +303,8 @@ def bldynamicstudiesdisc(actionsstuckat):
     dfdiscsuborglist = dfactionitemfilter.values.tolist()
     discheaderlst = ['Discipline', 'Pending Submission' ,'Submitted', 'Closed','Open Actions','Total Actions']
     discmultilist.append(discheaderlst)
-    disclst= blaggregatebyDisc(dfdiscsuborglist,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue)
+    # disclst= blaggregatebyDisc(dfdiscsuborglist,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue) YingYing change on 20220722     
+    disclst= blaggregatebyDiscwithfilter(study, dfdiscsuborglist,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue)
     discmultilist.append(disclst)
     return discmultilist
 
@@ -1116,7 +1126,24 @@ def blgetrejectedcount(discsuborg,revision):
         lstrejectcountbydisc = []
     return lstfinallistcount
 
-
+def blaggregatebyDiscwithfilter(study, discsuborg, YetToRespondQue, ApprovalQue, QueClosed, QueOpen, TotalQue):
+    """
+    Ying Ying 20220727
+    Agregates by discpline (filtered by study) across organisation. Takes in various QueSeries denoting Yettorespond, Approval 
+    Open Actions, Total Queue
+    """
+    lstofdiscdetails =[]
+    lstcountbydisc =[]
+    for disc in discsuborg:
+        lstcountbydisc.append("/".join(disc)) 
+        lstcountbydisc.append(blphasestudygetDiscSubOrgActionCountQ(study, disc,YetToRespondQue))
+        lstcountbydisc.append(blphasestudygetDiscSubOrgActionCountQ(study, disc,ApprovalQue))
+        lstcountbydisc.append(blphasestudygetDiscSubOrgActionCountQ(study, disc,QueClosed))
+        lstcountbydisc.append(blphasestudygetDiscSubOrgActionCountQ(study, disc,QueOpen))
+        lstcountbydisc.append(blphasestudygetDiscSubOrgActionCountQ(study, disc,TotalQue))
+        lstofdiscdetails.append(lstcountbydisc)
+        lstcountbydisc =[]
+    return lstofdiscdetails
 
 def blaggregatebyDisc(discsuborg, YetToRespondQue, ApprovalQue, QueClosed, QueOpen, TotalQue):
     """Agregates by discpline across organisation. Takes in various QueSeries denoting Yettorespond, Approval 
@@ -1232,12 +1259,54 @@ def blmultisignareplace (Signatories,emailid,ActioneeApprover=""):
     res = [item for sublist in indexaAcctAppr for item in sublist  if sublist != [] ]
     intres = int(''.join(map(str, tuple(res))))
     Signatories [intres][1] = emailid
-    
+
+def blgetvaliduserinrouteUpdate(idAI, emailid, path, History=False):
+    """
+    This function is to check request user is satisfy the condition to access to action items in 
+    Your Actions Section.
+    """
+    discsuborg = blgetDiscSubOrgfromID(idAI)
+    id = {"id":idAI}
+    fields = ["QueSeries","Revision"]
+    itemdict = blgetsinglefilteractionsitemsQ(id,fields)[0]
+    queseries = itemdict["QueSeries"]
+    revision = itemdict["Revision"]
+    signatories = blgetSignotories(discsuborg)
+    dfsignatories = pd.DataFrame(signatories,columns = ['Role','User'])
+    Rejectuserqueryset = Comments.mdlComments.filter(Action = idAI).values('Action_id','Username')
+    Rejectuserdict = {k: [d.get(k) for d in Rejectuserqueryset] for k in set().union(*Rejectuserqueryset)}
+    if any(Rejectuserdict): 
+        Rejectuser = Rejectuserdict['Username']
+    else:
+        Rejectuser = ['none']
+    dfsignatories[['Action_id', 'currentQueSeries', 'Revision','History','Path']] = pd.DataFrame([[idAI, queseries, revision, History, path]], index=dfsignatories.index)
+    dfsignatories['Que'] = dfsignatories['Role']
+    dfsignatories['Que'].replace(to_replace ="Actionee", value =0, inplace= True)
+    dfsignatories['Que'].replace(regex=True,inplace=True,to_replace=r'\D',value=r'')
+    dfsignatories['Que'] = dfsignatories['Que'].astype(int)
+    dfsignatories = (dfsignatories.assign(User=dfsignatories['User'].str.split(';')).explode('User').reset_index(drop=True))  
+    dfsignatories.loc[((dfsignatories['User']== emailid) & (dfsignatories['Que']== queseries) & (dfsignatories['History']== False)), 'Inroute'] = 'True'
+    dfsignatories.loc[dfsignatories['User'].isin(Rejectuser), 'Rejectuser'] = 'True'
+    dfsignatories.loc[((dfsignatories['currentQueSeries'] != 0) & (dfsignatories['currentQueSeries'] != 99)), 'Pullback'] = 'True'
+    dfsignatories.loc[((dfsignatories['History']== True) & (dfsignatories['User']== emailid) & (dfsignatories['Que'] == 0) 
+                & (dfsignatories['Pullback']== 'True') & (dfsignatories['Path'].str.contains('update/True') == True)),'UpdateTrue'] = 'True'
+    dfsignatories.loc[((dfsignatories['History']== True) & (dfsignatories['User']== emailid) & (dfsignatories['Que']< queseries) & (dfsignatories['Role'] != 'Actionee')
+                & (dfsignatories['Path'].str.contains('update/False') == True)),'ApproverUpdateFalse'] = 'True'
+    dfsignatories.loc[((dfsignatories['History']== True) & (dfsignatories['User']== emailid) & (dfsignatories['Revision']>0) & (dfsignatories['Path'].str.contains('update/False') == True)) 
+                & ((dfsignatories['Rejectuser']== 'True') | (dfsignatories['Role']== 'Actionee')),'HistoryUpdateFalse'] = 'True'
+    dfsignatories.loc[((dfsignatories['Inroute']== 'True') | (dfsignatories['UpdateTrue']== 'True') | (dfsignatories['ApproverUpdateFalse']== 'True') | 
+                (dfsignatories['HistoryUpdateFalse']== 'True')), 'ConditionAchieved'] = 'True'
+    if (dfsignatories['ConditionAchieved']== 'True').any():
+        return True
+
+    else:
+        return False
+
 def blgetvaliduserinroute (idAI,emailid,History=False):
     """This function gets the valid users in a Route"""
     discsuborg = blgetDiscSubOrgfromID(idAI)
     queseries = blgetFieldValue(idAI,'QueSeries')
-    Signatories = dict(blgetSignotories(discsuborg))
+    Signatories = dict(blgetSignotories(discsuborg))    
     
     # the join is just to convert into string Actionee Approver1 or Approver2
     # But just supposed to get 1 value, actionee or approver or...
@@ -1248,7 +1317,7 @@ def blgetvaliduserinroute (idAI,emailid,History=False):
 
     #check this line and why we need it
     isvaliduser = emailid in Signatories.values()
-
+    
     #must check queseries again to make sure queseries not at approver level
     #So this example below is if multiple actionee and then access id which is at approver level
     # 2 limb test must test for queseries because he could be an actionee and try and access url on approver que
@@ -1262,7 +1331,7 @@ def blgetvaliduserinroute (idAI,emailid,History=False):
         #next need to check if approver in that mixed que for same route mostly while development
         
         elif ('Approver' in approveractioneeseries) and (str(queseries) in approverlevel):
-            
+
             return True
         else:
             return False
@@ -1346,7 +1415,7 @@ def blgettimehistorytablesUpdate(id, Signatories, revision, QueSeries=0):
             filterkwargs = {'id':id, 'QueSeries': 99}
             lstdictHistory = ActionItems.history.filter(**filterkwargs).select_related("history_user").order_by('-history_date').exclude(history_user=paraOmitAdmin)
             setSignatoriesItems(items,0)
-            
+
     return Signatories
 
 def blgettimehistorytables (id, Signatories, QueSeries=0):
@@ -1408,6 +1477,25 @@ def blreplacemultiplesignatories (signatories,id,index):
     else:
         return signatories
 
+
+def blgettimestampuserdetailsUpdate(Signatories):
+        """
+        This function is to get the information for Signatories Table in pmtrepviewall using 
+        useremail in Signatories of the action item.
+        """
+        dfsignatories = pd.DataFrame(Signatories, columns=['role','email'])
+        dfsignatories = (dfsignatories.assign(email=dfsignatories['email'].str.split(';')).explode('email').reset_index(drop=True)) 
+        emaillist = dfsignatories['email'].tolist()
+        userinfolist = CustomUser.objects.filter(email__in=emaillist).values('email', 'fullname', 'designation', 'signature')
+        dfuserinfo = pd.DataFrame(userinfolist)
+        dfmerge = pd.merge(dfsignatories, dfuserinfo, how="left", on='email')
+        dfmerge['designation'] = dfmerge['designation'].astype(str)
+        dfgroup = dfmerge.groupby('role', as_index=False).agg(' ; '.join)
+        dfgroup[['signature','signed']] = pd.DataFrame([[' ', ' ']], index=dfgroup.index)
+        finallstoflst = dfgroup.values.tolist()                            
+        
+        return finallstoflst
+
 def blgettimestampuserdetails (id, Signatories):
        
         """Get time stamp for each approver from hstory tables. It uses Routes table intially. but
@@ -1426,7 +1514,7 @@ def blgettimestampuserdetails (id, Signatories):
             #get each user detail first
             singlesignatory = blreplacemultiplesignatories (items[1],id,index)
             objuser = CustomUser.objects.filter(email=singlesignatory).values()
-                  
+
             if objuser:
                 fullname =   objuser[0].get('fullname')
                 items.append(fullname)
@@ -1524,10 +1612,12 @@ def blsetApproverLevelTarget(ID,ApproverLevel):
     x= ActionItems.mdlSetField.mgrSetField(ID,"QueSeriesTarget",ApproverLevel)
 
 def blgetFieldValue(ID,field):
-    
+    """
+    To get single field value using action item ID
+    """
     qs = ActionItems.mdlgetField.mgrGetField(ID,field)
     strintvalue = qs[0].get(field)
-    
+
     
     return strintvalue
      

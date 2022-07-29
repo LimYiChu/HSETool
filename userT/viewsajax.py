@@ -47,7 +47,7 @@ def dynamictable(request, dynamictable=""):
                                     bldynamicstudiesactionformat],
 
             'dynamicstudies': [{'StudyName__StudyName': data}, 
-                                ['id', 'StudyActionNo', 'QueSeries', 'DueDate', 'Disipline', 'Subdisipline', 'InitialRisk', 'Organisation'],
+                                ['id', 'StudyActionNo', 'QueSeries', 'DueDate', 'Disipline', 'Subdisipline', 'InitialRisk', 'Organisation','StudyName__StudyName'],
                                 ['Study Action No', 'DueDate', 'Action At', 'Discipline', 'Initial Risk'],
                                 bldynamicstudiesactionformat],
             'dynamicindisumm': [data, 
@@ -57,16 +57,17 @@ def dynamictable(request, dynamictable=""):
 
     headerlst = info[dynamictable][2]
     actions = info[dynamictable][3](info[dynamictable][0], info[dynamictable][1]) 
-    dfall = pd.DataFrame.from_dict(actions) 
+    dfall = pd.DataFrame.from_dict(actions)                          
     if dynamictable == 'dynamicindisumm':
         discheaderlst = None
         disclst = None
-    else:                                                             
+    else :
         dfall['discsuborg']=dfall['Disipline']+'/'+dfall['Subdisipline']+'/'+dfall['Organisation'] 
-        discmultilist = bldynamicstudiesdisc(actions)              
+        discmultilist = bldynamicstudiesdisc(data,actions)    #YingYing change on 20220722
+        # discmultilist = bldynamicstudiesdisc(actions) 　          
         discheaderlst = discmultilist[0]                            
         disclst = discmultilist[1]                                  
-        dfdisc = pd.DataFrame(disclst)                             
+        dfdisc = pd.DataFrame(disclst)  
         dictheader = {0: 'Discipline', 1: 'Pending Submission', 2: 'Submitted', 3: 'Closed', 4: 'Open Actions', 5: 'Total Actions'} 
         dfdisc.rename(columns=dictheader,inplace=True) 
     
@@ -302,7 +303,8 @@ def dynamicstudiesdiscexcel(request,study=""):
     filteredstring = {'StudyName__StudyName': study}
     reducedfields=['id', 'StudyActionNo', 'QueSeries', 'DueDate', 'Disipline', 'Subdisipline', 'InitialRisk', 'Organisation']
     actionsstuckat = bldynamicstudiesactionformat(filteredstring, reducedfields)
-    discmultilist = bldynamicstudiesdisc(actionsstuckat)
+    # discmultilist = bldynamicstudiesdisc(actionsstuckat)
+    discmultilist = bldynamicstudiesdisc(study,actionsstuckat)    #YingYing change on 20220722
     disclst = discmultilist[1]
     dfdisc = pd.DataFrame(disclst)
     dictheader = {0: 'Discipline', 1: 'Pending Submission', 2: 'Submitted', 3: 'Closed', 4: 'Open Actions', 5: 'Total Actions'}
