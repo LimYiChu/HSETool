@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'UploadExcel.apps.UploadexcelConfig',
     'crispy_forms',
     'userT.apps.UsertConfig',
+    'uArchive',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

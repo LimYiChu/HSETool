@@ -18,6 +18,7 @@ from .tableheader import *
 from .excelReports import *
 from .models import *
 from UploadExcel.models import *
+from uArchive.models import *
 from django.views.generic import ListView, DetailView, UpdateView,TemplateView, CreateView
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
@@ -1060,7 +1061,44 @@ def repoverallexcel (request):
     response.write(in_memory.read())
     return response
 
+class TestClass():
+    def __init__(self) -> None:
+        print ("intestclass")
+class reppmtarch(ListView,UserPassesTestMixin):
+    # listofPhases= Phases.mdlSetGetField.mgrGetAllActionsAndFields()
+    # discsuborg = ActionRoutes.mdlAllDiscSub.mgr_getDiscSubOrg() 
+    # discsub = ActionRoutes.mdlAllDiscSub.mgr_getDiscSub()
+    template_name   =   'userT/reppmtarch.html'
     
+    # phasesactions =  blphasegetActionreducedfieldsQ(justenoughattributes,phases)
+    def get_queryset(self):
+        userZemail = self.request.user.email
+        queactionee = 0
+        ActioneeRoutes =[]
+        ActioneeActions =[]
+        
+        reducedfields =  ['id','StudyActionNo','Organisation','Disipline' ,'Subdisipline','Recommendations', 'QueSeries', 
+                            'Response','DueDate','InitialRisk','DateCreated']
+        
+        ActionItems = blphasegetallActionQ(reducedfields, ActionItemsArch)
+        finalActionItems = bladdriskelements(list(ActionItems))
+        print ("FFFFFFFFFFFFFFFFFFFFFFFFFFFF", finalActionItems)
+        return finalActionItems
+
+    def get_context_data(self, **kwargs):
+        # context = super().get_context_data(**kwargs)
+        # context['riskmatrix'] = blgetRiskMatrixColour()
+        pass
+        
+    # dictofallactions    = blannotatefktomodel(phasesactions) #Annotate first because it doesnt like addtional items added to query set
+    # #this sequence is important otherwise doesnt work
+    # phaseswithrisk = bladdriskelements(dictofallactions)
+    # dictofallactions    = blgetdictActionStuckAt(phaseswithrisk)
+    # dictofallactionswithtime = bladdholdtimeupdate(dictofallactions)
+        
+        # 
+        # return render(request, 'userT/reppmtarch.html')
+
 def repPMTExcel (request,phase=""):
     """
     This is the original function called when user selects PMT Reporting from menu
