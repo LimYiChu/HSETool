@@ -126,6 +126,10 @@ urlpatterns = [
         path('dynamicstudiesexcel/<study>', login_required(viewsajax.dynamicstudiesexcel), name='dynamicstudiesexcel'),
         path('dynamicstudiesdiscexcel/<study>', login_required(viewsajax.dynamicstudiesdiscexcel), name='dynamicstudiesdiscexcel'),
         path('dynamicdisciplineexcel/<path:discipline>', login_required(viewsajax.dynamicdisciplineexcel), name='dynamicdisciplineexcel'),
+
+        #Archive functionality
+
+        path('phase3arch/',login_required(UserView.reppmtarch.as_view()),name='phase3arch'),
       ]
 
 if settings.DEBUG:

@@ -1,0 +1,457 @@
+{% extends "userT/base3.html"%}
+{% load static %}
+{%block title%}Reporting{%endblock%}
+{% block reppmt%}
+
+<html>
+
+<head>
+
+</head>
+
+<body onload="openReport(event, 'All Actions');maketabactive('{{phase}}')">
+
+  <div style="display: none" id="jsonDataPie" data-json="{{ piechartsjson}}"></div>
+  <div style="display: none" id="jsonDataRundown" data-json="{{ rundownchartsjson}}"></div>
+
+  <!--breadcrumbs-->
+  <nav>
+    <!-- 20210828 edward UI -->
+    <ol class="breadcrumb" style="background-color: transparent; position:relative;  right:-40px;bottom: -25px;">
+      <li class="breadcrumb-item normal">
+        <a href="/main">Dashboard</a>
+      </li>
+      <li class="breadcrumb-item-active">
+        <a aria-current="page">Reporting</a>
+      </li>
+      <li>
+        <!-- This supposed to be empty to maintain the parent - child RS in css -->
+      </li>
+    </ol>
+  </nav>
+  <br>
+
+  <div class="col-md-12 center" style="left:20pt">
+    <div class="card" style="width: auto;">
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card-header parent-font" style="border-bottom: none;">
+            PMT Reporting
+          </div>
+          <a class="article-title" href="{% url  'repoverallexcel' %}">
+            <button type="button" class="btn btn-outline-primary btn-sm;" id="download-excel">
+              Download Complete Excel
+              <i class="bi bi-file-earmark-spreadsheet"></i>
+            </button>
+          </a>
+          <div class="card" style="border-top: none;">
+            <div style="float:left" class="tabset tab-top child-one-font">
+              <button id="allphases" onclick="openReport(event, 'PHASES');phasesurl(this.id,'')">All Phases
+              </button>
+
+              {%for items in listofPhases%}
+              <button id="{{items.ProjectPhase}}"
+                onclick="openReport(event, 'PHASES');phasesurl(this.id,'{{items.ProjectPhase}}')">{{items.ProjectPhase}}
+              </button>
+              {%endfor%}
+            </div>
+
+
+
+            <div class="tabset tab-child child-one-font">
+              <button class="tablinks" onclick="openReport(event, 'All Actions')">All Actions</button>
+              <button class="tablinks" onclick="openReport(event, 'IndividualSummary')">Individual (Summary)</button>
+              <button class="tablinks" onclick="openReport(event, 'Studies/Workshops')">Studies/Workshops</button>
+              <button class="tablinks" onclick="openReport(event, 'Discipline')">Discipline</button>
+              <button class="tablinks" onclick="openReport(event, 'DueDate');initiateGoogleRundownChart()">Due Date &
+                Run-Down</button>
+              <button class="tablinks" onclick="openReport(event, 'Rejected')">Rejected (Summary)</button>
+              <button class="tablinks" onclick="openReport(event, 'RejectedDetails')">Rejected (Details)</button>
+              <button class="tablinks" onclick="openReport(event, 'PieChart');initiateGooPieChartPMT()">Pie
+                Charts</button>
+            </div>
+
+            <!--differnt divs for differnt tab and name them based on event name on top-->
+            <form method="POST" enctype='multipart/form-data'>
+              {% csrf_token %}
+              <fieldset class="form-group">
+                <div id="All Actions" class="tabcontent"
+                  style="border-left:0pc; border-right:0px;border-bottom:0px; overflow:scroll;">
+                  <table id="table2" class="table table-striped table-hover fixedtable tablefont" style="width:100%">
+                    <thead class="thead-dark">
+                      <tr class="filters">
+                        {%for items in tableallheader%}
+                        {% if items != 'id'%}
+                        <th>
+                          {{items}}
+                        </th>
+                        {%endif%}
+                        {%endfor%}
+                        <th>Action At</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {%for key, value in dictofallactionswithtime.iterrows %}
+                        <tr data-toggle="tooltip" data-placement="right" title="Holding Day(s): {{ value.holding_time }}">
+                          <td><a class="article-title"
+                              href="{% url  'pmtrepviewall' value.id %}">{{value.StudyActionNo }}</a></td>
+                          <td>{{value.StudyName}}</td>
+                          <td>{{value.ProjectPhase}}</td>
+                          <td>{{value.Organisation}}/ {{value.Disipline}}/ {{value.Subdisipline}}</td>
+                          <td width="20%"><a class="article-title"
+                              href="{% url  'pmtrepviewall' value.id %}">{{value.Recommendations}}</a></td>
+                          <td width="20%">{{value.Response}}</td>
+                          <td>{{value.DueDate}}</td>
+                          {%block incInitialRiskColour%}
+
+                          {%if riskmatrix%}
+                          {% with initialrisk=value.InitialRisk%}
+                          {% with riskcolour=value.RiskColour%}
+                          {%include "userT/incinitialriskcolour.html"%}
+                          {%endwith%}
+                          {%endwith%}
+                          {%else%}
+                          <td>{{ value.InitialRisk }}</td>
+                          <!--Original Code-->
+                          {%endif%}
+                          {%endblock%}
+                          <td width="10%">{{value.ActionAt}}</td>
+                          
+                        </tr>
+                      {%endfor%}
+
+                    </tbody>
+                  </table>
+                  <div>
+                    <br>
+                    <div class="form-group"><input type="submit" name="allActions" value="Download Excel"
+                        class="btn btn-outline-primary btn-md float-right" style="width:150pt" /></div>
+                  </div>
+                  <br>
+                </div>
+
+                <!-- <div id="Individual" class="tabcontent"
+                  style="border-left:0pc; border-right:0px;border-bottom:0px; overflow:scroll;">
+                  <table id="table1" class="table table-striped table-hover fixedtable" style="width:100%">
+                    <thead class="thead-dark">
+                      <tr class="filters">
+                        {%for items in tableindiheader%}
+                        <th>
+                          {{items}}
+                        </th>
+                        {%endfor%}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {%for items in Indisets%}
+                      <tr>
+                        <td>{{items.0}}</td>
+                        <td>{{items.1}}</td>
+                        <td>{{items.2}}</td>
+                        <td>{{items.3}}</td>
+                        <td>{{items.4}}</td>
+                        <td>{{items.5}}</td>
+                        <td>{{items.6}}</td>
+                      </tr>
+                      {%endfor%}
+                    </tbody>
+                  </table>
+                  <br>
+                  <div>
+                    <br>
+                    <div class="form-group"><input type="submit" name="indiActions" value="Download Excel"
+                        class="btn btn-outline-primary btn-md float-right " style="width:150pt" /></div>
+                  </div>
+                  <br>
+                </div> -->
+
+
+                <div id="Studies/Workshops" class="tabcontent"
+                  style="border-left:0pc; border-right:0px;border-bottom:0px; overflow:scroll;">
+                  <div class="row">
+                    <div class="col divclick">
+                      <table id="table3" class="table table-striped table-hover fixedtable" style="width:100%;">
+                        <thead class="thead-dark">
+                          <tr class="filters">
+                            {%for items in tablestudiesheader%}
+                            <th>
+                              {{items}}
+                            </th>
+                            {%endfor%}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for items in lstbyWorkshop%}
+                          <tr class="clickable" onclick="launchtable(this, event, 'dynamicstudies');" >
+                            <td class="firstcell"><a class="article-title">{{items.0}}</a></td>
+                            <td> {{items.1}} </td>
+                            <td>{{items.2}}</td>
+                            <td>{{items.3}}</td>
+                            <td>{{items.4}}</td>
+                            <td>{{items.5}}</td>
+                          </tr>
+                          {%endfor%}
+                        </tbody>
+                      </table>
+                      <br>
+                      <div class="form-group"><input type="submit" name="allStudies" value="Download Excel"
+                        class="btn btn-outline-primary btn-md float-right " style="width:150pt" /></div>
+                      <br>
+                    </div>
+                    {%include "userT/incldynamicstudies.html"%}
+                  </div>
+                </div>
+
+                <div id="Discipline" class="tabcontent"
+                  style="border-left:0pc; border-right:0px;border-bottom:0px; overflow:scroll;">
+                  <div class="row">
+                    <div class="col divclick">
+                      <table id="table4" class="table table-striped table-hover fixedtable" style="width:100%">
+                        <thead class="thead-dark">
+                          <tr class="filters">
+                            {%for items in tabledischeader%}
+                            <th>
+                              {{items}}
+                            </th>
+                            {%endfor%}
+                            <th style="display:none">Hidden Item</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for items in lstbyDisc%}
+
+                          <tr class="clickable" onclick="launchtable(this, event, 'dynamicdiscipline');">
+                            <td class="firstcell" id="test"><a class="article-title">{{items.0}}</a></td>
+                            <td>{{items.1}}</td>
+                            <td>{{items.2}}</td>
+                            <td>{{items.3}}</td>
+                            <td>{{items.4}}</td>
+                            <td>{{items.5}}</td>
+                            <td class="hiddenx" style="display:none">{{items.6}}</td>
+                          </tr>
+                          
+                          {%endfor%}
+                        </tbody>
+                      </table>
+                      <div>
+                      <br>
+                      <div class="form-group"><input type="submit" name="bydiscipline" value="Download Excel"
+                        class="btn btn-outline-primary btn-md float-right " style="width:150pt" /></div>
+                      <br>
+                      </div>
+                    </div>
+                    {%include "userT/incldynamicdiscipline.html"%}
+                  </div>
+                </div>
+
+
+                <div id="DueDate" class="tabcontent"
+                  style="border-left:0pc; border-right:0px;border-bottom:0px; overflow:scroll;">
+                  <div class="col-md-12">
+                    <div class="row">
+                      <div class="col-md-3">
+                        <table id="duedaterundown" class="table table-striped table-hover " style="width:100%; ">
+                          <thead class>
+                            <tr class="filters">
+                              {%for items in tableduedateheader%}
+                              <th>
+                                {{items}}
+                              </th>
+                              {%endfor%}
+
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for items in lstbyDueDate%}
+
+                            <tr>
+                              <td>{{items.DueDate}}</td>
+                              <td>{{items.count}}</td>
+
+                            </tr>
+                            {%endfor%}
+                            <tr>
+                              <td>Total</td>
+                              <td>{{totalallDueDate}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="col-md-1"></div>
+                      <div class="col-md-8">
+                        <div id="linecharted"></div>
+                      </div>
+                    </div>
+                    <div>
+                      <br>
+                      <div class="form-group"><input type="submit" name="byDueDate" value="Download Excel"
+                        class="btn btn-outline-primary btn-md float-right " style="width:150pt" /></div>
+                      <br>
+                    </div>
+                  </div>
+                </div>
+
+                <!--For Pie Charts-->
+                <div id="PieChart" class="tabcontent"
+                  style="border-left:0pc; border-right:0px;border-bottom:0px; overflow:scroll;">
+                  <div style="float:left">
+                    <div id="piechart0" style="float:left;"></div>
+                    <div id="piechart1" style="float:left;"></div>
+                    <div id="piechart2" style="float:left;"></div>
+                    <div id="piechart3" style="float:left;"></div>
+                    <div id="piechart4" style="float:left;"></div>
+                    <div id="piechart5" style="float:left;"></div>
+                    <div id="piechart6" style="float:left;"></div>
+                  </div>
+                </div>
+
+                <!--By Users-->
+                <div id="IndividualSummary" class="tabcontent"
+                  style="border-left:0pc; border-right:0px;border-bottom:0px; overflow:scroll;">
+                  <div class="row">
+                    <div class="col divclick">
+                      <table id="table5" class="table table-striped table-hover fixedtable" style="width:100%">
+                        <thead class="thead-dark">
+                          <tr class="filters">
+                            {%for items in listaggregatedindiheader%}
+                            <th>
+                              {{items}}
+                            </th>
+                            {%endfor%}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {%for items in listaggregatedindi%}
+
+                          <tr class="clickable" onclick="launchtable(this, event, 'dynamicindisumm',false);">
+                            <td class="firstcell"><a class="article-title">{{items.0}}</a></td>
+                            <td>{{items.1}}</td>
+                            <td>{{items.2}}</td>
+
+                          </tr>
+                          {%endfor%}
+                        </tbody>
+                      </table>
+
+                      <br>
+                      <div class="form-group"><input type="submit" name="indisummary" value="Download Excel"
+                            class="btn btn-outline-primary btn-md float-right " style="width:150pt" /></div>
+                      <br>
+
+                    </div>
+                    {%include "userT/incldynamicindisumm.html"%}
+                  </div>
+                </div>
+
+          </div>
+
+
+
+          <!--Reject items-->
+          <div id="Rejected" class="tabcontent"
+            style="border-left:0pc; border-right:0px;border-bottom:0px; overflow:scroll;">
+            <div style="float:left col-md-12">
+              <table id="table6" class="table table-striped table-hover fixedtable tablefont" style="width:100%">
+                <thead class="thead-dark">
+                  <tr class="filters">
+                    {%for items in listofrejectedheader%}
+                    <th>
+                      {{items}}
+                    </th>
+                    {%endfor%}
+
+                  </tr>
+                </thead>
+                <tbody>
+                  {%for items in listofrejecteditems%}
+
+                  <tr>
+                    <td width="25%">{{items.0}}</td>
+                    <td>{{items.1}}</td>
+
+                  </tr>
+                  {%endfor%}
+
+                </tbody>
+              </table>
+              <div>
+                <br>
+                <div class="form-group"><input type="submit" name="rejectedcounts" value="Download Excel"
+                    class="btn btn-outline-primary btn-md float-right " style="width:150pt" /></div>
+              </div>
+            </div>
+          </div>
+
+
+          <div id="RejectedDetails" class="tabcontent"
+            style="border-left:0pc; border-right:0px;border-bottom:0px; overflow:scroll;">
+            <div style="float:left col-md-12">
+              <table id="table7" class="table table-striped table-hover fixedtable tablefont" style="width:100%">
+                {%include "userT/inclactioneeapprtableheader.html"%}
+                <th width="20%">Response</th>
+                <th width="5%">Revision</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                  {% for x  in rejectedactions %}
+
+                  <tr>
+                    <td><a class="article-title" href="{% url  'pmtrepviewall' x.id %}">{{ x.StudyActionNo }}</a>
+                    </td>
+                    <td>{{ x.StudyName }}</td>
+                    <td>{{ x.Organisation }} / {{ x.Disipline }} / {{ x.Subdisipline }}</td>
+
+                    <td>{{ x.Cause }}</td>
+
+                    <td><a class="article-title" href="{% url  'pmtrepviewall' x.id %}">{{ x.Recommendations }}</a>
+                    </td>
+                    <td>{{ x.DueDate }}</td>
+
+
+
+                    {%if riskmatrix%}
+                    {% with initialrisk=x.InitialRisk%}
+                    {% with riskcolour=x.RiskColour%}
+                    {%include "userT/incinitialriskcolour.html"%}
+                    {%endwith%}
+                    {%endwith%}
+                    {%else%}
+                    <td>{{ x.InitialRisk }}</td>
+                    <!--Original Code-->
+                    {%endif%}
+
+                    <td>{{ x.Response }}</td>
+                    <td>{{ x.Revision }}</td>
+                    {%endfor%}
+                </tbody>
+
+                </tbody>
+              </table>
+              <div>
+                <br>
+                <div class="form-group"><input type="submit" name="rejectedactions" value="Download Excel"
+                    class="btn btn-outline-primary btn-md float-right " style="width:150pt" /></div>
+              </div>
+              <br>
+            </div>
+
+            </fieldset>
+
+
+            <!--<div class="form-group"><input type="submit" name="byDueDate" value="Print Graph" class="btn btn-outline-primary float-right col-md-2 "  /></div>-->
+
+            </form>
+          </div>
+        </div>
+        <div id="PHASES" class="tabcontent"
+          style="border-left:0pc; border-right:0px;border-bottom:0px; overflow:scroll;">
+        </div>
+</body>
+</div>
+</div>
+{%endblock%}
+
+</html>

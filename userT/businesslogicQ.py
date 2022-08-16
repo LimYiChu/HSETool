@@ -241,6 +241,26 @@ def blallphasegetAction(que,phase=""):
     count += ActionItems.mdlallActionItemsCount.mgr_GeneralItemsCountbyFiltersKwargsQ(filters)
 
     return count
+def blphasegetallActionQ(reducedfields,actionitemtable, phase=""):
+    '''Filters actions by phase.If phase is empty it retrives all actions. Reduced field parameter  
+    is used to return less data to html. Pass in list for reduced field e.g ['id','DueDate', 'QueSeries' etc]
+    .It uses QObject'''
+    count = 0
+    dictofQueSeries ={}
+    QObjectSeries = []
+    filterargs = Q()
+    QObjectMiscAND =Q()
+   
+    if phase != "":
+        QObjectMiscAND = (Q(**{'ProjectPhase__ProjectPhase':phase}))
+      
+    #filters = blQobjectQueSeries(que) & QObjectMiscAND
+    filterKwargs = QObjectMiscAND
+    
+    actions =  actionitemtable.objects.filter (filterKwargs).select_related("ProjectPhase","StudyName").values(*reducedfields)
+    #ActionsPhase =  ActionItems.mdlallActionItemsCount.mgr_GeneralItemsFiltersKwargsQReduced(filters,reducedfields)
+    
+    return actions
 def blphasegetActionreducedfieldsQ(reducedfields,phase=""):
     '''Filters actions by phase.If phase is empty it retrives all actions. Reduced field parameter  
     is used to return less data to html. Pass in list for reduced field e.g ['id','DueDate', 'QueSeries' etc]
