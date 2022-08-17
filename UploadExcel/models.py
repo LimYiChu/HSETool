@@ -47,7 +47,7 @@ class ActionItems(models.Model):
     PreventiveSafeguard = models.TextField(null=True,blank=True) 
     MitigativeSafeguard = models.TextField(null=True,blank=True)
 
-    Signatory = models.BooleanField(default=False)
+    Signatory = models.BooleanField(default=True)
     
     class Meta:
         indexes = [

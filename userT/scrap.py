@@ -1,3 +1,47 @@
+#20220817 Ying Ying businesslogic.py
+# def blgetvaliduserinrouteUpdate(idAI, emailid, path, History=False):
+#     """
+#     This function is to check request user is satisfy the condition to access to action items in 
+#     Your Actions Section.
+#     """
+#     discsuborg = blgetDiscSubOrgfromID(idAI)
+#     id = {"id":idAI}
+#     fields = ["QueSeries","Revision"]
+#     itemdict = blgetsinglefilteractionsitemsQ(id,fields)[0]
+#     queseries = itemdict["QueSeries"]
+#     revision = itemdict["Revision"]
+#     signatories = blgetSignotories(discsuborg)
+#     dfsignatories = pd.DataFrame(signatories,columns = ['Role','User'])
+#     Rejectuserqueryset = Comments.mdlComments.filter(Action = idAI).values('Action_id','Username')
+#     Rejectuserdict = {k: [d.get(k) for d in Rejectuserqueryset] for k in set().union(*Rejectuserqueryset)}
+#     if any(Rejectuserdict): 
+#         Rejectuser = Rejectuserdict['Username']
+#     else:
+#         Rejectuser = ['none']
+#     dfsignatories[['Action_id', 'currentQueSeries', 'Revision','History','Path']] = pd.DataFrame([[idAI, queseries, revision, History, path]], index=dfsignatories.index)
+#     dfsignatories['Que'] = dfsignatories['Role']
+#     dfsignatories['Que'].replace(to_replace ="Actionee", value =0, inplace= True)
+#     dfsignatories['Que'].replace(regex=True,inplace=True,to_replace=r'\D',value=r'')
+#     dfsignatories['Que'] = dfsignatories['Que'].astype(int)
+#     dfsignatories = (dfsignatories.assign(User=dfsignatories['User'].str.split(';')).explode('User').reset_index(drop=True))  
+#     dfsignatories.loc[((dfsignatories['User']== emailid) & (dfsignatories['Que']== queseries) & (dfsignatories['History']== False)), 'Inroute'] = 'True'
+#     dfsignatories.loc[dfsignatories['User'].isin(Rejectuser), 'Rejectuser'] = 'True'
+#     dfsignatories.loc[((dfsignatories['currentQueSeries'] != 0) & (dfsignatories['currentQueSeries'] != 99)), 'Pullback'] = 'True'
+#     dfsignatories.loc[((dfsignatories['History']== True) & (dfsignatories['User']== emailid) & (dfsignatories['Que'] == 0) 
+#                 & (dfsignatories['Pullback']== 'True') & (dfsignatories['Path'].str.contains('update/True') == True)),'UpdateTrue'] = 'True'
+#     dfsignatories.loc[((dfsignatories['History']== True) & (dfsignatories['User']== emailid) & (dfsignatories['Que']< queseries) & (dfsignatories['Role'] != 'Actionee')
+#                 & (dfsignatories['Path'].str.contains('update/False') == True)),'ApproverUpdateFalse'] = 'True'
+#     dfsignatories.loc[((dfsignatories['History']== True) & (dfsignatories['User']== emailid) & (dfsignatories['Revision']>0) & (dfsignatories['Path'].str.contains('update/False') == True)) 
+#                 & ((dfsignatories['Rejectuser']== 'True') | (dfsignatories['Role']== 'Actionee')),'HistoryUpdateFalse'] = 'True'
+#     dfsignatories.loc[((dfsignatories['Inroute']== 'True') | (dfsignatories['UpdateTrue']== 'True') | (dfsignatories['ApproverUpdateFalse']== 'True') | 
+#                 (dfsignatories['HistoryUpdateFalse']== 'True')), 'ConditionAchieved'] = 'True'
+#     if (dfsignatories['ConditionAchieved']== 'True').any():
+#         return True
+
+#     else:
+#         return False
+
+
 #20220225 grom businesslogic.py
 
 

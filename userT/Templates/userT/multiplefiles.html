@@ -54,12 +54,12 @@
 <div class=''>
     <nav>
       <!-- 20210828 edward UI -->
-      <ol class="breadcrumb" style="background-color: #ffffff; position:relative;  right: -40px; bottom: -25px;">
-        <li class="breadcrumb-item">
+      <ol class="breadcrumb" style="background-color: #ffffff; position:relative;  right: -30px; bottom: -25px;">
+        <li class="breadcrumb-item-active">
           <a href="/main">Dashboard</a>
         </li>
-        <li class="breadcrumb-item">
-            <a href="/ActioneeList">Actionee List</a>
+        <li class="breadcrumb-item-active">
+            <a href="/ActioneeList">Actions</a>
         </li>
         <li class="breadcrumb-item-active">
             <a aria-current="page">{{object.StudyActionNo}}</a>
@@ -76,7 +76,7 @@
             The buttons was removed from forms into direct HTml to give the btn-outline-primary class. In forms it does not work
         -->
         {% csrf_token %}  
-        {%crispy form_multi form_multi.helper%}
+        {%crispy form%}
         <div class="float-right col-md-3 ">
           <div>
             <label for="signature" class=" requiredField">

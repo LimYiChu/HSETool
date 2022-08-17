@@ -38,15 +38,42 @@
       <br>
       <br>
     </div>
-      
+</div>
     {%endblock%}
 
 {% block RejectionComments %}
+<div class=''>
+  <nav>
+    <!-- 20210828 edward UI -->
+    <ol class="breadcrumb" style="background-color: #ffffff; position:relative;  right: -25px; bottom: -25px;">
+      <li class="breadcrumb-item">
+        <a style="color:rgb(255, 255, 255)" href="/main">Dashboard</a>
+      </li>
+      {% if block.is_ApproverDetails %}
+      <!--doesnt work...-->
+      <li class="breadcrumb-item-active">
+        <a href="/ApproverList">Actions</a>
+        <!--add if to differentiate actionee and approver-->
+      </li>
+      {% else %}
+      <li class="breadcrumb-item-active">
+        <a href="/ActioneeList">Actions</a>
+        <!--add if to differentiate actionee and approver-->
+      </li>
+      {% endif %}
 
+      <li class="breadcrumb-item-active">
+        <a aria-current="page">{{object.StudyActionNo}}</a>
+      </li>
+      <li>
+        <!-- This supposed to be empty to maintain the parent - child RS in css -->
+      </li>
+    </ol>
+  </nav>
 <body>
 
     
-        <form method="POST" enctype = 'multipart/form-data' style="margin-left:20pt; margin-top:50px;" >  
+        <form method="POST" enctype = 'multipart/form-data' style="margin-left:35pt; margin-top:50px;" >  
             <fieldset class="form-group" >
             {% csrf_token %}  
             {%crispy form%}

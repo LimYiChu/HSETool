@@ -1,0 +1,32 @@
+{% extends "userT/base3.html"%}
+{%block title%}Error{%endblock%}
+{%block Actionee%}
+<div class=''>
+    <nav>
+        <!-- 20210828 edward UI -->
+        <ol class="breadcrumb" style="background-color: #ffffff; position:relative;  right: -40px; bottom: -25px;">
+          <li class="breadcrumb-item">
+            <a style="color:rgb(255, 255, 255)" href="/main">Dashboard</a>
+          </li>
+
+    
+          <!-- <li class="breadcrumb-item-active">
+            <a aria-current="page">{{object.StudyActionNo}}</a>
+          </li> -->
+
+          <li>
+            <!-- This supposed to be empty to maintain the parent - child RS in css -->
+          </li>
+        </ol>
+      </nav>
+<br>
+
+<div style="margin-top: 10%; margin-right: 35px; margin-left: 25%; font-size: 45px">
+  <b>ERROR</b>
+</div>
+<div style="margin-top: 5px; margin-right: 35px; margin-left: 25%; font-size: 40px">
+  This action item is no longer in your action list.
+</div>
+<br>
+
+{%endblock%}
