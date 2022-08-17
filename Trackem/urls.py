@@ -53,7 +53,8 @@ urlpatterns = [
         path('ActioneeList/', login_required(UserView.ActioneeList.as_view()), name='UserActionList' ),
         path('ApproverList/', login_required(UserView.ApproverList.as_view()), name='ApproverList' ),
         re_path(r'ApproverConfirm/(?P<id>\d+)$', login_required(UserView.ApproverConfirm.as_view()), name='ApproverConfirm' ),
-        
+        path('approveerror/', login_required(UserView.error), name='approveerror' ),
+
         path('HistoryList/', login_required(UserView.HistoryList.as_view()), name='HistoryList' ),
         re_path(r'HistoryConfirm/(?P<id>\d+)$', login_required(UserView.HistoryConfirm.as_view()), name='HistoryConfirm' ),
        
@@ -82,7 +83,8 @@ urlpatterns = [
 
         #Following url /s for rejection 
         re_path(r'Comments/(?P<forkeyid>\d+)$', login_required(UserView.RejectReason.as_view()), name='RejectReason' ),
-        re_path(r'multiplefiles/(?P<forkeyid>\d+)$', login_required(UserView.multiplefiles), name='multiplefiles' ),
+        # re_path(r'multiplefiles/(?P<forkeyid>\d+)$', login_required(UserView.multiplefiles), name='multiplefiles' ),
+        re_path(r'multiplefiles/(?P<forkeyid>\d+)$', login_required(UserView.multiplefilesclass.as_view()), name='multiplefilesclass' ),
         
         #20220131 ishna datatables reusable code trial
         path('datatables/', login_required(UserView.datatables), name='datatables' ),

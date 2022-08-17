@@ -30,6 +30,172 @@ import shutil
 from django.db.models import F
 from collections import Counter
 
+def blremoveduplicatedisc(dfdissuborg):
+    """
+    Ying Ying 20220808 
+    This function is to remove duplicate Dissuborg ignoring case sensitive. Input is dissuborg dataframe and return as dataframe.
+    """
+    df = dfdissuborg.copy()
+    df = df.applymap(lambda s: s.upper() if type(s) == str else s)
+    df['Duplicate'] = df.duplicated()
+    df = df['Duplicate']
+    dfmerge= pd.concat([dfdissuborg, df], axis = 1)
+    dffinal = dfmerge.drop(dfmerge.index[dfmerge['Duplicate'] == True])
+    dffinal.drop(['Duplicate'], axis=1, inplace=True)
+    return dffinal
+
+def blgetSignatoryTable(id, Signatories, revision, QueSeries=0, InSignatory=False):
+    """
+    yingying 20220805
+    Switch between history table and signatory table for signature.
+    """
+    if InSignatory == True:
+        blgettimesignatorytables(id, Signatories, revision, QueSeries)
+    
+    else:
+        blgettimehistorytablesUpdate(id, Signatories, revision, QueSeries)
+
+
+def blgettimesignatorytables(id, Signatories, revision, QueSeries=0):
+    """
+    yingying 20220805
+    Gets time stamp based on queseries and whom signed from signatory tables. 
+    """
+    QueSeriesTarget = 9 #Random Distant Number to be reset after first loop
+    def setSignatoriesItems (setofsignatories, index):
+
+                setofsignatories [1] = lstdictSignatory[index]["email"]
+                setofsignatories [2] = lstdictSignatory[index]["fullname"]
+                setofsignatories [3] = lstdictSignatory[index]["designation"]
+                setofsignatories [4] = lstdictSignatory[index]["signature"]
+                setofsignatories [5] = lstdictSignatory[index]["Timestamp"]
+                
+                nonlocal QueSeriesTarget 
+                # QueSeriesTarget = lstdictHistory[historyindex].QueSeriesTarget #sets it after the first time
+                QueSeriesTarget = blgetFieldValue(id,'QueSeriesTarget') #Ying Ying 20220803
+
+    for index, items in enumerate(Signatories):
+        #This is for when number of approvers have changed and want to use historic tables to formulate the signatories
+        #Say if have 6 Approvers now and previous QueSeriesTarget=4 (3Approvers), have to delete last blank 3 from Signatories
+        if index == QueSeriesTarget:
+            if len (Signatories) != QueSeriesTarget :
+                noblanksignatures = len (Signatories)-QueSeriesTarget
+                del Signatories[-noblanksignatures:]
+            break
+        if index >= QueSeries:
+            break
+
+        elif (index < QueSeries) and (QueSeriesTarget-1 != index):
+            Signafilterkwargs = {'ActionItemsid_id':id,'Revision': revision} 
+            lstdictSignatory = Signatory.objects.filter(**Signafilterkwargs).values("QueSeries","email","fullname","designation","signature","Timestamp","Revision")
+            setSignatoriesItems(items,index)
+                
+        elif QueSeries == 99 and (QueSeriesTarget-1 == index):
+            lstdictSignatory = Signatory.objects.filter(**Signafilterkwargs).values("QueSeries","email","fullname","designation","signature","Timestamp","Revision")
+            setSignatoriesItems(items, index)
+
+    return Signatories
+
+
+def blpermissionerror(df, emailid, queseries):
+    """
+    Ying Ying 20220809
+    """
+    df.rename(columns = {'Inroute':'userinroute'}, inplace = True)
+    if queseries == 0:
+        df.loc[((df['User']== emailid) & (df['History']== False) & (df['QueSeriesAssign'] == 0)), 'Inroute'] = True
+    elif queseries == 99:
+        df.loc[((df['User']== emailid) & (df['History']== False)), 'Inroute'] = True
+    else:
+        df.loc[((df['User']== emailid) & (df['History']== False) & (df['QueSeriesAssign']< queseries)), 'Inroute'] = True
+    return df
+
+
+def blcheckhistorylistinroute(df, idAI, emailid):
+    """
+    Ying Ying 20220802
+    In History list, this function only allow related actionee(all actionee if multiple actionee) and approver who rejects the action 
+    item to access the page to see the rejected action item.
+    """
+    Rejectuser = blgetfieldfromrejectioncomment(idAI,'Username')  
+    df.loc[df['User'].isin(Rejectuser), 'Rejectuser'] = True
+    df.loc[((df['History']== True) & (df['User']== emailid) & (df['Revision']>0) & (df['Path'].str.contains('update/False') == True)) 
+        & ((df['Rejectuser']== True) | (df['Role']== 'Actionee')),'Inroute'] = True
+
+    return df
+
+def blcheckhisapproverinroute(df, emailid, queseries):
+    """
+    Ying Ying 20220802
+    In History list/Approver Action, this function only allow approver who has approved the action item can view the page, not including the approvers who 
+    has yet to approve the action items.
+    """
+    df.loc[((df['History']== True) & (df['User']== emailid) & (df['QueSeriesAssign']< queseries) 
+        & (df['Role'] != 'Actionee') & (df['Path'].str.contains('update/False') == True)),'Inroute'] = True
+
+    return df
+
+def blcheckhisactioneeinroute(df, emailid):
+    """
+    Ying Ying 20220802
+    In History list/Actionee Action, this function only allow related actionee(all actionee if multiple actionee) to access to the page 
+    and pull back action if action is not closed.
+    """
+    df.loc[((df['currentQueSeries'] != 0) & (df['currentQueSeries'] != 99)), 'Pullback'] = 'True'
+    df.loc[((df['History']== True) & (df['User']== emailid) & (df['QueSeriesAssign'] == 0) 
+                    & (df['Pullback']== 'True') & (df['Path'].str.contains('update/True') == True)),'Inroute'] = True
+
+    return df
+
+def blcheckuserinroute(df, emailid, queseries):
+    """
+    Ying Ying 20220802
+    In Actionee Action and Approver Action section, this function only allow user to access to submit/approve page when action item is in their plate. 
+    """
+    df.loc[((df['User']== emailid) & (df['QueSeriesAssign']== queseries) & (df['History']== False)& (df['currentQueSeries']!= 99)), 'Inroute'] = True
+    return df
+
+def bldfgetuserque(dfsignatories, rolename, username):
+    """
+    Ying Ying 20220801
+    To get the queseries assignment for users and split multiple actionees into new row(s). Input dataframe must have roles columns(Actionee, 
+    Approver1, Approver2 etc.) and User columns(user email). Rolename is the column name for role, username is the column name for user email.
+    Return dataframe with que number for user.
+    """
+    dfsignatories.rename(columns = {rolename:'Role', username:'User'}, inplace = True)
+    dfsignatories['QueSeriesAssign'] = dfsignatories['Role']
+    dfsignatories['QueSeriesAssign'].replace(to_replace ="Actionee", value =0, inplace= True)
+    dfsignatories['QueSeriesAssign'].replace(regex=True,inplace=True,to_replace=r'\D',value=r'')
+    dfsignatories['QueSeriesAssign'] = dfsignatories['QueSeriesAssign'].astype(int)
+    dfsignatories = (dfsignatories.assign(User=dfsignatories['User'].str.split(';')).explode('User').reset_index(drop=True)) 
+
+    return dfsignatories
+
+def blgetfieldfromrejectioncomment(idAI,field):
+    """
+    Ying Ying 20220801
+    Get list of data for requested field in Comment table based on action item ID. Input Action Item ID and field, return data as list.
+    """
+    Rejectuserqueryset = Comments.mdlComments.filter(Action = idAI).values(field)
+    Rejectuserdict = {k: [d.get(k) for d in Rejectuserqueryset] for k in set().union(*Rejectuserqueryset)}
+    if any(Rejectuserdict): 
+        Rejectuser = Rejectuserdict[field]
+    else:
+        Rejectuser = ['none']
+
+    return Rejectuser
+
+def blgetdfinfowithid(idAI):
+    """
+    Ying Ying 20220802
+    This function get dissuborg from ID and return in dataframe.
+    """
+    discsuborg = blgetDiscSubOrgfromID(idAI)
+    signatories = blgetSignotories(discsuborg)
+    dfactionroute = pd.DataFrame(signatories,columns = ['Role','User'])
+
+    return dfactionroute
+    
 def blwritetosignatoriestable(ID, emailid, inputdict):
     """
     Ying Ying 20220722
@@ -299,8 +465,9 @@ def bldynamicstudiesdisc(study, actionsstuckat):
     actionsvalues = actionsstuckat.values('Disipline',
                 'Subdisipline','Organisation')
     dfactionitem = pd.DataFrame(actionsvalues)
-    dfactionitemfilter = dfactionitem.drop_duplicates()
-    dfdiscsuborglist = dfactionitemfilter.values.tolist()
+    dfactionitemfilter = dfactionitem.drop_duplicates().reset_index(drop=True)
+    dfremovedupdisc = blremoveduplicatedisc(dfactionitemfilter) # Ying Ying 20220808
+    dfdiscsuborglist = dfremovedupdisc.values.tolist()
     discheaderlst = ['Discipline', 'Pending Submission' ,'Submitted', 'Closed','Open Actions','Total Actions']
     discmultilist.append(discheaderlst)
     # disclst= blaggregatebyDisc(dfdiscsuborglist,  YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue) YingYing change on 20220722     
@@ -580,6 +747,23 @@ def bltotalholdtime(Approver_R,reducedfileds,newdef=False):
         return strdays
 
 
+def bldfdiscsuborgphaseUpdate(phase):
+    """This function gets the discsuborg for actions based on differing phases"""
+    if phase == "":
+        ActionItem = ActionItems.objects.values('Disipline',
+                        'Subdisipline','Organisation')
+        
+    else:
+        ActionItem= ActionItems.objects.filter(ProjectPhase__ProjectPhase=phase).values('Disipline',
+                        'Subdisipline','Organisation')
+                        
+    dfactionitem = pd.DataFrame(ActionItem)
+    dfactionitemfilter = dfactionitem.drop_duplicates().reset_index(drop=True)
+    dfremovedupdisc = blremoveduplicatedisc(dfactionitemfilter) # Ying Ying 20220808
+    dfactionitemlist = dfremovedupdisc.values.tolist()
+    return dfactionitemlist
+
+
 def bldfdiscsuborgphase(phase):
     """This function gets the discsuborg for actions based on differing phases"""
     if phase == "":
@@ -591,8 +775,9 @@ def bldfdiscsuborgphase(phase):
                         'Subdisipline','Organisation')
                         
     dfactionitem = pd.DataFrame(ActionItem)
-    dfactionitemfilter = dfactionitem.drop_duplicates()
-    dfactionitemlist = dfactionitemfilter.values.tolist()
+    dfactionitemfilter = dfactionitem.drop_duplicates().reset_index(drop=True)
+    dfremovedupdisc = blremoveduplicatedisc(dfactionitemfilter)
+    dfactionitemlist = dfremovedupdisc.values.tolist()
     return dfactionitemlist
 
 
@@ -667,9 +852,11 @@ def blbulkdownload(objactionitems,destinationfolders,createzipfilename):
             discsub = blgetDiscSubOrgfromID(items['id']) 
             Signatories = blgetSignotories(discsub) 
             lstSignatoriesTimeStamp= blgettimestampuserdetails (items['id'], Signatories) 
-            currentQueSeries = blgetFieldValue(items['id'],'QueSeries')
-            revision = blgetFieldValue(items['id'],'Revision') 
-            blgettimehistorytablesUpdate(items['id'],lstSignatoriesTimeStamp,revision, currentQueSeries) 
+            Actionid, fields = {"id":items['id']}, ["Revision", "QueSeries", "Signatory"]
+            itemdict = blgetsinglefilteractionsitemsQ(Actionid,fields)[0]
+            revision, currentQueSeries, ActSignTrue = itemdict["Revision"], itemdict["QueSeries"], itemdict["Signatory"]
+            # blgettimehistorytablesUpdate(idAI,lstSignatoriesTimeStamp,revision, currentQueSeries) # Ying Ying 20220703-Bug Fix for signatories
+            blgetSignatoryTable(items['id'], lstSignatoriesTimeStamp, revision, currentQueSeries, ActSignTrue)  # Ying Ying 20220804 Switching between History Table and Signatory Table
             studyactno = items["StudyActionNo"] 
             studyactnopdf = (studyactno + '.pdf')
             signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
@@ -1260,43 +1447,66 @@ def blmultisignareplace (Signatories,emailid,ActioneeApprover=""):
     intres = int(''.join(map(str, tuple(res))))
     Signatories [intres][1] = emailid
 
-def blgetvaliduserinrouteUpdate(idAI, emailid, path, History=False):
+def blgetvaliduserinrouteUpdate(idAI, emailid, path, History=False, Handlenopermission=False):
     """
     This function is to check request user is satisfy the condition to access to action items in 
     Your Actions Section.
     """
-    discsuborg = blgetDiscSubOrgfromID(idAI)
     id = {"id":idAI}
-    fields = ["QueSeries","Revision"]
+    fields = ["QueSeries","Revision","QueSeriesTarget"]
     itemdict = blgetsinglefilteractionsitemsQ(id,fields)[0]
     queseries = itemdict["QueSeries"]
     revision = itemdict["Revision"]
-    signatories = blgetSignotories(discsuborg)
-    dfsignatories = pd.DataFrame(signatories,columns = ['Role','User'])
-    Rejectuserqueryset = Comments.mdlComments.filter(Action = idAI).values('Action_id','Username')
-    Rejectuserdict = {k: [d.get(k) for d in Rejectuserqueryset] for k in set().union(*Rejectuserqueryset)}
-    if any(Rejectuserdict): 
-        Rejectuser = Rejectuserdict['Username']
+    queseriestarget = itemdict["QueSeriesTarget"]
+    dfsignatories = blgetdfinfowithid(idAI)
+    dfsignatories[['currentQueSeries', 'Revision','History','Path']] = pd.DataFrame([[queseries, revision, History, path]], index=dfsignatories.index)
+    dfsignatories = bldfgetuserque(dfsignatories,'Role','User')
+    if Handlenopermission == False:
+        dfsignatories = blcheckuserinroute(dfsignatories, emailid, queseries)
+        dfsignatories = blcheckhisactioneeinroute(dfsignatories, emailid)
+        dfsignatories = blcheckhisapproverinroute(dfsignatories, emailid, queseries)
+        dfsignatories = blcheckhistorylistinroute(dfsignatories, idAI, emailid)
+
     else:
-        Rejectuser = ['none']
-    dfsignatories[['Action_id', 'currentQueSeries', 'Revision','History','Path']] = pd.DataFrame([[idAI, queseries, revision, History, path]], index=dfsignatories.index)
-    dfsignatories['Que'] = dfsignatories['Role']
-    dfsignatories['Que'].replace(to_replace ="Actionee", value =0, inplace= True)
-    dfsignatories['Que'].replace(regex=True,inplace=True,to_replace=r'\D',value=r'')
-    dfsignatories['Que'] = dfsignatories['Que'].astype(int)
-    dfsignatories = (dfsignatories.assign(User=dfsignatories['User'].str.split(';')).explode('User').reset_index(drop=True))  
-    dfsignatories.loc[((dfsignatories['User']== emailid) & (dfsignatories['Que']== queseries) & (dfsignatories['History']== False)), 'Inroute'] = 'True'
-    dfsignatories.loc[dfsignatories['User'].isin(Rejectuser), 'Rejectuser'] = 'True'
-    dfsignatories.loc[((dfsignatories['currentQueSeries'] != 0) & (dfsignatories['currentQueSeries'] != 99)), 'Pullback'] = 'True'
-    dfsignatories.loc[((dfsignatories['History']== True) & (dfsignatories['User']== emailid) & (dfsignatories['Que'] == 0) 
-                & (dfsignatories['Pullback']== 'True') & (dfsignatories['Path'].str.contains('update/True') == True)),'UpdateTrue'] = 'True'
-    dfsignatories.loc[((dfsignatories['History']== True) & (dfsignatories['User']== emailid) & (dfsignatories['Que']< queseries) & (dfsignatories['Role'] != 'Actionee')
-                & (dfsignatories['Path'].str.contains('update/False') == True)),'ApproverUpdateFalse'] = 'True'
-    dfsignatories.loc[((dfsignatories['History']== True) & (dfsignatories['User']== emailid) & (dfsignatories['Revision']>0) & (dfsignatories['Path'].str.contains('update/False') == True)) 
-                & ((dfsignatories['Rejectuser']== 'True') | (dfsignatories['Role']== 'Actionee')),'HistoryUpdateFalse'] = 'True'
-    dfsignatories.loc[((dfsignatories['Inroute']== 'True') | (dfsignatories['UpdateTrue']== 'True') | (dfsignatories['ApproverUpdateFalse']== 'True') | 
-                (dfsignatories['HistoryUpdateFalse']== 'True')), 'ConditionAchieved'] = 'True'
-    if (dfsignatories['ConditionAchieved']== 'True').any():
+        dfuserinroute = blcheckuserinroute(dfsignatories, emailid, queseries)
+        dfsignatories = blpermissionerror(dfuserinroute, emailid, queseries)
+
+
+    # discsuborg = blgetDiscSubOrgfromID(idAI)
+    # id = {"id":idAI}
+    # fields = ["QueSeries","Revision"]
+    # itemdict = blgetsinglefilteractionsitemsQ(id,fields)[0]
+    # queseries = itemdict["QueSeries"]
+    # revision = itemdict["Revision"]
+    # signatories = blgetSignotories(discsuborg)
+    # dfactionroute = pd.DataFrame(signatories,columns = ['Role','User'])
+    # dfactionroute[['currentQueSeries', 'Revision','History','Path']] = pd.DataFrame([[queseries, revision, History, path]], index=dfactionroute.index)
+    # Rejectuser = blgetfieldfromrejectioncomment(idAI,'Username')  
+
+    # In Actionee Action and Approver Action section, user only can access to submit/approve page when action item is in their plate.
+    # dfsignatories.loc[((dfsignatories['User']== emailid) & (dfsignatories['QueSeriesAssign']== queseries) & (dfsignatories['History']== History)), 'Inroute'] = 'True'
+
+    # In History list/Actionee Action, only related actionee(all actionee if multiple actionee) can access to the page and pull back action if action is not closed.
+    # dfsignatories.loc[((dfsignatories['currentQueSeries'] != 0) & (dfsignatories['currentQueSeries'] != 99)), 'Pullback'] = 'True'
+    # dfsignatories.loc[((dfsignatories['History']== History) & (dfsignatories['User']== emailid) & (dfsignatories['QueSeriesAssign'] == 0) 
+    #                 & (dfsignatories['Pullback']== 'True') & (dfsignatories['Path'].str.contains('update/True') == True)),'Inroute'] = 'True'
+
+    # In History list/Approver Action, only the approver who has approved the action item can view the page, not including the approvers who has yet to approve the action items.
+    # dfsignatories.loc[((dfsignatories['History']== History) & (dfsignatories['User']== emailid) & (dfsignatories['QueSeriesAssign']< queseries) 
+    #                 & (dfsignatories['Role'] != 'Actionee') & (dfsignatories['Path'].str.contains('update/False') == True)),'Inroute'] = 'True'
+
+    # In History list, only related actionee(all actionee if multiple actionee) and approver who rejects the action item can access the page to see the rejected action item.
+    # dfsignatories.loc[dfsignatories['User'].isin(Rejectuser), 'Rejectuser'] = 'True'
+    # dfsignatories.loc[((dfsignatories['History']== True) & (dfsignatories['User']== emailid) & (dfsignatories['Revision']>0) 
+    #                 & (dfsignatories['Path'].str.contains('update/False') == True)) 
+    #                 & ((dfsignatories['Rejectuser']== 'True') | (dfsignatories['Role']== 'Actionee')),'Inroute'] = 'True'
+    
+    # # If any of the condition above is True, column['ConditionAchieved'] is True
+    # dfsignatories.loc[((dfsignatories['Inroute']== 'True') | (dfsignatories['UpdateTrue']== 'True') | (dfsignatories['ApproverUpdateFalse']== 'True') | 
+    #             (dfsignatories['HistoryUpdateFalse']== 'True')), 'ConditionAchieved'] = 'True'
+
+    # if (dfsignatories['ConditionAchieved']== 'True').any():
+    if (dfsignatories['Inroute']== True).any():
         return True
 
     else:
@@ -1368,12 +1578,13 @@ def blgettimehistorytablesUpdate(id, Signatories, revision, QueSeries=0):
                 setofsignatories [3] = lstdictHistory[historyindex].history_user.designation
                 setofsignatories [4] = lstdictHistory[historyindex].history_user.signature
                 setofsignatories [5] = lstdictHistory[historyindex].history_date
-
+                
                 nonlocal QueSeriesTarget 
-                QueSeriesTarget = lstdictHistory[historyindex].QueSeriesTarget #sets it after the first time
-               
-    for index, items in enumerate(Signatories):
+                # QueSeriesTarget = lstdictHistory[historyindex].QueSeriesTarget #sets it after the first time
+                #Ying Ying 20220803 To solve missing row after adding extra approver in the midst of approver cycle.
+                QueSeriesTarget = blgetFieldValue(id,'QueSeriesTarget') 
 
+    for index, items in enumerate(Signatories):
         #This is for when number of approvers have changed and want to use historic tables to formulate the signatories
         #Say if have 6 Approvers now and previous QueSeriesTarget=4 (3Approvers), have to delete last blank 3 from Signatories
         if index == QueSeriesTarget:

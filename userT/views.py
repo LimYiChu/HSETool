@@ -14,6 +14,7 @@ from django.contrib.auth import get_user_model
 import matplotlib as plt
 from .businesslogic import *
 from .businesslogicQ import *
+from .businesslogicClass import *
 from .tableheader import *
 from .excelReports import *
 from .models import *
@@ -64,6 +65,9 @@ import itertools
 global urlview
 urlview = "VIEWURLGLOBAL"
 
+def error (request):
+
+    return render(request, 'userT/approveerror.html')
 
 def mergedcloseoutprint_update(request):
     """
@@ -444,23 +448,22 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
 
     def test_func(self,**kwargs):
         ingroup =  self.request.user.groups.filter(name="Approver").exists()
-        IdAI = self.kwargs.get("pk")
-        emailID = self.request.user.email
+        self.IdAI = self.kwargs.get("pk")
+        self.emailID = self.request.user.email
         # inroute = blgetvaliduserinroute(IdAI,emailID)
         #YingYing 20220728
-        path = self.request.path
-        inroute = blgetvaliduserinrouteUpdate(IdAI,emailID,path)
-        #end
+        self.path = self.request.path
+        self.approvemultipletime = blgetvaliduserinrouteUpdate(self.IdAI, self.emailID, self.path, False, True)
+        inroute = blgetvaliduserinrouteUpdate(self.IdAI, self.emailID, self.path)
 
-        #satifies 2 test before allowing to access items in Url  otherwise just redirect to main
-        if  (ingroup) and (inroute):
-            return True
-        else :
-            return False
+        self.checksecurity = blclschecksecurity()
+        self.check = self.checksecurity.test_func(ingroup, inroute)
+        return self.check
 
     def handle_no_permission(self):
-        #if no permission from test_func return to main
-        return HttpResponseRedirect('/main')
+    # if no permission from test_func return to 
+        self.handlenopermission = self.checksecurity.handle_no_permission(self.approvemultipletime)
+        return self.handlenopermission
 
     def get(self, request, *args, **kwargs):
         #uses pk key to automatically get objext
@@ -496,31 +499,25 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
             return super().form_valid(form)
 
     def get_context_data(self,**kwargs):
-        idAI = self.kwargs.get("pk")
-        emailid = self.request.user.email
-      
-
         context = super().get_context_data(**kwargs)
-        discsub = blgetDiscSubOrgfromID(idAI)
+        actionid, fields = {"id":self.IdAI}, ["Revision", "QueSeries", "Signatory"]
+        itemdict = blgetsinglefilteractionsitemsQ(actionid,fields)[0]
+        revision, currentQueSeries, ActSignTrue = itemdict["Revision"], itemdict["QueSeries"], itemdict["Signatory"]
+        discsub = blgetDiscSubOrgfromID(self.IdAI)
         Signatories = blgetSignotories(discsub)
-        lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories) #it changes the Signatories directly
-        
-        currentQueSeries = blgetFieldValue(idAI,'QueSeries')
+        # lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories) #it changes the Signatories directly
+        lstSignatoriesTimeStamp= blgettimestampuserdetailsUpdate (Signatories) #Ying Ying 20220729 Fix Missing name and designation for multiple actionee
+
         # blgettimehistorytables(idAI,lstSignatoriesTimeStamp,currentQueSeries)
-        #Ying Ying 20220703-Bug Fix for signatories
-        revision = blgetFieldValue(idAI,'Revision') 
-        blgettimehistorytablesUpdate(idAI,lstSignatoriesTimeStamp,revision, currentQueSeries)
-        #end bugfixed
+        # blgettimehistorytablesUpdate(idAI,lstSignatoriesTimeStamp,revision, currentQueSeries) # Ying Ying 20220703-Bug Fix for signatories
+        blgetSignatoryTable(self.IdAI, lstSignatoriesTimeStamp, revision, currentQueSeries, ActSignTrue)  # Ying Ying 20220804 Switching between History Table and Signatory Table
 
         ApproverLevel = blgetApproverLevel(discsub) #add approver level target in case it doesnt get set at the start
-        blsetApproverLevelTarget(idAI,ApproverLevel)
+        blsetApproverLevelTarget(self.IdAI,ApproverLevel)
         object_list = self.object.attachments_set.all()
 
-       
-
-
         context['object_list'] = object_list
-        context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(idAI)
+        context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(self.IdAI)
         context['Approver'] = True
         context ['Signatories'] = lstSignatoriesTimeStamp
         return context
@@ -529,65 +526,82 @@ class ApproveItemsMixin(UserPassesTestMixin,UpdateView):
         return reverse ('ApproverConfirm', kwargs={'id': self.object.id})
 
 
-class ApproverConfirm(UpdateView):
+class ApproverConfirm(UserPassesTestMixin, UpdateView):
     """
     This function is for the Approver Confirmation Page
     """
     template_name = "userT/approverconfirmation.html" 
     form_class = frmApproverConfirmation
     success_url = '/ApproverList/'
+    
+    def test_func(self,**kwargs):
+        ingroup =  self.request.user.groups.filter(name="Approver").exists()
+        self.ID =self.kwargs["id"]
+        self.emailID = self.request.user.email
+        self.path = self.request.path
+        self.approvemultipletime = blgetvaliduserinrouteUpdate(self.ID, self.emailID, self.path, False, True)
+        inroute = blgetvaliduserinrouteUpdate(self.ID, self.emailID, self.path)
+
+        self.checksecurity = blclschecksecurity()
+        self.check = self.checksecurity.test_func(ingroup, inroute)
+        return self.check
+
+    def handle_no_permission(self):
+    # if no permission from test_func return to 
+        self.handlenopermission = self.checksecurity.handle_no_permission(self.approvemultipletime)
+        return self.handlenopermission
 
     def form_valid(self,form):
-        emailid=self.request.user.email
-        strsignature = blgetfieldCustomUser(emailid,"signature") 
-
+        strsignature = blgetfieldCustomUser(self.emailID,"signature") 
+        emailID = self.request.user.email
+        
         if (self.request.POST.get('Cancel')):
-            
-            ID =self.kwargs["id"]
-            bldeletehistorytablesignatory(ID)
+            bldeletehistorytablesignatory(self.ID)
             return HttpResponseRedirect('/ApproverList/')
 
         if (self.request.POST.get('ApproveConfirm')):
-            ID =self.kwargs["id"]
-            id = {"id":ID}
+            id = {"id":self.ID}
             fields = ["QueSeriesTarget", "QueSeries","Revision"]
             itemdict = blgetsinglefilteractionsitemsQ(id,fields)[0]
             ApproverLevel =  itemdict["QueSeriesTarget"]
             integerqueseries = itemdict["QueSeries"]
-            discsub = blgetDiscSubOrgfromID(ID)
+            discsub = blgetDiscSubOrgfromID(self.ID)
             
             if (form.instance.QueSeries == (ApproverLevel-1)):
                 form.instance.QueSeries = 99 # Random far end number to show all closed
             else:
                 form.instance.QueSeries += 1 #this sets the queseries in the form object and automaticall saves it
 
-            if (self.request.POST.get('signature')):
+            if (self.request.POST.get('signature')):   
                 strsignature = self.request.POST.get('signature')
-                blwritetosignatoriestable(ID, emailid, itemdict)
-                blsetfieldCustomUser(emailid,"signature",strsignature)
-            else :
-                blwritetosignatoriestable(ID, emailid, itemdict)
-                blsetfieldCustomUser(emailid,"signature",str(emailid))
+                blwritetosignatoriestable(self.ID, self.emailID, itemdict)
+                blsetfieldCustomUser(self.emailID, "signature", strsignature)
 
+            else : 
+                blwritetosignatoriestable(self.ID, self.emailID, itemdict)
+                blsetfieldCustomUser(self.emailID, "signature", str(self.emailID))
 
-             # 15 - 07 - 2022 Guna -- new signatory - Move 3 lines of code to bl - it needs to be moved above 
+            # 15 - 07 - 2022 Guna -- new signatory - Move 3 lines of code to bl - it needs to be moved above 
             # signobj = Signatory ()
             # signobj.create_signatory(ActionItemsid_id= ID,email =emailid,QueSeries=integerqueseries)
             # ActionItems.mdlSetField.mgrSetField(ID,"Signatory",True)
             # end new signatory
+            testing = Signatory.objects.all().filter(ActionItemsid_id= self.ID)
+            print(testing)
             Signatoryemails = blgetSignatoryemailbyque(discsub,integerqueseries+1)
-            ContentSubject  = blbuildSubmittedemail(ID,"Approver")
+            ContentSubject  = blbuildSubmittedemail(self.ID,"Approver")
             success = blemailSendindividual(emailSender,Signatoryemails,ContentSubject[0], ContentSubject[1])
             return super().form_valid(form)
+        else:
+            return HttpResponseRedirect('/main')
 
     def get_context_data(self, **kwargs):
         """
         Showing email as default signature
         """
-        emailid=self.request.user.email
         sign=self.request.user.signature
         context = super().get_context_data(**kwargs)
-        context['signature'] = blgetfieldCustomUser(emailid,"signature")
+        context['signature'] = blgetfieldCustomUser(self.emailID,"signature")
         return context
 
     def get_object(self,queryset=None):
@@ -629,20 +643,15 @@ class HistoryFormMixin(UserPassesTestMixin,UpdateView):
             ingroup =  True
         else :
             ingroup = False
-
         IdAI = self.kwargs.get("pk")
         emailID = self.request.user.email
-        # inroute = blgetvaliduserinroute(IdAI, emailID, True)
-        #YingYing 20220728
         path = self.request.path
+        # inroute = blgetvaliduserinroute(IdAI, emailID, True)
         inroute = blgetvaliduserinrouteUpdate(IdAI, emailID, path, True)
-        #end
-        
-        #satifies 2 test before allowing to access items in Url  otherwise just redirect to main
-        if  (ingroup) and (inroute):
-            return True
-        else :
-            return False
+
+        self.checksecurity = blclschecksecurity()
+        self.check = self.checksecurity.test_func(ingroup, inroute)
+        return self.check
 
     def handle_no_permission(self):
         #if no permission from test_func return to main
@@ -657,16 +666,17 @@ class HistoryFormMixin(UserPassesTestMixin,UpdateView):
         id = self.kwargs['pk']
         isactionee= eval(self.kwargs['actionee']) #convert string to boolean values so can use direct in HTML
         context = super().get_context_data(**kwargs)
+        actionid, fields = {"id":id}, ["Revision", "QueSeries", "Signatory"]
+        itemdict = blgetsinglefilteractionsitemsQ(actionid,fields)[0]
+        revision, currentQueSeries, ActSignTrue = itemdict["Revision"], itemdict["QueSeries"], itemdict["Signatory"]
         discsuborg = blgetDiscSubOrgfromID(id)
         ApproverLevel = blgetApproverLevel(discsuborg)
         Signatories = blgetSignotories(discsuborg)
         lstSignatoriesTimeStamp= blgettimestampuserdetails (id, Signatories)
 
-        #YingYing 20220729 Bug Fixing- Incorrect Signatories in Actionee
-        currentQueSeries = blgetFieldValue(id,'QueSeries')
-        revision = blgetFieldValue(id,'Revision') 
-        blgettimehistorytablesUpdate(id,lstSignatoriesTimeStamp,revision, currentQueSeries)
-        #end 
+        # blgettimehistorytables(idAI,lstSignatoriesTimeStamp,currentQueSeries)        
+        # blgettimehistorytablesUpdate(idAI,lstSignatoriesTimeStamp,revision, currentQueSeries) # Ying Ying 20220703-Bug Fix for signatories
+        blgetSignatoryTable(id, lstSignatoriesTimeStamp, revision, currentQueSeries, ActSignTrue)  # Ying Ying 20220804 Switching between History Table and Signatory Table
 
         actionlocation = []
         integerqueseries = blgetFieldValue(id,"QueSeries")
@@ -698,38 +708,34 @@ class HistoryFormMixin(UserPassesTestMixin,UpdateView):
         return reverse ('HistoryConfirm', kwargs={'id': self.object.id })
 
 
-class ActioneeItemsMixin(UserPassesTestMixin,UpdateView): #@user_passes_test(lambda u: u.groups.filter(name='Actionee').count() == 0, login_url='/main') IMPORTANT
+class ActioneeItemsMixin(UserPassesTestMixin, UpdateView): #@user_passes_test(lambda u: u.groups.filter(name='Actionee').count() == 0, login_url='/main') IMPORTANT
     template_name = "userT/actionupdateapproveaction.html"
     form_class = frmoriginalbase
-  
+
     def get_form_class(self,**kwargs):
         form_classnew = (blgetFieldValue(self.kwargs.get("pk"),"StudyName__Form"))
-
         if form_classnew:
             from UploadExcel import formstudies
             form_class= getattr(formstudies, form_classnew,None)
         else:
             form_class = self.form_class
         return form_class
-    
+
     def test_func(self,**kwargs):
-        ingroup = self.request.user.groups.filter(name="Actionee").exists()
-        IdAI = self.kwargs.get("pk")
-        emailID = self.request.user.email
-        # inroute = blgetvaliduserinroute(IdAI,emailID)
-        #Ying Ying 20220728 
-        path = self.request.path
-        inroute = blgetvaliduserinrouteUpdate(IdAI, emailID, path) 
-        #end
-        
-        #satifies 2 test before allowing to access items in Url  otherwise just redirect to main
-        if  (ingroup) and (inroute):
-            return True
-        else :
-            return False
+        self.ingroup =  self.request.user.groups.filter(name="Approver").exists()
+        self.IdAI =self.kwargs["pk"]
+        self.emailID = self.request.user.email
+        self.path = self.request.path 
+        self.approvemultipletime = blgetvaliduserinrouteUpdate(self.IdAI, self.emailID, self.path,False,True)
+        self.inroute = blgetvaliduserinrouteUpdate(self.IdAI, self.emailID, self.path)
+
+        self.checksecurity = blclschecksecurity()
+        self.check = self.checksecurity.test_func(self.ingroup, self.inroute)
+        return self.check
 
     def handle_no_permission(self):
-        return HttpResponseRedirect('/main')  #if no permission from test_func return to main
+        self.handlenopermission = self.checksecurity.handle_no_permission(self.approvemultipletime)
+        return self.handlenopermission
 
     def get_object(self,queryset=None):
 
@@ -737,19 +743,17 @@ class ActioneeItemsMixin(UserPassesTestMixin,UpdateView): #@user_passes_test(lam
         return queryset.get(id=self.kwargs['pk'])
         
     def get_context_data(self,**kwargs):
-        IdAI = self.kwargs.get("pk") #its actually the id and used as foreign key
+        # self.IdAI = self.kwargs.get("pk") #its actually the id and used as foreign key
         context = super().get_context_data(**kwargs)
-        emailID = self.request.user.email
-
-        discsuborg = blgetDiscSubOrgfromID(IdAI)
+        discsuborg = blgetDiscSubOrgfromID(self.IdAI)
         ApproverLevel = blgetApproverLevel(discsuborg)
         Signatories = blgetSignotories(discsuborg)  
-        multipleSignatories = blmultisignareplace(Signatories,emailID,"Actionee") # Replaces the multiple signatory with an individual
-        blsetApproverLevelTarget(IdAI,ApproverLevel)
-        lstSignatoriesTimeStamp= blgettimestampuserdetails (IdAI, Signatories)
+        multipleSignatories = blmultisignareplace(Signatories,self.emailID,"Actionee") # Replaces the multiple signatory with an individual
+        blsetApproverLevelTarget(self.IdAI,ApproverLevel)
+        lstSignatoriesTimeStamp= blgettimestampuserdetails (self.IdAI, Signatories)
         object_list = self.object.attachments_set.all()
 
-        context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(IdAI)
+        context['Rejectcomments'] = Comments.mdlComments.mgrCommentsbyFK(self.IdAI)
         context['Approver'] = False
         context ['ApproverLevel'] = ApproverLevel
         context ['Signatories'] = lstSignatoriesTimeStamp
@@ -771,7 +775,7 @@ class ActioneeItemsMixin(UserPassesTestMixin,UpdateView): #@user_passes_test(lam
             return redirect('ActioneeFormMixin' , pk=ActionItemID)
 
     def get_success_url(self):
-        return reverse ('multiplefiles', kwargs={'forkeyid': self.object.id})
+        return reverse ('multiplefilesclass', kwargs={'forkeyid': self.object.id})
 
 
 def ContactUs (request):
@@ -828,6 +832,79 @@ def IndividualBreakdownByActions(request):
     }
     return render(request, 'userT/indibreakdownbyactions.html', context)
 
+class multiplefilesclass(UserPassesTestMixin,CreateView):
+    form_class = frmMultipleFiles
+    success_url ='/ActioneeList/'
+    template_name = "userT/multiplefiles.html"
+
+    def test_func(self,**kwargs):
+        self.ingroup = self.request.user.groups.filter(name="Actionee").exists()
+        self.ID = self.kwargs['forkeyid']
+        self.emailID = self.request.user.email
+        self.path = self.request.path 
+        queseries = blgetFieldValue(self.ID,"QueSeries")
+        self.approvemultipletime = blgetvaliduserinrouteUpdate(self.ID, self.emailID, self.path, False, True)
+        self.inroute = blgetvaliduserinrouteUpdate(self.ID, self.emailID, self.path)
+
+        self.checksecurity = blclschecksecurity()
+        self.check = self.checksecurity.test_func(self.ingroup, self.inroute, queseries, True)
+        
+        return self.check
+
+    def handle_no_permission(self):
+        #if no permission from test_func return to main 
+        self.handlenopermission = self.checksecurity.handle_no_permission(self.approvemultipletime)
+        return self.handlenopermission
+        
+    def form_valid(self,form):
+        emailID = self.request.user.email
+        strsignature = blgetfieldCustomUser(emailID,"signature") 
+        if (self.request.POST.get('Cancel')):
+            
+            self.ID = self.kwargs['forkeyid']
+            bldeletehistorytablesignatory(self.ID)
+            return HttpResponseRedirect('/ActioneeList/')
+
+        if (self.request.POST.get('Upload')):
+            self.ID = self.kwargs['forkeyid']
+            id = {"id":self.ID}
+            fields = ["QueSeriesTarget", "QueSeries","Revision"]
+            itemdict = blgetsinglefilteractionsitemsQ(id,fields)[0]
+            files = self.request.FILES.getlist('Attachment')
+            
+            if (self.request.POST.get('signature')):
+                strsignature = self.request.POST.get('signature')
+                blsetfieldCustomUser(emailID,"signature",strsignature)
+            else :
+                blsetfieldCustomUser(emailID,"signature",str(emailID))
+
+            for file in files:
+                x = Attachments.objects.create(
+                    Attachment=file,
+                    Action_id=self.ID,
+                    Username=emailID
+                )
+            newQueSeries = 1
+            blwritetosignatoriestable(self.ID, emailID, itemdict)
+            ActionItems.mdlQueSeries.mgrsetQueSeries(self.ID,newQueSeries)
+            discsub = blgetDiscSubOrgfromID(self.ID)
+            Signatoryemails = blgetSignatoryemailbyque(discsub,newQueSeries) 
+            ContentSubject  =blbuildSubmittedemail(self.ID,"Actionee")
+            success = blemailSendindividual(emailSender,Signatoryemails,ContentSubject[0], ContentSubject[1])
+            return super().form_valid(form)
+        else:
+            return HttpResponseRedirect('/main')
+
+    def get_context_data(self, **kwargs):
+            """
+            Showing email as default signature
+            """
+            emailid=self.request.user.email
+            sign=self.request.user.signature
+            context = super().get_context_data(**kwargs)
+            context['signature'] = blgetfieldCustomUser(emailid,"signature")
+            return context
+            
 
 def multiplefiles (request, **kwargs):
     """
@@ -1203,7 +1280,7 @@ def repPMTExcel (request,phase=""):
     
     #for Disipline based view
     tabledischeader = ['Discipline', 'Yet to Respond' ,'Approval Stage', 'Closed','Open Actions','Total Actions']
-    lstbyDisc = blaggregatebyDisc(dfdiscsuborgphase, YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue)
+    lstbyDisc = blaggregatebyDisc(dfdiscsuborgphase, YetToRespondQue, ApprovalQue,QueClosed,QueOpen,TotalQue)  
     lstbyDischidden = copy.deepcopy(lstbyDisc)
     lstbyDischidden = blaggregatebyDisc_hidden(dfdiscsuborgphase,lstbyDischidden)
 
@@ -1411,17 +1488,15 @@ def closeoutprint(request,**kwargs):
     out_file = tempfolder + Filename 
     data_dict = datafrommodels
 
+    Actionid, fields = {"id":ID}, ["Revision", "QueSeries", "Signatory"]
+    itemdict = blgetsinglefilteractionsitemsQ(Actionid,fields)[0]
+    revision, currentQueSeries, ActSignTrue = itemdict["Revision"], itemdict["QueSeries"], itemdict["Signatory"]
     discsub = blgetDiscSubOrgfromID(ID)
     Signatories = blgetSignotories(discsub)
     lstSignatoriesTimeStamp= blgettimestampuserdetails (ID, Signatories) #edward changed this to use new bl for signature 20210706
-
-    currentQueSeries = blgetFieldValue(ID,'QueSeries')
-    # blgettimehistorytables(ID,lstSignatoriesTimeStamp,currentQueSeries)
-    #Ying Ying 20220703-Bug Fix for signatories
-    revision = blgetFieldValue(ID,'Revision') 
-    blgettimehistorytablesUpdate(ID,lstSignatoriesTimeStamp,revision, currentQueSeries)
-    #end bugfixed
-
+    # blgettimehistorytables(ID,lstSignatoriesTimeStamp,currentQueSeries)        
+    # blgettimehistorytablesUpdate(ID,lstSignatoriesTimeStamp,revision, currentQueSeries) # Ying Ying 20220703-Bug Fix for signatories
+    blgetSignatoryTable(ID, lstSignatoriesTimeStamp, revision, currentQueSeries, ActSignTrue)  # Ying Ying 20220804 Switching between History Table and Signatory Table
     signatoriesdict = blconverttodictforpdf(lstSignatoriesTimeStamp)
     studyname = str(actiondetails.StudyName)
     projectphase = str(actiondetails.ProjectPhase)
@@ -1570,17 +1645,16 @@ class pmtrepviewall(UpdateView):
     def get_context_data(self,**kwargs):
         idAI = self.kwargs.get("id")
         context = super().get_context_data(**kwargs)
+        Actionid, fields = {"id":idAI}, ["Revision", "QueSeries", "Signatory"]
+        itemdict = blgetsinglefilteractionsitemsQ(Actionid,fields)[0]
+        revision, currentQueSeries, ActSignTrue = itemdict["Revision"], itemdict["QueSeries"], itemdict["Signatory"]
         discsub = blgetDiscSubOrgfromID(idAI)
         Signatories = blgetSignotories(discsub)
         # lstSignatoriesTimeStamp= blgettimestampuserdetails (idAI, Signatories)
         lstSignatoriesTimeStamp = blgettimestampuserdetailsUpdate(Signatories)   #Ying Ying 20220729 Fix Missing name and designation for multiple actionee
-
-        currentQueSeries = blgetFieldValue(idAI,'QueSeries')
-        # blgettimehistorytables(idAI,lstSignatoriesTimeStamp,currentQueSeries)
-        #Ying Ying 20220703-Bug Fix for signatories
-        revision = blgetFieldValue(idAI,'Revision') 
-        blgettimehistorytablesUpdate(idAI,lstSignatoriesTimeStamp,revision, currentQueSeries)
-        #end bugfixed
+        # blgettimehistorytables(idAI,lstSignatoriesTimeStamp,currentQueSeries)        
+        # blgettimehistorytablesUpdate(idAI,lstSignatoriesTimeStamp,revision, currentQueSeries) # Ying Ying 20220703-Bug Fix for signatories
+        blgetSignatoryTable(idAI, lstSignatoriesTimeStamp, revision, currentQueSeries, ActSignTrue)  # Ying Ying 20220804 
 
         object_list = self.object.attachments_set.all() 
         rejectcomments = self.object.comments_set.all() 
