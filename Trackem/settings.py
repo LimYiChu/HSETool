@@ -29,8 +29,9 @@ DEBUG = True
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  #development only
     #edward test
-ALLOWED_HOSTS = ['127.0.0.1',]
+ALLOWED_HOSTS = ['hsetool.azurewebsites.net',]
 
+CSRF_TRUSTED_ORIGINS=['https://hsetool.azurewebsites.net']
 
 # Application definition
 
@@ -76,7 +77,8 @@ ROOT_URLCONF = 'Trackem.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'userT/Templates'),
+                os.path.join(BASE_DIR, 'UploadExcel/Templates'),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -100,9 +102,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'trackemupgrade',
-        'USER': 'root',
+        'USER': 'root_db',
         'PASSWORD': 'Nice10day',
-        'HOST': 'localhost',
+        'HOST': 'trackemupgrade.mysql.database.azure.com',
         'PORT': '3306',
     }
 }
