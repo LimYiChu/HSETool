@@ -1,0 +1,109 @@
+/* Bootstrap override for nice dashboard cards and notif panel */
+
+#smallcard {
+    padding-top: 1.5rem;
+    padding-bottom: 1rem
+}
+
+#smallcard .card {
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    text-align: right;
+    min-width: 291px;
+}
+
+#smallcard .card p,
+#smallcard .card h4 {
+    margin-bottom: 0;
+    text-transform: capitalize;
+}
+
+#smallcard .card-header,
+#smallcard .card-footer {
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-bottom: 1 px solid rgba(0, 0, 0, 0.125);
+}
+
+#smallcard .card-header div {
+    padding-top: 0.25rem;
+}
+
+#smallcard hr {
+    border: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#smallcard .icon {
+    width: 48px;
+    height: 48px;
+    background-position: center;
+    border-radius: 0.75rem;
+    text-align: center;
+    position: absolute;
+    margin-top: -1.5rem;
+}
+
+#smallcard .icon i {
+    color: #fff;
+    opacity: 0.8;
+    top: 11px;
+    position: relative;
+}
+
+#smallcard .red {
+    background-image: linear-gradient(195deg, #960707 0%, #a8181f 100%);
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(244, 67, 54, 0.4);
+}
+
+#smallcard .black {
+    background-image: linear-gradient(195deg, #42424a 0%, #191919 100%);
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(64, 64, 64, 0.4);
+}
+
+#smallcard .blue {
+    background-image: linear-gradient(195deg, #49a3f1 0%, #1A73E8 100%);
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(0, 188, 212, 0.4);
+}
+
+#smallcard .green {
+    background-image: linear-gradient(195deg, #66BB6A 0%, #43A047 100%);
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(76, 175, 80, 0.4);
+}
+
+#notifpanel a {
+    color: black;
+}
+
+#smallcard .row {
+    justify-content: space-between;
+    /* flex-wrap: nowrap; */
+
+}
+
+#smallcard .responsive {
+    position: relative;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-bottom: 1.5rem;
+}
+
+
+@media (max-width:1500px) {
+    #smallcard .row {
+        flex-wrap: wrap;
+    }
+}
+
+@media (min-width:1500px) {
+    #smallcard .row {
+        flex-wrap: nowrap;
+    }
+
+    #smallcard .responsive {
+        width: 100%;
+    }
+}
+
+/* end of Bootstrap override */

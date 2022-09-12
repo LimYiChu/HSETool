@@ -1,0 +1,160 @@
+.postitnote {
+  width: 250px;
+  /*original value width 250px, height240px*/
+  height: auto;
+  position: relative;
+  background: beige;
+  overflow: hidden;
+  margin: 30px auto;
+  padding: 20px;
+  border-radius: 0 0 0 30px/45px;
+  font-family: 'Times New Roman', cursive;
+  line-height: 1.7em;
+  font-size: 19px;
+}
+
+thead input {
+  width: 100%;
+}
+
+.pagination a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.pagination a:hover:not(.active) {
+  background-color: #ddd;
+}
+
+#download-excel {
+  position: absolute;
+  right: 1.5em;
+  top: 1rem;
+}
+
+/* Style the tab */
+.tabset {
+  overflow: hidden;
+  display: -webkit-box;
+  padding-top: 5px;
+  padding-bottom: 10px;
+}
+
+.tabset button {
+  transition: 0.3s;
+  cursor: pointer;
+  border: solid #ddd 1px;
+  border-bottom: none;
+  border-radius: 5px 5px 0 0;
+  padding: 10px 15px 6px 15px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 300px;
+  min-width: 50px;
+}
+
+.tab-top {
+  position: absolute;
+  right: 0px;
+  top: -6.5em;
+
+}
+
+.tab-top button {
+  float: left;
+  padding: 10px 25px;
+  outline: none;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab-child button {
+  background-color: white;
+  -webkit-box-flex: 1;
+
+}
+
+/* Change background color of buttons on hover */
+
+
+.tabset button:hover {
+  background-image:
+    linear-gradient(to bottom, #ddd, white);
+}
+
+/* Create an active/current tablink class */
+
+
+.tabset button.active {
+  background-image:
+    linear-gradient(to bottom, #93D3F0, white);
+  border: solid #ddd 1px;
+  border-bottom: none;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+
+.tabcontent {
+  animation: fadeEffect 1s;
+  /* Fading effect takes 1 second */
+}
+
+/* Go from zero to full opacity */
+@keyframes fadeEffect {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+div.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 50px;
+  padding: 30px;
+  font-size: 20px;
+  width: 100%;
+}
+
+.card-columns {
+  column-count: 2;
+}
+
+.rejectcomment {
+  overflow-wrap: anywhere;
+}
+
+.parent-font {
+  font-size: 2rem;
+}
+
+.child-one-font {
+  font-size: 1.25rem;
+}
+
+.child-two-font {
+  font-size: 1.1rem;
+}
+
+.subtext-font {
+  font-size: 0.8rem;
+}
+
+table.sticky thead th {
+  min-width: 51px !important;
+}
+
+#download-bulkpdf {
+  position: absolute;
+  right: 1.5em;
+  top: 1rem;
+}

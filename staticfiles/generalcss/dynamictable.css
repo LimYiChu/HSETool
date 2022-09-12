@@ -1,0 +1,88 @@
+.clickable {
+    cursor: pointer;
+}
+
+.close-btn {
+    border: .6px solid rgb(0, 0, 0);
+    padding: 10px;
+    position: absolute;
+    top: 0rem;
+    right: 1rem;
+    font-size: 2rem;
+    line-height: 1rem;
+    cursor: pointer;
+    transition: .5s ease all;
+}
+
+.close-btn:hover {
+    background: white;
+}
+
+.popup {
+    display: none;
+    background-color: #f3f2f2;
+    padding-top: 50px;
+    animation: slide-in .5s ease;
+    animation-fill-mode: forwards;
+    /* overflow: hidden;
+    transform: translateX(100%); */
+}
+
+.tableclick {
+    /* flex-grow: 1; */
+    animation-fill-mode: forwards;
+    animation: none;
+}
+
+
+.tablew100 {
+    width: 100% !important;
+}
+
+.dyntabcontent {
+    display: none;
+    }
+    
+.dynamictabs {
+    padding-bottom: 10px;
+    }
+
+@keyframes slide-in {
+    0% {
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slide-out {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes mymovein {
+    0% {
+        flex-grow: 1;
+    }
+
+    100% {
+        flex-grow: 10;
+    }
+}
+
+@keyframes mymoveout {
+    0% {
+        flex-shrink: 1;
+    }
+
+    100% {
+        flex-shrink: 10;
+    }
+}
