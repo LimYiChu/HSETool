@@ -132,8 +132,9 @@ urlpatterns = [
         #Archive functionality
 
         path('phase3arch/',login_required(UserView.reppmtarch.as_view()),name='phase3arch'),
-      ] # + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+        
+        ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-#if settings.DEBUG:  In production when Debug=False, should configure your server (e.g. Nginx or Apache) to serve the media and static files
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+if settings.DEBUG: 
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
